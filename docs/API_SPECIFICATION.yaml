@@ -1,0 +1,973 @@
+openapi: 3.0.0
+info:
+  title: Parallel AI Coding - Manager AI Integration API
+  version: 1.0.0
+  description: |
+    Manager AI Integration API for monitoring and controlling Claude Code worker instances.
+    Enables hierarchical AI execution with resource management and job orchestration.
+  contact:
+    name: API Support
+    email: support@example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8000
+    description: Development server
+  - url: https://api.parallel-ai.example.com
+    description: Production server
+
+tags:
+  - name: Supervisor
+    description: Worker supervision and control operations
+  - name: Resources
+    description: Resource management and allocation
+  - name: Jobs
+    description: Job submission and orchestration
+  - name: Auth
+    description: Authentication and authorization
+
+paths:
+  # Supervisor API
+  /api/supervisor/workers:
+    get:
+      summary: List all workers
+      description: Returns list of all workers with current status and metadata
+      tags:
+        - Supervisor
+      security:
+        - bearerAuth: [supervisor:read]
+      parameters:
+        - name: workspace_id
+          in: query
+          description: Filter by workspace ID
+          required: false
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: Filter by worker status
+          required: false
+          schema:
+            type: string
+            enum: [IDLE, RUNNING, PAUSED, COMPLETED, FAILED, TERMINATED]
+        - name: limit
+          in: query
+          description: Maximum number of results
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+        - name: offset
+          in: query
+          description: Pagination offset
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - workers
+                  - total
+                properties:
+                  workers:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Worker'
+                  total:
+                    type: integer
+                    description: Total number of workers matching filters
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /api/supervisor/workers/{worker_id}:
+    get:
+      summary: Get worker details
+      description: Returns detailed information about a specific worker
+      tags:
+        - Supervisor
+      security:
+        - bearerAuth: [supervisor:read]
+      parameters:
+        - $ref: '#/components/parameters/WorkerId'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkerDetail'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/supervisor/workers/{worker_id}/pause:
+    post:
+      summary: Pause worker
+      description: Pauses a running worker (state transition RUNNING → PAUSED)
+      tags:
+        - Supervisor
+      security:
+        - bearerAuth: [supervisor:write]
+      parameters:
+        - $ref: '#/components/parameters/WorkerId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  description: Reason for pausing the worker
+                  example: "Excessive resource consumption"
+                request_id:
+                  type: string
+                  description: Idempotency key for request deduplication
+                  format: uuid
+      responses:
+        '200':
+          description: Worker paused successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkerDetail'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Invalid state transition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error:
+                  code: INVALID_STATE_TRANSITION
+                  message: Cannot pause worker in COMPLETED state
+                  details:
+                    worker_id: w_abc123
+                    current_state: COMPLETED
+                    requested_state: PAUSED
+
+  /api/supervisor/workers/{worker_id}/resume:
+    post:
+      summary: Resume worker
+      description: Resumes a paused worker (state transition PAUSED → RUNNING)
+      tags:
+        - Supervisor
+      security:
+        - bearerAuth: [supervisor:write]
+      parameters:
+        - $ref: '#/components/parameters/WorkerId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_id:
+                  type: string
+                  description: Idempotency key
+                  format: uuid
+      responses:
+        '200':
+          description: Worker resumed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkerDetail'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/supervisor/workers/{worker_id}/terminate:
+    post:
+      summary: Terminate worker
+      description: Forcefully terminates a worker (any state → TERMINATED)
+      tags:
+        - Supervisor
+      security:
+        - bearerAuth: [supervisor:write]
+      parameters:
+        - $ref: '#/components/parameters/WorkerId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - reason
+              properties:
+                reason:
+                  type: string
+                  description: Reason for termination (required for audit trail)
+                  example: "Worker unresponsive"
+                request_id:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: Worker terminated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkerDetail'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/supervisor/metrics:
+    get:
+      summary: Get aggregate metrics
+      description: Returns aggregate metrics across all workers
+      tags:
+        - Supervisor
+      security:
+        - bearerAuth: [supervisor:read]
+      parameters:
+        - name: workspace_id
+          in: query
+          description: Filter by workspace
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AggregateMetrics'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  # Resource Management API
+  /api/resources/quotas:
+    get:
+      summary: Get resource quotas
+      description: Returns resource quotas by depth level
+      tags:
+        - Resources
+      security:
+        - bearerAuth: [resources:read]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - quotas
+                properties:
+                  quotas:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ResourceQuota'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/resources/allocate:
+    post:
+      summary: Allocate resources
+      description: Allocates resources for a job at specified depth
+      tags:
+        - Resources
+      security:
+        - bearerAuth: [resources:write]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - job_id
+                - depth
+                - worker_count
+              properties:
+                job_id:
+                  type: string
+                  format: uuid
+                depth:
+                  type: integer
+                  minimum: 0
+                  maximum: 5
+                worker_count:
+                  type: integer
+                  minimum: 1
+                  maximum: 10
+                request_id:
+                  type: string
+                  format: uuid
+      responses:
+        '201':
+          description: Resources allocated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceAllocation'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: Insufficient resources
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error:
+                  code: INSUFFICIENT_RESOURCES
+                  message: Quota exceeded at depth 2
+                  details:
+                    requested: 5
+                    available: 3
+                    depth: 2
+
+  /api/resources/release:
+    post:
+      summary: Release resources
+      description: Releases resources allocated to a job
+      tags:
+        - Resources
+      security:
+        - bearerAuth: [resources:write]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - job_id
+              properties:
+                job_id:
+                  type: string
+                  format: uuid
+                request_id:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: Resources released successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Resources released for job j_abc123
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/resources/usage:
+    get:
+      summary: Get current resource usage
+      description: Returns current resource usage by depth level
+      tags:
+        - Resources
+      security:
+        - bearerAuth: [resources:read]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - usage
+                properties:
+                  usage:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ResourceUsage'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # Job Orchestration API
+  /api/jobs:
+    post:
+      summary: Submit job
+      description: Submits a new job for execution
+      tags:
+        - Jobs
+      security:
+        - bearerAuth: [jobs:write]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobSubmission'
+      responses:
+        '201':
+          description: Job submitted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+    get:
+      summary: List jobs
+      description: Returns list of jobs with filters
+      tags:
+        - Jobs
+      security:
+        - bearerAuth: [jobs:read]
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [SUBMITTED, PENDING, RUNNING, COMPLETED, FAILED, CANCELED]
+        - name: depth
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 5
+        - name: parent_job_id
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jobs:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Job'
+                  total:
+                    type: integer
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/jobs/{job_id}:
+    get:
+      summary: Get job details
+      description: Returns detailed information about a job
+      tags:
+        - Jobs
+      security:
+        - bearerAuth: [jobs:read]
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobDetail'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/jobs/{job_id}/cancel:
+    post:
+      summary: Cancel job
+      description: Cancels a pending or running job
+      tags:
+        - Jobs
+      security:
+        - bearerAuth: [jobs:write]
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                request_id:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: Job canceled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  # Authentication
+  /api/auth/token:
+    post:
+      summary: Generate JWT token
+      description: Generates JWT access token for API authentication
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_id
+                - workspace_id
+              properties:
+                user_id:
+                  type: string
+                workspace_id:
+                  type: string
+                scopes:
+                  type: array
+                  items:
+                    type: string
+                  example: [supervisor:read, supervisor:write, jobs:read, jobs:write]
+      responses:
+        '200':
+          description: Token generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                  token_type:
+                    type: string
+                    example: Bearer
+                  expires_in:
+                    type: integer
+                    example: 3600
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT Bearer token authentication
+
+  parameters:
+    WorkerId:
+      name: worker_id
+      in: path
+      required: true
+      description: Unique worker identifier
+      schema:
+        type: string
+        example: w_abc123
+
+  schemas:
+    Worker:
+      type: object
+      required:
+        - id
+        - status
+        - workspace_id
+        - created_at
+      properties:
+        id:
+          type: string
+          description: Unique worker identifier
+          example: w_abc123
+        status:
+          type: string
+          enum: [IDLE, RUNNING, PAUSED, COMPLETED, FAILED, TERMINATED]
+          description: Current worker status
+        workspace_id:
+          type: string
+          description: Workspace identifier for multi-tenant isolation
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+          description: Additional worker metadata
+          additionalProperties: true
+
+    WorkerDetail:
+      allOf:
+        - $ref: '#/components/schemas/Worker'
+        - type: object
+          properties:
+            state_history:
+              type: array
+              items:
+                $ref: '#/components/schemas/StateTransition'
+            current_job_id:
+              type: string
+              nullable: true
+            metrics:
+              $ref: '#/components/schemas/WorkerMetrics'
+
+    StateTransition:
+      type: object
+      required:
+        - id
+        - worker_id
+        - to_state
+        - timestamp
+      properties:
+        id:
+          type: integer
+        worker_id:
+          type: string
+        from_state:
+          type: string
+          nullable: true
+        to_state:
+          type: string
+        reason:
+          type: string
+          nullable: true
+        timestamp:
+          type: string
+          format: date-time
+
+    WorkerMetrics:
+      type: object
+      properties:
+        cpu_usage_percent:
+          type: number
+          format: float
+        memory_usage_mb:
+          type: number
+          format: float
+        task_count:
+          type: integer
+        uptime_seconds:
+          type: integer
+
+    AggregateMetrics:
+      type: object
+      properties:
+        total_workers:
+          type: integer
+        workers_by_status:
+          type: object
+          additionalProperties:
+            type: integer
+        total_cpu_usage_percent:
+          type: number
+          format: float
+        total_memory_usage_mb:
+          type: number
+          format: float
+
+    ResourceQuota:
+      type: object
+      required:
+        - depth
+        - max_workers
+        - max_concurrent_jobs
+      properties:
+        depth:
+          type: integer
+          minimum: 0
+          maximum: 5
+        max_workers:
+          type: integer
+          description: Maximum workers allowed at this depth
+        max_concurrent_jobs:
+          type: integer
+          description: Maximum concurrent jobs at this depth
+
+    ResourceAllocation:
+      type: object
+      required:
+        - id
+        - job_id
+        - depth
+        - worker_count
+        - allocated_at
+      properties:
+        id:
+          type: integer
+        job_id:
+          type: string
+        depth:
+          type: integer
+        worker_count:
+          type: integer
+        allocated_at:
+          type: string
+          format: date-time
+        released_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    ResourceUsage:
+      type: object
+      properties:
+        depth:
+          type: integer
+        allocated_workers:
+          type: integer
+        max_workers:
+          type: integer
+        active_jobs:
+          type: integer
+        max_concurrent_jobs:
+          type: integer
+
+    JobSubmission:
+      type: object
+      required:
+        - task_description
+        - depth
+      properties:
+        task_description:
+          type: string
+          description: Task description or task file path
+        depth:
+          type: integer
+          minimum: 0
+          maximum: 5
+        parent_job_id:
+          type: string
+          nullable: true
+          description: Parent job ID for hierarchical execution
+        worker_count:
+          type: integer
+          minimum: 1
+          default: 1
+        metadata:
+          type: object
+          additionalProperties: true
+
+    Job:
+      type: object
+      required:
+        - id
+        - status
+        - depth
+        - created_at
+      properties:
+        id:
+          type: string
+          example: j_abc123
+        status:
+          type: string
+          enum: [SUBMITTED, PENDING, RUNNING, COMPLETED, FAILED, CANCELED]
+        depth:
+          type: integer
+        parent_job_id:
+          type: string
+          nullable: true
+        worker_count:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        started_at:
+          type: string
+          format: date-time
+          nullable: true
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    JobDetail:
+      allOf:
+        - $ref: '#/components/schemas/Job'
+        - type: object
+          properties:
+            task_description:
+              type: string
+            state_history:
+              type: array
+              items:
+                $ref: '#/components/schemas/JobStateTransition'
+            child_jobs:
+              type: array
+              items:
+                $ref: '#/components/schemas/Job'
+            result:
+              type: object
+              nullable: true
+              additionalProperties: true
+            error:
+              type: object
+              nullable: true
+              properties:
+                code:
+                  type: string
+                message:
+                  type: string
+
+    JobStateTransition:
+      type: object
+      properties:
+        from_state:
+          type: string
+          nullable: true
+        to_state:
+          type: string
+        reason:
+          type: string
+          nullable: true
+        timestamp:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: string
+              description: Machine-readable error code
+            message:
+              type: string
+              description: Human-readable error message
+            details:
+              type: object
+              description: Additional error context
+              additionalProperties: true
+
+  responses:
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: INVALID_REQUEST
+              message: Invalid request parameters
+
+    Unauthorized:
+      description: Missing or invalid authentication token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: UNAUTHORIZED
+              message: Missing or invalid authentication token
+
+    Forbidden:
+      description: Insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: FORBIDDEN
+              message: Insufficient permissions for this operation
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: NOT_FOUND
+              message: Resource not found
+
+    Conflict:
+      description: Request conflicts with current state
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: CONFLICT
+              message: Request conflicts with current state

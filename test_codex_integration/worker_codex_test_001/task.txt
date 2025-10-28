@@ -1,0 +1,10 @@
+Create a Python calculator module.
+
+Requirements:
+- File name: calculator.py
+- Implement functions: add(a, b), subtract(a, b), multiply(a, b), divide(a, b)
+- Include docstrings
+- Include type hints
+- Handle division by zero
+
+Save to calculator.py in the current directory.

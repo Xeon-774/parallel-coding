@@ -1,0 +1,334 @@
+{
+  "location": "Tokyo, Japan",
+  "latitude": 35.6762,
+  "longitude": 139.6503,
+  "timezone": "Asia/Tokyo",
+  "elevation": 40,
+  "data_period": {
+    "start": "2024-01-01",
+    "end": "2024-01-31"
+  },
+  "daily_weather": [
+    {
+      "date": "2024-01-01",
+      "temperature_max_c": 12.5,
+      "temperature_min_c": 5.2,
+      "temperature_avg_c": 8.9,
+      "humidity_percent": 65,
+      "precipitation_mm": 0.0,
+      "wind_speed_kmh": 15.3,
+      "conditions": "Sunny"
+    },
+    {
+      "date": "2024-01-02",
+      "temperature_max_c": 13.1,
+      "temperature_min_c": 6.0,
+      "temperature_avg_c": 9.6,
+      "humidity_percent": 62,
+      "precipitation_mm": 0.0,
+      "wind_speed_kmh": 12.7,
+      "conditions": "Partly Cloudy"
+    },
+    {
+      "date": "2024-01-03",
+      "temperature_max_c": 11.8,
+      "temperature_min_c": 4.5,
+      "temperature_avg_c": 8.2,
+      "humidity_percent": 58,
+      "precipitation_mm": 0.0,
+      "wind_speed_kmh": 18.9,
+      "conditions": "Sunny"
+    },
+    {
+      "date": "2024-01-04",
+      "temperature_max_c": 10.2,
+      "temperature_min_c": 3.8,
+      "temperature_avg_c": 7.0,
+      "humidity_percent": 71,
+      "precipitation_mm": 2.3,
+      "wind_speed_kmh": 22.1,
+      "conditions": "Light Rain"
+    },
+    {
+      "date": "2024-01-05",
+      "temperature_max_c": 9.5,
+      "temperature_min_c": 3.2,
+      "temperature_avg_c": 6.4,
+      "humidity_percent": 75,
+      "precipitation_mm": 5.7,
+      "wind_speed_kmh": 25.4,
+      "conditions": "Rain"
+    },
+    {
+      "date": "2024-01-06",
+      "temperature_max_c": 8.8,
+      "temperature_min_c": 2.5,
+      "temperature_avg_c": 5.7,
+      "humidity_percent": 68,
+      "precipitation_mm": 1.2,
+      "wind_speed_kmh": 19.6,
+      "conditions": "Cloudy"
+    },
+    {
+      "date": "2024-01-07",
+      "temperature_max_c": 11.3,
+      "temperature_min_c": 4.1,
+      "temperature_avg_c": 7.7,
+      "humidity_percent": 60,
+      "precipitation_mm": 0.0,
+      "wind_speed_kmh": 14.2,
+      "conditions": "Partly Cloudy"
+    },
+    {
+      "date": "2024-01-08",
+      "temperature_max_c": 14.2,
+      "temperature_min_c": 6.8,
+      "temperature_avg_c": 10.5,
+      "humidity_percent": 55,
+      "precipitation_mm": 0.0,
+      "wind_speed_kmh": 11.8,
+      "conditions": "Sunny"
+    },
+    {
+      "date": "2024-01-09",
+      "temperature_max_c": 15.7,
+      "temperature_min_c": 7.9,
+      "temperature_avg_c": 11.8,
+      "humidity_percent": 52,
+      "precipitation_mm": 0.0,
+      "wind_speed_kmh": 10.3,
+      "conditions": "Sunny"
+    },
+    {
+      "date": "2024-01-10",
+      "temperature_max_c": 14.9,
+      "temperature_min_c": 7.2,
+      "temperature_avg_c": 11.1,
+      "humidity_percent": 58,
+      "precipitation_mm": 0.0,
+      "wind_speed_kmh": 13.5,
+      "conditions": "Partly Cloudy"
+    },
+    {
+      "date": "2024-01-11",
+      "temperature_max_c": 12.6,
+      "temperature_min_c": 5.5,
+      "temperature_avg_c": 9.1,
+      "humidity_percent": 64,
+      "precipitation_mm": 0.5,
+      "wind_speed_kmh": 16.7,
+      "conditions": "Cloudy"
+    },
+    {
+      "date": "2024-01-12",
+      "temperature_max_c": 10.8,
+      "temperature_min_c": 4.2,
+      "temperature_avg_c": 7.5,
+      "humidity_percent": 70,
+      "precipitation_mm": 3.1,
+      "wind_speed_kmh": 20.9,
+      "conditions": "Light Rain"
+    },
+    {
+      "date": "2024-01-13",
+      "temperature_max_c": 9.2,
+      "temperature_min_c": 2.8,
+      "temperature_avg_c": 6.0,
+      "humidity_percent": 73,
+      "precipitation_mm": 4.8,
+      "wind_speed_kmh": 23.6,
+      "conditions": "Rain"
+    },
+    {
+      "date": "2024-01-14",
+      "temperature_max_c": 8.5,
+      "temperature_min_c": 1.9,
+      "temperature_avg_c": 5.2,
+      "humidity_percent": 66,
+      "precipitation_mm": 0.8,
+      "wind_speed_kmh": 18.2,
+      "conditions": "Cloudy"
+    },
+    {
+      "date": "2024-01-15",
+      "temperature_max_c": 10.7,
+      "temperature_min_c": 3.6,
+      "temperature_avg_c": 7.2,
+      "humidity_percent": 61,
+      "precipitation_mm": 0.0,
+      "wind_speed_kmh": 15.1,
+      "conditions": "Partly Cloudy"
+    },
+    {
+      "date": "2024-01-16",
+      "temperature_max_c": 13.4,
+      "temperature_min_c": 5.9,
+      "temperature_avg_c": 9.7,
+      "humidity_percent": 57,
+      "precipitation_mm": 0.0,
+      "wind_speed_kmh": 12.4,
+      "conditions": "Sunny"
+    },
+    {
+      "date": "2024-01-17",
+      "temperature_max_c": 15.2,
+      "temperature_min_c": 7.3,
+      "temperature_avg_c": 11.3,
+      "humidity_percent": 54,
+      "precipitation_mm": 0.0,
+      "wind_speed_kmh": 10.8,
+      "conditions": "Sunny"
+    },
+    {
+      "date": "2024-01-18",
+      "temperature_max_c": 16.1,
+      "temperature_min_c": 8.2,
+      "temperature_avg_c": 12.2,
+      "humidity_percent": 51,
+      "precipitation_mm": 0.0,
+      "wind_speed_kmh": 9.5,
+      "conditions": "Sunny"
+    },
+    {
+      "date": "2024-01-19",
+      "temperature_max_c": 14.8,
+      "temperature_min_c": 6.9,
+      "temperature_avg_c": 10.9,
+      "humidity_percent": 59,
+      "precipitation_mm": 0.0,
+      "wind_speed_kmh": 14.3,
+      "conditions": "Partly Cloudy"
+    },
+    {
+      "date": "2024-01-20",
+      "temperature_max_c": 12.3,
+      "temperature_min_c": 5.1,
+      "temperature_avg_c": 8.7,
+      "humidity_percent": 67,
+      "precipitation_mm": 1.9,
+      "wind_speed_kmh": 19.7,
+      "conditions": "Light Rain"
+    },
+    {
+      "date": "2024-01-21",
+      "temperature_max_c": 11.1,
+      "temperature_min_c": 3.7,
+      "temperature_avg_c": 7.4,
+      "humidity_percent": 72,
+      "precipitation_mm": 6.2,
+      "wind_speed_kmh": 24.5,
+      "conditions": "Rain"
+    },
+    {
+      "date": "2024-01-22",
+      "temperature_max_c": 9.6,
+      "temperature_min_c": 2.3,
+      "temperature_avg_c": 6.0,
+      "humidity_percent": 69,
+      "precipitation_mm": 2.4,
+      "wind_speed_kmh": 21.3,
+      "conditions": "Cloudy"
+    },
+    {
+      "date": "2024-01-23",
+      "temperature_max_c": 11.9,
+      "temperature_min_c": 4.5,
+      "temperature_avg_c": 8.2,
+      "humidity_percent": 63,
+      "precipitation_mm": 0.0,
+      "wind_speed_kmh": 16.8,
+      "conditions": "Partly Cloudy"
+    },
+    {
+      "date": "2024-01-24",
+      "temperature_max_c": 14.6,
+      "temperature_min_c": 6.7,
+      "temperature_avg_c": 10.7,
+      "humidity_percent": 56,
+      "precipitation_mm": 0.0,
+      "wind_speed_kmh": 13.2,
+      "conditions": "Sunny"
+    },
+    {
+      "date": "2024-01-25",
+      "temperature_max_c": 16.3,
+      "temperature_min_c": 8.4,
+      "temperature_avg_c": 12.4,
+      "humidity_percent": 53,
+      "precipitation_mm": 0.0,
+      "wind_speed_kmh": 11.1,
+      "conditions": "Sunny"
+    },
+    {
+      "date": "2024-01-26",
+      "temperature_max_c": 15.9,
+      "temperature_min_c": 7.8,
+      "temperature_avg_c": 11.9,
+      "humidity_percent": 55,
+      "precipitation_mm": 0.0,
+      "wind_speed_kmh": 12.6,
+      "conditions": "Sunny"
+    },
+    {
+      "date": "2024-01-27",
+      "temperature_max_c": 13.7,
+      "temperature_min_c": 6.2,
+      "temperature_avg_c": 10.0,
+      "humidity_percent": 61,
+      "precipitation_mm": 0.0,
+      "wind_speed_kmh": 15.9,
+      "conditions": "Partly Cloudy"
+    },
+    {
+      "date": "2024-01-28",
+      "temperature_max_c": 11.4,
+      "temperature_min_c": 4.8,
+      "temperature_avg_c": 8.1,
+      "humidity_percent": 68,
+      "precipitation_mm": 1.5,
+      "wind_speed_kmh": 18.4,
+      "conditions": "Cloudy"
+    },
+    {
+      "date": "2024-01-29",
+      "temperature_max_c": 10.1,
+      "temperature_min_c": 3.3,
+      "temperature_avg_c": 6.7,
+      "humidity_percent": 74,
+      "precipitation_mm": 4.3,
+      "wind_speed_kmh": 22.8,
+      "conditions": "Rain"
+    },
+    {
+      "date": "2024-01-30",
+      "temperature_max_c": 9.3,
+      "temperature_min_c": 2.6,
+      "temperature_avg_c": 6.0,
+      "humidity_percent": 71,
+      "precipitation_mm": 3.7,
+      "wind_speed_kmh": 20.5,
+      "conditions": "Light Rain"
+    },
+    {
+      "date": "2024-01-31",
+      "temperature_max_c": 11.8,
+      "temperature_min_c": 4.9,
+      "temperature_avg_c": 8.4,
+      "humidity_percent": 64,
+      "precipitation_mm": 0.0,
+      "wind_speed_kmh": 17.2,
+      "conditions": "Partly Cloudy"
+    }
+  ],
+  "monthly_summary": {
+    "temperature_avg_c": 8.8,
+    "temperature_max_c": 16.3,
+    "temperature_min_c": 1.9,
+    "total_precipitation_mm": 38.4,
+    "avg_humidity_percent": 63.2,
+    "avg_wind_speed_kmh": 16.5,
+    "sunny_days": 10,
+    "rainy_days": 8,
+    "cloudy_days": 13
+  }
+}

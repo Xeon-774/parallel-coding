@@ -1,0 +1,41 @@
+feedback_id,date,customer_id,product_id,rating,category,sentiment,comment,resolved,response_time_hours
+FB001,2024-01-15,C1045,P001,5,Quality,Positive,"Excellent laptop! Fast performance and great build quality.",No,0
+FB002,2024-01-16,C1023,P015,4,Features,Positive,"Smart watch works well, battery life could be better.",Yes,24
+FB003,2024-01-17,C1008,P007,5,Quality,Positive,"Amazing monitor! Colors are vibrant and sharp.",No,0
+FB004,2024-01-17,C1034,P019,3,Price,Neutral,"Phone mount is okay, but seems overpriced for what it is.",Yes,12
+FB005,2024-01-18,C1002,P002,2,Quality,Negative,"Mouse stopped working after 2 weeks. Very disappointed.",Yes,6
+FB006,2024-01-19,C1056,P007,5,Service,Positive,"Fast delivery and excellent customer service!",No,0
+FB007,2024-01-20,C1011,P009,5,Quality,Positive,"Best ergonomic chair I've owned. Worth every penny.",No,0
+FB008,2024-01-21,C1027,P002,4,Value,Positive,"Good mouse for the price. Comfortable to use.",No,0
+FB009,2024-01-22,C1049,P002,1,Quality,Negative,"Wireless connection keeps dropping. Very frustrating.",Yes,3
+FB010,2024-01-22,C1038,P013,5,Features,Positive,"Graphics tablet is amazing for digital art. Highly recommend!",No,0
+FB011,2024-01-23,C1014,P003,3,Quality,Neutral,"Cable works fine but feels a bit flimsy.",Yes,18
+FB012,2024-01-24,C1055,P006,4,Quality,Positive,"Good webcam, clear image quality.",No,0
+FB013,2024-01-25,C1031,P012,5,Quality,Positive,"Noise cancelling is excellent! Perfect for work from home.",No,0
+FB014,2024-01-26,C1003,P003,5,Value,Positive,"Great value for money. Bought 5 more!",No,0
+FB015,2024-01-27,C1063,P009,4,Comfort,Positive,"Very comfortable chair, assembly was a bit tricky.",Yes,8
+FB016,2024-01-28,C1012,P010,5,Quality,Positive,"Standing desk is solid and stable. Love the electric adjustment.",No,0
+FB017,2024-01-29,C1040,P015,2,Features,Negative,"Watch face scratched easily. Expected better quality.",Yes,4
+FB018,2024-01-30,C1052,P020,4,Features,Positive,"Cooling pad works great, laptop runs much cooler now.",No,0
+FB019,2024-01-31,C1018,P012,5,Quality,Positive,"Best headphones I've ever owned. Sound quality is superb!",No,0
+FB020,2024-02-01,C1046,P016,3,Compatibility,Neutral,"Docking station works but had some driver issues initially.",Yes,36
+FB021,2024-02-02,C1021,P013,4,Features,Positive,"Great tablet for beginners. Easy to set up.",No,0
+FB022,2024-02-03,C1005,P001,5,Performance,Positive,"Blazing fast! Handles all my development work easily.",No,0
+FB023,2024-02-04,C1058,P014,4,Value,Positive,"Portable charger is compact and charges quickly.",No,0
+FB024,2024-02-05,C1017,P011,3,Quality,Neutral,"Bag is decent but zippers feel cheap.",Yes,15
+FB025,2024-02-06,C1044,P010,5,Features,Positive,"Love the memory presets! Desk is very sturdy.",No,0
+FB026,2024-02-07,C1029,P016,2,Quality,Negative,"One port stopped working after a month. Requesting replacement.",Yes,2
+FB027,2024-02-08,C1047,P017,5,Sound,Positive,"Bluetooth speaker has amazing bass! Great for parties.",No,0
+FB028,2024-02-09,C1024,P008,4,Design,Positive,"Lamp design is sleek and modern. Light is adjustable.",No,0
+FB029,2024-02-10,C1032,P018,5,Quality,Positive,"4K quality is crystal clear. Perfect for video calls.",No,0
+FB030,2024-02-11,C1059,P015,3,Battery,Neutral,"Battery drains faster than advertised.",Yes,20
+FB031,2024-02-12,C1010,P008,5,Features,Positive,"Love the touch controls and brightness levels!",No,0
+FB032,2024-02-13,C1053,P004,4,Quality,Positive,"Keyboard feels premium. Keys are responsive.",No,0
+FB033,2024-02-14,C1028,P001,5,Value,Positive,"Best laptop in this price range. Highly recommended!",No,0
+FB034,2024-02-15,C1039,P014,5,Portability,Positive,"Perfect size for travel. Charges my phone 3 times.",No,0
+FB035,2024-02-16,C1051,P019,2,Quality,Negative,"Mount broke after 3 weeks of use. Poor quality.",Yes,5
+FB036,2024-02-17,C1006,P005,5,Performance,Positive,"SSD is incredibly fast! Boot times are amazing.",No,0
+FB037,2024-02-18,C1041,P011,4,Design,Positive,"Nice looking bag with good padding for laptop.",No,0
+FB038,2024-02-19,C1054,P005,5,Reliability,Positive,"Been using for 2 months, no issues. Great purchase!",No,0
+FB039,2024-02-20,C1019,P006,3,Features,Neutral,"Webcam is good but no built-in microphone.",Yes,10
+FB040,2024-02-21,C1043,P009,5,Comfort,Positive,"Most comfortable office chair ever! No more back pain.",No,0

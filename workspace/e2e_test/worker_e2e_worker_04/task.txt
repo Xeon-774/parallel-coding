@@ -1,0 +1,10 @@
+Create a file_reader.py file that reads and processes text files.
+
+Requirements:
+1. Create file_reader.py in the workspace
+2. Implement read_file, count_lines, count_characters functions
+3. Add proper error handling for file operations
+4. Add docstrings to all functions
+5. Ensure UTF-8 encoding
+
+Complete this task and confirm when done.

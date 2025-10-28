@@ -1,0 +1,17 @@
+{
+  "timestamp": "2025-10-27T17:57:39.339432",
+  "test_type": "claude_codex_integration",
+  "results": [
+    {
+      "task_description": "Write a Python function that validates email addresses using regex. Include comprehensive docstrings with examples, type hints, and proper error handling.",
+      "complexity": "simple",
+      "validated": false,
+      "execution_time_seconds": 0.0009975433349609375,
+      "errors": [
+        "Execution failed: Unexpected error: [WinError 267] ディレクトリ名が無効です。"
+      ],
+      "warnings": [],
+      "output_length": 0
+    }
+  ]
+}

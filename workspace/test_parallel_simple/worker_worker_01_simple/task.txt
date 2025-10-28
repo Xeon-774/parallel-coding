@@ -1,0 +1,6 @@
+
+Calculate the sum: 100 + 200 + 300
+
+Print the result in this format: "Sum: [result]"
+
+This is a simple test task. Complete it quickly.

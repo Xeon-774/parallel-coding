@@ -1,0 +1,147 @@
+﻿# ========================================
+# Docker Compose - Production Configuration
+# ========================================
+# Parallel AI Coding Orchestrator
+# - Backend: FastAPI + Uvicorn (4 workers)
+# - Frontend: React + Vite + Nginx
+# - Network: Internal bridge network
+# - Volumes: Persistent workspace data
+#
+# Usage:
+#   docker-compose up -d          # Start all services
+#   docker-compose down           # Stop all services
+#   docker-compose logs -f        # Follow logs
+#   docker-compose ps             # Service status
+# ========================================
+
+version: '3.8'
+
+services:
+  # ========================================
+  # Backend Service (FastAPI + Uvicorn)
+  # ========================================
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    image: parallel-coding-backend:latest
+    container_name: parallel-coding-backend
+    restart: unless-stopped
+
+    # Environment variables
+    environment:
+      - ORCHESTRATOR_MODE=wsl
+      - ORCHESTRATOR_WORKSPACE=/app/workspace
+      - ORCHESTRATOR_MAX_WORKERS=10
+      - LOG_LEVEL=INFO
+      - PYTHONUNBUFFERED=1
+
+    # Volumes
+    volumes:
+      - workspace_data:/app/workspace:rw
+      - backend_logs:/app/logs:rw
+
+    # Networking
+    networks:
+      - parallel-coding-network
+
+    # Ports (exposed for debugging, can be removed in production)
+    ports:
+      - "8000:8000"
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ========================================
+  # Frontend Service (React + Nginx)
+  # ========================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../Dockerfile.frontend
+    image: parallel-coding-frontend:latest
+    container_name: parallel-coding-frontend
+    restart: unless-stopped
+
+    # Networking
+    networks:
+      - parallel-coding-network
+
+    # Ports
+    ports:
+      - "80:80"
+      - "443:443"  # For future HTTPS support
+
+    # Dependencies
+    depends_on:
+      backend:
+        condition: service_healthy
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
+
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# ========================================
+# Networks
+# ========================================
+networks:
+  parallel-coding-network:
+    driver: bridge
+    name: parallel-coding-network
+
+# ========================================
+# Volumes
+# ========================================
+volumes:
+  # Workspace data (persistent)
+  workspace_data:
+    driver: local
+    name: parallel-coding-workspace
+
+  # Backend logs (persistent)
+  backend_logs:
+    driver: local
+    name: parallel-coding-logs

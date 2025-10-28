@@ -1,0 +1,9 @@
+
+You are testing terminal output capture.
+
+Please perform these simple actions:
+1. Print "Hello from Worker AI!"
+2. Calculate: 10 + 20 = ?
+3. Print "Test complete!"
+
+Start now.

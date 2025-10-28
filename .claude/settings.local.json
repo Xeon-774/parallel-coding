@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git log:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\ndocs: Add comprehensive AI-focused documentation suite\n\nCreated 4 major documentation files to help AI assistants work effectively\nwith the Claude Orchestrator codebase:\n\n## New Documentation Files\n\n### 1. AI_DEVELOPMENT_GUIDE.md (13,000+ words)\n**Purpose:** Complete development guide for AI assistants\n**Content:**\n- Quick project overview and context\n- Development workflow (read → edit → test → commit)\n- Running tests (commands, expected results)\n- Type checking with mypy\n- Code patterns and conventions (exceptions, logging, config, API, observability, resilience)\n- Common tasks (add endpoint, exception, metrics, config)\n- Troubleshooting (JSON serialization, import errors, test failures, file locks, type errors)\n- Key files reference\n- Best practices for AI assistants\n- Version compatibility notes\n\n### 2. ARCHITECTURE.md (6,000+ words)\n**Purpose:** System architecture and design documentation\n**Content:**\n- Executive summary and architectural decisions\n- High-level architecture diagram (4-layer clean architecture)\n- System layers (Presentation, Application, Domain, Infrastructure)\n- Core components detailed breakdown (exceptions, observability, resilience, logging, config, safety, workers)\n- Data flow diagrams (request processing, task execution, observability)\n- Design principles (SoC, DIP, SRP, OCP, DRY)\n- Technology stack\n- Deployment architecture (standalone, microservice, distributed)\n- Security architecture\n- Scalability & performance\n- Monitoring & observability\n- Future enhancements\n\n### 3. CODEBASE_MAP.md (4,500+ words)\n**Purpose:** Navigation guide for quickly finding code\n**Content:**\n- Complete directory structure with annotations\n- Core modules detailed reference (orchestrator/core/)\n  - exceptions.py, observability.py, resilience.py, structured_logging.py, etc.\n- API layer reference (orchestrator/api/)\n- Configuration & setup files\n- Test organization and commands\n- \"Finding specific features\" quick reference\n- Module dependency graph\n- Common code patterns\n- File naming conventions\n- Quick start checklist\n\n### 4. AI_PROMPTS.md (6,000+ words)\n**Purpose:** Effective prompt examples for working with this codebase\n**Content:**\n- General principles for providing context\n- Initial context prompts (first-time, resuming, understanding features)\n- Development task prompts (add endpoint, exception, metrics, config)\n- Debugging prompts (test failures, type errors, performance issues)\n- Testing prompts (writing tests, fixing flaky tests)\n- Documentation prompts\n- Code review prompts (pre-commit, security)\n- Refactoring prompts (clarity, performance)\n- Learning prompts\n- Template prompt structure\n- Prompt quality checklist\n- Examples of great vs poor prompts\n\n## Total Documentation\n\n- **29,500+ words** of AI-optimized documentation\n- **4 comprehensive guides** covering all aspects\n- **100+ code examples** and patterns\n- **50+ practical prompts** for common tasks\n- **Complete navigation** for 100+ source files\n\n## Impact\n\nAI assistants (Claude Code, GPT-4, etc.) can now:\n- ✅ Quickly understand project architecture\n- ✅ Navigate codebase efficiently\n- ✅ Follow established patterns\n- ✅ Make changes that maintain world-class quality\n- ✅ Debug issues effectively\n- ✅ Write appropriate tests\n- ✅ Provide better code reviews\n\nThis documentation ensures AI assistants can work at the same\nprofessional level as human developers, maintaining the project''s\nA++ quality standard.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git commit:*)",
+      "Bash(awk:*)",
+      "Bash(mypy:*)",
+      "Bash(python -m pytest tests/ -v --tb=short --no-cov -q)",
+      "Bash(git add:*)",
+      "Bash(tree:*)",
+      "Bash(mkdir:*)",
+      "Bash(chmod:*)",
+      "Bash(python -m pytest:*)",
+      "Bash(git mv:*)",
+      "Bash(git rm:*)",
+      "Bash(cat:*)",
+      "Bash(python -m pip:*)",
+      "Bash(flake8:*)",
+      "Bash(git reset:*)",
+      "Bash(python -c:*)",
+      "Bash(python -m flake8:*)",
+      "Bash(python:*)",
+      "Bash(where:*)",
+      "Bash(set CLAUDE_CODE_GIT_BASH_PATH=C:optGit.Gitusrbinbash.exe)",
+      "Bash(wsl:*)",
+      "WebSearch",
+      "Bash(more:*)",
+      "Bash(tasklist:*)",
+      "Bash(findstr:*)",
+      "Read(//c/Users/chemi/OneDrive/画像/Screenshots/**)",
+      "Bash(rm:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

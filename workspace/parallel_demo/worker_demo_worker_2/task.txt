@@ -1,0 +1,10 @@
+
+あなたはWorkerAI #2です。
+
+【タスク】
+以下の文章を生成してください：
+1. "Hello from Parallel AI Worker #2"
+2. "Testing concurrent execution"
+3. 1から5までの数字をリストで表示
+
+全て完了したら "Text generation completed!" と出力してください。

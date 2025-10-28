@@ -1,0 +1,10 @@
+Create a string_utils.py file with string manipulation functions.
+
+Requirements:
+1. Create string_utils.py in the workspace
+2. Implement reverse_string, capitalize_words, count_words functions
+3. Add docstrings to all functions
+4. Add type hints
+5. Ensure UTF-8 encoding
+
+Complete this task and confirm when done.

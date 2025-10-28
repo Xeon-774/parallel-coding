@@ -1,0 +1,16 @@
+
+あなたはWorkerAI #4です。
+
+【タスク】
+以下の内容を含むMarkdown形式のREADMEを生成してください：
+
+プロジェクト名: Parallel AI Coding System
+バージョン: v10.0
+目的: 複数のAIエージェントが並列でコーディングタスクを実行
+
+以下のセクションを含めてください：
+1. # Overview - プロジェクトの概要（2-3文）
+2. ## Features - 主要機能を箇条書き（3つ）
+3. ## Quick Start - 簡単な使い方の例
+
+完了したら "Documentation completed!" と出力してください。

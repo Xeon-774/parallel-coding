@@ -1,0 +1,61 @@
+country,region,city,year,population,area_km2,density_per_km2,gdp_per_capita_usd,median_age,growth_rate_percent
+United States,North America,New York,2024,8336817,783.8,10636,85000,36.7,0.5
+United States,North America,Los Angeles,2024,3979576,1302.0,3057,75000,35.8,0.3
+United States,North America,Chicago,2024,2693976,606.1,4447,68000,34.5,0.1
+United States,North America,Houston,2024,2320268,1658.6,1399,72000,33.6,1.8
+United States,North America,Phoenix,2024,1680992,1340.6,1254,65000,34.2,2.1
+Japan,Asia,Tokyo,2024,13960000,2194.1,6363,48000,45.5,0.2
+Japan,Asia,Yokohama,2024,3757630,437.5,8587,47000,45.1,0.1
+Japan,Asia,Osaka,2024,2725006,225.2,12100,46000,45.8,0.0
+Japan,Asia,Nagoya,2024,2296013,326.4,7035,45000,44.9,-0.1
+Japan,Asia,Sapporo,2024,1973395,1121.3,1760,43000,44.2,0.3
+United Kingdom,Europe,London,2024,8982000,1572.0,5714,55000,36.5,0.8
+United Kingdom,Europe,Birmingham,2024,1141816,267.8,4263,42000,36.8,0.5
+United Kingdom,Europe,Manchester,2024,547627,115.6,4738,43000,35.2,0.7
+United Kingdom,Europe,Liverpool,2024,498042,111.8,4455,40000,37.1,0.4
+United Kingdom,Europe,Leeds,2024,793139,551.7,1438,41000,36.9,0.6
+Germany,Europe,Berlin,2024,3677472,891.8,4123,48000,42.7,0.9
+Germany,Europe,Hamburg,2024,1906411,755.3,2524,52000,42.3,0.6
+Germany,Europe,Munich,2024,1512491,310.4,4873,63000,41.5,1.2
+Germany,Europe,Cologne,2024,1087863,405.2,2685,49000,42.1,0.7
+Germany,Europe,Frankfurt,2024,763380,248.3,3074,67000,41.8,1.0
+France,Europe,Paris,2024,2165423,105.4,20545,58000,37.9,0.4
+France,Europe,Marseille,2024,870731,240.6,3619,38000,39.2,0.3
+France,Europe,Lyon,2024,522969,47.9,10917,47000,37.5,0.6
+France,Europe,Toulouse,2024,479553,118.3,4053,42000,36.8,0.8
+France,Europe,Nice,2024,341522,71.9,4750,41000,40.1,0.5
+China,Asia,Shanghai,2024,27058480,6341.0,4268,28000,38.5,0.4
+China,Asia,Beijing,2024,21540000,16410.5,1313,30000,38.9,0.3
+China,Asia,Shenzhen,2024,13438800,1997.5,6728,32000,32.5,2.5
+China,Asia,Guangzhou,2024,15300000,7434.4,2058,29000,35.7,1.8
+China,Asia,Chongqing,2024,32054200,82403.0,389,15000,37.2,1.2
+India,Asia,Mumbai,2024,20411000,603.4,33828,12000,30.2,1.5
+India,Asia,Delhi,2024,30290936,1484.0,20413,11000,28.6,2.3
+India,Asia,Bangalore,2024,12765000,741.0,17229,15000,31.4,3.1
+India,Asia,Kolkata,2024,14850066,205.0,72440,9000,32.8,0.9
+India,Asia,Chennai,2024,10971108,426.0,25755,13000,33.5,1.7
+Brazil,South America,São Paulo,2024,12325232,1521.1,8103,18000,34.2,0.8
+Brazil,South America,Rio de Janeiro,2024,6747815,1200.3,5623,16000,35.9,0.5
+Brazil,South America,Brasília,2024,3055149,5760.8,530,22000,33.1,1.4
+Brazil,South America,Salvador,2024,2886698,692.8,4167,14000,34.7,0.6
+Brazil,South America,Fortaleza,2024,2703391,314.9,8586,13000,33.8,0.9
+Canada,North America,Toronto,2024,2794356,630.2,4434,58000,39.3,1.2
+Canada,North America,Montreal,2024,1780000,431.5,4124,52000,40.1,0.8
+Canada,North America,Vancouver,2024,675218,115.0,5872,56000,40.5,1.5
+Canada,North America,Calgary,2024,1336000,825.3,1619,68000,37.2,2.0
+Canada,North America,Ottawa,2024,1017449,2790.3,365,54000,39.8,1.1
+Australia,Oceania,Sydney,2024,5312163,12368.0,429,62000,37.2,1.6
+Australia,Oceania,Melbourne,2024,5078193,9993.0,508,59000,37.5,1.8
+Australia,Oceania,Brisbane,2024,2568927,15826.3,162,57000,36.8,2.2
+Australia,Oceania,Perth,2024,2192229,6417.9,342,63000,37.1,1.9
+Australia,Oceania,Adelaide,2024,1402393,3259.8,430,55000,39.6,1.3
+South Korea,Asia,Seoul,2024,9776000,605.2,16154,35000,42.3,0.2
+South Korea,Asia,Busan,2024,3414950,770.0,4434,32000,43.5,-0.3
+South Korea,Asia,Incheon,2024,2954955,1062.6,2781,33000,40.8,0.5
+South Korea,Asia,Daegu,2024,2418000,883.6,2737,31000,42.9,-0.2
+South Korea,Asia,Daejeon,2024,1475221,539.6,2734,33000,40.5,0.3
+Mexico,North America,Mexico City,2024,9209944,1495.0,6160,19000,29.3,0.6
+Mexico,North America,Guadalajara,2024,5268642,151.0,34884,17000,28.7,1.2
+Mexico,North America,Monterrey,2024,5341171,451.5,11829,21000,30.5,1.5
+Mexico,North America,Puebla,2024,3199530,546.0,5859,14000,28.2,0.9
+Mexico,North America,Tijuana,2024,1922523,637.0,3018,16000,29.8,2.1

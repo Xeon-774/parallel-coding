@@ -1,0 +1,1306 @@
+================================================================================
+DIALOGUE TRANSCRIPT: worker_simple_test_worker
+Task: Simple Test
+Started: 2025-10-24 23:36:21
+================================================================================
+
+[23:36:24.491] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:36:27.504] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:36:30.520] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:36:33.533] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:36:36.549] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:36:39.554] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:36:42.569] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:36:45.578] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:36:48.593] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:36:51.606] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:36:54.624] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:36:57.643] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:37:00.657] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:37:03.676] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:37:06.686] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:37:09.702] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:37:12.712] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:37:15.727] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:37:18.737] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:37:21.752] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:37:24.769] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:37:27.785] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:37:30.806] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:37:33.823] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:37:36.837] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:37:39.855] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:37:42.870] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:37:45.883] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:37:48.900] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:37:51.918] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:37:54.924] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:37:57.942] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:38:00.956] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:38:03.974] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:38:06.989] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:38:10.002] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:38:13.018] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:38:16.036] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:38:19.052] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:38:22.066] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:38:25.083] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:38:28.095] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:38:31.105] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:38:34.116] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:38:37.129] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:38:40.146] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:38:43.161] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:38:46.178] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:38:49.197] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:38:52.213] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:38:55.229] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:38:58.246] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:39:01.255] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:39:04.273] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:39:07.288] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:39:10.309] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:39:13.326] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:39:16.345] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:39:19.361] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:39:22.381] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:39:25.401] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:39:28.417] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:39:31.434] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:39:34.449] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:39:37.467] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:39:40.478] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:39:43.492] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:39:46.504] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:39:49.513] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:39:52.525] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:39:55.543] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:39:58.560] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:40:01.576] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:40:04.593] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:40:07.607] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:40:10.620] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:40:13.636] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:40:16.656] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:40:19.668] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:40:22.683] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:40:25.695] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:40:28.711] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:40:31.725] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:40:34.744] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:40:37.756] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:40:40.776] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:40:43.787] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:40:46.804] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:40:49.818] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:40:52.830] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:40:55.839] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:40:58.854] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:41:01.868] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:41:04.886] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:41:07.897] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:41:10.913] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:41:13.928] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:41:16.942] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:41:19.961] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+
+[23:41:22.974] worker→orchestrator (output)
+--------------------------------------------------------------------------------
+
+
+
+
+
+
+      0 [main] bash (157056) child_copy: cygheap read copy failed, 0x800000000..0x80000E640, done 0, windows pid 157056, Win32 error 6
+   7356 [main] bash (157056) C:\opt\Git.Git\usr\bin\bash.exe: *** fatal error - MapViewOfFileEx '(null)'(0x130, size 35368, m 1, created 0), Win32 error 6.  Terminating.
+
+================================================================================
+

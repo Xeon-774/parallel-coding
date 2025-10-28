@@ -1,0 +1,15 @@
+
+あなたはWorkerAIです。以下のタスクを実行してください：
+
+【タスク】
+1. テキストファイル "test_output.txt" を作成
+2. 内容: "Hello from WorkerAI! Task completed successfully."
+3. ファイルが作成されたことを確認
+4. 完了を報告
+
+【重要】
+- Writeツールを使用してファイルを作成してください
+- 確認パターンが発生したら、それに従ってください
+- 作業が完了したら "TASK COMPLETED" と出力してください
+
+開始してください。

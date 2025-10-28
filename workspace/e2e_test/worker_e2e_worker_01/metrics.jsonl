@@ -1,0 +1,9 @@
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T06:47:24.966088Z", "worker_id": "worker_e2e_worker_01", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T06:47:36.693923Z", "worker_id": "worker_e2e_worker_01", "event": "failed", "duration_seconds": 11.727838039398193}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T08:47:16.521474Z", "worker_id": "worker_e2e_worker_01", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T08:47:34.682388Z", "worker_id": "worker_e2e_worker_01", "event": "failed", "duration_seconds": 18.16092348098755}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T14:28:09.240105Z", "worker_id": "worker_e2e_worker_01", "event": "spawned", "duration_seconds": null}
+{"type": "confirmation", "timestamp": "2025-10-24T14:28:27.481178Z", "worker_id": "worker_e2e_worker_01", "confirmation_number": 1, "orchestrator_latency_ms": 6469.76637840271, "response": "approved"}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T14:28:27.583321Z", "worker_id": "worker_e2e_worker_01", "event": "failed", "duration_seconds": 18.34322452545166}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T14:28:47.169575Z", "worker_id": "worker_e2e_worker_01", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T14:29:05.470116Z", "worker_id": "worker_e2e_worker_01", "event": "failed", "duration_seconds": 18.300551176071167}

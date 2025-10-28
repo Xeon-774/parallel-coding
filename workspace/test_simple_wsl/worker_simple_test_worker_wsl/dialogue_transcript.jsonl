@@ -1,0 +1,10 @@
+{"timestamp": 1761317187.3704245, "direction": "worker→orchestrator", "content": "\r\n\r\n\r\n\r\n\r\n\r\n", "type": "output"}
+{"timestamp": 1761317190.3770978, "direction": "worker→orchestrator", "content": "\r\n\r\n\r\n\r\n\r\n\r\n", "type": "output"}
+{"timestamp": 1761317193.3953674, "direction": "worker→orchestrator", "content": "\r\n\r\n\r\n\r\n\r\n\r\n", "type": "output"}
+{"timestamp": 1761317196.404856, "direction": "worker→orchestrator", "content": "\r\n\r\n\r\n\r\n\r\n\r\n", "type": "output"}
+{"timestamp": 1761317199.422037, "direction": "worker→orchestrator", "content": "\r\n\r\n\r\n\r\n\r\n\r\n", "type": "output"}
+{"timestamp": 1761317202.4382637, "direction": "worker→orchestrator", "content": "\r\n\r\n\r\n\r\n\r\n\r\n", "type": "output"}
+{"timestamp": 1761317205.453276, "direction": "worker→orchestrator", "content": "\r\n\r\n\r\n\r\n\r\n\r\n", "type": "output"}
+{"timestamp": 1761317208.4643178, "direction": "worker→orchestrator", "content": "\r\n\r\n\r\n\r\n\r\n\r\n", "type": "output"}
+{"timestamp": 1761317211.4783003, "direction": "worker→orchestrator", "content": "\r\n\r\n\r\n\r\n\r\n\r\n", "type": "output"}
+{"timestamp": 1761317212.939622, "direction": "worker→orchestrator", "content": "\r\n\r\n\r\n\r\n\r\n\r\n## テスト完了！\r\nすべてのタスクが正常に実行されました：\r\n1. ✅ **\"Hello from WorkerAI (WSL)!\"** - 出力完了2. ✅ **計算結果**: 123 + 456 = **579**3. ✅ **\"Test completed!\"** - 出力完了\r\n\r\nWorkerAI (WSL環境) は正常に動作しています！\r\n", "type": "output"}

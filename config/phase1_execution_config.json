@@ -1,0 +1,158 @@
+{
+  "execution_name": "Phase 1: 8-Parallel Validation",
+  "project_path": "D:\\user\\ai_coding\\AI_Investor\\tools\\parallel-coding\\workspace\\phase1_test_project",
+  "execution_mode": "wsl",
+  "wsl_distribution": "Ubuntu-24.04",
+  "max_parallel_workers": 8,
+  "git_strategy": "worktree",
+  "auto_merge": true,
+  "merge_strategy": "sequential",
+  "workers": [
+    {
+      "worker_id": "worker_01_post_list_ui",
+      "module_name": "Blog Post List UI",
+      "task_file": "docs/task_module_01.md",
+      "priority": 1,
+      "estimated_duration_minutes": 20,
+      "dependencies": [],
+      "git_branch": "feature/post-list-ui",
+      "target_files": [
+        "src/components/PostList.tsx",
+        "src/components/PostList.test.tsx",
+        "src/types/Post.ts"
+      ]
+    },
+    {
+      "worker_id": "worker_02_auth_ui",
+      "module_name": "User Authentication UI",
+      "task_file": "docs/task_module_02.md",
+      "priority": 1,
+      "estimated_duration_minutes": 20,
+      "dependencies": [],
+      "git_branch": "feature/auth-ui",
+      "target_files": [
+        "src/components/LoginForm.tsx",
+        "src/components/SignupForm.tsx",
+        "src/components/AuthForm.test.tsx",
+        "src/types/AuthForm.ts"
+      ]
+    },
+    {
+      "worker_id": "worker_03_post_api",
+      "module_name": "Blog Post REST API",
+      "task_file": "docs/task_module_03.md",
+      "priority": 1,
+      "estimated_duration_minutes": 25,
+      "dependencies": [],
+      "git_branch": "feature/post-api",
+      "target_files": [
+        "src/api/routes/posts.ts",
+        "src/api/controllers/postController.ts",
+        "src/api/middleware/validation.ts",
+        "src/api/routes/posts.test.ts"
+      ]
+    },
+    {
+      "worker_id": "worker_04_auth_api",
+      "module_name": "User Authentication API",
+      "task_file": "docs/task_module_04.md",
+      "priority": 1,
+      "estimated_duration_minutes": 25,
+      "dependencies": [],
+      "git_branch": "feature/auth-api",
+      "target_files": [
+        "src/api/routes/auth.ts",
+        "src/api/controllers/authController.ts",
+        "src/api/middleware/authMiddleware.ts",
+        "src/api/routes/auth.test.ts"
+      ]
+    },
+    {
+      "worker_id": "worker_05_comment_api",
+      "module_name": "Comment System API",
+      "task_file": "docs/task_module_05.md",
+      "priority": 2,
+      "estimated_duration_minutes": 20,
+      "dependencies": ["worker_03_post_api"],
+      "git_branch": "feature/comment-api",
+      "target_files": [
+        "src/api/routes/comments.ts",
+        "src/api/controllers/commentController.ts",
+        "src/api/routes/comments.test.ts"
+      ]
+    },
+    {
+      "worker_id": "worker_06_database_schema",
+      "module_name": "Database Schema (Prisma)",
+      "task_file": "docs/task_module_06.md",
+      "priority": 1,
+      "estimated_duration_minutes": 20,
+      "dependencies": [],
+      "git_branch": "feature/database-schema",
+      "target_files": [
+        "prisma/schema.prisma",
+        "prisma/migrations/001_initial_schema.sql",
+        "docs/DATABASE_DESIGN.md"
+      ]
+    },
+    {
+      "worker_id": "worker_07_data_access",
+      "module_name": "Data Access Layer",
+      "task_file": "docs/task_module_07.md",
+      "priority": 2,
+      "estimated_duration_minutes": 25,
+      "dependencies": ["worker_06_database_schema"],
+      "git_branch": "feature/data-access",
+      "target_files": [
+        "src/repositories/interfaces/IRepository.ts",
+        "src/repositories/UserRepository.ts",
+        "src/repositories/PostRepository.ts",
+        "src/repositories/CommentRepository.ts",
+        "src/repositories/__tests__/repositories.test.ts"
+      ]
+    },
+    {
+      "worker_id": "worker_08_cicd",
+      "module_name": "CI/CD Pipeline",
+      "task_file": "docs/task_module_08.md",
+      "priority": 1,
+      "estimated_duration_minutes": 20,
+      "dependencies": [],
+      "git_branch": "feature/cicd",
+      "target_files": [
+        ".github/workflows/ci.yml",
+        ".github/workflows/deploy.yml",
+        "Dockerfile",
+        "docker-compose.yml",
+        "docs/DEPLOYMENT.md"
+      ]
+    }
+  ],
+  "merge_order": [
+    "worker_01_post_list_ui",
+    "worker_02_auth_ui",
+    "worker_06_database_schema",
+    "worker_07_data_access",
+    "worker_03_post_api",
+    "worker_04_auth_api",
+    "worker_05_comment_api",
+    "worker_08_cicd"
+  ],
+  "validation": {
+    "run_tests_after_merge": true,
+    "require_all_tests_pass": false,
+    "generate_report": true,
+    "report_path": "workspace/phase1_validation_report.md"
+  },
+  "timeouts": {
+    "worker_spawn_timeout_seconds": 60,
+    "worker_execution_timeout_seconds": 1800,
+    "merge_timeout_seconds": 300
+  },
+  "logging": {
+    "log_level": "INFO",
+    "log_dir": "workspace/phase1_logs",
+    "enable_structured_logging": true,
+    "capture_worker_output": true
+  }
+}

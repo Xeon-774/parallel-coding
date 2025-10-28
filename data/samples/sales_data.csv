@@ -1,0 +1,64 @@
+date,product_id,product_name,category,region,quantity,unit_price,total_sales,customer_id,payment_method
+2024-01-01,P001,Laptop Pro 15,Electronics,North America,5,1299.99,6499.95,C1001,Credit Card
+2024-01-01,P002,Wireless Mouse,Accessories,Europe,12,29.99,359.88,C1002,PayPal
+2024-01-01,P003,USB-C Cable,Accessories,Asia,25,15.99,399.75,C1003,Credit Card
+2024-01-02,P004,Mechanical Keyboard,Accessories,North America,8,89.99,719.92,C1004,Debit Card
+2024-01-02,P001,Laptop Pro 15,Electronics,Europe,3,1299.99,3899.97,C1005,Credit Card
+2024-01-03,P005,External SSD 1TB,Storage,Asia,15,149.99,2249.85,C1006,PayPal
+2024-01-03,P006,Webcam HD,Electronics,North America,10,79.99,799.90,C1007,Credit Card
+2024-01-04,P007,Monitor 27inch,Electronics,Europe,6,349.99,2099.94,C1008,Credit Card
+2024-01-04,P002,Wireless Mouse,Accessories,Asia,20,29.99,599.80,C1009,Cash
+2024-01-05,P008,Desk Lamp LED,Office,North America,14,45.99,643.86,C1010,Debit Card
+2024-01-05,P009,Ergonomic Chair,Office,Europe,4,299.99,1199.96,C1011,Credit Card
+2024-01-06,P010,Standing Desk,Office,Asia,7,499.99,3499.93,C1012,PayPal
+2024-01-06,P001,Laptop Pro 15,Electronics,North America,9,1299.99,11699.91,C1013,Credit Card
+2024-01-07,P003,USB-C Cable,Accessories,Europe,30,15.99,479.70,C1014,Debit Card
+2024-01-07,P004,Mechanical Keyboard,Accessories,Asia,11,89.99,989.89,C1015,Credit Card
+2024-01-08,P005,External SSD 1TB,Storage,North America,18,149.99,2699.82,C1016,PayPal
+2024-01-08,P011,Laptop Bag,Accessories,Europe,22,39.99,879.78,C1017,Credit Card
+2024-01-09,P012,Noise Cancelling Headphones,Electronics,Asia,13,199.99,2599.87,C1018,Credit Card
+2024-01-09,P006,Webcam HD,Electronics,North America,8,79.99,639.92,C1019,Debit Card
+2024-01-10,P007,Monitor 27inch,Electronics,Europe,5,349.99,1749.95,C1020,PayPal
+2024-01-10,P013,Graphics Tablet,Electronics,Asia,6,249.99,1499.94,C1021,Credit Card
+2024-01-11,P014,Portable Charger,Accessories,North America,28,34.99,979.72,C1022,Cash
+2024-01-11,P015,Smart Watch,Electronics,Europe,10,299.99,2999.90,C1023,Credit Card
+2024-01-12,P008,Desk Lamp LED,Office,Asia,16,45.99,735.84,C1024,Debit Card
+2024-01-12,P009,Ergonomic Chair,Office,North America,3,299.99,899.97,C1025,Credit Card
+2024-01-13,P010,Standing Desk,Office,Europe,5,499.99,2499.95,C1026,PayPal
+2024-01-13,P002,Wireless Mouse,Accessories,Asia,15,29.99,449.85,C1027,Credit Card
+2024-01-14,P001,Laptop Pro 15,Electronics,North America,7,1299.99,9099.93,C1028,Credit Card
+2024-01-14,P016,Docking Station,Accessories,Europe,9,149.99,1349.91,C1029,Debit Card
+2024-01-15,P017,Bluetooth Speaker,Electronics,Asia,19,79.99,1519.81,C1030,PayPal
+2024-01-15,P012,Noise Cancelling Headphones,Electronics,North America,11,199.99,2199.89,C1031,Credit Card
+2024-01-16,P018,Web Camera 4K,Electronics,Europe,8,129.99,1039.92,C1032,Credit Card
+2024-01-16,P003,USB-C Cable,Accessories,Asia,35,15.99,559.65,C1033,Cash
+2024-01-17,P019,Phone Mount,Accessories,North America,24,19.99,479.76,C1034,Debit Card
+2024-01-17,P005,External SSD 1TB,Storage,Europe,12,149.99,1799.88,C1035,Credit Card
+2024-01-18,P020,Laptop Cooling Pad,Accessories,Asia,17,29.99,509.83,C1036,PayPal
+2024-01-18,P007,Monitor 27inch,Electronics,North America,4,349.99,1399.96,C1037,Credit Card
+2024-01-19,P013,Graphics Tablet,Electronics,Europe,7,249.99,1749.93,C1038,Debit Card
+2024-01-19,P014,Portable Charger,Accessories,Asia,31,34.99,1084.69,C1039,Credit Card
+2024-01-20,P015,Smart Watch,Electronics,North America,12,299.99,3599.88,C1040,PayPal
+2024-01-20,P011,Laptop Bag,Accessories,Europe,18,39.99,719.82,C1041,Credit Card
+2024-01-21,P008,Desk Lamp LED,Office,Asia,20,45.99,919.80,C1042,Cash
+2024-01-21,P009,Ergonomic Chair,Office,North America,6,299.99,1799.94,C1043,Credit Card
+2024-01-22,P010,Standing Desk,Office,Europe,4,499.99,1999.96,C1044,Debit Card
+2024-01-22,P001,Laptop Pro 15,Electronics,Asia,8,1299.99,10399.92,C1045,PayPal
+2024-01-23,P016,Docking Station,Accessories,North America,11,149.99,1649.89,C1046,Credit Card
+2024-01-23,P017,Bluetooth Speaker,Electronics,Europe,14,79.99,1119.86,C1047,Credit Card
+2024-01-24,P018,Web Camera 4K,Electronics,Asia,9,129.99,1169.91,C1048,Debit Card
+2024-01-24,P002,Wireless Mouse,Accessories,North America,16,29.99,479.84,C1049,Cash
+2024-01-25,P012,Noise Cancelling Headphones,Electronics,Europe,9,199.99,1799.91,C1050,PayPal
+2024-01-25,P019,Phone Mount,Accessories,Asia,27,19.99,539.73,C1051,Credit Card
+2024-01-26,P020,Laptop Cooling Pad,Accessories,North America,21,29.99,629.79,C1052,Credit Card
+2024-01-26,P004,Mechanical Keyboard,Accessories,Europe,13,89.99,1169.87,C1053,Debit Card
+2024-01-27,P005,External SSD 1TB,Storage,Asia,16,149.99,2399.84,C1054,PayPal
+2024-01-27,P006,Webcam HD,Electronics,North America,12,79.99,959.88,C1055,Credit Card
+2024-01-28,P007,Monitor 27inch,Electronics,Europe,8,349.99,2799.92,C1056,Credit Card
+2024-01-28,P013,Graphics Tablet,Electronics,Asia,10,249.99,2499.90,C1057,Cash
+2024-01-29,P014,Portable Charger,Accessories,North America,33,34.99,1154.67,C1058,Debit Card
+2024-01-29,P015,Smart Watch,Electronics,Europe,11,299.99,3299.89,C1059,PayPal
+2024-01-30,P003,USB-C Cable,Accessories,Asia,40,15.99,639.60,C1060,Credit Card
+2024-01-30,P011,Laptop Bag,Accessories,North America,25,39.99,999.75,C1061,Credit Card
+2024-01-31,P008,Desk Lamp LED,Office,Europe,19,45.99,873.81,C1062,Debit Card
+2024-01-31,P009,Ergonomic Chair,Office,Asia,5,299.99,1499.95,C1063,PayPal

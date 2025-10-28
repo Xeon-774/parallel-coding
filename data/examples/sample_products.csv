@@ -1,0 +1,11 @@
+product,category,price,quantity,sales
+Laptop,Electronics,1200,5,6000
+Mouse,Electronics,25,50,1250
+Keyboard,Electronics,75,30,2250
+Desk,Furniture,300,10,3000
+Chair,Furniture,150,20,3000
+Monitor,Electronics,400,15,6000
+Lamp,Furniture,45,25,1125
+Notebook,Stationery,5,100,500
+Pen,Stationery,2,200,400
+Tablet,Electronics,600,8,4800

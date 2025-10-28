@@ -1,0 +1,10 @@
+Create a simple hello_world.py file that prints 'Hello from Worker 1!'.
+
+Requirements:
+1. Create hello_world.py in the workspace
+2. Add a main function
+3. Print the greeting message
+4. Add a docstring
+5. Ensure UTF-8 encoding
+
+Complete this task and confirm when done.

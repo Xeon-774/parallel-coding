@@ -1,0 +1,51 @@
+C:\Users\chemi\AppData\Local\Programs\Python\Python313\Lib\site-packages\wexpect\__init__.py:4: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+{"timestamp": "2025-10-22T02:18:45.106784Z", "level": "INFO", "category": "system", "message": "Enhanced Interactive Worker Manager initialized", "logger": "simple_test_wsl", "thread": "MainThread", "context": {"platform": "windows", "expect_module": "wexpect", "request_id": "501cde5f-d966-41cc-aabc-89928780c8ee"}}
+{"timestamp": "2025-10-22T02:18:45.107191Z", "level": "INFO", "category": "worker", "message": "Worker spawned: worker_simple_test_worker_wsl", "logger": "simple_test_wsl", "thread": "MainThread", "context": {"worker_id": "worker_simple_test_worker_wsl", "request_id": "501cde5f-d966-41cc-aabc-89928780c8ee"}, "extra": {"task_name": "Simple Test WSL"}}
+{"timestamp": "2025-10-22T02:18:49.175522Z", "level": "ERROR", "category": "system", "message": "Error in interactive session for worker_simple_test_worker_wsl: 'cp932' codec can't encode character '\\xb7' in position 27: illegal multibyte sequence", "logger": "simple_test_wsl", "thread": "MainThread", "context": {"request_id": "501cde5f-d966-41cc-aabc-89928780c8ee"}}
+Traceback (most recent call last):
+  File "D:\user\parallel_ai_test_project\tests\test_simple_worker_wsl.py", line 103, in test_worker
+    print(result.output[-500:])
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'cp932' codec can't encode character '\xb7' in position 34: illegal multibyte sequence
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\user\parallel_ai_test_project\tests\test_simple_worker_wsl.py", line 105, in test_worker
+    print(result.output[-500:].encode('utf-8', errors='replace').decode('utf-8'))
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'cp932' codec can't encode character '\xb7' in position 34: illegal multibyte sequence
+======================================================================
+WorkerAI起動テスト (WSL Mode)
+======================================================================
+
+[Test] WorkerAI起動中...
+[Test] Mode: WSL
+[Test] Distribution: Ubuntu-24.04
+[Test] Workspace: D:\user\parallel_ai_test_project\workspace\test_simple_wsl
+
+
+[SPAWN-ENHANCED] worker_simple_test_worker_wsl: Simple Test WSL
+  Platform: windows
+  Workspace: D:\user\parallel_ai_test_project\workspace\test_simple_wsl\worker_simple_test_worker_wsl
+  Command: wsl -d Ubuntu-24.04 bash -c "export PATH='/usr/bin:$PATH' && ~/.local/bin/claude --print < '/mnt/d/user/parallel_ai_test_project/workspace/test_simple_wsl/worker_simple_test_worker_wsl/task.txt'"
+  [OK] Worker spawned successfully
+
+
+[INTERACTIVE-SESSION] worker_simple_test_worker_wsl
+  Max iterations: 100
+  Monitoring for confirmations...
+
+
+======================================================================
+テスト結果
+======================================================================
+成功: False
+Worker ID: worker_simple_test_worker_wsl
+実行時間: 3.9秒
+
+出力（最後の500文字）:
+----------------------------------------------------------------------
+
+[ERROR] テスト失敗: 'cp932' codec can't encode character '\xb7' in position 34: illegal multibyte sequence

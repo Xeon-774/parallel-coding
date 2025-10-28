@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Orchestrator Dashboard v10.0</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="dashboard">
+        <!-- ヘッダー -->
+        <header class="header">
+            <div class="header-content">
+                <h1>🤖 Claude Orchestrator Dashboard</h1>
+                <div class="header-info">
+                    <span class="version">v10.0</span>
+                    <span id="connection-status" class="status-badge">⚪ 接続中...</span>
+                    <span id="last-update" class="timestamp">--:--:--</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- メインコンテンツ -->
+        <main class="main-content">
+            <!-- システム概要 -->
+            <section class="overview-section">
+                <div class="card">
+                    <h2>📊 システム状態</h2>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">ステータス</div>
+                            <div id="system-status" class="stat-value">idle</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">アクティブワーカー</div>
+                            <div id="workers-count" class="stat-value">0</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">ワークスペース</div>
+                            <div id="workspace-path" class="stat-value-small">./workspace</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">最終更新</div>
+                            <div id="last-check" class="stat-value-small">--:--:--</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ワーカー一覧 -->
+            <section class="workers-section">
+                <h2>⚙️ ワーカーAI</h2>
+                <div id="workers-container" class="workers-grid">
+                    <!-- ワーカーカードが動的に追加されます -->
+                    <div class="empty-state">
+                        <p>ワーカーが起動されるとここに表示されます</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ログビューアー -->
+            <section class="logs-section">
+                <div class="card">
+                    <div class="section-header">
+                        <h2>📝 ログストリーム</h2>
+                        <div class="controls">
+                            <button id="refresh-logs" class="btn btn-secondary">🔄 更新</button>
+                            <button id="clear-logs" class="btn btn-secondary">🗑️ クリア</button>
+                            <select id="log-filter" class="select">
+                                <option value="all">全て表示</option>
+                                <option value="info">INFO</option>
+                                <option value="warning">WARNING</option>
+                                <option value="error">ERROR</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="logs-container" class="logs-content">
+                        <div class="log-entry log-info">
+                            <span class="log-time">--:--:--</span>
+                            <span class="log-level">INFO</span>
+                            <span class="log-message">ダッシュボード起動中...</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- フッター -->
+        <footer class="footer">
+            <p>Claude Orchestrator v10.0 - リアルタイムAI並列実行ダッシュボード | Made with ❤️ by AI Parallel Coding Project</p>
+        </footer>
+    </div>
+
+    <!-- モーダル: ワーカー詳細 -->
+    <div id="worker-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">ワーカー詳細</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-section">
+                    <h4>タスク内容</h4>
+                    <pre id="modal-task" class="code-block"></pre>
+                </div>
+                <div class="detail-section">
+                    <h4>最近の出力</h4>
+                    <pre id="modal-output" class="code-block"></pre>
+                </div>
+                <div class="detail-section">
+                    <h4>スクリーンショット</h4>
+                    <div id="modal-screenshot" class="screenshot-container">
+                        <img id="modal-screenshot-img" src="" alt="Worker Screenshot">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

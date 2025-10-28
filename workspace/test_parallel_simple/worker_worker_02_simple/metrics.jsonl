@@ -1,0 +1,10 @@
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T03:44:54.535330Z", "worker_id": "worker_worker_02_simple", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T03:45:02.554049Z", "worker_id": "worker_worker_02_simple", "event": "failed", "duration_seconds": 8.018723249435425}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T06:00:39.336127Z", "worker_id": "worker_worker_02_simple", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T06:00:47.742264Z", "worker_id": "worker_worker_02_simple", "event": "failed", "duration_seconds": 8.40614104270935}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T06:02:22.465884Z", "worker_id": "worker_worker_02_simple", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T06:02:28.084398Z", "worker_id": "worker_worker_02_simple", "event": "failed", "duration_seconds": 5.6185173988342285}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T08:47:07.506699Z", "worker_id": "worker_worker_02_simple", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T08:47:16.195082Z", "worker_id": "worker_worker_02_simple", "event": "failed", "duration_seconds": 8.688384294509888}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T14:27:59.308366Z", "worker_id": "worker_worker_02_simple", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T14:28:07.842010Z", "worker_id": "worker_worker_02_simple", "event": "failed", "duration_seconds": 8.53364896774292}

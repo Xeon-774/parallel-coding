@@ -1,0 +1,9 @@
+
+あなたはWorkerAIのテストです。
+
+以下を実行してください:
+1. "Hello from WorkerAI!" と出力
+2. 簡単な計算: 123 + 456 = ?
+3. "Test completed!" と出力
+
+開始してください。

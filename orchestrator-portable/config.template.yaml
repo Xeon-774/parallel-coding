@@ -1,0 +1,149 @@
+# Claude Orchestrator - Configuration Template
+# Copy this to config.yaml and customize for your project
+
+# Orchestrator Settings
+orchestrator:
+  # Execution mode: "wsl" or "windows"
+  execution_mode: "wsl"
+
+  # Workspace root directory (relative to this file)
+  workspace_root: "./workspace"
+
+  # WSL workspace path (if using WSL mode)
+  wsl_workspace_root: "/mnt/d/user/parallel_ai_test_project/workspace"
+
+  # WSL distribution name
+  wsl_distribution: "Ubuntu"
+
+# Worker Configuration
+workers:
+  # Maximum number of parallel workers
+  max_workers: 5
+
+  # Default timeout per worker (seconds)
+  default_timeout: 300
+
+  # Maximum retries for failed workers
+  max_retries: 2
+
+  # Claude CLI command (full path or just "claude" if in PATH)
+  claude_command: "claude"
+
+  # Path to NVM node installation (for WSL mode)
+  nvm_path: "/home/chemi/.nvm/versions/node/v22.20.0/bin"
+
+  # Windows Claude path (for Windows mode)
+  windows_claude_path: "claude"
+
+  # Git bash path (auto-detected if not specified)
+  git_bash_path: null
+
+# Recursive Orchestration
+recursion:
+  # Enable recursive orchestration
+  enable: true
+
+  # Maximum recursion depth (0 = no recursion)
+  max_depth: 3
+
+  # Orchestrator API URL for recursive calls
+  api_url: "http://localhost:8000"
+
+# API Server Configuration
+api:
+  # Host to bind to
+  host: "0.0.0.0"
+
+  # Port to listen on
+  port: 8000
+
+  # API key for authentication (change this!)
+  api_key: "dev-key-12345"
+
+  # Enable CORS
+  enable_cors: true
+
+  # Allowed origins (for CORS)
+  allowed_origins:
+    - "http://localhost:3000"
+    - "http://localhost:8080"
+
+# Logging Configuration
+logging:
+  # Log level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  level: "INFO"
+
+  # Enable structured JSON logging
+  enable_structured: true
+
+  # Log directory
+  log_dir: "./logs"
+
+  # Enable console logging
+  enable_console: true
+
+  # Enable file logging
+  enable_file: true
+
+# AI Analysis Configuration
+ai_analysis:
+  # Enable AI-based task analysis
+  enable: true
+
+  # Task complexity threshold for recursion
+  complexity_threshold: "high"
+
+  # AI safety judge for operation approval
+  enable_safety_judge: true
+
+# Visualization Configuration
+visualization:
+  # Enable visible worker windows
+  enable_visible_workers: false
+
+  # Auto-close windows after completion
+  auto_close_windows: true
+
+  # Window close delay (seconds)
+  window_close_delay: 3
+
+# Performance Configuration
+performance:
+  # Enable performance monitoring
+  enable_monitoring: true
+
+  # Metrics collection interval (seconds)
+  metrics_interval: 5
+
+  # Enable resource monitoring
+  enable_resource_monitoring: true
+
+# Project-Specific Settings (customize for your project)
+project:
+  # Project name
+  name: "My AI Project"
+
+  # Project root directory
+  root: "."
+
+  # Git repository URL (optional)
+  repository: ""
+
+  # Additional context for AI workers
+  context: |
+    This is a project using Claude Orchestrator for parallel AI development.
+    Workers should follow the project's coding standards and architecture.
+
+# Advanced Settings
+advanced:
+  # Enable worktree-based isolation
+  enable_worktree: false
+
+  # Enable real-time stream monitoring
+  enable_stream_monitoring: true
+
+  # Job cleanup after N days
+  job_retention_days: 7
+
+  # Maximum concurrent jobs
+  max_concurrent_jobs: 3

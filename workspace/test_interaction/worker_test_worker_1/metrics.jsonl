@@ -1,0 +1,17 @@
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T02:55:48.917721Z", "worker_id": "worker_test_worker_1", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T03:21:10.634776Z", "worker_id": "worker_test_worker_1", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T03:23:16.113037Z", "worker_id": "worker_test_worker_1", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T03:23:42.610775Z", "worker_id": "worker_test_worker_1", "event": "completed", "duration_seconds": 26.49774169921875}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T03:24:48.080671Z", "worker_id": "worker_test_worker_1", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T03:34:50.765028Z", "worker_id": "worker_test_worker_1", "event": "failed", "duration_seconds": 602.6843588352203}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T05:40:33.113501Z", "worker_id": "worker_test_worker_1", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T05:42:16.589234Z", "worker_id": "worker_test_worker_1", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T05:50:35.756668Z", "worker_id": "worker_test_worker_1", "event": "failed", "duration_seconds": 602.6431670188904}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T05:52:19.175634Z", "worker_id": "worker_test_worker_1", "event": "failed", "duration_seconds": 602.5863964557648}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T08:17:58.210735Z", "worker_id": "worker_test_worker_1", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T08:27:01.623540Z", "worker_id": "worker_test_worker_1", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T08:37:04.163412Z", "worker_id": "worker_test_worker_1", "event": "failed", "duration_seconds": 602.5398709774017}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T10:57:35.470745Z", "worker_id": "worker_test_worker_1", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T14:07:53.325858Z", "worker_id": "worker_test_worker_1", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-24T14:17:55.780513Z", "worker_id": "worker_test_worker_1", "event": "failed", "duration_seconds": 602.4546558856964}
+{"type": "worker_lifecycle", "timestamp": "2025-10-27T11:21:13.299425Z", "worker_id": "worker_test_worker_1", "event": "spawned", "duration_seconds": null}

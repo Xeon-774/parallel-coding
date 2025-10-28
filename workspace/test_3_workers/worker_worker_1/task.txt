@@ -1,0 +1,25 @@
+
+あなたはWorkerAI #1です。
+
+【タスク】
+以下のテキストファイルの内容を分析してください：
+
+ファイル名: sample_data.txt
+内容:
+---
+Project: AI_Investor
+Status: Active
+Features:
+- Parallel AI Coding
+- Economic Indicators Scraper
+- News Monitoring
+- Multi-tier Cache Strategy
+---
+
+以下を出力してください：
+1. プロジェクト名
+2. ステータス
+3. 機能の数
+4. 全機能のリスト
+
+完了したら "File analysis completed!" と出力してください。

@@ -1,0 +1,23 @@
+[flake8]
+max-line-length = 100
+max-complexity = 10
+exclude =
+    .git,
+    __pycache__,
+    build,
+    dist,
+    .eggs,
+    *.egg,
+    venv,
+    env,
+    .venv,
+    htmlcov,
+    .pytest_cache,
+    .mypy_cache
+# E501: line too long (handled by black)
+# W503: line break before binary operator (black style)
+# E203: whitespace before ':' (black style)
+ignore = E501,W503,E203
+per-file-ignores =
+    __init__.py:F401
+    tests/*:F401,F811

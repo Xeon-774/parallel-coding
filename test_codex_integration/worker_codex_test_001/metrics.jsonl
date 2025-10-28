@@ -1,0 +1,3 @@
+{"type": "worker_lifecycle", "timestamp": "2025-10-27T12:04:10.782289Z", "worker_id": "worker_codex_test_001", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-27T12:08:03.280170Z", "worker_id": "worker_codex_test_001", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-27T13:21:23.437564Z", "worker_id": "worker_codex_test_001", "event": "spawned", "duration_seconds": null}

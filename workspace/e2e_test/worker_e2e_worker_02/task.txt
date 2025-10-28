@@ -1,0 +1,10 @@
+Create a simple calculator.py file with basic arithmetic operations.
+
+Requirements:
+1. Create calculator.py in the workspace
+2. Implement add, subtract, multiply, divide functions
+3. Add docstrings to all functions
+4. Add basic error handling (division by zero)
+5. Ensure UTF-8 encoding
+
+Complete this task and confirm when done.

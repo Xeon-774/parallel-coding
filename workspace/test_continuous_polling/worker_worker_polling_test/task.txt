@@ -1,0 +1,10 @@
+
+You are testing the continuous output polling feature.
+
+Please perform these actions:
+
+1. Print "Starting rapid output test"
+2. Print numbers 1 through 10, each on a separate line
+3. Print "Test complete"
+
+Start now. DO NOT ask for confirmation - just execute the task.

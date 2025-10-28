@@ -1,0 +1,249 @@
+{
+  "company": "TechCorp International",
+  "reporting_period": "2024-Q1",
+  "total_employees": 50,
+  "departments": [
+    "Engineering",
+    "Sales",
+    "Marketing",
+    "HR",
+    "Finance",
+    "Operations"
+  ],
+  "employees": [
+    {
+      "employee_id": "EMP001",
+      "name": "Alice Johnson",
+      "department": "Engineering",
+      "position": "Senior Software Engineer",
+      "hire_date": "2020-03-15",
+      "salary_usd": 125000,
+      "performance_rating": 4.8,
+      "projects_completed": 12,
+      "skills": ["Python", "JavaScript", "AWS", "Docker"]
+    },
+    {
+      "employee_id": "EMP002",
+      "name": "Bob Smith",
+      "department": "Engineering",
+      "position": "DevOps Engineer",
+      "hire_date": "2021-06-01",
+      "salary_usd": 110000,
+      "performance_rating": 4.5,
+      "projects_completed": 8,
+      "skills": ["Kubernetes", "Terraform", "CI/CD", "Linux"]
+    },
+    {
+      "employee_id": "EMP003",
+      "name": "Carol White",
+      "department": "Sales",
+      "position": "Sales Manager",
+      "hire_date": "2019-01-10",
+      "salary_usd": 95000,
+      "performance_rating": 4.9,
+      "projects_completed": 25,
+      "skills": ["B2B Sales", "CRM", "Negotiation", "Leadership"]
+    },
+    {
+      "employee_id": "EMP004",
+      "name": "David Brown",
+      "department": "Marketing",
+      "position": "Marketing Specialist",
+      "hire_date": "2022-02-20",
+      "salary_usd": 72000,
+      "performance_rating": 4.2,
+      "projects_completed": 15,
+      "skills": ["SEO", "Content Marketing", "Analytics", "Social Media"]
+    },
+    {
+      "employee_id": "EMP005",
+      "name": "Emma Davis",
+      "department": "Engineering",
+      "position": "Frontend Developer",
+      "hire_date": "2021-09-05",
+      "salary_usd": 95000,
+      "performance_rating": 4.6,
+      "projects_completed": 10,
+      "skills": ["React", "TypeScript", "CSS", "UI/UX"]
+    },
+    {
+      "employee_id": "EMP006",
+      "name": "Frank Miller",
+      "department": "Finance",
+      "position": "Financial Analyst",
+      "hire_date": "2020-11-12",
+      "salary_usd": 85000,
+      "performance_rating": 4.4,
+      "projects_completed": 18,
+      "skills": ["Excel", "Financial Modeling", "SQL", "Reporting"]
+    },
+    {
+      "employee_id": "EMP007",
+      "name": "Grace Lee",
+      "department": "HR",
+      "position": "HR Manager",
+      "hire_date": "2018-07-08",
+      "salary_usd": 88000,
+      "performance_rating": 4.7,
+      "projects_completed": 22,
+      "skills": ["Recruitment", "Employee Relations", "Compliance", "Training"]
+    },
+    {
+      "employee_id": "EMP008",
+      "name": "Henry Wilson",
+      "department": "Engineering",
+      "position": "Backend Developer",
+      "hire_date": "2022-04-18",
+      "salary_usd": 105000,
+      "performance_rating": 4.3,
+      "projects_completed": 7,
+      "skills": ["Node.js", "PostgreSQL", "MongoDB", "API Design"]
+    },
+    {
+      "employee_id": "EMP009",
+      "name": "Iris Martinez",
+      "department": "Sales",
+      "position": "Account Executive",
+      "hire_date": "2021-10-03",
+      "salary_usd": 78000,
+      "performance_rating": 4.5,
+      "projects_completed": 19,
+      "skills": ["Sales", "Customer Success", "Presentation", "CRM"]
+    },
+    {
+      "employee_id": "EMP010",
+      "name": "Jack Anderson",
+      "department": "Operations",
+      "position": "Operations Manager",
+      "hire_date": "2019-05-25",
+      "salary_usd": 92000,
+      "performance_rating": 4.6,
+      "projects_completed": 20,
+      "skills": ["Process Optimization", "Project Management", "Logistics", "Analytics"]
+    },
+    {
+      "employee_id": "EMP011",
+      "name": "Karen Taylor",
+      "department": "Engineering",
+      "position": "Data Scientist",
+      "hire_date": "2020-08-14",
+      "salary_usd": 118000,
+      "performance_rating": 4.9,
+      "projects_completed": 14,
+      "skills": ["Python", "Machine Learning", "Statistics", "TensorFlow"]
+    },
+    {
+      "employee_id": "EMP012",
+      "name": "Leo Thomas",
+      "department": "Marketing",
+      "position": "Content Writer",
+      "hire_date": "2023-01-09",
+      "salary_usd": 58000,
+      "performance_rating": 4.1,
+      "projects_completed": 11,
+      "skills": ["Writing", "SEO", "Research", "Editing"]
+    },
+    {
+      "employee_id": "EMP013",
+      "name": "Maria Garcia",
+      "department": "Engineering",
+      "position": "QA Engineer",
+      "hire_date": "2021-03-22",
+      "salary_usd": 82000,
+      "performance_rating": 4.4,
+      "projects_completed": 16,
+      "skills": ["Test Automation", "Selenium", "Jest", "API Testing"]
+    },
+    {
+      "employee_id": "EMP014",
+      "name": "Nathan Harris",
+      "department": "Sales",
+      "position": "Sales Representative",
+      "hire_date": "2022-07-11",
+      "salary_usd": 65000,
+      "performance_rating": 4.0,
+      "projects_completed": 13,
+      "skills": ["Cold Calling", "Lead Generation", "Product Demo", "CRM"]
+    },
+    {
+      "employee_id": "EMP015",
+      "name": "Olivia Clark",
+      "department": "Finance",
+      "position": "Accountant",
+      "hire_date": "2021-12-05",
+      "salary_usd": 72000,
+      "performance_rating": 4.3,
+      "projects_completed": 17,
+      "skills": ["Accounting", "QuickBooks", "Tax Preparation", "Auditing"]
+    },
+    {
+      "employee_id": "EMP016",
+      "name": "Peter Rodriguez",
+      "department": "Engineering",
+      "position": "Engineering Manager",
+      "hire_date": "2017-09-30",
+      "salary_usd": 145000,
+      "performance_rating": 4.8,
+      "projects_completed": 28,
+      "skills": ["Leadership", "Architecture", "Agile", "Mentoring"]
+    },
+    {
+      "employee_id": "EMP017",
+      "name": "Quinn Lewis",
+      "department": "Marketing",
+      "position": "Digital Marketing Manager",
+      "hire_date": "2020-04-17",
+      "salary_usd": 88000,
+      "performance_rating": 4.6,
+      "projects_completed": 21,
+      "skills": ["Google Ads", "Facebook Ads", "Analytics", "Email Marketing"]
+    },
+    {
+      "employee_id": "EMP018",
+      "name": "Rachel Walker",
+      "department": "HR",
+      "position": "Recruiter",
+      "hire_date": "2022-09-28",
+      "salary_usd": 64000,
+      "performance_rating": 4.2,
+      "projects_completed": 9,
+      "skills": ["Sourcing", "Interviewing", "LinkedIn", "ATS"]
+    },
+    {
+      "employee_id": "EMP019",
+      "name": "Samuel Hall",
+      "department": "Engineering",
+      "position": "Mobile Developer",
+      "hire_date": "2021-05-14",
+      "salary_usd": 102000,
+      "performance_rating": 4.5,
+      "projects_completed": 11,
+      "skills": ["React Native", "iOS", "Android", "Mobile UI"]
+    },
+    {
+      "employee_id": "EMP020",
+      "name": "Tina Allen",
+      "department": "Operations",
+      "position": "Project Coordinator",
+      "hire_date": "2023-02-06",
+      "salary_usd": 56000,
+      "performance_rating": 4.0,
+      "projects_completed": 8,
+      "skills": ["Coordination", "Scheduling", "Communication", "Documentation"]
+    }
+  ],
+  "summary_statistics": {
+    "avg_salary_usd": 88950,
+    "avg_performance_rating": 4.45,
+    "avg_projects_completed": 15.15,
+    "department_distribution": {
+      "Engineering": 8,
+      "Sales": 3,
+      "Marketing": 3,
+      "HR": 2,
+      "Finance": 2,
+      "Operations": 2
+    },
+    "avg_tenure_years": 2.8
+  }
+}

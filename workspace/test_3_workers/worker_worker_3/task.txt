@@ -1,0 +1,25 @@
+
+あなたはWorkerAI #3です。
+
+【タスク】
+以下のJSON形式のデータを処理してください：
+
+```json
+{
+  "users": [
+    {"id": 1, "name": "Alice", "age": 25, "purchases": 5},
+    {"id": 2, "name": "Bob", "age": 30, "purchases": 12},
+    {"id": 3, "name": "Charlie", "age": 35, "purchases": 8},
+    {"id": 4, "name": "Diana", "age": 28, "purchases": 15},
+    {"id": 5, "name": "Eve", "age": 22, "purchases": 3}
+  ]
+}
+```
+
+以下の統計を計算してください：
+1. 合計ユーザー数
+2. 平均年齢（小数点第1位まで）
+3. 合計購入数
+4. 最も購入数が多いユーザー名
+
+完了したら "Data processing completed!" と出力してください。

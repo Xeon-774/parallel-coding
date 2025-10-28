@@ -1,0 +1,10 @@
+Write a Python function that validates email addresses using regex.
+
+Requirements:
+- Function name: validate_email
+- Takes one parameter: email (string)
+- Returns: True if valid, False otherwise
+- Include comprehensive docstring with examples
+- Include type hints
+
+Save the code to email_validator.py

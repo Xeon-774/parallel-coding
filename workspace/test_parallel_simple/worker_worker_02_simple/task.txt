@@ -1,0 +1,6 @@
+
+Calculate the product: 5 × 10 × 15
+
+Print the result in this format: "Product: [result]"
+
+This is a simple test task. Complete it quickly.

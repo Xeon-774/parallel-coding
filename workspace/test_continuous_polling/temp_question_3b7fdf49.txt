@@ -1,0 +1,16 @@
+=== Context ===
+Worker: worker_polling_test
+Task: unknown
+
+=== Request ===
+Request Type: general
+
+Message: approve running the output test, or would you prefer to adjust your hooks settings to allow these basic output commands?
+
+Details:
+
+
+Should I approve or deny this request?
+
+=== Your Decision ===
+Respond with APPROVED: or DENIED:
