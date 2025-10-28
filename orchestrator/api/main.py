@@ -42,13 +42,102 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# OpenAPI tags metadata
+tags_metadata = [
+    {
+        "name": "supervisor",
+        "description": """
+        **Worker Supervision and Control**
+
+        Monitor and manage Claude Code worker instances. Control worker lifecycle,
+        retrieve real-time status, and access aggregate metrics.
+
+        **Endpoints:**
+        - List workers with filtering
+        - Get worker details
+        - Pause/resume/terminate workers
+        - Retrieve system metrics
+        """,
+    },
+    {
+        "name": "jobs",
+        "description": """
+        **Job Orchestration and Management**
+
+        Submit, monitor, and control hierarchical AI coding jobs. Track job lifecycle
+        from submission through completion with state machine validation.
+
+        **Job States:**
+        SUBMITTED → PENDING → RUNNING → COMPLETED/FAILED/CANCELED
+
+        **Features:**
+        - Job submission with hierarchy support
+        - Job status tracking
+        - Job cancellation
+        - Parent-child job relationships
+        """,
+    },
+    {
+        "name": "resources",
+        "description": """
+        **Hierarchical Resource Management**
+
+        Allocate and manage compute resources across hierarchy depth levels.
+        Enforce quotas and track resource usage for optimal job execution.
+
+        **Depth-Based Quotas:**
+        - Depth 0: Root jobs (highest quota)
+        - Depth 1-5: Nested jobs (decreasing quotas)
+
+        **Features:**
+        - Resource quota queries
+        - Resource allocation
+        - Resource release
+        - Usage monitoring
+        """,
+    },
+]
+
 # Create FastAPI app
 app = FastAPI(
     title="Parallel AI Coding Orchestrator API",
-    description="Real-time monitoring and control for AI parallel coding system",
-    version="1.0.0",
+    description="""
+## Week 2 MVP - Manager AI Integration API
+
+Enterprise-grade REST API for orchestrating and monitoring parallel AI coding workflows.
+
+### Key Features
+- **Supervisor API**: Monitor and control Claude Code worker instances
+- **Resource Management**: Hierarchical resource allocation with depth-based quotas
+- **Job Orchestration**: Manage job lifecycle with state machine validation
+- **Authentication**: JWT-based authentication with scope-based authorization
+
+### Architecture
+- **Database**: SQLite (development) / PostgreSQL (production)
+- **Authentication**: JWT Bearer tokens with scopes
+- **State Management**: Validated state machines for workers and jobs
+- **Testing**: 44 integration tests with 29% code coverage
+
+### Quick Start
+1. Generate test token: Use `/api/auth/token` endpoint
+2. Access protected endpoints with `Authorization: Bearer <token>` header
+3. Explore interactive docs at `/docs` or `/redoc`
+
+### Support
+- **GitHub**: [parallel-coding](https://github.com/your-org/parallel-coding)
+- **Documentation**: [Wiki](https://github.com/your-org/parallel-coding/wiki)
+""",
+    version="2.0.0-week2-mvp",
     docs_url="/docs",
     redoc_url="/redoc",
+    openapi_tags=tags_metadata,
+    contact={
+        "name": "Parallel AI Development Team",
+        "email": "dev@parallel-ai.example.com",
+    },
+    license_info={
+        "name": "MIT",
+    },
 )
 
 # Configure CORS for frontend development

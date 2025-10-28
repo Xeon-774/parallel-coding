@@ -1,0 +1,2155 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Parallel AI Coding Orchestrator API",
+    "description": "\n## Week 2 MVP - Manager AI Integration API\n\nEnterprise-grade REST API for orchestrating and monitoring parallel AI coding workflows.\n\n### Key Features\n- **Supervisor API**: Monitor and control Claude Code worker instances\n- **Resource Management**: Hierarchical resource allocation with depth-based quotas\n- **Job Orchestration**: Manage job lifecycle with state machine validation\n- **Authentication**: JWT-based authentication with scope-based authorization\n\n### Architecture\n- **Database**: SQLite (development) / PostgreSQL (production)\n- **Authentication**: JWT Bearer tokens with scopes\n- **State Management**: Validated state machines for workers and jobs\n- **Testing**: 44 integration tests with 29% code coverage\n\n### Quick Start\n1. Generate test token: Use `/api/auth/token` endpoint\n2. Access protected endpoints with `Authorization: Bearer <token>` header\n3. Explore interactive docs at `/docs` or `/redoc`\n\n### Support\n- **GitHub**: [parallel-coding](https://github.com/your-org/parallel-coding)\n- **Documentation**: [Wiki](https://github.com/your-org/parallel-coding/wiki)\n",
+    "contact": {
+      "name": "Parallel AI Development Team",
+      "email": "dev@parallel-ai.example.com"
+    },
+    "license": {
+      "name": "MIT"
+    },
+    "version": "2.0.0-week2-mvp"
+  },
+  "paths": {
+    "/api/v1/workers/{worker_id}/metrics": {
+      "get": {
+        "tags": [
+          "metrics"
+        ],
+        "summary": "Get Worker Metrics",
+        "description": "Get all metrics for a worker.\n\nReturns:\n    {\n        \"worker_id\": str,\n        \"metrics\": [...],\n        \"count\": int\n    }",
+        "operationId": "get_worker_metrics_api_v1_workers__worker_id__metrics_get",
+        "parameters": [
+          {
+            "name": "worker_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Worker Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get Worker Metrics Api V1 Workers  Worker Id  Metrics Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/workers/{worker_id}/metrics/summary": {
+      "get": {
+        "tags": [
+          "metrics"
+        ],
+        "summary": "Get Worker Metrics Summary",
+        "description": "Get aggregated metrics summary for a worker.\n\nReturns:\n    {\n        \"worker_id\": str,\n        \"total_metrics\": int,\n        \"confirmations\": {...},\n        \"output\": {...},\n        \"execution\": {...}\n    }",
+        "operationId": "get_worker_metrics_summary_api_v1_workers__worker_id__metrics_summary_get",
+        "parameters": [
+          {
+            "name": "worker_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Worker Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get Worker Metrics Summary Api V1 Workers  Worker Id  Metrics Summary Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/metrics/current": {
+      "get": {
+        "tags": [
+          "metrics"
+        ],
+        "summary": "Get Current Hybrid Metrics",
+        "description": "Get current hybrid engine metrics aggregated across all workers.\n\nThis endpoint is used by the MetricsDashboard component to display\nreal-time decision statistics.\n\nReturns:\n    {\n        \"total_decisions\": int,\n        \"rules_decisions\": int,\n        \"ai_decisions\": int,\n        \"template_fallbacks\": int,\n        \"average_latency_ms\": float,\n        \"rules_percentage\": float\n    }",
+        "operationId": "get_current_hybrid_metrics_api_v1_metrics_current_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Get Current Hybrid Metrics Api V1 Metrics Current Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/decisions/recent": {
+      "get": {
+        "tags": [
+          "metrics"
+        ],
+        "summary": "Get Recent Decisions",
+        "description": "Get recent decision events from all workers.\n\nThis endpoint returns the latest confirmation decisions sorted by timestamp\nfor display in the MetricsDashboard decision history table.\n\nArgs:\n    limit: Maximum number of decisions to return (default: 100)\n\nReturns:\n    List of decision events, each containing:\n    {\n        \"timestamp\": float,\n        \"worker_id\": str,\n        \"decision_type\": str,\n        \"decided_by\": str,\n        \"latency_ms\": float,\n        \"is_fallback\": bool,\n        \"confirmation_type\": str,\n        \"reasoning\": str\n    }",
+        "operationId": "get_recent_decisions_api_v1_decisions_recent_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  "title": "Response Get Recent Decisions Api V1 Decisions Recent Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/status/workers": {
+      "get": {
+        "tags": [
+          "worker-status"
+        ],
+        "summary": "List Worker Statuses",
+        "description": "Get status for all registered workers.",
+        "operationId": "list_worker_statuses_api_v1_status_workers_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/status/workers/{worker_id}": {
+      "get": {
+        "tags": [
+          "worker-status"
+        ],
+        "summary": "Get Worker Status",
+        "description": "Get detailed status for a specific worker.",
+        "operationId": "get_worker_status_api_v1_status_workers__worker_id__get",
+        "parameters": [
+          {
+            "name": "worker_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Worker Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/status/summary": {
+      "get": {
+        "tags": [
+          "worker-status"
+        ],
+        "summary": "Get Status Summary",
+        "description": "Get aggregated summary of all workers.",
+        "operationId": "get_status_summary_api_v1_status_summary_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/status/health": {
+      "get": {
+        "tags": [
+          "worker-status"
+        ],
+        "summary": "Status Api Health",
+        "description": "Health check for status API.",
+        "operationId": "status_api_health_api_v1_status_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/supervisor/spawn": {
+      "post": {
+        "tags": [
+          "supervisor"
+        ],
+        "summary": "Spawn Supervisor",
+        "description": "Spawn a new supervised Claude Code instance.\n\nValidates input paths and delegates to WorkerManager.",
+        "operationId": "spawn_supervisor_api_v1_supervisor_spawn_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SpawnSupervisorRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpawnSupervisorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/supervisor/{supervisor_id}": {
+      "get": {
+        "tags": [
+          "supervisor"
+        ],
+        "summary": "Get Supervisor",
+        "description": "Get status for a supervisor by id.",
+        "operationId": "get_supervisor_api_v1_supervisor__supervisor_id__get",
+        "parameters": [
+          {
+            "name": "supervisor_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Supervisor Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupervisorStatusResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "supervisor"
+        ],
+        "summary": "Delete Supervisor",
+        "description": "Terminate a supervisor and cleanup resources.",
+        "operationId": "delete_supervisor_api_v1_supervisor__supervisor_id__delete",
+        "parameters": [
+          {
+            "name": "supervisor_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Supervisor Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "boolean"
+                  },
+                  "title": "Response Delete Supervisor Api V1 Supervisor  Supervisor Id  Delete"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/supervisor/": {
+      "get": {
+        "tags": [
+          "supervisor"
+        ],
+        "summary": "List Supervisors",
+        "description": "List active supervisors with optional filtering and pagination.",
+        "operationId": "list_supervisors_api_v1_supervisor__get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "status_filter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "spawning",
+                    "running",
+                    "terminated",
+                    "error"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status Filter"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListSupervisorsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/supervisor/{supervisor_id}/respond": {
+      "post": {
+        "tags": [
+          "supervisor"
+        ],
+        "summary": "Respond To Confirmation",
+        "description": "Respond to a pending confirmation prompt.\n\nIn this reference implementation, responses are recorded and surfaced in\nstatus; integration with an actual TTY is left to the supervisor layer.",
+        "operationId": "respond_to_confirmation_api_v1_supervisor__supervisor_id__respond_post",
+        "parameters": [
+          {
+            "name": "supervisor_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Supervisor Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RespondToConfirmationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Respond To Confirmation Api V1 Supervisor  Supervisor Id  Respond Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/supervisor/{supervisor_id}/output": {
+      "get": {
+        "tags": [
+          "supervisor"
+        ],
+        "summary": "Get Output",
+        "description": "Retrieve buffered output lines with pagination and optional time range.",
+        "operationId": "get_output_api_v1_supervisor__supervisor_id__output_get",
+        "parameters": [
+          {
+            "name": "supervisor_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Supervisor Id"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "start_ts",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Start Ts"
+            }
+          },
+          {
+            "name": "end_ts",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0.0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "End Ts"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OutputResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/supervisor/workers": {
+      "get": {
+        "tags": [
+          "supervisor"
+        ],
+        "summary": "List all workers",
+        "description": "Retrieve a paginated list of workers with optional filtering.\n\n    **Filters:**\n    - `workspace_id`: Filter by workspace\n    - `status`: Filter by worker status (IDLE, RUNNING, PAUSED, COMPLETED, FAILED, TERMINATED)\n\n    **Pagination:**\n    - `limit`: Maximum number of results (1-100, default: 50)\n    - `offset`: Number of results to skip (default: 0)\n\n    **Required Scope:** `supervisor:read`\n\n    **Example Response:**\n    ```json\n    {\n      \"workers\": [\n        {\n          \"id\": \"worker-123\",\n          \"workspace_id\": \"ws-001\",\n          \"status\": \"RUNNING\",\n          \"created_at\": \"2025-10-28T10:00:00Z\",\n          \"updated_at\": \"2025-10-28T10:05:00Z\"\n        }\n      ],\n      \"total\": 1,\n      \"limit\": 50,\n      \"offset\": 0\n    }\n    ```",
+        "operationId": "list_workers_api_supervisor_workers_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by workspace ID",
+              "title": "Workspace Id"
+            },
+            "description": "Filter by workspace ID"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/WorkerStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by worker status",
+              "title": "Status"
+            },
+            "description": "Filter by worker status"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Maximum number of results",
+              "default": 50,
+              "title": "Limit"
+            },
+            "description": "Maximum number of results"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of results to skip",
+              "default": 0,
+              "title": "Offset"
+            },
+            "description": "Number of results to skip"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of workers matching the filter criteria",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkerListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/supervisor/workers/{worker_id}": {
+      "get": {
+        "tags": [
+          "supervisor"
+        ],
+        "summary": "Get Worker",
+        "description": "Get a single worker by id.",
+        "operationId": "get_worker_api_supervisor_workers__worker_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "worker_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Worker Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkerResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/supervisor/workers/{worker_id}/pause": {
+      "post": {
+        "tags": [
+          "supervisor"
+        ],
+        "summary": "Pause Worker",
+        "description": "Pause worker execution.",
+        "operationId": "pause_worker_api_supervisor_workers__worker_id__pause_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "worker_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Worker Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkerResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/supervisor/workers/{worker_id}/resume": {
+      "post": {
+        "tags": [
+          "supervisor"
+        ],
+        "summary": "Resume Worker",
+        "description": "Resume worker execution.",
+        "operationId": "resume_worker_api_supervisor_workers__worker_id__resume_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "worker_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Worker Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkerResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/supervisor/workers/{worker_id}/terminate": {
+      "post": {
+        "tags": [
+          "supervisor"
+        ],
+        "summary": "Terminate Worker",
+        "description": "Terminate a worker.",
+        "operationId": "terminate_worker_api_supervisor_workers__worker_id__terminate_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "worker_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Worker Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkerResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/supervisor/metrics": {
+      "get": {
+        "tags": [
+          "supervisor"
+        ],
+        "summary": "Get Metrics",
+        "description": "Return aggregate worker metrics (total and counts by status).",
+        "operationId": "get_metrics_api_supervisor_metrics_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MetricsResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/resources/quotas": {
+      "get": {
+        "tags": [
+          "resources"
+        ],
+        "summary": "Get resource quotas",
+        "description": "Retrieve resource quotas configured for each hierarchy depth level.\n\n    **Hierarchical Resource Model:**\n    - Depth 0 (root): Maximum workers available\n    - Depth 1-5: Decreasing quotas for nested jobs\n\n    **Default Configuration:**\n    ```\n    Depth 0: 10 workers\n    Depth 1: 8 workers\n    Depth 2: 5 workers\n    Depth 3: 3 workers\n    Depth 4: 2 workers\n    Depth 5: 1 worker\n    ```\n\n    **Required Scope:** `resources:read`\n\n    **Example Response:**\n    ```json\n    {\n      \"quotas\": [\n        {\"depth\": 0, \"max_workers\": 10},\n        {\"depth\": 1, \"max_workers\": 8},\n        {\"depth\": 2, \"max_workers\": 5}\n      ]\n    }\n    ```",
+        "operationId": "get_quotas_api_resources_quotas_get",
+        "responses": {
+          "200": {
+            "description": "Resource quotas by depth level",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuotasResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/resources/allocate": {
+      "post": {
+        "tags": [
+          "resources"
+        ],
+        "summary": "Allocate Resources",
+        "description": "Allocate resources for a job at a specific depth.",
+        "operationId": "allocate_resources_api_resources_allocate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AllocateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllocationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/resources/release": {
+      "post": {
+        "tags": [
+          "resources"
+        ],
+        "summary": "Release Resources",
+        "description": "Release any resources held by a job at a depth.",
+        "operationId": "release_resources_api_resources_release_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReleaseRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReleaseResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/resources/usage": {
+      "get": {
+        "tags": [
+          "resources"
+        ],
+        "summary": "Get Usage",
+        "description": "Get current resource usage by depth (allocated and available).",
+        "operationId": "get_usage_api_resources_usage_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsageResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/jobs/submit": {
+      "post": {
+        "tags": [
+          "jobs"
+        ],
+        "summary": "Submit a new job",
+        "description": "Create and submit a new job for hierarchical execution.\n\n    **Request Body:**\n    - `task_description`: Task to execute (required, 1-4096 chars)\n    - `worker_count`: Number of workers to allocate (1-1000)\n    - `depth`: Hierarchy depth level (0-1000, default: 0)\n    - `parent_job_id`: Parent job ID for hierarchical jobs (optional)\n\n    **Job Lifecycle:**\n    ```\n    SUBMITTED → PENDING → RUNNING → COMPLETED\n             → PENDING → RUNNING → FAILED\n             → PENDING → CANCELED\n    ```\n\n    **Required Scope:** `jobs:write`\n\n    **Example Request:**\n    ```json\n    {\n      \"task_description\": \"Implement user authentication\",\n      \"worker_count\": 3,\n      \"depth\": 0\n    }\n    ```\n\n    **Example Response:**\n    ```json\n    {\n      \"id\": \"j_a1b2c3d4e5f6\",\n      \"status\": \"PENDING\",\n      \"task_description\": \"Implement user authentication\",\n      \"worker_count\": 3,\n      \"depth\": 0,\n      \"parent_job_id\": null,\n      \"created_at\": \"2025-10-28T10:00:00Z\",\n      \"updated_at\": \"2025-10-28T10:00:01Z\"\n    }\n    ```",
+        "operationId": "submit_job_api_jobs_submit_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobSubmitRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created job with PENDING status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/jobs/{job_id}": {
+      "get": {
+        "tags": [
+          "jobs"
+        ],
+        "summary": "Get Job",
+        "description": "Return job details by identifier.",
+        "operationId": "get_job_api_jobs__job_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{job_id}/cancel": {
+      "post": {
+        "tags": [
+          "jobs"
+        ],
+        "summary": "Cancel Job",
+        "description": "Cancel a job using the state machine.\n\nReturns the updated job representation. If cancellation is not allowed\nfrom the current state, returns ``400``.",
+        "operationId": "cancel_job_api_jobs__job_id__cancel_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs": {
+      "get": {
+        "tags": [
+          "jobs"
+        ],
+        "summary": "List Jobs",
+        "description": "List jobs with optional filters and pagination.",
+        "operationId": "list_jobs_api_jobs_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "depth",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Depth"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/JobStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "name": "parent_job_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Parent Job Id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JobResponse"
+                  },
+                  "title": "Response List Jobs Api Jobs Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "Root",
+        "description": "API root endpoint.\n\nReturns:\n    Welcome message with API information",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health Check",
+        "description": "Health check endpoint.\n\nReturns:\n    Server status and workspace information",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/workers": {
+      "get": {
+        "summary": "List Workers",
+        "description": "List all available workers.\n\nReturns:\n    List of worker IDs with their workspace status",
+        "operationId": "list_workers_api_v1_workers_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/workers/{worker_id}": {
+      "get": {
+        "summary": "Get Worker Info",
+        "description": "Get information about a specific worker.\n\nArgs:\n    worker_id: Worker identifier (e.g., \"worker_001\")\n\nReturns:\n    Worker details including dialogue status\n\nRaises:\n    HTTPException: If worker not found",
+        "operationId": "get_worker_info_api_v1_workers__worker_id__get",
+        "parameters": [
+          {
+            "name": "worker_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Worker Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ecosystem/health": {
+      "get": {
+        "summary": "Get Ecosystem Health",
+        "description": "Get comprehensive health status for entire ecosystem",
+        "operationId": "get_ecosystem_health_api_v1_ecosystem_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ecosystem/metrics/summary": {
+      "get": {
+        "summary": "Get Ecosystem Metrics Summary",
+        "description": "Get aggregate performance metrics across all apps",
+        "operationId": "get_ecosystem_metrics_summary_api_v1_ecosystem_metrics_summary_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ecosystem/status": {
+      "get": {
+        "summary": "Get Ecosystem Status",
+        "description": "Get basic status of ecosystem API",
+        "operationId": "get_ecosystem_status_api_v1_ecosystem_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AllocateRequest": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Job Id"
+          },
+          "depth": {
+            "type": "integer",
+            "maximum": 10.0,
+            "minimum": 0.0,
+            "title": "Depth"
+          },
+          "worker_count": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Worker Count",
+            "description": "Requested number of workers"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "depth",
+          "worker_count"
+        ],
+        "title": "AllocateRequest"
+      },
+      "AllocationResponse": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "title": "Job Id"
+          },
+          "depth": {
+            "type": "integer",
+            "title": "Depth"
+          },
+          "requested": {
+            "type": "integer",
+            "title": "Requested"
+          },
+          "granted": {
+            "type": "integer",
+            "title": "Granted"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "depth",
+          "requested",
+          "granted"
+        ],
+        "title": "AllocationResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "JobResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "depth": {
+            "type": "integer",
+            "title": "Depth"
+          },
+          "worker_count": {
+            "type": "integer",
+            "title": "Worker Count"
+          },
+          "task_description": {
+            "type": "string",
+            "title": "Task Description"
+          },
+          "parent_job_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Job Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobStatus"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "depth",
+          "worker_count",
+          "task_description",
+          "parent_job_id",
+          "status",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "JobResponse",
+        "description": "Serialized representation of a Job."
+      },
+      "JobStatus": {
+        "type": "string",
+        "enum": [
+          "SUBMITTED",
+          "PENDING",
+          "RUNNING",
+          "COMPLETED",
+          "FAILED",
+          "CANCELED"
+        ],
+        "title": "JobStatus",
+        "description": "Job lifecycle status enumeration.\n\nStates:\n    SUBMITTED: Job received but not yet queued\n    PENDING: Job queued, waiting for resources\n    RUNNING: Job actively being processed\n    COMPLETED: Job finished successfully\n    FAILED: Job encountered fatal error\n    CANCELED: Job canceled by user"
+      },
+      "JobSubmitRequest": {
+        "properties": {
+          "task_description": {
+            "type": "string",
+            "maxLength": 4096,
+            "minLength": 1,
+            "title": "Task Description"
+          },
+          "worker_count": {
+            "type": "integer",
+            "maximum": 1000.0,
+            "minimum": 1.0,
+            "title": "Worker Count"
+          },
+          "depth": {
+            "type": "integer",
+            "maximum": 1000.0,
+            "minimum": 0.0,
+            "title": "Depth",
+            "default": 0
+          },
+          "parent_job_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Job Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "task_description",
+          "worker_count"
+        ],
+        "title": "JobSubmitRequest",
+        "description": "Request body for submitting a new job."
+      },
+      "ListSupervisorsResponse": {
+        "properties": {
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SupervisorStatusResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "items"
+        ],
+        "title": "ListSupervisorsResponse"
+      },
+      "MetricsResponse": {
+        "properties": {
+          "total_workers": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Total Workers"
+          },
+          "by_status": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "By Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_workers",
+          "by_status"
+        ],
+        "title": "MetricsResponse"
+      },
+      "OutputLine": {
+        "properties": {
+          "timestamp": {
+            "type": "number",
+            "title": "Timestamp"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content"
+          }
+        },
+        "type": "object",
+        "required": [
+          "timestamp",
+          "content"
+        ],
+        "title": "OutputLine"
+      },
+      "OutputResponse": {
+        "properties": {
+          "supervisor_id": {
+            "type": "string",
+            "title": "Supervisor Id"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/OutputLine"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "next_offset": {
+            "type": "integer",
+            "title": "Next Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "supervisor_id",
+          "items",
+          "next_offset"
+        ],
+        "title": "OutputResponse"
+      },
+      "QuotaItem": {
+        "properties": {
+          "depth": {
+            "type": "integer",
+            "maximum": 10.0,
+            "minimum": 0.0,
+            "title": "Depth"
+          },
+          "max_workers": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Max Workers"
+          }
+        },
+        "type": "object",
+        "required": [
+          "depth",
+          "max_workers"
+        ],
+        "title": "QuotaItem"
+      },
+      "QuotasResponse": {
+        "properties": {
+          "quotas": {
+            "items": {
+              "$ref": "#/components/schemas/QuotaItem"
+            },
+            "type": "array",
+            "title": "Quotas"
+          }
+        },
+        "type": "object",
+        "required": [
+          "quotas"
+        ],
+        "title": "QuotasResponse"
+      },
+      "ReleaseRequest": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Job Id"
+          },
+          "depth": {
+            "type": "integer",
+            "maximum": 10.0,
+            "minimum": 0.0,
+            "title": "Depth"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "depth"
+        ],
+        "title": "ReleaseRequest"
+      },
+      "ReleaseResponse": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "title": "Job Id"
+          },
+          "depth": {
+            "type": "integer",
+            "title": "Depth"
+          },
+          "released": {
+            "type": "boolean",
+            "title": "Released"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "depth",
+          "released"
+        ],
+        "title": "ReleaseResponse"
+      },
+      "RespondToConfirmationRequest": {
+        "properties": {
+          "decision": {
+            "type": "string",
+            "enum": [
+              "APPROVE",
+              "DENY",
+              "ESCALATE"
+            ],
+            "title": "Decision"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 500,
+            "title": "Reason",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "decision"
+        ],
+        "title": "RespondToConfirmationRequest",
+        "description": "Request validation for confirmation responses."
+      },
+      "SpawnSupervisorRequest": {
+        "properties": {
+          "task_file": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Task File"
+          },
+          "workspace_root": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Workspace Root"
+          },
+          "timeout": {
+            "type": "integer",
+            "maximum": 3600.0,
+            "minimum": 10.0,
+            "title": "Timeout",
+            "default": 300
+          }
+        },
+        "type": "object",
+        "required": [
+          "task_file",
+          "workspace_root"
+        ],
+        "title": "SpawnSupervisorRequest",
+        "description": "Request validation for spawning a supervisor process."
+      },
+      "SpawnSupervisorResponse": {
+        "properties": {
+          "supervisor_id": {
+            "type": "string",
+            "title": "Supervisor Id"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "spawning",
+              "running",
+              "terminated",
+              "error"
+            ],
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "supervisor_id",
+          "status"
+        ],
+        "title": "SpawnSupervisorResponse"
+      },
+      "SupervisorStatusResponse": {
+        "properties": {
+          "supervisor_id": {
+            "type": "string",
+            "title": "Supervisor Id"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "spawning",
+              "running",
+              "terminated",
+              "error"
+            ],
+            "title": "Status"
+          },
+          "alive": {
+            "type": "boolean",
+            "title": "Alive"
+          },
+          "last_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error"
+          },
+          "uptime_secs": {
+            "type": "number",
+            "title": "Uptime Secs",
+            "default": 0.0
+          },
+          "output_lines": {
+            "type": "integer",
+            "title": "Output Lines",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "supervisor_id",
+          "status",
+          "alive"
+        ],
+        "title": "SupervisorStatusResponse"
+      },
+      "UsageItem": {
+        "properties": {
+          "depth": {
+            "type": "integer",
+            "title": "Depth"
+          },
+          "allocated": {
+            "type": "integer",
+            "title": "Allocated"
+          },
+          "available": {
+            "type": "integer",
+            "title": "Available"
+          }
+        },
+        "type": "object",
+        "required": [
+          "depth",
+          "allocated",
+          "available"
+        ],
+        "title": "UsageItem"
+      },
+      "UsageResponse": {
+        "properties": {
+          "usage": {
+            "items": {
+              "$ref": "#/components/schemas/UsageItem"
+            },
+            "type": "array",
+            "title": "Usage"
+          }
+        },
+        "type": "object",
+        "required": [
+          "usage"
+        ],
+        "title": "UsageResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "WorkerListResponse": {
+        "properties": {
+          "workers": {
+            "items": {
+              "$ref": "#/components/schemas/WorkerResponse"
+            },
+            "type": "array",
+            "title": "Workers"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "workers",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "WorkerListResponse"
+      },
+      "WorkerResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "workspace_id": {
+            "type": "string",
+            "title": "Workspace Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "workspace_id",
+          "status",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "WorkerResponse",
+        "description": "Serializable worker representation for responses."
+      },
+      "WorkerStatus": {
+        "type": "string",
+        "enum": [
+          "IDLE",
+          "RUNNING",
+          "PAUSED",
+          "COMPLETED",
+          "FAILED",
+          "TERMINATED"
+        ],
+        "title": "WorkerStatus",
+        "description": "Worker lifecycle status enumeration.\n\nStates:\n    IDLE: Worker created but not yet started\n    RUNNING: Worker actively executing task\n    PAUSED: Worker temporarily suspended\n    COMPLETED: Worker finished successfully\n    FAILED: Worker encountered fatal error\n    TERMINATED: Worker manually terminated"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "supervisor",
+      "description": "\n        **Worker Supervision and Control**\n\n        Monitor and manage Claude Code worker instances. Control worker lifecycle,\n        retrieve real-time status, and access aggregate metrics.\n\n        **Endpoints:**\n        - List workers with filtering\n        - Get worker details\n        - Pause/resume/terminate workers\n        - Retrieve system metrics\n        "
+    },
+    {
+      "name": "jobs",
+      "description": "\n        **Job Orchestration and Management**\n\n        Submit, monitor, and control hierarchical AI coding jobs. Track job lifecycle\n        from submission through completion with state machine validation.\n\n        **Job States:**\n        SUBMITTED → PENDING → RUNNING → COMPLETED/FAILED/CANCELED\n\n        **Features:**\n        - Job submission with hierarchy support\n        - Job status tracking\n        - Job cancellation\n        - Parent-child job relationships\n        "
+    },
+    {
+      "name": "resources",
+      "description": "\n        **Hierarchical Resource Management**\n\n        Allocate and manage compute resources across hierarchy depth levels.\n        Enforce quotas and track resource usage for optimal job execution.\n\n        **Depth-Based Quotas:**\n        - Depth 0: Root jobs (highest quota)\n        - Depth 1-5: Nested jobs (decreasing quotas)\n\n        **Features:**\n        - Resource quota queries\n        - Resource allocation\n        - Resource release\n        - Usage monitoring\n        "
+    }
+  ]
+}

@@ -30,7 +30,54 @@ def _get_job_or_404(db: Session, job_id: str) -> Job:
     return job
 
 
-@router.post("/submit", response_model=JobResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/submit",
+    response_model=JobResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Submit a new job",
+    description="""
+    Create and submit a new job for hierarchical execution.
+
+    **Request Body:**
+    - `task_description`: Task to execute (required, 1-4096 chars)
+    - `worker_count`: Number of workers to allocate (1-1000)
+    - `depth`: Hierarchy depth level (0-1000, default: 0)
+    - `parent_job_id`: Parent job ID for hierarchical jobs (optional)
+
+    **Job Lifecycle:**
+    ```
+    SUBMITTED → PENDING → RUNNING → COMPLETED
+             → PENDING → RUNNING → FAILED
+             → PENDING → CANCELED
+    ```
+
+    **Required Scope:** `jobs:write`
+
+    **Example Request:**
+    ```json
+    {
+      "task_description": "Implement user authentication",
+      "worker_count": 3,
+      "depth": 0
+    }
+    ```
+
+    **Example Response:**
+    ```json
+    {
+      "id": "j_a1b2c3d4e5f6",
+      "status": "PENDING",
+      "task_description": "Implement user authentication",
+      "worker_count": 3,
+      "depth": 0,
+      "parent_job_id": null,
+      "created_at": "2025-10-28T10:00:00Z",
+      "updated_at": "2025-10-28T10:00:01Z"
+    }
+    ```
+    """,
+    response_description="Created job with PENDING status",
+)
 async def submit_job(
     request: JobSubmitRequest,
     db: Session = Depends(get_db),

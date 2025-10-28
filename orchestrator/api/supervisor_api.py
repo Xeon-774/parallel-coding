@@ -49,12 +49,48 @@ class MetricsResponse(BaseModel):
     by_status: dict[str, int]
 
 
-@router.get("/workers", response_model=WorkerListResponse)
+@router.get(
+    "/workers",
+    response_model=WorkerListResponse,
+    summary="List all workers",
+    description="""
+    Retrieve a paginated list of workers with optional filtering.
+
+    **Filters:**
+    - `workspace_id`: Filter by workspace
+    - `status`: Filter by worker status (IDLE, RUNNING, PAUSED, COMPLETED, FAILED, TERMINATED)
+
+    **Pagination:**
+    - `limit`: Maximum number of results (1-100, default: 50)
+    - `offset`: Number of results to skip (default: 0)
+
+    **Required Scope:** `supervisor:read`
+
+    **Example Response:**
+    ```json
+    {
+      "workers": [
+        {
+          "id": "worker-123",
+          "workspace_id": "ws-001",
+          "status": "RUNNING",
+          "created_at": "2025-10-28T10:00:00Z",
+          "updated_at": "2025-10-28T10:05:00Z"
+        }
+      ],
+      "total": 1,
+      "limit": 50,
+      "offset": 0
+    }
+    ```
+    """,
+    response_description="List of workers matching the filter criteria",
+)
 async def list_workers(
-    workspace_id: Optional[str] = Query(None),
-    status: Optional[WorkerStatus] = Query(None),
-    limit: int = Query(50, ge=1, le=100),
-    offset: int = Query(0, ge=0),
+    workspace_id: Optional[str] = Query(None, description="Filter by workspace ID"),
+    status: Optional[WorkerStatus] = Query(None, description="Filter by worker status"),
+    limit: int = Query(50, ge=1, le=100, description="Maximum number of results"),
+    offset: int = Query(0, ge=0, description="Number of results to skip"),
     db: Session = Depends(get_db),
     user: TokenData = Depends(_require_scope("supervisor:read")),
 ):

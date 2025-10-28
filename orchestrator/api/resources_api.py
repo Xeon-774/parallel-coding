@@ -41,7 +41,42 @@ class QuotasResponse(BaseModel):
     quotas: List[QuotaItem]
 
 
-@router.get("/quotas", response_model=QuotasResponse)
+@router.get(
+    "/quotas",
+    response_model=QuotasResponse,
+    summary="Get resource quotas",
+    description="""
+    Retrieve resource quotas configured for each hierarchy depth level.
+
+    **Hierarchical Resource Model:**
+    - Depth 0 (root): Maximum workers available
+    - Depth 1-5: Decreasing quotas for nested jobs
+
+    **Default Configuration:**
+    ```
+    Depth 0: 10 workers
+    Depth 1: 8 workers
+    Depth 2: 5 workers
+    Depth 3: 3 workers
+    Depth 4: 2 workers
+    Depth 5: 1 worker
+    ```
+
+    **Required Scope:** `resources:read`
+
+    **Example Response:**
+    ```json
+    {
+      "quotas": [
+        {"depth": 0, "max_workers": 10},
+        {"depth": 1, "max_workers": 8},
+        {"depth": 2, "max_workers": 5}
+      ]
+    }
+    ```
+    """,
+    response_description="Resource quotas by depth level",
+)
 async def get_quotas(
     rm: HierarchicalResourceManager = Depends(get_rm),
     user: TokenData = Depends(require_scope("resources:read")),
