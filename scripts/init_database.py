@@ -138,12 +138,14 @@ def _seed_development_data() -> None:
     session = SessionLocal()
     try:
         # Create a test worker and job only if they don't exist
-        if not session.query(Worker).filter_by(worker_id="test-worker-1").first():
-            session.add(Worker(worker_id="test-worker-1", status=WorkerStatus.IDLE))
-        if not session.query(Job).filter_by(job_id="test-job-1").first():
+        if not session.query(Worker).filter_by(id="test-worker-1").first():
+            session.add(Worker(id="test-worker-1", workspace_id="dev-workspace", status=WorkerStatus.IDLE))
+        if not session.query(Job).filter_by(id="test-job-1").first():
             session.add(
                 Job(
-                    job_id="test-job-1",
+                    id="test-job-1",
+                    depth=0,
+                    worker_count=1,
                     status=JobStatus.PENDING,
                     task_description="Test task for development",
                 )

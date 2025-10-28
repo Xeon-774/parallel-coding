@@ -71,3 +71,6 @@ Thumbs.db
 *.bak
 *.old
 nul
+*.db
+htmlcov/
+coverage.xml

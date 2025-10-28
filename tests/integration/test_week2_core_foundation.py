@@ -31,8 +31,11 @@ from orchestrator.core.db_models import (
     Worker,
     WorkerStatus,
 )
-from orchestrator.core.exceptions import StateTransitionError
-from orchestrator.core.state_machine import JobStateMachine, WorkerStateMachine
+from orchestrator.core.state_machine import (
+    JobStateMachine,
+    StateTransitionError,
+    WorkerStateMachine,
+)
 
 
 # ============================================================================
@@ -79,12 +82,7 @@ def sample_worker(test_db: Session) -> Worker:
 @pytest.fixture
 def sample_job(test_db: Session) -> Job:
     """Create sample job for testing."""
-    job = Job(
-        id="test-job-1",
-        task_file_path="/tmp/task.txt",
-        status=JobStatus.PENDING,
-        priority=5,
-    )
+    job = Job(id="test-job-1", depth=0, worker_count=1, task_description="Test task", status=JobStatus.PENDING)
     test_db.add(job)
     test_db.commit()
     test_db.refresh(job)
@@ -124,23 +122,32 @@ def test_worker_state_transitions_valid(
     test_db.refresh(sample_worker)
     assert sample_worker.status == WorkerStatus.RUNNING
 
-    # RUNNING → IDLE
+    # RUNNING → PAUSED
     worker_sm.transition_worker(
         worker_id=sample_worker.id,
-        to_state=WorkerStatus.IDLE,
+        to_state=WorkerStatus.PAUSED,
+        reason="Pause work",
+    )
+    test_db.refresh(sample_worker)
+    assert sample_worker.status == WorkerStatus.PAUSED
+
+    # PAUSED → RUNNING
+    worker_sm.transition_worker(
+        worker_id=sample_worker.id,
+        to_state=WorkerStatus.RUNNING,
+        reason="Resume work",
+    )
+    test_db.refresh(sample_worker)
+    assert sample_worker.status == WorkerStatus.RUNNING
+
+    # RUNNING → COMPLETED
+    worker_sm.transition_worker(
+        worker_id=sample_worker.id,
+        to_state=WorkerStatus.COMPLETED,
         reason="Work complete",
     )
     test_db.refresh(sample_worker)
-    assert sample_worker.status == WorkerStatus.IDLE
-
-    # IDLE → TERMINATED
-    worker_sm.transition_worker(
-        worker_id=sample_worker.id,
-        to_state=WorkerStatus.TERMINATED,
-        reason="Shutdown",
-    )
-    test_db.refresh(sample_worker)
-    assert sample_worker.status == WorkerStatus.TERMINATED
+    assert sample_worker.status == WorkerStatus.COMPLETED
 
 
 def test_worker_invalid_transitions(
@@ -205,22 +212,22 @@ def test_job_cancellation_transitions(
 ) -> None:
     """Test job cancellation from various states."""
     # PENDING → CANCELLED
-    job1 = Job(id="cancel-test-1", task_file_path="/tmp/task1.txt", status=JobStatus.PENDING, priority=5)
+    job1 = Job(id="cancel-test-1", depth=0, worker_count=1, task_description="Test task", status=JobStatus.PENDING)
     test_db.add(job1)
     test_db.commit()
 
-    job_sm.transition_job(job_id=job1.id, to_state=JobStatus.CANCELLED, reason="User cancelled")
+    job_sm.transition_job(job_id=job1.id, to_state=JobStatus.CANCELED, reason="User cancelled")
     test_db.refresh(job1)
-    assert job1.status == JobStatus.CANCELLED
+    assert job1.status == JobStatus.CANCELED
 
     # RUNNING → CANCELLED
-    job2 = Job(id="cancel-test-2", task_file_path="/tmp/task2.txt", status=JobStatus.RUNNING, priority=5)
+    job2 = Job(id="cancel-test-2", depth=0, worker_count=1, task_description="Test task", status=JobStatus.RUNNING)
     test_db.add(job2)
     test_db.commit()
 
-    job_sm.transition_job(job_id=job2.id, to_state=JobStatus.CANCELLED, reason="User cancelled")
+    job_sm.transition_job(job_id=job2.id, to_state=JobStatus.CANCELED, reason="User cancelled")
     test_db.refresh(job2)
-    assert job2.status == JobStatus.CANCELLED
+    assert job2.status == JobStatus.CANCELED
 
 
 def test_password_hashing_security() -> None:
@@ -260,7 +267,7 @@ def test_jwt_token_validation() -> None:
     token = create_access_token(
         user_id="test-user-123",
         scopes=["supervisor:read"],
-        expires_delta=timedelta(hours=1),
+        expires_delta=timedelta(minutes=30),
     )
 
     token_data = verify_token(token)
@@ -339,7 +346,8 @@ def test_resource_allocation_constraints(
     # Create resource allocation
     allocation = ResourceAllocation(
         job_id=sample_job.id,
-        worker_id=sample_worker.id,
+        depth=0,
+        worker_count=1,
         allocated_at=datetime.utcnow(),
     )
     test_db.add(allocation)
@@ -347,7 +355,8 @@ def test_resource_allocation_constraints(
     test_db.refresh(allocation)
 
     assert allocation.job_id == sample_job.id
-    assert allocation.worker_id == sample_worker.id
+    assert allocation.depth == 0
+    assert allocation.worker_count == 1
     assert allocation.released_at is None
 
     # Release allocation
@@ -362,12 +371,12 @@ def test_idempotency_key_uniqueness(test_db: Session) -> None:
     key_value = "idempotent-operation-123"
 
     # First insertion
-    key1 = IdempotencyKey(key=key_value)
+    key1 = IdempotencyKey(request_id=key_value, endpoint="/test", response_status=200, response_body="{}", expires_at=datetime.utcnow() + timedelta(hours=1))
     test_db.add(key1)
     test_db.commit()
 
     # Duplicate insertion should fail (unique constraint)
-    key2 = IdempotencyKey(key=key_value)
+    key2 = IdempotencyKey(request_id=key_value, endpoint="/test", response_status=200, response_body="{}", expires_at=datetime.utcnow() + timedelta(hours=1))
     test_db.add(key2)
 
     with pytest.raises(Exception):  # IntegrityError or similar
@@ -376,7 +385,7 @@ def test_idempotency_key_uniqueness(test_db: Session) -> None:
     test_db.rollback()
 
     # Verify only one key exists
-    count = test_db.query(IdempotencyKey).filter_by(key=key_value).count()
+    count = test_db.query(IdempotencyKey).filter_by(request_id=key_value).count()
     assert count == 1
 
 
@@ -403,16 +412,11 @@ def test_job_status_enum_values(test_db: Session) -> None:
         JobStatus.RUNNING,
         JobStatus.COMPLETED,
         JobStatus.FAILED,
-        JobStatus.CANCELLED,
+        JobStatus.CANCELED,
     ]
 
     for idx, status in enumerate(statuses):
-        job = Job(
-            id=f"job-status-test-{idx}",
-            task_file_path=f"/tmp/task{idx}.txt",
-            status=status,
-            priority=5,
-        )
+        job = Job(id=f"job-status-test-{idx}", depth=0, worker_count=1, task_description="Test task", status=status)
         test_db.add(job)
 
     test_db.commit()

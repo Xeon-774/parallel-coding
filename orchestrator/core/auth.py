@@ -198,16 +198,20 @@ def create_access_token(
 
     expire = datetime.utcnow() + expires_delta
 
-    # Create payload
-    payload = TokenPayload(
-        sub=user_id,
-        exp=expire,
-        scopes=scopes
-    )
+    # Create payload with Unix timestamp for exp (JWT standard)
+    # Convert UTC datetime to Unix timestamp (seconds since epoch)
+    from calendar import timegm
+    expire_timestamp = timegm(expire.utctimetuple())
+
+    payload_dict = {
+        "sub": user_id,
+        "exp": expire_timestamp,
+        "scopes": scopes
+    }
 
     # Encode JWT
     token = jwt.encode(
-        payload.model_dump(mode='json'),
+        payload_dict,
         SECRET_KEY,
         algorithm=ALGORITHM
     )

@@ -39,87 +39,102 @@ def upgrade() -> None:
         worker_status.create(op.get_bind(), checkfirst=True)
 
         job_status = postgresql.ENUM(
-            "PENDING", "RUNNING", "COMPLETED", "FAILED", "CANCELLED", name="jobstatus", create_type=False
+            "PENDING", "RUNNING", "COMPLETED", "FAILED", "CANCELED", name="jobstatus", create_type=False
         )
         job_status.create(op.get_bind(), checkfirst=True)
 
     # Create workers table
     op.create_table(
         "workers",
-        sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("worker_id", sa.String(100), nullable=False),
+        sa.Column("id", sa.String(36), nullable=False),
+        sa.Column("workspace_id", sa.String(36), nullable=False),
         sa.Column(
             "status",
-            sa.Enum("IDLE", "BUSY", "FAILED", "TERMINATED", name="workerstatus"),
+            sa.Enum("IDLE", "RUNNING", "PAUSED", "COMPLETED", "FAILED", "TERMINATED", name="workerstatus"),
             nullable=False,
         ),
-        sa.Column("current_job_id", sa.String(100), nullable=True),
         sa.Column("created_at", sa.DateTime(), nullable=False),
         sa.Column("updated_at", sa.DateTime(), nullable=False),
+        sa.Column("metadata", sa.JSON(), nullable=True),
         sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint("worker_id"),
     )
-    op.create_index("ix_workers_worker_id", "workers", ["worker_id"], unique=True)
+    op.create_index("ix_workers_workspace_id", "workers", ["workspace_id"], unique=False)
     op.create_index("ix_workers_status", "workers", ["status"], unique=False)
+    op.create_index("ix_workers_workspace_status", "workers", ["workspace_id", "status"], unique=False)
+    op.create_index("ix_workers_created_at", "workers", ["created_at"], unique=False)
 
     # Create jobs table
     op.create_table(
         "jobs",
-        sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("job_id", sa.String(100), nullable=False),
+        sa.Column("id", sa.String(36), nullable=False),
+        sa.Column("parent_job_id", sa.String(36), nullable=True),
+        sa.Column("depth", sa.Integer(), nullable=False),
         sa.Column(
             "status",
             sa.Enum(
-                "PENDING", "RUNNING", "COMPLETED", "FAILED", "CANCELLED", name="jobstatus"
+                "SUBMITTED", "PENDING", "RUNNING", "COMPLETED", "FAILED", "CANCELED", name="jobstatus"
             ),
             nullable=False,
         ),
+        sa.Column("worker_count", sa.Integer(), nullable=False),
         sa.Column("task_description", sa.Text(), nullable=False),
-        sa.Column("assigned_worker_id", sa.String(100), nullable=True),
         sa.Column("created_at", sa.DateTime(), nullable=False),
-        sa.Column("updated_at", sa.DateTime(), nullable=False),
+        sa.Column("started_at", sa.DateTime(), nullable=True),
         sa.Column("completed_at", sa.DateTime(), nullable=True),
+        sa.Column("result", sa.JSON(), nullable=True),
+        sa.Column("error", sa.JSON(), nullable=True),
         sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint("job_id"),
-        sa.ForeignKeyConstraint(["assigned_worker_id"], ["workers.worker_id"], ondelete="SET NULL"),
+        sa.ForeignKeyConstraint(["parent_job_id"], ["jobs.id"], ondelete="SET NULL"),
+        sa.CheckConstraint("depth >= 0 AND depth <= 5"),
+        sa.CheckConstraint("worker_count >= 1"),
     )
-    op.create_index("ix_jobs_job_id", "jobs", ["job_id"], unique=True)
+    op.create_index("ix_jobs_parent_job_id", "jobs", ["parent_job_id"], unique=False)
     op.create_index("ix_jobs_status", "jobs", ["status"], unique=False)
+    op.create_index("ix_jobs_depth", "jobs", ["depth"], unique=False)
 
     # Create resource_allocations table
     op.create_table(
         "resource_allocations",
         sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("job_id", sa.String(100), nullable=False),
-        sa.Column("worker_id", sa.String(100), nullable=False),
+        sa.Column("job_id", sa.String(36), nullable=False),
+        sa.Column("depth", sa.Integer(), nullable=False),
+        sa.Column("worker_count", sa.Integer(), nullable=False),
         sa.Column("allocated_at", sa.DateTime(), nullable=False),
         sa.Column("released_at", sa.DateTime(), nullable=True),
         sa.PrimaryKeyConstraint("id"),
-        sa.ForeignKeyConstraint(["job_id"], ["jobs.job_id"], ondelete="CASCADE"),
-        sa.ForeignKeyConstraint(["worker_id"], ["workers.worker_id"], ondelete="CASCADE"),
+        sa.ForeignKeyConstraint(["job_id"], ["jobs.id"], ondelete="CASCADE"),
+        sa.CheckConstraint("depth >= 0 AND depth <= 5"),
+        sa.CheckConstraint("worker_count >= 1"),
     )
+    op.create_index("ix_resource_allocations_job_id", "resource_allocations", ["job_id"], unique=False)
 
     # Create idempotency_keys table
     op.create_table(
         "idempotency_keys",
-        sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("key", sa.String(255), nullable=False),
+        sa.Column("request_id", sa.String(36), nullable=False),
+        sa.Column("endpoint", sa.String(255), nullable=False),
+        sa.Column("response_status", sa.Integer(), nullable=False),
+        sa.Column("response_body", sa.Text(), nullable=True),
         sa.Column("created_at", sa.DateTime(), nullable=False),
-        sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint("key"),
+        sa.Column("expires_at", sa.DateTime(), nullable=False),
+        sa.PrimaryKeyConstraint("request_id"),
     )
-    op.create_index("ix_idempotency_keys_key", "idempotency_keys", ["key"], unique=True)
+    op.create_index("ix_idempotency_keys_expires_at", "idempotency_keys", ["expires_at"], unique=False)
 
 
 def downgrade() -> None:
-    op.drop_index("ix_idempotency_keys_key", table_name="idempotency_keys")
+    op.drop_index("ix_idempotency_keys_expires_at", table_name="idempotency_keys")
     op.drop_table("idempotency_keys")
+    op.drop_index("ix_resource_allocations_job_id", table_name="resource_allocations")
     op.drop_table("resource_allocations")
+    op.drop_index("ix_jobs_depth", table_name="jobs")
     op.drop_index("ix_jobs_status", table_name="jobs")
-    op.drop_index("ix_jobs_job_id", table_name="jobs")
+    op.drop_index("ix_jobs_parent_job_id", table_name="jobs")
     op.drop_table("jobs")
+    op.drop_index("ix_workers_created_at", table_name="workers")
+    op.drop_index("ix_workers_workspace_status", table_name="workers")
     op.drop_index("ix_workers_status", table_name="workers")
-    op.drop_index("ix_workers_worker_id", table_name="workers")
+    op.drop_index("ix_workers_workspace_id", table_name="workers")
     op.drop_table("workers")
 
     # Drop enum types for PostgreSQL

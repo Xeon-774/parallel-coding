@@ -69,7 +69,7 @@ class DatabaseSettings(BaseSettings):
         extra="ignore"  # Ignore extra fields from .env file
     )
 
-    database_url: str = "sqlite:///./parallel_ai.db"
+    database_url: str = "sqlite:///./orchestrator.db"
     echo_sql: bool = False
     pool_size: int = 5
     max_overflow: int = 10
