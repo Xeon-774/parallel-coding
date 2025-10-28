@@ -1,0 +1,49 @@
+Alembic Migrations for Orchestrator
+===================================
+
+Overview
+--------
+- Manages database schema changes for the Orchestrator using Alembic.
+- Supports PostgreSQL (production) and SQLite (development).
+
+Structure
+---------
+- `alembic/env.py` – Alembic environment configuration.
+- `alembic/script.py.mako` – Template for new revision files.
+- `alembic/versions/` – Auto/manual migration scripts.
+
+Configuration
+-------------
+- Primary config file: `alembic.ini` at repository root.
+- Alternative: `orchestrator/alembic.ini` (script will detect it too).
+
+Environment Variables
+---------------------
+- `DATABASE_URL` – Database URL for migrations (overrides ini value).
+
+Common Commands
+---------------
+- Initialize (already scaffolded):
+  - alembic init alembic
+- Create migration (autogenerate):
+  - alembic revision --autogenerate -m "Initial schema - Week 2 MVP"
+- Apply migrations:
+  - alembic upgrade head
+- Rollback migrations:
+  - alembic downgrade base
+- Check current revision:
+  - alembic current
+- Show history:
+  - alembic history
+
+Development Notes
+-----------------
+- Autogeneration requires SQLAlchemy models to be importable.
+- `env.py` tries to import `orchestrator.core.database` and `orchestrator.core.db_models`.
+- If unavailable, autogenerate won’t work, but applying existing migrations still works.
+
+Safety
+------
+- No credentials are hardcoded. Use `DATABASE_URL` or edit `alembic.ini` locally.
+- Path traversal is prevented by only reading the ini file from project paths.
+
