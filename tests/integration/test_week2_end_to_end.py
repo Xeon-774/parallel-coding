@@ -79,14 +79,21 @@ def _seed_worker(
 
 def _seed_job(
     job_id: str = "e2e-j1",
-    task_path: str = "/tmp/e2e_task.txt",
+    task_description: str = "E2E test task",
     status: JobStatus = JobStatus.PENDING,
-    priority: int = 5,
+    depth: int = 0,
+    worker_count: int = 1,
 ) -> Job:
     """Helper function to seed a job."""
     db = next(get_db())
     try:
-        job = Job(id=job_id, task_file_path=task_path, status=status, priority=priority)
+        job = Job(
+            id=job_id,
+            task_description=task_description,
+            status=status,
+            depth=depth,
+            worker_count=worker_count,
+        )
         db.add(job)
         db.commit()
         db.refresh(job)
@@ -106,11 +113,11 @@ def test_complete_job_workflow(client: TestClient, auth_headers: dict[str, str])
     submit_response = client.post(
         "/api/jobs/submit",
         headers=auth_headers,
-        json={"task_file_path": "/tmp/e2e_workflow_task.txt", "priority": 5},
+        json={"task_description": "E2E workflow test task", "worker_count": 1, "depth": 0},
     )
     assert submit_response.status_code in [200, 201]
     job_data = submit_response.json()
-    job_id = job_data.get("id") or job_data.get("job_id")
+    job_id = job_data.get("id")
     assert job_id is not None
 
     # Step 2: Verify job is created and in PENDING state
@@ -124,9 +131,9 @@ def test_complete_job_workflow(client: TestClient, auth_headers: dict[str, str])
     allocate_response = client.post(
         "/api/resources/allocate",
         headers=auth_headers,
-        json={"job_id": job_id, "worker_id": worker.id},
+        json={"job_id": job_id, "depth": 0, "worker_count": 1},
     )
-    assert allocate_response.status_code == 200
+    assert allocate_response.status_code in [200, 201]
 
     # Step 4: Transition job to RUNNING (simulating execution)
     db = next(get_db())
@@ -134,7 +141,6 @@ def test_complete_job_workflow(client: TestClient, auth_headers: dict[str, str])
         job = db.query(Job).filter_by(id=job_id).first()
         if job:
             job.status = JobStatus.RUNNING
-            job.assigned_worker_id = worker.id
             db.commit()
     finally:
         db.close()
@@ -165,7 +171,7 @@ def test_complete_job_workflow(client: TestClient, auth_headers: dict[str, str])
     release_response = client.post(
         "/api/resources/release",
         headers=auth_headers,
-        json={"job_id": job_id, "worker_id": worker.id},
+        json={"job_id": job_id, "depth": 0},
     )
     assert release_response.status_code == 200
 
@@ -220,19 +226,20 @@ def test_resource_allocation_workflow(client: TestClient, auth_headers: dict[str
     quotas_before = client.get("/api/resources/quotas", headers=auth_headers)
     assert quotas_before.status_code == 200
     quotas_data_before = quotas_before.json()
-    available_before = quotas_data_before["available_workers"]
+    assert "quotas" in quotas_data_before
+    assert len(quotas_data_before["quotas"]) > 0
 
     # Step 2: Seed worker and job
     worker = _seed_worker("alloc-wf-worker", "ws-alloc-wf", WorkerStatus.IDLE)
-    job = _seed_job("alloc-wf-job", "/tmp/alloc_wf_task.txt", JobStatus.PENDING)
+    job = _seed_job("alloc-wf-job", "Allocation workflow test", JobStatus.PENDING, depth=0, worker_count=1)
 
     # Step 3: Allocate resources
     allocate_response = client.post(
         "/api/resources/allocate",
         headers=auth_headers,
-        json={"job_id": job.id, "worker_id": worker.id},
+        json={"job_id": job.id, "depth": 0, "worker_count": 1},
     )
-    assert allocate_response.status_code == 200
+    assert allocate_response.status_code in [200, 201]
 
     # Step 4: Check quotas after allocation (available workers may decrease)
     quotas_after_alloc = client.get("/api/resources/quotas", headers=auth_headers)
@@ -242,7 +249,7 @@ def test_resource_allocation_workflow(client: TestClient, auth_headers: dict[str
     release_response = client.post(
         "/api/resources/release",
         headers=auth_headers,
-        json={"job_id": job.id, "worker_id": worker.id},
+        json={"job_id": job.id, "depth": 0},
     )
     assert release_response.status_code == 200
 
@@ -280,42 +287,42 @@ def test_concurrent_jobs(client: TestClient, auth_headers: dict[str, str]) -> No
     job1_response = client.post(
         "/api/jobs/submit",
         headers=auth_headers,
-        json={"task_file_path": "/tmp/concurrent_task1.txt", "priority": 5},
+        json={"task_description": "Concurrent task 1", "worker_count": 1, "depth": 0},
     )
     job2_response = client.post(
         "/api/jobs/submit",
         headers=auth_headers,
-        json={"task_file_path": "/tmp/concurrent_task2.txt", "priority": 5},
+        json={"task_description": "Concurrent task 2", "worker_count": 1, "depth": 0},
     )
     job3_response = client.post(
         "/api/jobs/submit",
         headers=auth_headers,
-        json={"task_file_path": "/tmp/concurrent_task3.txt", "priority": 5},
+        json={"task_description": "Concurrent task 3", "worker_count": 1, "depth": 0},
     )
 
     assert job1_response.status_code in [200, 201]
     assert job2_response.status_code in [200, 201]
     assert job3_response.status_code in [200, 201]
 
-    job1_id = job1_response.json().get("id") or job1_response.json().get("job_id")
-    job2_id = job2_response.json().get("id") or job2_response.json().get("job_id")
-    job3_id = job3_response.json().get("id") or job3_response.json().get("job_id")
+    job1_id = job1_response.json().get("id")
+    job2_id = job2_response.json().get("id")
+    job3_id = job3_response.json().get("id")
 
     # Step 3: Allocate workers to jobs
     client.post(
         "/api/resources/allocate",
         headers=auth_headers,
-        json={"job_id": job1_id, "worker_id": worker1.id},
+        json={"job_id": job1_id, "depth": 0, "worker_count": 1},
     )
     client.post(
         "/api/resources/allocate",
         headers=auth_headers,
-        json={"job_id": job2_id, "worker_id": worker2.id},
+        json={"job_id": job2_id, "depth": 0, "worker_count": 1},
     )
     client.post(
         "/api/resources/allocate",
         headers=auth_headers,
-        json={"job_id": job3_id, "worker_id": worker3.id},
+        json={"job_id": job3_id, "depth": 0, "worker_count": 1},
     )
 
     # Step 4: Verify all jobs are allocated
@@ -343,10 +350,10 @@ def test_job_cancellation_workflow(client: TestClient, auth_headers: dict[str, s
     submit_response = client.post(
         "/api/jobs/submit",
         headers=auth_headers,
-        json={"task_file_path": "/tmp/cancel_workflow_task.txt", "priority": 5},
+        json={"task_description": "Cancellation workflow test", "worker_count": 1, "depth": 0},
     )
     assert submit_response.status_code in [200, 201]
-    job_id = submit_response.json().get("id") or submit_response.json().get("job_id")
+    job_id = submit_response.json().get("id")
 
     # Step 2: Verify job exists and is PENDING
     get_response = client.get(f"/api/jobs/{job_id}", headers=auth_headers)
@@ -362,8 +369,8 @@ def test_job_cancellation_workflow(client: TestClient, auth_headers: dict[str, s
     )
     assert cancel_response.status_code == 200
 
-    # Step 4: Verify job is CANCELLED
+    # Step 4: Verify job is CANCELED
     cancelled_response = client.get(f"/api/jobs/{job_id}", headers=auth_headers)
     assert cancelled_response.status_code == 200
     cancelled_data = cancelled_response.json()
-    assert cancelled_data["status"] == "CANCELLED"
+    assert cancelled_data["status"] == "CANCELED"

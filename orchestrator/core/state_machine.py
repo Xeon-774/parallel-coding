@@ -422,6 +422,34 @@ class JobStateMachine:
 
         return job
 
+    def cancel_job(
+        self,
+        job_id: str,
+        reason: Optional[str] = None
+    ) -> Job:
+        """
+        Cancel a job by transitioning to CANCELED state.
+
+        Args:
+            job_id: Job identifier
+            reason: Optional reason for cancellation
+
+        Returns:
+            Updated job instance
+
+        Raises:
+            EntityNotFoundError: If job not found
+            StateTransitionError: If cancellation not allowed from current state
+
+        Example:
+            >>> job = sm.cancel_job("j_xyz789", reason="User requested cancellation")
+        """
+        return self.transition_job(
+            job_id=job_id,
+            to_state=JobStatus.CANCELED,
+            reason=reason or "Job canceled"
+        )
+
     def get_transition_history(
         self,
         job_id: str,

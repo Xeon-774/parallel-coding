@@ -67,7 +67,7 @@ def config(test_workspace: Path) -> OrchestratorConfig:
         execution_mode="wsl",
         workspace_root=str(test_workspace),
         wsl_distribution="Ubuntu-24.04",
-        nvm_path="/home/chemi/.nvm/versions/node/v22.21.0/bin",  # Correct version
+        nvm_path="/home/chemi/.local/bin:/home/chemi/.nvm/versions/node/v22.21.0/bin",  # Claude CLI + Node.js paths
         codex_command="codex",
         default_timeout=300,
     )

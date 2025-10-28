@@ -86,14 +86,21 @@ def _seed_worker(
 
 def _seed_job(
     job_id: str = "j1",
-    task_path: str = "/tmp/task.txt",
+    task_description: str = "Test task",
     status: JobStatus = JobStatus.PENDING,
-    priority: int = 5,
+    depth: int = 0,
+    worker_count: int = 1,
 ) -> Job:
     """Helper function to seed a job in the database."""
     db = next(get_db())
     try:
-        job = Job(id=job_id, task_file_path=task_path, status=status, priority=priority)
+        job = Job(
+            id=job_id,
+            task_description=task_description,
+            status=status,
+            depth=depth,
+            worker_count=worker_count,
+        )
         db.add(job)
         db.commit()
         db.refresh(job)
@@ -218,8 +225,9 @@ def test_supervisor_metrics(client: TestClient, auth_headers: dict[str, str]) ->
     assert response.status_code == 200
     data = response.json()
     assert "total_workers" in data
-    assert "workers_by_status" in data
+    assert "by_status" in data
     assert data["total_workers"] >= 2
+    assert isinstance(data["by_status"], dict)
 
 
 # --- Resource Manager API Tests ---
@@ -230,46 +238,42 @@ def test_resources_get_quotas(client: TestClient, auth_headers: dict[str, str]) 
     response = client.get("/api/resources/quotas", headers=auth_headers)
     assert response.status_code == 200
     data = response.json()
-    assert "max_workers" in data
-    assert "available_workers" in data
-    assert isinstance(data["max_workers"], int)
-    assert isinstance(data["available_workers"], int)
+    assert "quotas" in data
+    assert isinstance(data["quotas"], list)
+    if len(data["quotas"]) > 0:
+        assert "depth" in data["quotas"][0]
+        assert "max_workers" in data["quotas"][0]
 
 
 def test_resources_allocate_success(client: TestClient, auth_headers: dict[str, str]) -> None:
     """Test POST /api/resources/allocate endpoint with valid allocation."""
     worker = _seed_worker("alloc-worker", "ws-1", WorkerStatus.IDLE)
-    job = _seed_job("alloc-job", "/tmp/task.txt", JobStatus.PENDING)
+    job = _seed_job("alloc-job", "Test allocation task", JobStatus.PENDING, depth=0, worker_count=1)
 
     response = client.post(
         "/api/resources/allocate",
         headers=auth_headers,
-        json={"job_id": job.id, "worker_id": worker.id},
+        json={"job_id": job.id, "depth": 0, "worker_count": 1},
     )
-    assert response.status_code == 200
+    assert response.status_code in (200, 201)
     data = response.json()
-    assert "allocation_id" in data or "job_id" in data
+    assert "job_id" in data
+    assert data["job_id"] == job.id
 
 
 def test_resources_release(client: TestClient, auth_headers: dict[str, str]) -> None:
     """Test POST /api/resources/release endpoint."""
     worker = _seed_worker("release-worker", "ws-1", WorkerStatus.RUNNING)
-    job = _seed_job("release-job", "/tmp/task.txt", JobStatus.RUNNING)
-    job.assigned_worker_id = worker.id
-
-    db = next(get_db())
-    try:
-        db.add(job)
-        db.commit()
-    finally:
-        db.close()
+    job = _seed_job("release-job", "Test release task", JobStatus.RUNNING, depth=0, worker_count=1)
 
     response = client.post(
         "/api/resources/release",
         headers=auth_headers,
-        json={"job_id": job.id, "worker_id": worker.id},
+        json={"job_id": job.id, "depth": 0},
     )
     assert response.status_code == 200
+    data = response.json()
+    assert "released" in data
 
 
 def test_resources_usage(client: TestClient, auth_headers: dict[str, str]) -> None:
@@ -280,7 +284,8 @@ def test_resources_usage(client: TestClient, auth_headers: dict[str, str]) -> No
     response = client.get("/api/resources/usage", headers=auth_headers)
     assert response.status_code == 200
     data = response.json()
-    assert "total_workers" in data or "workers" in data
+    assert "usage" in data
+    assert isinstance(data["usage"], list)
 
 
 # --- Job Orchestrator API Tests ---
@@ -292,18 +297,20 @@ def test_jobs_submit(client: TestClient, auth_headers: dict[str, str]) -> None:
         "/api/jobs/submit",
         headers=auth_headers,
         json={
-            "task_file_path": "/tmp/test_task.txt",
-            "priority": 5,
+            "task_description": "Test task submission",
+            "worker_count": 1,
+            "depth": 0,
         },
     )
     assert response.status_code == 200 or response.status_code == 201
     data = response.json()
-    assert "id" in data or "job_id" in data
+    assert "id" in data
+    assert data["status"] == "PENDING"
 
 
 def test_jobs_get_success(client: TestClient, auth_headers: dict[str, str]) -> None:
     """Test GET /api/jobs/{id} endpoint with existing job."""
-    job = _seed_job("job-get-test", "/tmp/task.txt", JobStatus.PENDING)
+    job = _seed_job("job-get-test", "Test job retrieval", JobStatus.PENDING, depth=0, worker_count=1)
 
     response = client.get(f"/api/jobs/{job.id}", headers=auth_headers)
     assert response.status_code == 200
@@ -321,32 +328,28 @@ def test_jobs_get_not_found(client: TestClient, auth_headers: dict[str, str]) ->
 
 def test_jobs_list(client: TestClient, auth_headers: dict[str, str]) -> None:
     """Test GET /api/jobs/list endpoint."""
-    _seed_job("list-job-1", "/tmp/task1.txt", JobStatus.PENDING)
-    _seed_job("list-job-2", "/tmp/task2.txt", JobStatus.RUNNING)
+    _seed_job("list-job-1", "Test task 1", JobStatus.PENDING, depth=0, worker_count=1)
+    _seed_job("list-job-2", "Test task 2", JobStatus.RUNNING, depth=0, worker_count=2)
 
     response = client.get("/api/jobs", headers=auth_headers)
     assert response.status_code == 200
     data = response.json()
-    assert "jobs" in data or isinstance(data, list)
-    if isinstance(data, dict):
-        assert len(data["jobs"]) >= 2
-    else:
-        assert len(data) >= 2
+    assert isinstance(data, list)
+    assert len(data) >= 2
 
 
 def test_jobs_cancel(client: TestClient, auth_headers: dict[str, str]) -> None:
     """Test POST /api/jobs/{id}/cancel endpoint."""
-    job = _seed_job("cancel-job", "/tmp/task.txt", JobStatus.RUNNING)
+    job = _seed_job("cancel-job", "Test cancel task", JobStatus.RUNNING, depth=0, worker_count=1)
 
     response = client.post(
         f"/api/jobs/{job.id}/cancel",
         headers=auth_headers,
-        json={"reason": "User cancellation"},
     )
     assert response.status_code == 200
     data = response.json()
     assert data["id"] == job.id
-    assert data["status"] == "CANCELLED"
+    assert data["status"] == "CANCELED"
 
 
 # --- Error Handling Tests ---

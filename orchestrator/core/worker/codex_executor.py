@@ -276,12 +276,11 @@ class CodexExecutor:
         if self.execution_mode == "wsl":
             # WSL mode - convert Windows path to WSL path
             wsl_task_file = self._convert_to_wsl_path(str(task_file.absolute()))
-            # Use full path to codex to ensure correct node version
-            codex_full_path = f"{self.nvm_path}/{self.codex_command}"
+            # Use PATH environment variable to find codex
             return (
                 f"wsl -d {self.wsl_distribution} bash -c "
                 f"\"export PATH='{self.nvm_path}:$PATH' && "
-                f"{codex_full_path} exec {flags} < '{wsl_task_file}'\""
+                f"{self.codex_command} exec {flags} < '{wsl_task_file}'\""
             )
         elif self.execution_mode == "windows":
             # Windows native mode
@@ -574,7 +573,7 @@ if __name__ == "__main__":
     # Example: Execute a simple task
     executor = CodexExecutor(
         wsl_distribution="Ubuntu-24.04",
-        nvm_path="/home/chemi/.nvm/versions/node/v22.21.0/bin",
+        nvm_path="/home/chemi/.local/bin:/home/chemi/.nvm/versions/node/v22.21.0/bin",
         codex_command="codex",
     )
 

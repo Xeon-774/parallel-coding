@@ -23,7 +23,7 @@ from orchestrator.core.state_machine import (
 router = APIRouter(prefix="/api/jobs", tags=["jobs"])
 
 
-def _get_job_or_404(db: Session, job_id: int) -> Job:
+def _get_job_or_404(db: Session, job_id: str) -> Job:
     job = db.get(Job, job_id)
     if job is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
@@ -60,7 +60,7 @@ async def submit_job(
 
 @router.get("/{job_id}", response_model=JobResponse)
 async def get_job(
-    job_id: int,
+    job_id: str,
     db: Session = Depends(get_db),
     _: TokenData = Depends(require_scope("jobs:read")),
 ) -> JobResponse:
@@ -72,7 +72,7 @@ async def get_job(
 
 @router.post("/{job_id}/cancel", response_model=JobResponse)
 async def cancel_job(
-    job_id: int,
+    job_id: str,
     db: Session = Depends(get_db),
     _: TokenData = Depends(require_scope("jobs:write")),
 ) -> JobResponse:
@@ -96,7 +96,7 @@ async def cancel_job(
 async def list_jobs(
     depth: Optional[int] = Query(default=None, ge=0),
     status_: Optional[JobStatus] = Query(default=None, alias="status"),
-    parent_job_id: Optional[int] = Query(default=None, ge=1),
+    parent_job_id: Optional[str] = Query(default=None),
     limit: int = Query(default=50, ge=1, le=500),
     offset: int = Query(default=0, ge=0),
     db: Session = Depends(get_db),

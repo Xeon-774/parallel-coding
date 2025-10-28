@@ -12,6 +12,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
 
 from orchestrator.core.hierarchical import HierarchicalResourceManager
+from orchestrator.api.dependencies import TokenData, require_scope
 
 
 router = APIRouter(prefix="/api/resources", tags=["resources"])
@@ -41,7 +42,10 @@ class QuotasResponse(BaseModel):
 
 
 @router.get("/quotas", response_model=QuotasResponse)
-async def get_quotas(rm: HierarchicalResourceManager = Depends(get_rm)) -> QuotasResponse:
+async def get_quotas(
+    rm: HierarchicalResourceManager = Depends(get_rm),
+    user: TokenData = Depends(require_scope("resources:read")),
+) -> QuotasResponse:
     """Get configured quotas by depth level."""
     usage = await rm.get_hierarchy_usage()
     items: List[QuotaItem] = [
@@ -65,7 +69,9 @@ class AllocationResponse(BaseModel):
 
 @router.post("/allocate", response_model=AllocationResponse, status_code=status.HTTP_201_CREATED)
 async def allocate_resources(
-    payload: AllocateRequest, rm: HierarchicalResourceManager = Depends(get_rm)
+    payload: AllocateRequest,
+    rm: HierarchicalResourceManager = Depends(get_rm),
+    user: TokenData = Depends(require_scope("resources:write")),
 ) -> AllocationResponse:
     """Allocate resources for a job at a specific depth."""
     try:
@@ -93,7 +99,9 @@ class ReleaseResponse(BaseModel):
 
 @router.post("/release", response_model=ReleaseResponse)
 async def release_resources(
-    payload: ReleaseRequest, rm: HierarchicalResourceManager = Depends(get_rm)
+    payload: ReleaseRequest,
+    rm: HierarchicalResourceManager = Depends(get_rm),
+    user: TokenData = Depends(require_scope("resources:write")),
 ) -> ReleaseResponse:
     """Release any resources held by a job at a depth."""
     released = await rm.release_resources(job_id=payload.job_id, depth=payload.depth)
@@ -111,7 +119,10 @@ class UsageResponse(BaseModel):
 
 
 @router.get("/usage", response_model=UsageResponse)
-async def get_usage(rm: HierarchicalResourceManager = Depends(get_rm)) -> UsageResponse:
+async def get_usage(
+    rm: HierarchicalResourceManager = Depends(get_rm),
+    user: TokenData = Depends(require_scope("resources:read")),
+) -> UsageResponse:
     """Get current resource usage by depth (allocated and available)."""
     usage = await rm.get_hierarchy_usage()
     items: List[UsageItem] = []

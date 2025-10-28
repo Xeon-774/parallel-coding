@@ -12,7 +12,7 @@ from orchestrator.core.auth import JWTError, TokenData, check_scope, verify_toke
 from orchestrator.core.database import get_db as _get_db
 
 
-security = HTTPBearer()
+security = HTTPBearer(auto_error=False)
 
 
 def get_db() -> Generator[Session, None, None]:
@@ -28,13 +28,16 @@ def get_db() -> Generator[Session, None, None]:
 
 
 async def get_current_user(
-    credentials: Annotated[HTTPAuthorizationCredentials, Security(security)]
+    credentials: Annotated[HTTPAuthorizationCredentials | None, Security(security)]
 ) -> TokenData:
     """Validate token and return the current user claims.
 
     Raises:
-        HTTPException: 401 if token invalid.
+        HTTPException: 401 if token invalid or missing.
     """
+
+    if credentials is None:
+        raise HTTPException(status_code=401, detail="Missing authentication credentials")
 
     try:
         token_data = verify_token(credentials.credentials)
@@ -51,7 +54,7 @@ def require_scope(required_scope: str):
     """
 
     def check_scope_dependency(user: Annotated[TokenData, Depends(get_current_user)]) -> TokenData:
-        if not check_scope(user, required_scope):
+        if not check_scope(required_scope, user.scopes):
             raise HTTPException(status_code=403, detail=f"Missing required scope: {required_scope}")
         return user
 

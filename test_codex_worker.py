@@ -56,7 +56,7 @@ def test_codex_worker():
         wsl_workspace_root=f"/mnt/d/user/ai_coding/AI_Investor/tools/parallel-coding/test_codex_integration",
         execution_mode="wsl",
         wsl_distribution="Ubuntu-24.04",
-        nvm_path="/home/chemi/.nvm/versions/node/v22.21.0/bin",
+        nvm_path="/home/chemi/.local/bin:/home/chemi/.nvm/versions/node/v22.21.0/bin",
         codex_command="codex",
     )
 

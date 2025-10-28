@@ -347,6 +347,13 @@ class Job(Base):
         index=True,
         comment="Job creation time",
     )
+    updated_at = Column(
+        DateTime,
+        nullable=False,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+        comment="Last update time",
+    )
     started_at = Column(
         DateTime,
         nullable=True,

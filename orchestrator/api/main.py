@@ -31,6 +31,9 @@ from orchestrator.api import metrics_api
 from orchestrator.api import worker_status_api
 from orchestrator.api import supervisor_routes
 from orchestrator.api import supervisor_websocket
+from orchestrator.api import supervisor_api
+from orchestrator.api import resources_api
+from orchestrator.api import jobs_api
 # from orchestrator.api import ecosystem_api  # NOT WORKING - using direct endpoints instead
 
 # Configure logging
@@ -66,6 +69,9 @@ app.include_router(metrics_api.router)
 app.include_router(worker_status_api.router)
 app.include_router(supervisor_routes.router)
 app.include_router(supervisor_websocket.router)
+app.include_router(supervisor_api.router)
+app.include_router(resources_api.router)
+app.include_router(jobs_api.router)
 # app.include_router(ecosystem_api.router)  # NOT WORKING - using direct endpoints instead
 
 # Workspace configuration

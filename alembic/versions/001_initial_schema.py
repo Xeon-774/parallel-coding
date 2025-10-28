@@ -63,6 +63,22 @@ def upgrade() -> None:
     op.create_index("ix_workers_workspace_status", "workers", ["workspace_id", "status"], unique=False)
     op.create_index("ix_workers_created_at", "workers", ["created_at"], unique=False)
 
+    # Create worker_state_transitions table
+    op.create_table(
+        "worker_state_transitions",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("worker_id", sa.String(36), nullable=False),
+        sa.Column("from_state", sa.String(20), nullable=True),
+        sa.Column("to_state", sa.String(20), nullable=False),
+        sa.Column("reason", sa.Text(), nullable=True),
+        sa.Column("timestamp", sa.DateTime(), nullable=False),
+        sa.PrimaryKeyConstraint("id"),
+        sa.ForeignKeyConstraint(["worker_id"], ["workers.id"], ondelete="CASCADE"),
+    )
+    op.create_index("ix_worker_state_transitions_worker_id", "worker_state_transitions", ["worker_id"], unique=False)
+    op.create_index("ix_worker_state_transitions_timestamp", "worker_state_transitions", ["timestamp"], unique=False)
+    op.create_index("ix_wst_worker_timestamp", "worker_state_transitions", ["worker_id", "timestamp"], unique=False)
+
     # Create jobs table
     op.create_table(
         "jobs",
@@ -79,6 +95,7 @@ def upgrade() -> None:
         sa.Column("worker_count", sa.Integer(), nullable=False),
         sa.Column("task_description", sa.Text(), nullable=False),
         sa.Column("created_at", sa.DateTime(), nullable=False),
+        sa.Column("updated_at", sa.DateTime(), nullable=False),
         sa.Column("started_at", sa.DateTime(), nullable=True),
         sa.Column("completed_at", sa.DateTime(), nullable=True),
         sa.Column("result", sa.JSON(), nullable=True),
@@ -91,6 +108,22 @@ def upgrade() -> None:
     op.create_index("ix_jobs_parent_job_id", "jobs", ["parent_job_id"], unique=False)
     op.create_index("ix_jobs_status", "jobs", ["status"], unique=False)
     op.create_index("ix_jobs_depth", "jobs", ["depth"], unique=False)
+
+    # Create job_state_transitions table
+    op.create_table(
+        "job_state_transitions",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("job_id", sa.String(36), nullable=False),
+        sa.Column("from_state", sa.String(20), nullable=True),
+        sa.Column("to_state", sa.String(20), nullable=False),
+        sa.Column("reason", sa.Text(), nullable=True),
+        sa.Column("timestamp", sa.DateTime(), nullable=False),
+        sa.PrimaryKeyConstraint("id"),
+        sa.ForeignKeyConstraint(["job_id"], ["jobs.id"], ondelete="CASCADE"),
+    )
+    op.create_index("ix_job_state_transitions_job_id", "job_state_transitions", ["job_id"], unique=False)
+    op.create_index("ix_job_state_transitions_timestamp", "job_state_transitions", ["timestamp"], unique=False)
+    op.create_index("ix_jst_job_timestamp", "job_state_transitions", ["job_id", "timestamp"], unique=False)
 
     # Create resource_allocations table
     op.create_table(
@@ -127,10 +160,18 @@ def downgrade() -> None:
     op.drop_table("idempotency_keys")
     op.drop_index("ix_resource_allocations_job_id", table_name="resource_allocations")
     op.drop_table("resource_allocations")
+    op.drop_index("ix_jst_job_timestamp", table_name="job_state_transitions")
+    op.drop_index("ix_job_state_transitions_timestamp", table_name="job_state_transitions")
+    op.drop_index("ix_job_state_transitions_job_id", table_name="job_state_transitions")
+    op.drop_table("job_state_transitions")
     op.drop_index("ix_jobs_depth", table_name="jobs")
     op.drop_index("ix_jobs_status", table_name="jobs")
     op.drop_index("ix_jobs_parent_job_id", table_name="jobs")
     op.drop_table("jobs")
+    op.drop_index("ix_wst_worker_timestamp", table_name="worker_state_transitions")
+    op.drop_index("ix_worker_state_transitions_timestamp", table_name="worker_state_transitions")
+    op.drop_index("ix_worker_state_transitions_worker_id", table_name="worker_state_transitions")
+    op.drop_table("worker_state_transitions")
     op.drop_index("ix_workers_created_at", table_name="workers")
     op.drop_index("ix_workers_workspace_status", table_name="workers")
     op.drop_index("ix_workers_status", table_name="workers")
