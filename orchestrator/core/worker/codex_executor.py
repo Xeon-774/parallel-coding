@@ -389,151 +389,184 @@ class CodexExecutor:
             ... else:
             ...     print(f"Error: {result.error_message}")
         """
-        # Validate inputs (Excellence Standard: Input validation)
         if not task_file.exists():
             raise FileNotFoundError(f"Task file not found: {task_file}")
 
         workspace_dir.mkdir(parents=True, exist_ok=True)
 
-        # Build command
         cmd = self._build_command(task_file, model=model)
-
-        # Initialize result tracking
         start_time = time.time()
+
+        try:
+            process = self._start_subprocess(cmd, workspace_dir)
+            execution_state = self._process_output(process, start_time, timeout)
+            return self._build_result_from_process(
+                process, execution_state, start_time, timeout
+            )
+        except subprocess.TimeoutExpired:
+            return self._create_timeout_result(
+                time.time() - start_time, timeout, execution_state
+            )
+        except Exception as e:
+            return self._create_error_result(e, time.time() - start_time, execution_state)
+
+    def _start_subprocess(self, cmd: str, workspace_dir: Path) -> Any:
+        """Start Codex subprocess with proper encoding."""
+        return subprocess.Popen(
+            cmd,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            encoding="utf - 8",
+            errors="replace",
+            bufsize=1,
+            cwd=str(workspace_dir),
+        )
+
+    def _process_output(
+        self, process: Any, start_time: float, timeout: int
+    ) -> dict[str, Any]:
+        """Process subprocess output line by line."""
         events: list[CodexEvent] = []
         file_changes: list[FileChange] = []
         usage: Optional[UsageInfo] = None
         stdout_lines: list[str] = []
-        stderr_lines: list[str] = []
 
-        try:
-            # Execute subprocess (Excellence Standard: Error handling for all subprocess ops)
-            # Force UTF - 8 encoding to prevent cp932 codec errors on Windows
-            process = subprocess.Popen(
-                cmd,
-                shell=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                encoding="utf - 8",
-                errors="replace",  # Replace invalid characters instead of raising
-                bufsize=1,  # Line buffering
-                cwd=str(workspace_dir),
-            )
+        assert process.stdout is not None
+        for line in iter(process.stdout.readline, ""):
+            if not line:
+                break
 
-            # Read stdout line - by - line with timeout
-            assert process.stdout is not None  # Type narrowing
-            for line in iter(process.stdout.readline, ""):
-                if not line:
-                    break
+            stdout_lines.append(line)
+            event = self._parse_jsonl_event(line.strip())
 
-                stdout_lines.append(line)
+            if event:
+                events.append(event)
+                self._process_event(event, file_changes)
+                if isinstance(event, TurnCompletedEvent):
+                    usage = event.usage
 
-                # Parse JSONL event
-                event = self._parse_jsonl_event(line.strip())
-                if event:
-                    events.append(event)
+            if time.time() - start_time > timeout:
+                process.kill()
+                return self._create_timeout_state(
+                    stdout_lines, events, file_changes, usage, time.time() - start_time, timeout
+                )
 
-                    # Track file changes (top - level)
-                    if isinstance(event, FileChangeEvent):
-                        file_changes.extend(event.changes)
+        return {
+            "stdout_lines": stdout_lines,
+            "events": events,
+            "file_changes": file_changes,
+            "usage": usage,
+            "timeout": False,
+        }
 
-                    # Track file changes (nested in item.completed)
-                    if isinstance(event, ItemCompletedEvent):
-                        item = event.item
-                        if item.get("type") == "file_change":
-                            changes_data = item.get("changes", [])
-                            for change in changes_data:
-                                file_changes.append(FileChange(**change))
+    def _process_event(
+        self, event: CodexEvent, file_changes: list[FileChange]
+    ) -> None:
+        """Process single event and extract file changes."""
+        if isinstance(event, FileChangeEvent):
+            file_changes.extend(event.changes)
 
-                    # Track usage info
-                    if isinstance(event, TurnCompletedEvent):
-                        usage = event.usage
+        if isinstance(event, ItemCompletedEvent):
+            item = event.item
+            if item.get("type") == "file_change":
+                changes_data = item.get("changes", [])
+                for change in changes_data:
+                    file_changes.append(FileChange(**change))
 
-                # Check timeout
-                elapsed = time.time() - start_time
-                if elapsed > timeout:
-                    process.kill()
-                    return CodexExecutionResult(
-                        status=ExecutionStatus.TIMEOUT,
-                        exit_code=-1,
-                        stdout="".join(stdout_lines),
-                        stderr="",
-                        duration_seconds=elapsed,
-                        events=events,
-                        file_changes=file_changes,
-                        usage=usage,
-                        error_message=f"Execution timeout after {timeout}s",
-                    )
+    def _create_timeout_state(
+        self,
+        stdout_lines: list[str],
+        events: list[CodexEvent],
+        file_changes: list[FileChange],
+        usage: Optional[UsageInfo],
+        elapsed: float,
+        timeout: int,
+    ) -> dict[str, Any]:
+        """Create state dict for timeout scenario."""
+        return {
+            "stdout_lines": stdout_lines,
+            "events": events,
+            "file_changes": file_changes,
+            "usage": usage,
+            "timeout": True,
+            "elapsed": elapsed,
+            "timeout_value": timeout,
+        }
 
-            # Wait for completion
-            process.wait(timeout=max(1, timeout - (time.time() - start_time)))
-
-            # Read stderr
-            if process.stderr:
-                stderr_lines = process.stderr.readlines()
-
-            # Calculate duration
-            duration = time.time() - start_time
-
-            # Determine status
-            exit_code = process.returncode
-            if exit_code == 0:
-                status = ExecutionStatus.SUCCESS
-                error_message = None
-            else:
-                status = ExecutionStatus.FAILED
-                error_message = f"Non - zero exit code: {exit_code}"
-
-            return CodexExecutionResult(
-                status=status,
-                exit_code=exit_code,
-                stdout="".join(stdout_lines),
-                stderr="".join(stderr_lines),
-                duration_seconds=duration,
-                events=events,
-                file_changes=file_changes,
-                usage=usage,
-                error_message=error_message,
-            )
-
-        except subprocess.TimeoutExpired:
-            # Timeout during wait
-            elapsed = time.time() - start_time
+    def _build_result_from_process(
+        self, process: Any, state: dict[str, Any], start_time: float, timeout: int
+    ) -> CodexExecutionResult:
+        """Build result from completed process."""
+        if state.get("timeout"):
             return CodexExecutionResult(
                 status=ExecutionStatus.TIMEOUT,
                 exit_code=-1,
-                stdout="".join(stdout_lines),
-                stderr="".join(stderr_lines),
-                duration_seconds=elapsed,
-                events=events,
-                file_changes=file_changes,
-                usage=usage,
-                error_message=f"Subprocess timeout after {timeout}s",
+                stdout="".join(state["stdout_lines"]),
+                stderr="",
+                duration_seconds=state["elapsed"],
+                events=state["events"],
+                file_changes=state["file_changes"],
+                usage=state["usage"],
+                error_message=f"Execution timeout after {state['timeout_value']}s",
             )
 
-        except Exception as e:
-            # Unexpected error
-            elapsed = time.time() - start_time
-            return CodexExecutionResult(
-                status=ExecutionStatus.FAILED,
-                exit_code=-1,
-                stdout="".join(stdout_lines),
-                stderr="".join(stderr_lines),
-                duration_seconds=elapsed,
-                events=events,
-                file_changes=file_changes,
-                usage=usage,
-                error_message=f"Execution error: {str(e)}",
-            )
+        process.wait(timeout=max(1, timeout - (time.time() - start_time)))
 
-        finally:
-            # Cleanup (Excellence Standard: Resource cleanup)
-            try:
-                if process.poll() is None:
-                    process.kill()
-            except Exception:
-                pass
+        stderr_lines = []
+        if process.stderr:
+            stderr_lines = process.stderr.readlines()
+
+        duration = time.time() - start_time
+        exit_code = process.returncode
+
+        status = ExecutionStatus.SUCCESS if exit_code == 0 else ExecutionStatus.FAILED
+        error_message = None if exit_code == 0 else f"Non - zero exit code: {exit_code}"
+
+        return CodexExecutionResult(
+            status=status,
+            exit_code=exit_code,
+            stdout="".join(state["stdout_lines"]),
+            stderr="".join(stderr_lines),
+            duration_seconds=duration,
+            events=state["events"],
+            file_changes=state["file_changes"],
+            usage=state["usage"],
+            error_message=error_message,
+        )
+
+    def _create_timeout_result(
+        self, elapsed: float, timeout: int, state: dict[str, Any]
+    ) -> CodexExecutionResult:
+        """Create result for timeout exception."""
+        return CodexExecutionResult(
+            status=ExecutionStatus.TIMEOUT,
+            exit_code=-1,
+            stdout="".join(state.get("stdout_lines", [])),
+            stderr="".join(state.get("stderr_lines", [])),
+            duration_seconds=elapsed,
+            events=state.get("events", []),
+            file_changes=state.get("file_changes", []),
+            usage=state.get("usage"),
+            error_message=f"Subprocess timeout after {timeout}s",
+        )
+
+    def _create_error_result(
+        self, error: Exception, elapsed: float, state: dict[str, Any]
+    ) -> CodexExecutionResult:
+        """Create result for general exception."""
+        return CodexExecutionResult(
+            status=ExecutionStatus.FAILED,
+            exit_code=-1,
+            stdout="".join(state.get("stdout_lines", [])),
+            stderr="".join(state.get("stderr_lines", [])),
+            duration_seconds=elapsed,
+            events=state.get("events", []),
+            file_changes=state.get("file_changes", []),
+            usage=state.get("usage"),
+            error_message=f"Execution error: {str(error)}",
+        )
 
 
 # ============================================================================

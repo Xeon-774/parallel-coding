@@ -491,198 +491,244 @@ class WorkerManager:
         """
         session = self.workers.get(worker_id)
         if not session:
-            return TaskResult(
-                worker_id=worker_id,
-                name="Unknown",
-                output="",
-                success=False,
-                error_message="Worker session not found",
-            )
+            return self._create_error_result(worker_id, "Worker session not found")
 
+        self._print_session_header(worker_id, max_iterations)
+
+        try:
+            self._run_session_loop(worker_id, session, max_iterations)
+            return self._build_session_result(worker_id, session)
+        except Exception as e:
+            return self._handle_session_exception(worker_id, session, e)
+
+    def _print_session_header(self, worker_id: str, max_iterations: int) -> None:
+        """Print session initialization header."""
         print(f"\n[INTERACTIVE - SESSION] {worker_id}")
         print(f"  Max iterations: {max_iterations}")
         print("  Monitoring for confirmations...\n")
 
+    def _run_session_loop(
+        self, worker_id: str, session: Any, max_iterations: int
+    ) -> None:
+        """Run the main interactive session loop."""
         iteration = 0
+        while iteration < max_iterations:
+            iteration += 1
+            self._poll_pending_output(session)
 
-        try:
-            while iteration < max_iterations:
-                iteration += 1
+            patterns = self._build_expect_patterns()
 
-                # Phase 2.2: Poll for any pending output before waiting for patterns
-                # This helps capture output that arrives between confirmations
-                self._poll_pending_output(session)
-
-                # Build pattern list for expect
-                patterns = [p[0] for p in self.confirmation_patterns]
-                patterns.append(expect_module.EOF)
-                patterns.append(expect_module.TIMEOUT)
-
-                try:
-                    # Wait for pattern match
-                    # Phase 2.2: Reduced timeout from 30s to 3s for more frequent polling
-                    index = session.child_process.expect(patterns, timeout=3)
-
-                    # Capture output before match
-                    before_text = session.child_process.before
-                    if before_text:
-                        self._append_raw_output(session, before_text)  # NEW: Use helper method
-                        if session.orchestrator_capture:
-                            session.orchestrator_capture.log(before_text.strip(), "OUTPUT")
-
-                        # NEW: Log to dialogue transcript
-                        session.dialogue_transcript.append(
-                            {
-                                "timestamp": time.time(),
-                                "direction": "worker→orchestrator",
-                                "content": before_text,
-                                "type": "output",
-                            }
-                        )
-
-                    # Check if EOF (completed)
-                    if index == len(patterns) - 2:  # EOF
-                        if session.orchestrator_capture:
-                            session.orchestrator_capture.log("Worker finished (EOF)", "COMPLETE")
-                        break
-
-                    # Check if timeout
-                    if index == len(patterns) - 1:  # TIMEOUT
-                        # Phase 2.2: Poll for pending output on timeout
-                        output_found = self._poll_pending_output(session)
-                        if not output_found and session.orchestrator_capture:
-                            session.orchestrator_capture.log("Polling (no new output)", "POLL")
-                        # Continue anyway, might just be processing
-                        continue
-
-                    # Confirmation detected
-                    confirmation = self._parse_confirmation(worker_id, index, session.child_process)
-
-                    if confirmation:
-                        # Phase 2.2: Increment confirmation counter for metrics
-                        session.confirmation_count += 1
-
-                        # Phase 2.2: Record confirmation metrics
-                        decision_start_time = time.time()
-
-                        # Handle confirmation
-                        response = self._handle_confirmation(confirmation)
-
-                        # Phase 2.2: Calculate decision latency and record metric
-                        decision_latency_ms = (time.time() - decision_start_time) * 1000
-                        self.metrics.record_confirmation(
-                            worker_id=worker_id,
-                            confirmation_number=session.confirmation_count,
-                            orchestrator_latency_ms=decision_latency_ms,
-                            response="approved" if response else "skipped",
-                        )
-
-                        # Send response
-                        if response:
-                            session.child_process.sendline(response)
-                            if session.orchestrator_capture:
-                                session.orchestrator_capture.log(response, "SENT")
-
-                            # NEW: Log orchestrator response to dialogue transcript
-                            session.dialogue_transcript.append(
-                                {
-                                    "timestamp": time.time(),
-                                    "direction": "orchestrator→worker",
-                                    "content": response,
-                                    "type": "response",
-                                    "confirmation_type": confirmation.confirmation_type.value,
-                                    "confirmation_message": confirmation.message,
-                                }
-                            )
-                        else:
-                            if session.orchestrator_capture:
-                                session.orchestrator_capture.log("No response sent", "SKIP")
-
-                except expect_module.TIMEOUT:
-                    if session.orchestrator_capture:
-                        session.orchestrator_capture.log(f"Iteration {iteration}", "TIMEOUT")
-                    continue
-
-                except expect_module.EOF:
-                    if session.orchestrator_capture:
-                        session.orchestrator_capture.log(
-                            "Worker finished (EOF exception)", "COMPLETE"
-                        )
-                    break
-
-            # Capture any remaining output
             try:
-                remaining = session.child_process.read()
-                if remaining:
-                    self._append_raw_output(session, remaining)  # NEW: Use helper method
-                    if session.orchestrator_capture:
-                        session.orchestrator_capture.log(remaining.strip(), "FINAL - OUTPUT")
-            except Exception:
-                pass
+                index = session.child_process.expect(patterns, timeout=3)
+                self._process_pattern_match(worker_id, session, index, patterns)
 
-            # Calculate result
-            duration = time.time() - session.started_at
-            output = "\n".join(session.output_lines)
+                # Break if EOF detected
+                if index == len(patterns) - 2:
+                    break
+            except expect_module.TIMEOUT:
+                self._handle_timeout(session, iteration)
+            except expect_module.EOF:
+                self._handle_eof(session)
+                break
 
-            # Check exit status
-            session.child_process.close()
-            exit_code = session.child_process.exitstatus
+        self._capture_remaining_output(session)
 
-            # Determine success: exit code 0 OR (exit code is None but output indicates completion)
-            if exit_code == 0:
-                success = True
-            elif exit_code is not None:
-                success = False
-            else:
-                # Exit code is None - check output for completion indicators
-                completion_patterns = [
-                    "completed!",
-                    "completed",
-                    "finished",
-                    "done",
-                    "success",
-                ]
-                success = any(pattern.lower() in output.lower() for pattern in completion_patterns)
+    def _build_expect_patterns(self) -> list:
+        """Build pattern list for expect matching."""
+        patterns = [p[0] for p in self.confirmation_patterns]
+        patterns.append(expect_module.EOF)
+        patterns.append(expect_module.TIMEOUT)
+        return patterns
 
-            result = TaskResult(
-                worker_id=worker_id,
-                name=session.task_name,
-                output=output,
-                success=success,
-                duration=duration,
-                error_message=None if success else f"Exit code: {exit_code}",
-            )
+    def _process_pattern_match(
+        self, worker_id: str, session: Any, index: int, patterns: list
+    ) -> None:
+        """Process matched pattern from expect."""
+        before_text = session.child_process.before
+        if before_text:
+            self._capture_output(session, before_text)
 
-            # NEW: Save dialogue transcript to files
-            self._save_dialogue_transcript(session)
+        # EOF
+        if index == len(patterns) - 2:
+            if session.orchestrator_capture:
+                session.orchestrator_capture.log("Worker finished (EOF)", "COMPLETE")
+            return
 
-            # Phase 2.2: Record worker completion metrics
-            if success:
-                self.metrics.record_worker_completed(worker_id)
-            else:
-                self.metrics.record_worker_failed(worker_id)
+        # Timeout
+        if index == len(patterns) - 1:
+            output_found = self._poll_pending_output(session)
+            if not output_found and session.orchestrator_capture:
+                session.orchestrator_capture.log("Polling (no new output)", "POLL")
+            return
 
-            print(f"\n[RESULT] {worker_id}")
-            print(f"  Success: {result.success}")
-            print(f"  Duration: {duration:.1f}s")
-            print(f"  Output length: {len(output)} chars\n")
+        # Confirmation detected
+        self._process_confirmation(worker_id, session, index)
 
-            return result
+    def _capture_output(self, session: Any, text: str) -> None:
+        """Capture and log output text."""
+        self._append_raw_output(session, text)
+        if session.orchestrator_capture:
+            session.orchestrator_capture.log(text.strip(), "OUTPUT")
 
-        except Exception as e:
-            self.logger.error(f"Error in interactive session for {worker_id}: {str(e)}")
+        session.dialogue_transcript.append(
+            {
+                "timestamp": time.time(),
+                "direction": "worker→orchestrator",
+                "content": text,
+                "type": "output",
+            }
+        )
 
-            # Phase 2.2: Record worker failure on exception
+    def _process_confirmation(
+        self, worker_id: str, session: Any, pattern_index: int
+    ) -> None:
+        """Process confirmation request and send response."""
+        confirmation = self._parse_confirmation(
+            worker_id, pattern_index, session.child_process
+        )
+
+        if not confirmation:
+            return
+
+        session.confirmation_count += 1
+        decision_start_time = time.time()
+
+        response = self._handle_confirmation(confirmation)
+
+        decision_latency_ms = (time.time() - decision_start_time) * 1000
+        self.metrics.record_confirmation(
+            worker_id=worker_id,
+            confirmation_number=session.confirmation_count,
+            orchestrator_latency_ms=decision_latency_ms,
+            response="approved" if response else "skipped",
+        )
+
+        if response:
+            self._send_confirmation_response(session, confirmation, response)
+        else:
+            if session.orchestrator_capture:
+                session.orchestrator_capture.log("No response sent", "SKIP")
+
+    def _send_confirmation_response(
+        self, session: Any, confirmation: Any, response: str
+    ) -> None:
+        """Send response to confirmation request."""
+        session.child_process.sendline(response)
+        if session.orchestrator_capture:
+            session.orchestrator_capture.log(response, "SENT")
+
+        session.dialogue_transcript.append(
+            {
+                "timestamp": time.time(),
+                "direction": "orchestrator→worker",
+                "content": response,
+                "type": "response",
+                "confirmation_type": confirmation.confirmation_type.value,
+                "confirmation_message": confirmation.message,
+            }
+        )
+
+    def _handle_timeout(self, session: Any, iteration: int) -> None:
+        """Handle timeout during pattern matching."""
+        if session.orchestrator_capture:
+            session.orchestrator_capture.log(f"Iteration {iteration}", "TIMEOUT")
+
+    def _handle_eof(self, session: Any) -> None:
+        """Handle EOF during pattern matching."""
+        if session.orchestrator_capture:
+            session.orchestrator_capture.log("Worker finished (EOF exception)", "COMPLETE")
+
+    def _capture_remaining_output(self, session: Any) -> None:
+        """Capture any remaining output after session loop."""
+        try:
+            remaining = session.child_process.read()
+            if remaining:
+                self._append_raw_output(session, remaining)
+                if session.orchestrator_capture:
+                    session.orchestrator_capture.log(remaining.strip(), "FINAL - OUTPUT")
+        except Exception:
+            pass
+
+    def _build_session_result(self, worker_id: str, session: Any) -> TaskResult:
+        """Build TaskResult from completed session."""
+        duration = time.time() - session.started_at
+        output = "\n".join(session.output_lines)
+
+        session.child_process.close()
+        exit_code = session.child_process.exitstatus
+
+        success = self._determine_success(exit_code, output)
+
+        result = TaskResult(
+            worker_id=worker_id,
+            name=session.task_name,
+            output=output,
+            success=success,
+            duration=duration,
+            error_message=None if success else f"Exit code: {exit_code}",
+        )
+
+        self._save_dialogue_transcript(session)
+
+        if success:
+            self.metrics.record_worker_completed(worker_id)
+        else:
             self.metrics.record_worker_failed(worker_id)
 
-            return TaskResult(
-                worker_id=worker_id,
-                name=session.task_name,
-                output="\n".join(session.output_lines),
-                success=False,
-                duration=time.time() - session.started_at,
-                error_message=str(e),
-            )
+        self._print_result_summary(worker_id, result, duration, output)
+
+        return result
+
+    def _determine_success(self, exit_code: int | None, output: str) -> bool:
+        """Determine if session was successful based on exit code and output."""
+        if exit_code == 0:
+            return True
+        elif exit_code is not None:
+            return False
+        else:
+            completion_patterns = [
+                "completed!",
+                "completed",
+                "finished",
+                "done",
+                "success",
+            ]
+            return any(pattern.lower() in output.lower() for pattern in completion_patterns)
+
+    def _print_result_summary(
+        self, worker_id: str, result: TaskResult, duration: float, output: str
+    ) -> None:
+        """Print session result summary."""
+        print(f"\n[RESULT] {worker_id}")
+        print(f"  Success: {result.success}")
+        print(f"  Duration: {duration:.1f}s")
+        print(f"  Output length: {len(output)} chars\n")
+
+    def _create_error_result(self, worker_id: str, error_message: str) -> TaskResult:
+        """Create error TaskResult."""
+        return TaskResult(
+            worker_id=worker_id,
+            name="Unknown",
+            output="",
+            success=False,
+            error_message=error_message,
+        )
+
+    def _handle_session_exception(
+        self, worker_id: str, session: Any, error: Exception
+    ) -> TaskResult:
+        """Handle exception during session execution."""
+        self.logger.error(f"Error in interactive session for {worker_id}: {str(error)}")
+        self.metrics.record_worker_failed(worker_id)
+
+        return TaskResult(
+            worker_id=worker_id,
+            name=session.task_name,
+            output="\n".join(session.output_lines),
+            success=False,
+            duration=time.time() - session.started_at,
+            error_message=str(error),
+        )
 
     def _parse_confirmation(
         self, worker_id: str, pattern_index: int, child_process: Any
@@ -1074,67 +1120,98 @@ class WorkerManager:
             return
 
         try:
-            import json
-            from datetime import datetime
-
-            # Save JSONL events
-            events_file = session.workspace_dir / "codex_events.jsonl"
-            with open(events_file, "w", encoding="utf - 8") as f:
-                for event in exec_result.events:
-                    f.write(json.dumps(event.model_dump(), ensure_ascii=False) + "\n")
-
-            # Save execution summary
-            summary_file = session.workspace_dir / "codex_summary.txt"
-            with open(summary_file, "w", encoding="utf - 8") as f:
-                f.write("=" * 80 + "\n")
-                f.write(f"CODEX EXECUTION SUMMARY: {session.worker_id}\n")
-                f.write(f"Task: {session.task_name}\n")
-                f.write(
-                    f"Started: {datetime.fromtimestamp(session.started_at).strftime('%Y-%m-%d %H:%M:%S')}\n"
-                )
-                f.write("=" * 80 + "\n\n")
-
-                f.write(f"Status: {exec_result.status.value}\n")
-                f.write(f"Exit Code: {exec_result.exit_code}\n")
-                f.write(f"Duration: {exec_result.duration_seconds:.1f}s\n")
-                f.write(f"Events: {len(exec_result.events)}\n")
-                f.write(f"File Changes: {len(exec_result.file_changes)}\n")
-
-                if exec_result.usage:
-                    f.write("\nToken Usage:\n")
-                    f.write(f"  Input: {exec_result.usage.input_tokens}\n")
-                    f.write(f"  Output: {exec_result.usage.output_tokens}\n")
-
-                if exec_result.created_files:
-                    f.write("\nCreated Files:\n")
-                    for file_path in exec_result.created_files:
-                        f.write(f"  - {file_path}\n")
-
-                if exec_result.modified_files:
-                    f.write("\nModified Files:\n")
-                    for file_path in exec_result.modified_files:
-                        f.write(f"  - {file_path}\n")
-
-                if exec_result.error_message:
-                    f.write("\nError Message:\n")
-                    f.write(f"  {exec_result.error_message}\n")
-
-                f.write("\n" + "=" * 80 + "\n")
-                f.write("STDOUT:\n")
-                f.write("=" * 80 + "\n")
-                f.write(exec_result.stdout)
-
-                if exec_result.stderr:
-                    f.write("\n" + "=" * 80 + "\n")
-                    f.write("STDERR:\n")
-                    f.write("=" * 80 + "\n")
-                    f.write(exec_result.stderr)
-
+            events_file = self._save_codex_events(session, exec_result)
+            summary_file = self._save_codex_summary(session, exec_result)
             print(f"  [LOGS - SAVED] {events_file.name}, {summary_file.name}")
-
         except Exception as e:
             self.logger.error(f"Failed to save Codex logs for {session.worker_id}: {str(e)}")
             print(f"  [ERROR] Failed to save logs: {str(e)}")
+
+    def _save_codex_events(
+        self, session: WorkerSession, exec_result: CodexExecutionResult
+    ) -> Any:
+        """Save Codex events to JSONL file."""
+        import json
+
+        events_file = session.workspace_dir / "codex_events.jsonl"
+        with open(events_file, "w", encoding="utf - 8") as f:
+            for event in exec_result.events:
+                f.write(json.dumps(event.model_dump(), ensure_ascii=False) + "\n")
+        return events_file
+
+    def _save_codex_summary(
+        self, session: WorkerSession, exec_result: CodexExecutionResult
+    ) -> Any:
+        """Save Codex execution summary to text file."""
+        from datetime import datetime
+
+        summary_file = session.workspace_dir / "codex_summary.txt"
+        with open(summary_file, "w", encoding="utf - 8") as f:
+            self._write_summary_header(f, session)
+            self._write_summary_metrics(f, exec_result)
+            self._write_summary_usage(f, exec_result)
+            self._write_summary_files(f, exec_result)
+            self._write_summary_error(f, exec_result)
+            self._write_summary_output(f, exec_result)
+        return summary_file
+
+    def _write_summary_header(self, f: Any, session: WorkerSession) -> None:
+        """Write summary file header."""
+        from datetime import datetime
+
+        f.write("=" * 80 + "\n")
+        f.write(f"CODEX EXECUTION SUMMARY: {session.worker_id}\n")
+        f.write(f"Task: {session.task_name}\n")
+        f.write(
+            f"Started: {datetime.fromtimestamp(session.started_at).strftime('%Y-%m-%d %H:%M:%S')}\n"
+        )
+        f.write("=" * 80 + "\n\n")
+
+    def _write_summary_metrics(self, f: Any, exec_result: CodexExecutionResult) -> None:
+        """Write execution metrics."""
+        f.write(f"Status: {exec_result.status.value}\n")
+        f.write(f"Exit Code: {exec_result.exit_code}\n")
+        f.write(f"Duration: {exec_result.duration_seconds:.1f}s\n")
+        f.write(f"Events: {len(exec_result.events)}\n")
+        f.write(f"File Changes: {len(exec_result.file_changes)}\n")
+
+    def _write_summary_usage(self, f: Any, exec_result: CodexExecutionResult) -> None:
+        """Write token usage if available."""
+        if exec_result.usage:
+            f.write("\nToken Usage:\n")
+            f.write(f"  Input: {exec_result.usage.input_tokens}\n")
+            f.write(f"  Output: {exec_result.usage.output_tokens}\n")
+
+    def _write_summary_files(self, f: Any, exec_result: CodexExecutionResult) -> None:
+        """Write file changes."""
+        if exec_result.created_files:
+            f.write("\nCreated Files:\n")
+            for file_path in exec_result.created_files:
+                f.write(f"  - {file_path}\n")
+
+        if exec_result.modified_files:
+            f.write("\nModified Files:\n")
+            for file_path in exec_result.modified_files:
+                f.write(f"  - {file_path}\n")
+
+    def _write_summary_error(self, f: Any, exec_result: CodexExecutionResult) -> None:
+        """Write error message if present."""
+        if exec_result.error_message:
+            f.write("\nError Message:\n")
+            f.write(f"  {exec_result.error_message}\n")
+
+    def _write_summary_output(self, f: Any, exec_result: CodexExecutionResult) -> None:
+        """Write stdout and stderr."""
+        f.write("\n" + "=" * 80 + "\n")
+        f.write("STDOUT:\n")
+        f.write("=" * 80 + "\n")
+        f.write(exec_result.stdout)
+
+        if exec_result.stderr:
+            f.write("\n" + "=" * 80 + "\n")
+            f.write("STDERR:\n")
+            f.write("=" * 80 + "\n")
+            f.write(exec_result.stderr)
 
     def run_worker_in_thread(self, worker_id: str) -> Tuple[str, TaskResult]:
         """
@@ -1436,10 +1513,9 @@ class WorkerManager:
 
 
 # Example usage
-if __name__ == "__main__":
-    from orchestrator.config import OrchestratorConfig
+def _create_demo_logger() -> Any:
+    """Create simple logger for demo."""
 
-    # Simple logger for demo
     class SimpleLogger:
         def log_worker_spawn(self, worker_id: str, task_name: str, **kwargs: Any) -> None:
             print(f"[LOG] Spawned: {worker_id} - {task_name}")
@@ -1462,24 +1538,33 @@ if __name__ == "__main__":
         def error(self, message: str, **kwargs: Any) -> None:
             print(f"[ERROR] {message} | {kwargs}")
 
-    def user_approval(confirmation: ConfirmationRequest) -> bool:
-        """User approval callback"""
-        print(f"\n{'=' * 60}")
-        print("USER APPROVAL NEEDED")
-        print(f"{'=' * 60}")
-        print(f"Worker: {confirmation.worker_id}")
-        print(f"Type: {confirmation.confirmation_type}")
-        print(f"Message: {confirmation.message}")
-        print(f"Details: {confirmation.details}")
+    return SimpleLogger()
 
-        response = input("\nApprove? (y / n): ").strip().lower()
-        return response == "y"
 
-    # Test
+def _demo_user_approval(confirmation: ConfirmationRequest) -> bool:
+    """User approval callback for demo."""
+    print(f"\n{'=' * 60}")
+    print("USER APPROVAL NEEDED")
+    print(f"{'=' * 60}")
+    print(f"Worker: {confirmation.worker_id}")
+    print(f"Type: {confirmation.confirmation_type}")
+    print(f"Message: {confirmation.message}")
+    print(f"Details: {confirmation.details}")
+
+    response = input("\nApprove? (y / n): ").strip().lower()
+    return response == "y"
+
+
+def _run_demo() -> None:
+    """Run interactive demo of WorkerManager."""
+    from orchestrator.config import OrchestratorConfig
+
     config = OrchestratorConfig.from_env()
-    logger = SimpleLogger()
+    logger = _create_demo_logger()
 
-    manager = WorkerManager(config=config, logger=logger, user_approval_callback=user_approval)
+    manager = WorkerManager(
+        config=config, logger=logger, user_approval_callback=_demo_user_approval
+    )
 
     task = {
         "name": "Test Interactive Mode",
@@ -1497,3 +1582,7 @@ if __name__ == "__main__":
         print(f"Success: {result.success}")
         print(f"Duration: {result.duration:.1f}s")
         print(f"Output:\n{result.output}")
+
+
+if __name__ == "__main__":
+    _run_demo()

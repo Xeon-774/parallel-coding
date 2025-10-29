@@ -474,153 +474,179 @@ class ClaudeAPIProvider:
             >>> for file_op in result.file_operations:
             ...     print(f"File operation: {file_op.operation_type} on {file_op.file_path}")
         """
-        # Validate input
         self._validate_prompt(prompt)
 
         start_time = time.time()
         retry_count = 0
-        last_error: Optional[str] = None
         file_operations: List[FileOperation] = []
 
-        # Retry loop with exponential backoff
         while retry_count <= self.config.max_retries:
             try:
-                # Build messages
-                messages = [{"role": "user", "content": prompt}]
-
-                # Execute API call with tool use
-                response = await asyncio.wait_for(
-                    self.async_client.messages.create(
-                        model=self.config.model,
-                        max_tokens=self.config.max_tokens,
-                        system=system_prompt or "You are a helpful AI coding assistant.",
-                        messages=messages,
-                        tools=self.tools,
-                        temperature=self.config.temperature,
-                    ),
-                    timeout=self.config.timeout_seconds,
+                result = await self._execute_api_call(
+                    prompt, system_prompt, file_operations, start_time, retry_count
                 )
-
-                # Process response and handle tool use
-                output_parts: List[str] = []
-
-                # Handle tool use iterations
-                while response.stop_reason == "tool_use":
-                    # Extract tool use requests
-                    for content_block in response.content:
-                        if content_block.type == "text":
-                            output_parts.append(content_block.text)
-                        elif content_block.type == "tool_use":
-                            # Execute tool
-                            tool_result = await self._execute_tool(
-                                content_block.name, content_block.input
-                            )
-                            file_operations.append(tool_result)
-
-                            # Add tool result to conversation
-                            messages.append({"role": "assistant", "content": response.content})
-                            messages.append(
-                                {
-                                    "role": "user",
-                                    "content": [
-                                        {
-                                            "type": "tool_result",
-                                            "tool_use_id": content_block.id,
-                                            "content": tool_result.content or "Operation completed",
-                                        }
-                                    ],
-                                }
-                            )
-
-                    # Continue conversation with tool results
-                    response = await asyncio.wait_for(
-                        self.async_client.messages.create(
-                            model=self.config.model,
-                            max_tokens=self.config.max_tokens,
-                            system=system_prompt or "You are a helpful AI coding assistant.",
-                            messages=messages,
-                            tools=self.tools,
-                            temperature=self.config.temperature,
-                        ),
-                        timeout=self.config.timeout_seconds,
-                    )
-
-                # Extract final text output
-                for content_block in response.content:
-                    if content_block.type == "text":
-                        output_parts.append(content_block.text)
-
-                output = "\n".join(output_parts)
-
-                # Calculate metrics
-                execution_time = time.time() - start_time
-                tokens_used = response.usage.input_tokens + response.usage.output_tokens
-
-                return ClaudeExecutionResult(
-                    status=ExecutionStatus.SUCCESS,
-                    output=output,
-                    file_operations=file_operations,
-                    error=None,
-                    execution_time_seconds=execution_time,
-                    retry_count=retry_count,
-                    tokens_used=tokens_used,
-                    metadata={"model": self.config.model, "stop_reason": response.stop_reason},
-                )
-
+                return result
             except asyncio.TimeoutError:
-                last_error = "Execution timed out"
                 retry_count += 1
-
                 if retry_count > self.config.max_retries:
-                    return ClaudeExecutionResult(
-                        status=ExecutionStatus.TIMEOUT,
-                        output="",
-                        file_operations=file_operations,
-                        error=f"Timeout after {retry_count} attempts: {last_error}",
-                        execution_time_seconds=time.time() - start_time,
-                        retry_count=retry_count,
+                    return self._create_timeout_result(
+                        file_operations, retry_count, start_time
                     )
-
-                # Exponential backoff
-                backoff_seconds = 2**retry_count
-                await asyncio.sleep(backoff_seconds)
-
+                await asyncio.sleep(2**retry_count)
             except Exception as e:
-                error_str = str(e)
-
-                # Check for rate limit error
-                if "rate_limit" in error_str.lower():
-                    retry_count += 1
-                    if retry_count > self.config.max_retries:
-                        return ClaudeExecutionResult(
-                            status=ExecutionStatus.RATE_LIMITED,
-                            output="",
-                            file_operations=file_operations,
-                            error=f"Rate limit exceeded after {retry_count} attempts",
-                            execution_time_seconds=time.time() - start_time,
-                            retry_count=retry_count,
-                        )
-
-                    # Wait longer for rate limits
-                    await asyncio.sleep(RATE_LIMIT_RETRY_DELAY)
-                    continue
-
-                # Non - retryable error
-                return ClaudeExecutionResult(
-                    status=ExecutionStatus.API_ERROR,
-                    output="",
-                    file_operations=file_operations,
-                    error=error_str,
-                    execution_time_seconds=time.time() - start_time,
-                    retry_count=retry_count,
+                result = self._handle_api_exception(
+                    e, file_operations, retry_count, start_time
                 )
+                if result is not None:
+                    return result
+                retry_count += 1
+                if retry_count > self.config.max_retries:
+                    break
+                await asyncio.sleep(RATE_LIMIT_RETRY_DELAY)
 
-        # Should not reach here
         return ClaudeExecutionResult(
             status=ExecutionStatus.FAILED,
             output="",
             file_operations=file_operations,
             error=f"Max retries ({self.config.max_retries}) exceeded",
+            execution_time_seconds=time.time() - start_time,
+            retry_count=retry_count,
+        )
+
+    async def _execute_api_call(
+        self,
+        prompt: str,
+        system_prompt: Optional[str],
+        file_operations: List[FileOperation],
+        start_time: float,
+        retry_count: int,
+    ) -> ClaudeExecutionResult:
+        """Execute single API call with tool use handling."""
+        messages = [{"role": "user", "content": prompt}]
+
+        response = await asyncio.wait_for(
+            self.async_client.messages.create(
+                model=self.config.model,
+                max_tokens=self.config.max_tokens,
+                system=system_prompt or "You are a helpful AI coding assistant.",
+                messages=messages,
+                tools=self.tools,
+                temperature=self.config.temperature,
+            ),
+            timeout=self.config.timeout_seconds,
+        )
+
+        output_parts = await self._process_tool_use(
+            response, messages, system_prompt, file_operations
+        )
+
+        output = "\n".join(output_parts)
+        execution_time = time.time() - start_time
+        tokens_used = response.usage.input_tokens + response.usage.output_tokens
+
+        return ClaudeExecutionResult(
+            status=ExecutionStatus.SUCCESS,
+            output=output,
+            file_operations=file_operations,
+            error=None,
+            execution_time_seconds=execution_time,
+            retry_count=retry_count,
+            tokens_used=tokens_used,
+            metadata={"model": self.config.model, "stop_reason": response.stop_reason},
+        )
+
+    async def _process_tool_use(
+        self,
+        response: Any,
+        messages: List[Dict[str, Any]],
+        system_prompt: Optional[str],
+        file_operations: List[FileOperation],
+    ) -> List[str]:
+        """Process tool use iterations and return output parts."""
+        output_parts: List[str] = []
+
+        while response.stop_reason == "tool_use":
+            for content_block in response.content:
+                if content_block.type == "text":
+                    output_parts.append(content_block.text)
+                elif content_block.type == "tool_use":
+                    tool_result = await self._execute_tool(
+                        content_block.name, content_block.input
+                    )
+                    file_operations.append(tool_result)
+
+                    messages.append({"role": "assistant", "content": response.content})
+                    messages.append(
+                        {
+                            "role": "user",
+                            "content": [
+                                {
+                                    "type": "tool_result",
+                                    "tool_use_id": content_block.id,
+                                    "content": tool_result.content or "Operation completed",
+                                }
+                            ],
+                        }
+                    )
+
+            response = await asyncio.wait_for(
+                self.async_client.messages.create(
+                    model=self.config.model,
+                    max_tokens=self.config.max_tokens,
+                    system=system_prompt or "You are a helpful AI coding assistant.",
+                    messages=messages,
+                    tools=self.tools,
+                    temperature=self.config.temperature,
+                ),
+                timeout=self.config.timeout_seconds,
+            )
+
+        for content_block in response.content:
+            if content_block.type == "text":
+                output_parts.append(content_block.text)
+
+        return output_parts
+
+    def _handle_api_exception(
+        self,
+        error: Exception,
+        file_operations: List[FileOperation],
+        retry_count: int,
+        start_time: float,
+    ) -> Optional[ClaudeExecutionResult]:
+        """Handle API exceptions and return result if non-retryable."""
+        error_str = str(error)
+
+        if "rate_limit" in error_str.lower():
+            if retry_count + 1 > self.config.max_retries:
+                return ClaudeExecutionResult(
+                    status=ExecutionStatus.RATE_LIMITED,
+                    output="",
+                    file_operations=file_operations,
+                    error=f"Rate limit exceeded after {retry_count + 1} attempts",
+                    execution_time_seconds=time.time() - start_time,
+                    retry_count=retry_count + 1,
+                )
+            return None  # Retry
+
+        return ClaudeExecutionResult(
+            status=ExecutionStatus.API_ERROR,
+            output="",
+            file_operations=file_operations,
+            error=error_str,
+            execution_time_seconds=time.time() - start_time,
+            retry_count=retry_count,
+        )
+
+    def _create_timeout_result(
+        self, file_operations: List[FileOperation], retry_count: int, start_time: float
+    ) -> ClaudeExecutionResult:
+        """Create result for timeout scenario."""
+        return ClaudeExecutionResult(
+            status=ExecutionStatus.TIMEOUT,
+            output="",
+            file_operations=file_operations,
+            error=f"Timeout after {retry_count} attempts",
             execution_time_seconds=time.time() - start_time,
             retry_count=retry_count,
         )
