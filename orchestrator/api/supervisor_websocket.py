@@ -113,15 +113,7 @@ async def supervisor_ws(websocket: WebSocket) -> None:
     Auth via query param `token` or `Authorization: Bearer <token>` header.
     Requires `supervisorId` query string to scope subscription.
     """
-
-    params = websocket.query_params
-    sup_id = params.get("supervisorId")
-    token = params.get("token")
-    if not token:
-        # Try header
-        auth = websocket.headers.get("authorization") or websocket.headers.get("Authorization")
-        if auth and auth.lower().startswith("bearer "):
-            token = auth.split(" ", 1)[1].strip()
+    sup_id, token = _extract_auth_params(websocket)
 
     if not sup_id or not _auth_ok(token):
         await websocket.close(code=4401)
@@ -131,47 +123,86 @@ async def supervisor_ws(websocket: WebSocket) -> None:
     rate = RateLimiter(rate=MAX_MSGS_PER_SEC, per_seconds=1.0)
     queue = await hub.subscribe(sup_id)
 
-    async def _send_heartbeat() -> None:
-        while True:
-            await asyncio.sleep(HEARTBEAT_INTERVAL_SECS)
-            try:
-                await websocket.send_json({"type": "heartbeat", "data": {"timestamp": time.time()}})
-            except Exception:
-                break
-
-    hb_task = asyncio.create_task(_send_heartbeat())
+    hb_task = asyncio.create_task(_send_heartbeat_loop(websocket))
 
     try:
-        last_msg = time.monotonic()
-        while True:
-            now = time.monotonic()
-            if now - last_msg > IDLE_TIMEOUT_SECS:
-                await websocket.close(code=4408)
-                break
-
-            try:
-                # Non - blocking receive to detect client pings / messages
-                recv_task = asyncio.create_task(websocket.receive_text())
-                get_task = asyncio.create_task(queue.get())
-                done, pending = await asyncio.wait(
-                    {recv_task, get_task}, timeout=1.0, return_when=asyncio.FIRST_COMPLETED
-                )
-                if recv_task in done:
-                    _ = recv_task.result()
-                    last_msg = time.monotonic()
-                else:
-                    recv_task.cancel()
-                if get_task in done:
-                    event = get_task.result()
-                    if rate.allow():
-                        await websocket.send_json({"type": event.type, "data": event.data})
-            except WebSocketDisconnect:
-                break
-            except Exception:
-                await websocket.send_json({"type": "error", "data": {"error": "internal"}})
+        await _handle_websocket_messages(websocket, queue, rate)
     finally:
         hb_task.cancel()
         await hub.unsubscribe(sup_id, queue)
+
+
+def _extract_auth_params(websocket: WebSocket) -> tuple[str | None, str | None]:
+    """Extract supervisor ID and auth token from WebSocket."""
+    params = websocket.query_params
+    sup_id = params.get("supervisorId")
+    token = params.get("token")
+
+    if not token:
+        auth = websocket.headers.get("authorization") or websocket.headers.get("Authorization")
+        if auth and auth.lower().startswith("bearer "):
+            token = auth.split(" ", 1)[1].strip()
+
+    return sup_id, token
+
+
+async def _send_heartbeat_loop(websocket: WebSocket) -> None:
+    """Send periodic heartbeat messages."""
+    while True:
+        await asyncio.sleep(HEARTBEAT_INTERVAL_SECS)
+        try:
+            await websocket.send_json({"type": "heartbeat", "data": {"timestamp": time.time()}})
+        except Exception:
+            break
+
+
+async def _handle_websocket_messages(
+    websocket: WebSocket, queue: asyncio.Queue, rate: RateLimiter
+) -> None:
+    """Handle WebSocket message loop with idle timeout."""
+    last_msg = time.monotonic()
+
+    while True:
+        if _check_idle_timeout(last_msg):
+            await websocket.close(code=4408)
+            break
+
+        try:
+            last_msg = await _process_message_or_event(websocket, queue, rate, last_msg)
+        except WebSocketDisconnect:
+            break
+        except Exception:
+            await websocket.send_json({"type": "error", "data": {"error": "internal"}})
+
+
+def _check_idle_timeout(last_msg: float) -> bool:
+    """Check if idle timeout exceeded."""
+    return time.monotonic() - last_msg > IDLE_TIMEOUT_SECS
+
+
+async def _process_message_or_event(
+    websocket: WebSocket, queue: asyncio.Queue, rate: RateLimiter, last_msg: float
+) -> float:
+    """Process incoming message or queue event, return updated last_msg time."""
+    recv_task = asyncio.create_task(websocket.receive_text())
+    get_task = asyncio.create_task(queue.get())
+
+    done, pending = await asyncio.wait(
+        {recv_task, get_task}, timeout=1.0, return_when=asyncio.FIRST_COMPLETED
+    )
+
+    if recv_task in done:
+        _ = recv_task.result()
+        last_msg = time.monotonic()
+    else:
+        recv_task.cancel()
+
+    if get_task in done:
+        event = get_task.result()
+        if rate.allow():
+            await websocket.send_json({"type": event.type, "data": event.data})
+
+    return last_msg
 
 
 # Helper publish functions for other layers
