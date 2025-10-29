@@ -430,7 +430,7 @@ class HybridDecisionEngine:
         template = self.templates.get_api_error_template(request)
 
         if self.verbose:
-            print(f"  ✓ Template: {template.action.UPPER()}")
+            print(f"  ✓ Template: {template.action.upper()}")
             print(f"  Message: {template.message}")
             print(f"  Latency: {latency:.1f}ms")
 

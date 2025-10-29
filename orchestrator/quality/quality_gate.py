@@ -399,7 +399,7 @@ class QualityGateEngine:
     def _run_flake8_check(self) -> tuple[int, list[str]]:
         """Run flake8 check and return issues count and errors."""
         issues = 0
-        errors = []
+        errors: list[str] = []
 
         if "flake8" not in self.config["lint_tools"]:
             return issues, errors

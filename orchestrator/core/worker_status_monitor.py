@@ -370,19 +370,19 @@ class WorkerStatusMonitor:
         # Add progress based on output (0 - 40 points)
         if status.output_lines > 0:
             # Assume 50 output lines = significant progress
-            output_progress = min(40, (status.output_lines / 50) * 40)
-            progress += output_progress
+            output_progress = min(40.0, (status.output_lines / 50) * 40)
+            progress += int(output_progress)
 
         # Add progress based on confirmations (0 - 30 points)
         if status.confirmation_count > 0:
             # Assume 5 confirmations = significant milestones
-            confirmation_progress = min(30, (status.confirmation_count / 5) * 30)
-            progress += confirmation_progress
+            confirmation_progress = min(30.0, (status.confirmation_count / 5) * 30)
+            progress += int(confirmation_progress)
 
         # Add progress based on time (0 - 20 points)
         # Assume 5 minutes = 100% time - based progress
-        time_progress = min(20, (status.elapsed_time / 300) * 20)
-        progress += time_progress
+        time_progress = min(20.0, (status.elapsed_time / 300) * 20)
+        progress += int(time_progress)
 
         # Cap at 95% until actually completed (leave room for final steps)
         return min(95, int(progress))

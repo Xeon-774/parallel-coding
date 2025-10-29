@@ -79,7 +79,7 @@ def open_file_utf8(file_path: str, mode: str = "r", use_bom: bool = True, **kwar
     return open(file_path, mode, encoding=encoding, **kwargs)
 
 
-def safe_write(text: str, file_obj: TextIO = None) -> None:
+def safe_write(text: str, file_obj: TextIO | None = None) -> None:
     """
     Safely write text with UTF - 8 encoding
 

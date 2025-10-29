@@ -22,7 +22,7 @@ from docker.models.containers import Container
 
 from orchestrator.sandbox.sandbox_config import DEFAULT_MEDIUM_RISK, SandboxConfig
 
-logger = logging.get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class SandboxExecutionError(Exception):
@@ -157,7 +157,8 @@ class DockerSandbox:
 
         # Wait for container (blocking, so run in executor)
         loop = asyncio.get_event_loop()
-        result = await loop.run_in_executor(None, lambda: self.container.wait())
+        container = self.container  # Type narrowing for mypy
+        result = await loop.run_in_executor(None, lambda: container.wait())
 
         exit_code = result["StatusCode"]
 

@@ -818,7 +818,7 @@ class WorkerManager:
         # Auto - approve safe operations
         if judgment.should_approve and not judgment.should_escalate:
             # Enhanced logging with safety level detail
-            if judgment.level == SafetyLevel.SAFE:
+            if judgment.level.value == "SAFE":
                 print("    Decision: AUTO - APPROVE:SAFE")
                 print(f"    Details: {judgment.reasoning}")
             else:
@@ -835,10 +835,10 @@ class WorkerManager:
         # Escalate to user if needed
         if judgment.should_escalate:
             # Enhanced logging with safety level detail
-            if judgment.level == SafetyLevel.CAUTION:
+            if judgment.level.value == "CAUTION":
                 print("    Decision: ESCALATE:CAUTION")
                 print(f"    Details: {judgment.reasoning}")
-            elif judgment.level == SafetyLevel.DANGEROUS:
+            elif judgment.level.value == "DANGEROUS":
                 print("    Decision: ESCALATE:DANGEROUS")
                 print(f"    Details: {judgment.reasoning}")
                 if judgment.suggested_modifications:
@@ -875,7 +875,7 @@ class WorkerManager:
                 return "no"
 
         # Prohibited operations
-        if judgment.level == SafetyLevel.PROHIBITED:
+        if judgment.level.value == "PROHIBITED":
             print("    Decision: DENY:PROHIBITED")
             print(f"    Details: {judgment.reasoning}")
 
@@ -1133,6 +1133,8 @@ class WorkerManager:
         """Save Codex events to JSONL file."""
         import json
 
+        if session.workspace_dir is None:
+            raise ValueError("workspace_dir is None")
         events_file = session.workspace_dir / "codex_events.jsonl"
         with open(events_file, "w", encoding="utf - 8") as f:
             for event in exec_result.events:
@@ -1143,6 +1145,8 @@ class WorkerManager:
         self, session: WorkerSession, exec_result: CodexExecutionResult
     ) -> Any:
         """Save Codex execution summary to text file."""
+        if session.workspace_dir is None:
+            raise ValueError("workspace_dir is None")
         summary_file = session.workspace_dir / "codex_summary.txt"
         with open(summary_file, "w", encoding="utf - 8") as f:
             self._write_summary_header(f, session)
@@ -1354,10 +1358,10 @@ class WorkerManager:
         )
 
         # Return results in original worker order
-        results = [results_dict.get(worker_id) for worker_id in worker_ids]
+        results_with_none = [results_dict.get(worker_id) for worker_id in worker_ids]
 
         # Filter out None values (shouldn't happen, but just in case)
-        results = [r for r in results if r is not None]
+        results: list[TaskResult] = [r for r in results_with_none if r is not None]
 
         return results
 

@@ -188,7 +188,7 @@ class MutationTester:
         self, files: list[Path], max_mutations: int
     ) -> list[Mutation]:
         """Generate mutations for given files."""
-        mutations = []
+        mutations: list[Mutation] = []
 
         for file_path in files:
             if len(mutations) >= max_mutations:
