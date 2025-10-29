@@ -885,7 +885,7 @@ def create_default_provider(api_key: Optional[str] = None) -> ClaudeAPIProvider:
 if __name__ == "__main__":
     import sys
 
-    async def main():
+    async def main() -> None:
         """Example usage of Claude API Provider"""
         try:
             # Create provider from environment

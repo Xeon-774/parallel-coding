@@ -19,8 +19,9 @@ Usage:
 
 import logging
 from pathlib import Path
+from typing import Any, Dict, List
 
-from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
@@ -170,7 +171,7 @@ WORKSPACE_ROOT = Path(__file__).parent.parent.parent / "workspace"
 
 
 @app.get("/")
-async def root():
+async def root() -> Dict[str, Any]:
     """
     API root endpoint.
 
@@ -189,7 +190,7 @@ async def root():
 
 
 @app.get("/health")
-async def health_check():
+async def health_check() -> Dict[str, Any]:
     """
     Health check endpoint.
 
@@ -204,7 +205,7 @@ async def health_check():
 
 
 @app.get("/api / v1 / workers")
-async def list_workers():
+async def list_workers() -> Dict[str, Any]:
     """
     List all available workers.
 
@@ -233,7 +234,7 @@ async def list_workers():
 
 
 @app.get("/api / v1 / workers/{worker_id}")
-async def get_worker_info(worker_id: str):
+async def get_worker_info(worker_id: str) -> Dict[str, Any]:
     """
     Get information about a specific worker.
 
@@ -267,7 +268,7 @@ async def get_worker_info(worker_id: str):
 
 
 @app.websocket("/ws / dialogue/{worker_id}")
-async def websocket_dialogue_endpoint(websocket: WebSocket, worker_id: str):
+async def websocket_dialogue_endpoint(websocket: WebSocket, worker_id: str) -> None:
     """
     WebSocket endpoint for streaming worker dialogue.
 
@@ -314,7 +315,7 @@ async def websocket_dialogue_endpoint(websocket: WebSocket, worker_id: str):
 @app.websocket("/ws / terminal/{worker_id}")
 async def websocket_terminal_endpoint(
     websocket: WebSocket, worker_id: str, terminal_type: str = "worker"
-):
+) -> None:
     """
     WebSocket endpoint for streaming raw terminal output.
 
@@ -366,7 +367,7 @@ async def websocket_terminal_endpoint(
 
 
 @app.exception_handler(Exception)
-async def global_exception_handler(request, exc):
+async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
     """
     Global exception handler.
 
@@ -384,7 +385,7 @@ async def global_exception_handler(request, exc):
 
 # Startup and shutdown events
 @app.on_event("startup")
-async def startup_event():
+async def startup_event() -> None:
     """
     Application startup tasks.
 
@@ -414,7 +415,7 @@ async def startup_event():
 
 
 @app.get("/api / v1 / ecosystem / health")
-async def get_ecosystem_health():
+async def get_ecosystem_health() -> Dict[str, Any]:
     """Get comprehensive health status for entire ecosystem"""
     import time
 
@@ -443,7 +444,7 @@ async def get_ecosystem_health():
 
 
 @app.get("/api / v1 / ecosystem / metrics / summary")
-async def get_ecosystem_metrics_summary():
+async def get_ecosystem_metrics_summary() -> Dict[str, Any]:
     """Get aggregate performance metrics across all apps"""
     import random
     import time
@@ -471,7 +472,7 @@ async def get_ecosystem_metrics_summary():
 
 
 @app.get("/api / v1 / ecosystem / status")
-async def get_ecosystem_status():
+async def get_ecosystem_status() -> Dict[str, Any]:
     """Get basic status of ecosystem API"""
     import time
 
@@ -485,20 +486,20 @@ async def get_ecosystem_status():
 
 # ActivityBroadcaster for WebSocket management
 class ActivityBroadcaster:
-    def __init__(self):
-        self.connections: list = []
+    def __init__(self) -> None:
+        self.connections: List[WebSocket] = []
 
-    async def connect(self, websocket: WebSocket):
+    async def connect(self, websocket: WebSocket) -> None:
         await websocket.accept()
         self.connections.append(websocket)
         logger.info(f"Activity feed connection added. Total: {len(self.connections)}")
 
-    def disconnect(self, websocket: WebSocket):
+    def disconnect(self, websocket: WebSocket) -> None:
         if websocket in self.connections:
             self.connections.remove(websocket)
             logger.info(f"Activity feed connection removed. Total: {len(self.connections)}")
 
-    async def broadcast(self, activity: dict):
+    async def broadcast(self, activity: Dict[str, Any]) -> None:
         disconnected = []
         for connection in self.connections:
             try:
@@ -515,7 +516,7 @@ activity_broadcaster = ActivityBroadcaster()
 
 
 @app.websocket("/api / v1 / ecosystem / activity")
-async def websocket_ecosystem_activity(websocket: WebSocket):
+async def websocket_ecosystem_activity(websocket: WebSocket) -> None:
     """WebSocket endpoint for real - time activity feed"""
     from datetime import datetime
 
@@ -583,7 +584,7 @@ async def websocket_ecosystem_activity(websocket: WebSocket):
 
 
 @app.on_event("shutdown")
-async def shutdown_event():
+async def shutdown_event() -> None:
     """
     Application shutdown tasks.
 

@@ -45,7 +45,7 @@ async def get_current_user(
         raise HTTPException(status_code=401, detail="Invalid authentication credentials") from _exc
 
 
-def require_scope(required_scope: str):
+def require_scope(required_scope: str) -> object:
     """Dependency factory for scope checking.
 
     Returns a function suitable as a dependency that validates the caller has

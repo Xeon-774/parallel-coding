@@ -92,7 +92,7 @@ async def list_workers(
     offset: int = Query(0, ge=0, description="Number of results to skip"),
     db: Session = Depends(get_db),
     user: TokenData = Depends(_require_scope("supervisor:read")),
-):
+) -> WorkerListResponse:
     """List workers with optional filters and pagination."""
 
     query = db.query(Worker)
@@ -111,7 +111,7 @@ async def get_worker(
     worker_id: str,
     db: Session = Depends(get_db),
     user: TokenData = Depends(_require_scope("supervisor:read")),
-):
+) -> WorkerResponse:
     """Get a single worker by id."""
 
     worker = db.get(Worker, worker_id)
@@ -125,7 +125,7 @@ async def pause_worker(
     worker_id: str,
     db: Session = Depends(get_db),
     user: TokenData = Depends(_require_scope("supervisor:write")),
-):
+) -> WorkerResponse:
     """Pause worker execution."""
 
     sm = WorkerStateMachine(db)
@@ -143,7 +143,7 @@ async def resume_worker(
     worker_id: str,
     db: Session = Depends(get_db),
     user: TokenData = Depends(_require_scope("supervisor:write")),
-):
+) -> WorkerResponse:
     """Resume worker execution."""
 
     sm = WorkerStateMachine(db)
@@ -161,7 +161,7 @@ async def terminate_worker(
     worker_id: str,
     db: Session = Depends(get_db),
     user: TokenData = Depends(_require_scope("supervisor:write")),
-):
+) -> WorkerResponse:
     """Terminate a worker."""
 
     sm = WorkerStateMachine(db)
@@ -178,7 +178,7 @@ async def terminate_worker(
 async def get_metrics(
     db: Session = Depends(get_db),
     user: TokenData = Depends(_require_scope("supervisor:read")),
-):
+) -> MetricsResponse:
     """Return aggregate worker metrics (total and counts by status)."""
 
     total = db.query(Worker).count()

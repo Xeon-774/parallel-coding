@@ -14,7 +14,7 @@ Rationale:
 
 import io
 import sys
-from typing import TextIO
+from typing import Any, TextIO
 
 # Project - wide encoding standard
 PROJECT_ENCODING = "utf - 8-sig"  # UTF - 8 with BOM
@@ -48,7 +48,7 @@ def configure_console_encoding() -> None:
             )
 
 
-def open_file_utf8(file_path: str, mode: str = "r", use_bom: bool = True, **kwargs) -> TextIO:
+def open_file_utf8(file_path: str, mode: str = "r", use_bom: bool = True, **kwargs: Any) -> TextIO:
     """
     Open file with UTF - 8 encoding (with or without BOM)
 
@@ -107,7 +107,7 @@ def safe_write(text: str, file_obj: TextIO | None = None) -> None:
         print(f"[WARNING] Unicode encoding error: {e}", file=sys.stderr)
 
 
-def safe_print(*args, **kwargs) -> None:
+def safe_print(*args: object, **kwargs: Any) -> None:
     """
     Safe print function with UTF - 8 encoding
 

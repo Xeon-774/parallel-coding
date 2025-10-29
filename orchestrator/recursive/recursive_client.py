@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import asyncio
 import random
-from typing import Any, AsyncGenerator, Dict, Optional
+from typing import Any, AsyncGenerator, Dict, Optional, Type
 
 import httpx
 from pydantic import BaseModel, Field
@@ -150,7 +150,7 @@ class RecursiveOrchestratorClient:
         )
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
+    async def __aexit__(self, exc_type: Optional[Type[BaseException]], exc_val: Optional[BaseException], exc_tb: Optional[object]) -> None:
         """Async context manager exit closing the HTTP client."""
         if self.client is not None:
             await self.client.aclose()

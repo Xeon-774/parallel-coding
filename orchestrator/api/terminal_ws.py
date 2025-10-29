@@ -15,6 +15,7 @@ import logging
 from pathlib import Path
 from typing import AsyncIterator, Optional
 
+from fastapi import WebSocket
 from watchdog.events import FileModifiedEvent, FileSystemEventHandler
 from watchdog.observers import Observer
 
@@ -161,7 +162,7 @@ class TerminalFileMonitor(FileSystemEventHandler):
 
 
 async def terminal_websocket_endpoint(
-    websocket,  # FastAPI WebSocket
+    websocket: WebSocket,
     worker_id: str,
     workspace_root: str = "workspace",
     terminal_type: str = "worker",

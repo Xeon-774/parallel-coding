@@ -74,7 +74,7 @@ class HybridEngineAdapter:
 
     def __init__(
         self, workspace_root: str, wsl_distribution: str = "Ubuntu - 24.04", verbose: bool = False
-    ):
+    ) -> None:
         """
         Initialize adapter
 
@@ -149,7 +149,7 @@ class HybridEngineAdapter:
             details=worker_request.details,
         )
 
-    def _convert_to_safety_judgment(self, decision) -> SafetyJudgment:
+    def _convert_to_safety_judgment(self, decision: Any) -> SafetyJudgment:
         """Convert hybrid engine decision to SafetyJudgment"""
 
         # Map action to safety judgment
@@ -191,7 +191,7 @@ class HybridEngineAdapter:
 
     def _run_async_decision(
         self, worker_id: str, request: HybridConfirmationRequest, context: Dict[str, Any]
-    ):
+    ) -> Any:
         """Run async decision in sync context"""
 
         # Create or reuse event loop

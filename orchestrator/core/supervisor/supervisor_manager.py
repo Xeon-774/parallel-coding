@@ -9,7 +9,7 @@ from __future__ import annotations
 import asyncio
 import math
 from dataclasses import dataclass
-from typing import Dict, Optional
+from typing import Any, Callable, Dict, Optional
 
 from orchestrator.core.ai_safety_judge import AISafetyJudge, Decision
 from orchestrator.core.base_ai_manager import BaseAIManager
@@ -134,7 +134,7 @@ class SupervisorManager(BaseAIManager):
         lowered = text.lower()
         return any(tag in lowered for tag in ("error:", "traceback", "exception"))
 
-    async def retry_with_backoff(self, fn, *args, **kwargs) -> object:
+    async def retry_with_backoff(self, fn: Callable[..., Any], *args: Any, **kwargs: Any) -> object:
         for attempt in range(self._retry.max_retries + 1):
             try:
                 return await fn(*args, **kwargs)

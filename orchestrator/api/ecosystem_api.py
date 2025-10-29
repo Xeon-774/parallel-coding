@@ -17,7 +17,7 @@ import logging
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse
@@ -36,22 +36,22 @@ activity_connections: List[WebSocket] = []
 class ActivityBroadcaster:
     """Manages WebSocket connections for activity broadcasting"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.connections: List[WebSocket] = []
 
-    async def connect(self, websocket: WebSocket):
+    async def connect(self, websocket: WebSocket) -> None:
         """Add a new WebSocket connection"""
         await websocket.accept()
         self.connections.append(websocket)
         logger.info(f"Activity feed connection added. Total: {len(self.connections)}")
 
-    def disconnect(self, websocket: WebSocket):
+    def disconnect(self, websocket: WebSocket) -> None:
         """Remove a WebSocket connection"""
         if websocket in self.connections:
             self.connections.remove(websocket)
             logger.info(f"Activity feed connection removed. Total: {len(self.connections)}")
 
-    async def broadcast(self, activity: Dict):
+    async def broadcast(self, activity: Dict[str, Any]) -> None:
         """Broadcast activity to all connected clients"""
         disconnected = []
         for connection in self.connections:
@@ -71,7 +71,7 @@ activity_broadcaster = ActivityBroadcaster()
 
 
 @router.get("/health")
-async def get_ecosystem_health():
+async def get_ecosystem_health() -> Dict[str, Any]:
     """
     Get comprehensive health status for the entire ecosystem.
 
@@ -141,7 +141,7 @@ async def get_ecosystem_health():
 
 
 @router.get("/metrics / summary")
-async def get_metrics_summary():
+async def get_metrics_summary() -> Dict[str, Any]:
     """
     Get aggregate performance metrics across all apps.
 
@@ -202,7 +202,7 @@ async def get_metrics_summary():
 
 
 @router.websocket("/activity")
-async def websocket_activity_feed(websocket: WebSocket):
+async def websocket_activity_feed(websocket: WebSocket) -> None:
     """
     WebSocket endpoint for real - time activity feed.
 
@@ -297,8 +297,8 @@ async def websocket_activity_feed(websocket: WebSocket):
 
 
 async def broadcast_activity(
-    app: str, message: str, activity_type: str = "info", details: Optional[Dict] = None
-):
+    app: str, message: str, activity_type: str = "info", details: Optional[Dict[str, Any]] = None
+) -> None:
     """
     Broadcast an activity to all connected clients.
 
@@ -325,7 +325,7 @@ async def broadcast_activity(
 
 # Health check for ecosystem API
 @router.get("/status")
-async def get_ecosystem_status():
+async def get_ecosystem_status() -> Dict[str, Any]:
     """
     Get basic status of ecosystem API.
 

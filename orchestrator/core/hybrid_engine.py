@@ -492,7 +492,7 @@ Should I approve or deny this request?"""
 if __name__ == "__main__":
     import asyncio  # noqa: F811
 
-    async def test():
+    async def test() -> None:
         """Test hybrid engine"""
 
         # Create engine

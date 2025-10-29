@@ -314,7 +314,7 @@ class ConnectionManager:
     Thread Safety: Yes (uses asyncio.Lock)
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize connection manager."""
         self.active_connections: Dict[str, list[WebSocket]] = {}
         self._lock = asyncio.Lock()

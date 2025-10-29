@@ -107,7 +107,7 @@ def get_orchestrator(
 @router.post("/job", response_model=SubmitJobResponse, status_code=status.HTTP_202_ACCEPTED)
 async def submit_job(
     payload: SubmitJobRequest, orch: HierarchicalJobOrchestrator = Depends(get_orchestrator)
-):
+) -> SubmitJobResponse:
     jr = await orch.submit_job(
         payload.request, depth=(payload.config.current_depth if payload.config else 0)
     )
@@ -115,7 +115,7 @@ async def submit_job(
 
 
 @router.get("/job/{job_id}", response_model=StatusResponse)
-async def get_job(job_id: str, orch: HierarchicalJobOrchestrator = Depends(get_orchestrator)):
+async def get_job(job_id: str, orch: HierarchicalJobOrchestrator = Depends(get_orchestrator)) -> StatusResponse:
     try:
         jr = await orch.get_status(job_id)
         tree = await orch.get_tree(job_id)
@@ -125,7 +125,7 @@ async def get_job(job_id: str, orch: HierarchicalJobOrchestrator = Depends(get_o
 
 
 @router.delete("/job/{job_id}", response_model=CancelResponse)
-async def cancel_job(job_id: str, orch: HierarchicalJobOrchestrator = Depends(get_orchestrator)):
+async def cancel_job(job_id: str, orch: HierarchicalJobOrchestrator = Depends(get_orchestrator)) -> CancelResponse:
     canceled = await orch.cancel(job_id)
     return CancelResponse(job_id=job_id, canceled=canceled)
 
@@ -134,7 +134,7 @@ async def cancel_job(job_id: str, orch: HierarchicalJobOrchestrator = Depends(ge
 async def get_hierarchy(
     rm: HierarchicalResourceManager = Depends(get_rm),
     orch: HierarchicalJobOrchestrator = Depends(get_orchestrator),
-):
+) -> HierarchyResponse:
     usage = await rm.get_hierarchy_usage()
     # Convert pydantic models to dict for response model typing
     usage_dict = {d: u.model_dump() for d, u in usage.items()}
@@ -143,7 +143,7 @@ async def get_hierarchy(
 
 
 @router.get("/stats", response_model=StatsResponse)
-async def get_stats(orch: HierarchicalJobOrchestrator = Depends(get_orchestrator)):
+async def get_stats(orch: HierarchicalJobOrchestrator = Depends(get_orchestrator)) -> StatsResponse:
     st = orch.stats()
     return StatsResponse(
         submitted=st.get("submitted", 0),
@@ -154,7 +154,7 @@ async def get_stats(orch: HierarchicalJobOrchestrator = Depends(get_orchestrator
 
 
 @router.post("/validate", response_model=ValidationResponse)
-async def validate_config(payload: ValidationRequest):
+async def validate_config(payload: ValidationRequest) -> ValidationResponse:
     # Basic validation handled by pydantic validators; enforce depth limits here too
     try:
         cfg = payload.config

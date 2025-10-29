@@ -514,7 +514,7 @@ def validate_codex_installation() -> bool:
 if __name__ == "__main__":
     import sys
 
-    async def main():
+    async def main() -> None:
         """Example usage of Codex CLI Provider"""
         try:
             # Create provider with custom config

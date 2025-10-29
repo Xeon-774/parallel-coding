@@ -8,7 +8,7 @@ Milestone 1.3: Worker Status UI implementation.
 import asyncio
 import logging
 from pathlib import Path
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 
@@ -42,7 +42,7 @@ def _get_monitor() -> WorkerStatusMonitor:
 
 
 @router.get("/workers")
-async def list_worker_statuses():
+async def list_worker_statuses() -> Dict[str, Any]:
     """Get status for all registered workers."""
     try:
         monitor = _get_monitor()
@@ -57,7 +57,7 @@ async def list_worker_statuses():
 
 
 @router.get("/workers/{worker_id}")
-async def get_worker_status(worker_id: str):
+async def get_worker_status(worker_id: str) -> Dict[str, Any]:
     """Get detailed status for a specific worker."""
     try:
         monitor = _get_monitor()
@@ -73,7 +73,7 @@ async def get_worker_status(worker_id: str):
 
 
 @router.get("/summary")
-async def get_status_summary():
+async def get_status_summary() -> Dict[str, Any]:
     """Get aggregated summary of all workers."""
     try:
         monitor = _get_monitor()
@@ -84,7 +84,7 @@ async def get_status_summary():
 
 
 @router.websocket("/ws/{worker_id}")
-async def worker_status_websocket(websocket: WebSocket, worker_id: str):
+async def worker_status_websocket(websocket: WebSocket, worker_id: str) -> None:
     """WebSocket endpoint for real - time worker status streaming."""
     await websocket.accept()
     logger.info(f"New status WebSocket connection for worker {worker_id}")
@@ -120,7 +120,7 @@ async def worker_status_websocket(websocket: WebSocket, worker_id: str):
 
 
 @router.get("/health")
-async def status_api_health():
+async def status_api_health() -> Dict[str, Any]:
     """Health check for status API."""
     return {
         "status": "healthy",

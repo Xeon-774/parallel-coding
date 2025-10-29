@@ -333,7 +333,7 @@ Respond with APPROVED: or DENIED:"""
 if __name__ == "__main__":
     import asyncio  # noqa: F811
 
-    async def test():
+    async def test() -> None:
         """Simple test"""
         orchestrator = CLIOrchestratorAI(
             workspace=r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\workspace"

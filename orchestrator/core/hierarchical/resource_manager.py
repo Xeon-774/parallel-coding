@@ -24,7 +24,7 @@ Examples:
 from __future__ import annotations
 
 import asyncio
-from typing import Dict, Optional, Tuple
+from typing import AsyncContextManager, Dict, Optional, Tuple
 
 from pydantic import BaseModel, Field, model_validator
 
@@ -228,7 +228,7 @@ class HierarchicalResourceManager:
             return released
 
     # ----------------------------- Context manager ----------------------------
-    async def resource_scope(self, *, job_id: str, depth: int, requested_workers: int):
+    async def resource_scope(self, *, job_id: str, depth: int, requested_workers: int) -> AsyncContextManager[ResourceAllocation]:
         """Async context manager allocating and releasing resources.
 
         Usage:
@@ -243,14 +243,14 @@ class HierarchicalResourceManager:
                 self._depth = depth
                 self.allocated = 0
 
-            async def __aenter__(self):
+            async def __aenter__(self) -> ResourceAllocation:
                 alloc = await self._outer.allocate_resources(
                     job_id=self._job_id, depth=self._depth, requested_workers=requested_workers
                 )
                 self.allocated = alloc.granted
                 return alloc
 
-            async def __aexit__(self, exc_type, exc, tb):
+            async def __aexit__(self, exc_type: Optional[type[BaseException]], exc: Optional[BaseException], tb: Optional[object]) -> None:
                 await self._outer.release_resources(job_id=self._job_id, depth=self._depth)
 
         return _Scope(self)

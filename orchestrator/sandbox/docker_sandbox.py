@@ -14,7 +14,8 @@ Features:
 import asyncio
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional
+from types import TracebackType
+from typing import Any, Dict, Optional, Type
 
 import docker
 from docker.errors import APIError, ContainerError, DockerException
@@ -46,7 +47,7 @@ class DockerSandbox:
     - Auto - cleanup on exit
     """
 
-    def __init__(self, config: Optional[SandboxConfig] = None):
+    def __init__(self, config: Optional[SandboxConfig] = None) -> None:
         """
         Initialize Docker sandbox
 
@@ -175,7 +176,7 @@ class DockerSandbox:
             "duration_seconds": 0.0,  # TODO: Track actual duration
         }
 
-    async def _cleanup(self):
+    async def _cleanup(self) -> None:
         """Cleanup container resources"""
         if self.container:
             try:
@@ -187,11 +188,11 @@ class DockerSandbox:
             finally:
                 self.container = None
 
-    async def __aenter__(self):
+    async def __aenter__(self) -> "DockerSandbox":
         """Context manager entry"""
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
+    async def __aexit__(self, exc_type: Optional[Type[BaseException]], exc_val: Optional[BaseException], exc_tb: Optional[TracebackType]) -> None:
         """Context manager exit"""
         await self._cleanup()
 

@@ -591,7 +591,7 @@ def create_default_manager() -> ClaudeCodexManager:
 if __name__ == "__main__":
     import sys
 
-    async def main():
+    async def main() -> None:
         """Example usage of Claude - Codex Manager"""
         try:
             # Create manager
