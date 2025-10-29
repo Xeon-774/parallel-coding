@@ -139,8 +139,8 @@ class AITaskDecomposer:
             temp_file_normalized = os.path.normpath(temp_file)
             git_bash_path_normalized = os.path.normpath(self.git_bash_path)
 
-            _ =  temp_file_normalized.replace("\\", "/")
-            _ =  git_bash_path_normalized.replace("\\", "/")
+            _ = temp_file_normalized.replace("\\", "/")
+            _ = git_bash_path_normalized.replace("\\", "/")
 
             # Claudeを呼び出し（bashの中ではCLAUDE_CODE_GIT_BASH_PATHは不要）
             cmd = (

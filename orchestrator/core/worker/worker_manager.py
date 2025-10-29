@@ -143,8 +143,8 @@ class OrchestratorTerminalCapture:
         print(formatted.rstrip())
 
 
-from orchestrator.core.common.ai_safety_judge import SafetyLevel
-from orchestrator.core.common.models import ConfirmationRequest, ConfirmationType
+from orchestrator.core.common.ai_safety_judge import SafetyLevel  # noqa: E402
+from orchestrator.core.common.models import ConfirmationRequest, ConfirmationType  # noqa: E402
 
 
 @dataclass
@@ -1192,11 +1192,11 @@ class WorkerManager:
             timeout=timeout,
         )
 
-        print(f"\n{'='*80}")
+        print(f"\n{'=' * 80}")
         print(f"PARALLEL EXECUTION: {len(worker_ids)} workers")
         print(f"Max concurrent: {max_workers}")
         print(f"Timeout: {timeout}s")
-        print(f"{'='*80}\n")
+        print(f"{'=' * 80}\n")
 
         results_dict = {}
         start_time = time.time()
@@ -1263,13 +1263,13 @@ class WorkerManager:
 
         total_elapsed = time.time() - start_time
 
-        print(f"\n{'='*80}")
+        print(f"\n{'=' * 80}")
         print("PARALLEL EXECUTION COMPLETE")
-        print(f"{'='*80}")
+        print(f"{'=' * 80}")
         print(f"Total workers: {total_count}")
         print(f"Completed: {completed_count}")
         print(f"Total time: {total_elapsed:.1f}s")
-        print(f"{'='*80}\n")
+        print(f"{'=' * 80}\n")
 
         self.logger.info(
             "Parallel execution complete",
@@ -1464,9 +1464,9 @@ if __name__ == "__main__":
 
     def user_approval(confirmation: ConfirmationRequest) -> bool:
         """User approval callback"""
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print("USER APPROVAL NEEDED")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
         print(f"Worker: {confirmation.worker_id}")
         print(f"Type: {confirmation.confirmation_type}")
         print(f"Message: {confirmation.message}")
@@ -1491,9 +1491,9 @@ if __name__ == "__main__":
     if session:
         result = manager.run_interactive_session(session.worker_id)
 
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print("FINAL RESULT")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
         print(f"Success: {result.success}")
         print(f"Duration: {result.duration:.1f}s")
         print(f"Output:\n{result.output}")

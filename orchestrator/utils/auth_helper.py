@@ -162,7 +162,7 @@ def setup_claude_token_wsl(
 
     # トークンファイルを作成
     # セキュリティのため、エスケープ処理を行う
-    _ =  token.replace("'", "'\\''")
+    _ = token.replace("'", "'\\''")
 
     cmd_write_token = (
         f"wsl -d {wsl_distribution} bash -c " "\"echo '{escaped_token}' > {config_dir}/token.txt\""

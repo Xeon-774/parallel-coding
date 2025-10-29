@@ -432,7 +432,7 @@ class HybridDecisionEngine:
         """Build question for AI"""
 
         # Format details nicely
-        _ =  "\n".join([f"  - {k}: {v}" for k, v in request.details.items()])
+        _ = "\n".join([f"  - {k}: {v}" for k, v in request.details.items()])
 
         question = """Request Type: {request.confirmation_type.value}
 
@@ -473,7 +473,7 @@ Should I approve or deny this request?"""
 
 # Example usage
 if __name__ == "__main__":
-    import asyncio
+    import asyncio  # noqa: F811
 
     async def test():
         """Test hybrid engine"""

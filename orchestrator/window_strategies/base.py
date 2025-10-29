@@ -60,7 +60,7 @@ class WindowManagerBase(ABC):
         # Initialize screenshot manager if enabled
         self.screenshot_manager: Optional["ScreenshotManager"]
         if self.enable_screenshots:
-            from orchestrator.screenshot_manager import ScreenshotManager
+            from orchestrator.screenshot_manager import ScreenshotManager  # noqa: F811
 
             self.screenshot_manager = ScreenshotManager(str(workspace_root))
         else:

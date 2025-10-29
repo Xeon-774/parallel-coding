@@ -290,7 +290,7 @@ Suggested Alternative:
 
 # Example usage
 if __name__ == "__main__":
-    from orchestrator.core.common.models import ConfirmationRequest, ConfirmationType
+    from orchestrator.core.common.models import ConfirmationRequest, ConfirmationType  # noqa: F811
 
     # Create judge
     judge = AISafetyJudge(workspace_root="./workspace")

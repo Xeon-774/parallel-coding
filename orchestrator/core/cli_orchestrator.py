@@ -103,10 +103,10 @@ Keep your reasoning concise and clear.
             full_question = self._build_full_question(question, context)
 
             if self.verbose:
-                print(f"\n{'='*60}")
+                print(f"\n{'=' * 60}")
                 print(f"[Orchestrator AI] Question from {context['worker_id']}:")
                 print(f"{question[:200]}...")
-                print(f"{'='*60}")
+                print(f"{'=' * 60}")
 
             # Call Claude CLI
             response = await self._call_claude_cli(
@@ -116,7 +116,7 @@ Keep your reasoning concise and clear.
             if self.verbose:
                 print("\n[Orchestrator AI] Response:")
                 print(f"{response[:200]}...")
-                print(f"{'='*60}\n")
+                print(f"{'=' * 60}\n")
 
             # Parse response
             decision = self._parse_response(response)
@@ -331,7 +331,7 @@ Respond with APPROVED: or DENIED:"""
 
 # Example usage
 if __name__ == "__main__":
-    import asyncio
+    import asyncio  # noqa: F811
 
     async def test():
         """Simple test"""
@@ -350,12 +350,12 @@ if __name__ == "__main__":
             },
         )
 
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print("RESULT:")
         print(f"  Action: {decision.action}")
         print(f"  Reasoning: {decision.reasoning}")
         print(f"  Latency: {decision.latency_ms:.0f}ms")
         print(f"  Fallback: {decision.is_fallback}")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
 
     asyncio.run(test())
