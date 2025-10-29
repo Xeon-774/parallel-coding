@@ -332,7 +332,7 @@ class CodexExecutor:
             else:
                 return UnknownEvent(type=event_type, raw_data=data)
 
-        except json.JSONDecodeError as e:
+        except json.JSONDecodeError:
             # Not JSON - skip (might be non - JSON output like banners)
             # Log decode error for debugging (UTF - 8 encoding issues)
             return None

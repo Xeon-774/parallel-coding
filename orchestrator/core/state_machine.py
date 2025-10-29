@@ -236,7 +236,7 @@ class WorkerStateMachine:
         try:
             self.db.commit()
             self.db.refresh(worker)
-        except SQLAlchemyError as e:
+        except SQLAlchemyError:
             self.db.rollback()
             raise
 
@@ -386,7 +386,7 @@ class JobStateMachine:
         try:
             self.db.commit()
             self.db.refresh(job)
-        except SQLAlchemyError as e:
+        except SQLAlchemyError:
             self.db.rollback()
             raise
 

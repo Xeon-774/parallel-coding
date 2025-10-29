@@ -172,8 +172,8 @@ def setup_claude_token_wsl(
         subprocess.run(cmd_write_token, shell=True, check=True)
         print(f"✅ トークンをWSL ({wsl_distribution}) に保存しました。")
         return True
-    except subprocess.CalledProcessError as e:
-        print(f"❌ トークン保存に失敗: {e}")
+    except subprocess.CalledProcessError:
+        print("❌ トークン保存に失敗")
         return False
 
 
@@ -217,8 +217,8 @@ def setup_claude_token_windows(token: Optional[str] = None, use_gui: bool = Fals
             f.write(token)
         print(f"✅ トークンを保存しました: {token_file}")
         return True
-    except Exception as e:
-        print(f"❌ トークン保存に失敗: {e}")
+    except Exception:
+        print("❌ トークン保存に失敗")
         return False
 
 
@@ -250,8 +250,8 @@ def get_token_from_env_or_file() -> Optional[str]:
             if token:
                 print(f"✓ {token_file} からトークンを取得しました")
                 return token
-        except Exception as e:
-            print(f"警告: {token_file} の読み込みに失敗: {e}")
+        except Exception:
+            print(f"警告: {token_file} の読み込みに失敗")
 
     # 3. ホームディレクトリの .claude_token
     token_file = Path.home() / ".claude_token"
@@ -261,8 +261,8 @@ def get_token_from_env_or_file() -> Optional[str]:
             if token:
                 print(f"✓ {token_file} からトークンを取得しました")
                 return token
-        except Exception as e:
-            print(f"警告: {token_file} の読み込みに失敗: {e}")
+        except Exception:
+            print(f"警告: {token_file} の読み込みに失敗")
 
     return None
 
