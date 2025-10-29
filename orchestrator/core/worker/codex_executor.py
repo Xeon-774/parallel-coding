@@ -532,7 +532,7 @@ class CodexExecutor:
             try:
                 if process.poll() is None:
                     process.kill()
-            except:
+            except Exception:
                 pass
 
 

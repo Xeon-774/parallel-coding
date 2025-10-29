@@ -115,7 +115,7 @@ async def worker_status_websocket(websocket: WebSocket, worker_id: str):
     finally:
         try:
             await websocket.close()
-        except:
+        except Exception:
             pass
 
 

@@ -429,7 +429,7 @@ async def dialogue_websocket_endpoint(
             await websocket.close(
                 code=status.WS_1011_INTERNAL_ERROR, reason="Internal server error"
             )
-        except:
+        except Exception:
             pass
 
     finally:

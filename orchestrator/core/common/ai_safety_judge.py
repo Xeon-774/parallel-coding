@@ -255,7 +255,7 @@ class AISafetyJudge:
 
             # Check if target is under workspace
             return target.startswith(workspace)
-        except:
+        except Exception:
             # If path resolution fails, assume unsafe
             return False
 

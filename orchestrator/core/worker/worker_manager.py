@@ -617,7 +617,7 @@ class WorkerManager:
                     self._append_raw_output(session, remaining)  # NEW: Use helper method
                     if session.orchestrator_capture:
                         session.orchestrator_capture.log(remaining.strip(), "FINAL - OUTPUT")
-            except:
+            except Exception:
                 pass
 
             # Calculate result

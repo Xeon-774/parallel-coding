@@ -237,7 +237,7 @@ Respond with APPROVED: or DENIED:"""
                     system_prompt_file.unlink()
                 if question_file.exists():
                     question_file.unlink()
-            except:
+            except Exception:
                 pass  # Ignore cleanup errors
 
     def _parse_response(self, response: str) -> Decision:

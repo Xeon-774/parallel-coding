@@ -222,7 +222,7 @@ class SafetyRulesEngine:
                 or path.parent == self.workspace_root
                 or path == self.workspace_root
             )
-        except:
+        except Exception:
             return False
 
     def _is_in_requirements(self, package: str) -> bool:
@@ -239,7 +239,7 @@ class SafetyRulesEngine:
                     if line.strip() and not line.strip().startswith("#")
                 ]
                 return package.lower() in [p.lower() for p in packages]
-        except:
+        except Exception:
             return False
 
     def _is_important_file(self, file_path: str) -> bool:
