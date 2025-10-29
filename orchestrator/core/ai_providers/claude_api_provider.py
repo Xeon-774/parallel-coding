@@ -89,25 +89,20 @@ class ClaudeAPIError(Exception):
     """Base exception for Claude API errors"""
 
 
-
 class ClaudeAPIKeyError(ClaudeAPIError):
     """Raised when API key is missing or invalid"""
-
 
 
 class ClaudeTimeoutError(ClaudeAPIError):
     """Raised when execution times out"""
 
 
-
 class ClaudeRateLimitError(ClaudeAPIError):
     """Raised when rate limit is exceeded"""
 
 
-
 class ClaudeExecutionError(ClaudeAPIError):
     """Raised when execution fails"""
-
 
 
 # =============================================================================

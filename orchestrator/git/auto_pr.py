@@ -11,13 +11,12 @@ Part of Phase 0 Week 2 - Excellence AI Standard compliance.
 """
 
 import logging
-import os
 import re
 import subprocess
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -480,7 +479,7 @@ def main() -> None:
     result = creator.create_pr(task, auto_push=False)
 
     if result.success:
-        print(f"✅ PR created successfully!")
+        print("✅ PR created successfully!")
         print(f"   Branch: {result.branch_name}")
         print(f"   PR: {result.pr_url}")
     else:

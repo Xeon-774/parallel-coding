@@ -222,7 +222,6 @@ class AISafetyJudge(HybridEngineAdapter):
     """
 
 
-
 # Example usage
 if __name__ == "__main__":
     import time

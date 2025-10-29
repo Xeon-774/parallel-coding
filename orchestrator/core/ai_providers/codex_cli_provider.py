@@ -73,20 +73,16 @@ class CodexError(Exception):
     """Base exception for Codex CLI errors"""
 
 
-
 class CodexCLINotFoundError(CodexError):
     """Raised when Codex CLI is not installed"""
-
 
 
 class CodexTimeoutError(CodexError):
     """Raised when Codex execution times out"""
 
 
-
 class CodexExecutionError(CodexError):
     """Raised when Codex execution fails"""
-
 
 
 # =============================================================================

@@ -29,10 +29,8 @@ class SandboxExecutionError(Exception):
     """Sandbox execution failed"""
 
 
-
 class SandboxTimeoutError(SandboxExecutionError):
     """Sandbox execution timed out"""
-
 
 
 class DockerSandbox:

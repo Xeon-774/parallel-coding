@@ -55,15 +55,12 @@ class ConfigurationError(OrchestratorException):
     """Configuration is invalid or missing"""
 
 
-
 class InvalidWorkspaceError(ConfigurationError):
     """Workspace directory is invalid or inaccessible"""
 
 
-
 class MissingDependencyError(ConfigurationError):
     """Required dependency is not installed or configured"""
-
 
 
 # ============================================================================
@@ -75,10 +72,8 @@ class WorkerError(OrchestratorException):
     """Base exception for worker - related errors"""
 
 
-
 class WorkerSpawnError(WorkerError):
     """Failed to spawn worker process"""
-
 
 
 class WorkerTimeoutError(WorkerError):
@@ -115,7 +110,6 @@ class WorkerCommunicationError(WorkerError):
     """Failed to communicate with worker"""
 
 
-
 # ============================================================================
 # Interactive Mode Errors
 # ============================================================================
@@ -123,7 +117,6 @@ class WorkerCommunicationError(WorkerError):
 
 class InteractiveError(OrchestratorException):
     """Base exception for interactive mode errors"""
-
 
 
 class PseudoTerminalError(InteractiveError):
@@ -168,7 +161,6 @@ class SafetyError(OrchestratorException):
     """Base exception for safety - related errors"""
 
 
-
 class DangerousOperationError(SafetyError):
     """Operation was blocked as dangerous"""
 
@@ -205,10 +197,8 @@ class APIError(OrchestratorException):
     """Base exception for API - related errors"""
 
 
-
 class AuthenticationError(APIError):
     """API authentication failed"""
-
 
 
 class RateLimitError(APIError):
@@ -247,15 +237,12 @@ class TaskError(OrchestratorException):
     """Base exception for task - related errors"""
 
 
-
 class TaskValidationError(TaskError):
     """Task parameters are invalid"""
 
 
-
 class TaskDecompositionError(TaskError):
     """Failed to decompose task into subtasks"""
-
 
 
 class TaskExecutionError(TaskError):
@@ -282,7 +269,6 @@ class TaskExecutionError(TaskError):
 
 class ResourceError(OrchestratorException):
     """Base exception for resource - related errors"""
-
 
 
 class InsufficientResourcesError(ResourceError):

@@ -63,10 +63,8 @@ class CircuitBreakerOpenError(Exception):
     """Raised when circuit breaker is open"""
 
 
-
 class BulkheadFullError(Exception):
     """Raised when bulkhead is at capacity"""
-
 
 
 class CircuitBreaker:

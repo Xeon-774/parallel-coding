@@ -466,20 +466,16 @@ class ReviewProviderError(Exception):
     """Base exception for review provider errors"""
 
 
-
 class ReviewTimeoutError(ReviewProviderError):
     """Raised when review execution times out"""
-
 
 
 class ReviewExecutionError(ReviewProviderError):
     """Raised when review execution fails"""
 
 
-
 class ProviderNotAvailableError(ReviewProviderError):
     """Raised when provider is not available"""
-
 
 
 # =============================================================================
