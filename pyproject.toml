@@ -90,6 +90,34 @@ exclude_lines = [
 [tool.coverage.html]
 directory = "htmlcov"
 
+[tool.quality]
+# Quality Gates Configuration - Phase 0 Week 2
+# Excellence AI Standard (100% compliance)
+
+# Coverage settings
+coverage_threshold = 90.0  # minimum 90% coverage
+coverage_fail_under = 90
+
+# Lint settings
+lint_enabled = true
+lint_auto_fix = true
+lint_max_line_length = 100
+lint_tools = ["flake8", "black", "isort"]
+
+# Type check settings
+type_check_enabled = true
+type_check_strict = true
+type_check_tool = "mypy"
+
+# Security scan settings
+security_scan_enabled = true
+security_scan_tool = "bandit"
+security_severity_level = "medium"  # low, medium, high
+
+# Auto-fix settings
+auto_fix_enabled = true
+auto_fix_safe_only = true
+
 [build-system]
 requires = ["setuptools>=45", "wheel", "setuptools_scm>=6.2"]
 build-backend = "setuptools.build_meta"

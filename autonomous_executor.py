@@ -17,6 +17,7 @@
 
 import asyncio
 import json
+import os
 import subprocess
 import sys
 import time
@@ -185,12 +186,17 @@ class AutonomousExecutor:
         # デモ用: 3秒待機
         await asyncio.sleep(3)
 
-        # 実際の実装例:
+        # 実際の実装例 (Python 3.13 fix applied):
+        # env = os.environ.copy()
+        # env['PYTHON_BASIC_REPL'] = '1'  # Fix Python 3.13 _pyrepl console handle errors
+        # env['PYTHONUNBUFFERED'] = '1'
         # result = subprocess.run(
         #     ["codex", "exec", task.description, "--full-auto"],
         #     capture_output=True,
         #     text=True,
-        #     cwd=self.workspace
+        #     cwd=self.workspace,
+        #     env=env,
+        #     stdin=subprocess.DEVNULL
         # )
         # return result.returncode == 0
 
