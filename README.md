@@ -78,10 +78,10 @@
   - Codex wrapper scripts (codex_bg.py, codex_bg.bat)
 - **📈 Code Quality Improvements**:
   - Lint issues: 598 → 16 (-97.3%)
-  - **C901 complexity: 16 → 6 (-62.5%)** 🔥 **NEWEST!**
+  - **C901 complexity: 16 → 5 (-68.75%)** 🔥🔥 **NEWEST!**
   - Type errors: 26 → 21 (-19.2%)
   - Auto-fix tool: fix_lint_issues.py
-  - 10 complex functions refactored (40+ helpers extracted)
+  - 11 complex functions refactored (45+ helpers extracted)
 - **🔄 CI/CD Integration**: GitHub Actions workflows
   - Automated quality gates
   - Codecov integration
