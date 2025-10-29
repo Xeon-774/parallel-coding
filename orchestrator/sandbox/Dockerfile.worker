@@ -1,0 +1,29 @@
+# Hermetic Worker Sandbox - Docker Base Image
+# Phase 0 Week 2 - MVP Implementation
+
+FROM python:3.11-slim
+
+# Security: Run as non-root user
+RUN useradd -m -u 1000 -s /bin/bash worker && \
+    mkdir -p /workspace /artifacts /cache && \
+    chown -R worker:worker /workspace /artifacts /cache
+
+# Install essential tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    curl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies (base set)
+COPY requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir -r /tmp/requirements.txt && rm /tmp/requirements.txt
+
+# Set working directory
+WORKDIR /workspace
+
+# Switch to non-root user
+USER worker
+
+# Default command (overridden by sandbox runner)
+CMD ["/bin/bash"]
