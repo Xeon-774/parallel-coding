@@ -218,73 +218,103 @@ class MutationTester:
         """Create a mutation for a line of code."""
         line_stripped = line.strip()
 
-        # Skip comments and empty lines
         if not line_stripped or line_stripped.startswith("#"):
             return None
 
-        # Arithmetic mutations
-        if MutationType.ARITHMETIC in self.mutation_types:
-            if " + " in line:
-                return Mutation(
-                    mutation_type=MutationType.ARITHMETIC,
-                    file_path=file_path,
-                    line_number=line_num,
-                    original=line.rstrip(),
-                    mutated=line.replace(" + ", " - ", 1).rstrip(),
-                    description=f"Replace + with - at line {line_num}",
-                )
-            if " - " in line and "return" not in line_stripped:
-                return Mutation(
-                    mutation_type=MutationType.ARITHMETIC,
-                    file_path=file_path,
-                    line_number=line_num,
-                    original=line.rstrip(),
-                    mutated=line.replace(" - ", " + ", 1).rstrip(),
-                    description=f"Replace - with + at line {line_num}",
-                )
+        # Try each mutation type in order
+        mutation = self._try_arithmetic_mutation(file_path, line_num, line, line_stripped)
+        if mutation:
+            return mutation
 
-        # Comparison mutations
-        if MutationType.COMPARISON in self.mutation_types:
-            if " == " in line:
-                return Mutation(
-                    mutation_type=MutationType.COMPARISON,
-                    file_path=file_path,
-                    line_number=line_num,
-                    original=line.rstrip(),
-                    mutated=line.replace(" == ", " != ", 1).rstrip(),
-                    description=f"Replace == with != at line {line_num}",
-                )
-            if " < " in line:
-                return Mutation(
-                    mutation_type=MutationType.COMPARISON,
-                    file_path=file_path,
-                    line_number=line_num,
-                    original=line.rstrip(),
-                    mutated=line.replace(" < ", " > ", 1).rstrip(),
-                    description=f"Replace < with > at line {line_num}",
-                )
+        mutation = self._try_comparison_mutation(file_path, line_num, line)
+        if mutation:
+            return mutation
 
-        # Return value mutations
-        if MutationType.RETURN in self.mutation_types:
-            if "return True" in line:
-                return Mutation(
-                    mutation_type=MutationType.RETURN,
-                    file_path=file_path,
-                    line_number=line_num,
-                    original=line.rstrip(),
-                    mutated=line.replace("return True", "return False", 1).rstrip(),
-                    description=f"Replace return True with return False at line {line_num}",
-                )
-            if "return False" in line:
-                return Mutation(
-                    mutation_type=MutationType.RETURN,
-                    file_path=file_path,
-                    line_number=line_num,
-                    original=line.rstrip(),
-                    mutated=line.replace("return False", "return True", 1).rstrip(),
-                    description=f"Replace return False with return True at line {line_num}",
-                )
+        mutation = self._try_return_mutation(file_path, line_num, line)
+        if mutation:
+            return mutation
 
+        return None
+
+    def _try_arithmetic_mutation(
+        self, file_path: str, line_num: int, line: str, line_stripped: str
+    ) -> Mutation | None:
+        """Try to create arithmetic mutation."""
+        if MutationType.ARITHMETIC not in self.mutation_types:
+            return None
+
+        if " + " in line:
+            return Mutation(
+                mutation_type=MutationType.ARITHMETIC,
+                file_path=file_path,
+                line_number=line_num,
+                original=line.rstrip(),
+                mutated=line.replace(" + ", " - ", 1).rstrip(),
+                description=f"Replace + with - at line {line_num}",
+            )
+        if " - " in line and "return" not in line_stripped:
+            return Mutation(
+                mutation_type=MutationType.ARITHMETIC,
+                file_path=file_path,
+                line_number=line_num,
+                original=line.rstrip(),
+                mutated=line.replace(" - ", " + ", 1).rstrip(),
+                description=f"Replace - with + at line {line_num}",
+            )
+        return None
+
+    def _try_comparison_mutation(
+        self, file_path: str, line_num: int, line: str
+    ) -> Mutation | None:
+        """Try to create comparison mutation."""
+        if MutationType.COMPARISON not in self.mutation_types:
+            return None
+
+        if " == " in line:
+            return Mutation(
+                mutation_type=MutationType.COMPARISON,
+                file_path=file_path,
+                line_number=line_num,
+                original=line.rstrip(),
+                mutated=line.replace(" == ", " != ", 1).rstrip(),
+                description=f"Replace == with != at line {line_num}",
+            )
+        if " < " in line:
+            return Mutation(
+                mutation_type=MutationType.COMPARISON,
+                file_path=file_path,
+                line_number=line_num,
+                original=line.rstrip(),
+                mutated=line.replace(" < ", " > ", 1).rstrip(),
+                description=f"Replace < with > at line {line_num}",
+            )
+        return None
+
+    def _try_return_mutation(
+        self, file_path: str, line_num: int, line: str
+    ) -> Mutation | None:
+        """Try to create return value mutation."""
+        if MutationType.RETURN not in self.mutation_types:
+            return None
+
+        if "return True" in line:
+            return Mutation(
+                mutation_type=MutationType.RETURN,
+                file_path=file_path,
+                line_number=line_num,
+                original=line.rstrip(),
+                mutated=line.replace("return True", "return False", 1).rstrip(),
+                description=f"Replace return True with return False at line {line_num}",
+            )
+        if "return False" in line:
+            return Mutation(
+                mutation_type=MutationType.RETURN,
+                file_path=file_path,
+                line_number=line_num,
+                original=line.rstrip(),
+                mutated=line.replace("return False", "return True", 1).rstrip(),
+                description=f"Replace return False with return True at line {line_num}",
+            )
         return None
 
     def _test_mutation(self, mutation: Mutation) -> bool:
