@@ -25,7 +25,7 @@ Usage:
 """
 
 import logging
-from typing import Generator
+from typing import Any, Dict, Generator
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import Engine, create_engine, event
@@ -108,6 +108,7 @@ def create_db_engine(settings: DatabaseSettings) -> Engine:
     """
     is_sqlite = settings.database_url.startswith("sqlite")
 
+    engine_kwargs: Dict[str, Any]
     if is_sqlite:
         # SQLite: Use StaticPool for in - memory, NullPool for file - based
         connect_args = {"check_same_thread": False}
@@ -117,7 +118,7 @@ def create_db_engine(settings: DatabaseSettings) -> Engine:
         }
     else:
         # PostgreSQL: Use connection pooling
-        engine_kwargs: Dict[str, Any] = {
+        engine_kwargs = {
             "pool_size": settings.pool_size,
             "max_overflow": settings.max_overflow,
             "pool_timeout": settings.pool_timeout,
