@@ -79,7 +79,7 @@ class SupervisorManager(BaseAIManager):
     # BaseAIManager overrides
     def configure(self, config: Dict[str, object]) -> None:
         self._retry = RetryConfig(
-            max_retries=int(config.get("max_retries", self._retry.max_retries)),  # type: ignore[arg-type]
+            max_retries=int(config.get("max_retries", self._retry.max_retries)),
             base_delay=float(config.get("base_delay", self._retry.base_delay)),  # type: ignore[arg-type]
             max_delay=float(config.get("max_delay", self._retry.max_delay)),  # type: ignore[arg-type]
         )
