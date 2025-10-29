@@ -28,6 +28,7 @@ from orchestrator.core.ai_providers.base_review_provider import (
     ReviewPerspective,
     ReviewRequest,
     ReviewResult,
+    ReviewType,
 )
 from orchestrator.core.hierarchical.resource_manager import (
     HierarchicalResourceManager,
@@ -371,7 +372,7 @@ class HierarchicalJobOrchestrator:
     async def parallel_review(
         self,
         document_path: str,
-        review_type: str,
+        review_type: ReviewType,
         perspectives: List[ReviewPerspective],
         provider: str = "auto",
     ) -> AggregatedReview:

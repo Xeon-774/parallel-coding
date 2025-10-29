@@ -101,7 +101,7 @@ async def submit_job(
     db.refresh(job)
 
     sm = JobStateMachine(db)
-    job = sm.transition_job(job.id, JobStatus.PENDING)
+    job = sm.transition_job(str(job.id), JobStatus.PENDING)
     return JobResponse.model_validate(job)
 
 

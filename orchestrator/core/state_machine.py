@@ -210,7 +210,7 @@ class WorkerStateMachine:
             raise EntityNotFoundError("Worker", worker_id)
 
         # Validate transition
-        if not self.can_transition(worker.status, to_state):
+        if not self.can_transition(WorkerStatus(worker.status), to_state):  # type: ignore[arg-type]
             raise StateTransitionError(
                 from_state=worker.status.value, to_state=to_state.value, entity_id=worker_id
             )
@@ -351,7 +351,7 @@ class JobStateMachine:
             raise EntityNotFoundError("Job", job_id)
 
         # Validate transition
-        if not self.can_transition(job.status, to_state):
+        if not self.can_transition(JobStatus(job.status), to_state):  # type: ignore[arg-type]
             raise StateTransitionError(
                 from_state=job.status.value, to_state=to_state.value, entity_id=job_id
             )

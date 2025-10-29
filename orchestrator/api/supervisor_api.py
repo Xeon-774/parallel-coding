@@ -103,7 +103,7 @@ async def list_workers(
 
     total = query.count()
     workers = query.offset(offset).limit(limit).all()
-    return WorkerListResponse(workers=workers, total=total, limit=limit, offset=offset)
+    return WorkerListResponse(workers=list(workers), total=total, limit=limit, offset=offset)
 
 
 @router.get("/workers/{worker_id}", response_model=WorkerResponse)
