@@ -138,6 +138,8 @@ class DialogueFileMonitor(FileSystemEventHandler):
         if not self._validate_resources():
             return
 
+        assert self._lock is not None and self._new_entries is not None, "Monitor not started"
+
         async with self._lock:
             try:
                 if not self.transcript_file.exists():

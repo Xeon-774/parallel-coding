@@ -71,6 +71,8 @@ class TerminalFileMonitor(FileSystemEventHandler):
         if not self.terminal_file.exists():
             return
 
+        assert self._lock is not None and self._new_lines is not None, "Monitor not started"
+
         try:
             async with self._lock:
                 with open(self.terminal_file, "r", encoding="utf - 8", errors="replace") as f:
