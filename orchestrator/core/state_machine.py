@@ -219,8 +219,8 @@ class WorkerStateMachine:
         from_state = worker.status
 
         # Update worker status
-        worker.status = to_state
-        worker.updated_at = datetime.utcnow()
+        worker.status = to_state  # type: ignore[assignment]
+        worker.updated_at = datetime.utcnow()  # type: ignore[assignment]
 
         # Log transition to audit trail
         transition = WorkerStateTransition(
@@ -360,7 +360,7 @@ class JobStateMachine:
         from_state = job.status
 
         # Update job status
-        job.status = to_state
+        job.status = to_state  # type: ignore[assignment]
 
         # Update timestamps based on state
         now = datetime.utcnow()

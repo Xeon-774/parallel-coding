@@ -317,7 +317,7 @@ async def broadcast_activity(
     }
 
     if details:
-        activity["details"] = details
+        activity["details"] = details  # type: ignore[assignment]
 
     await activity_broadcaster.broadcast(activity)
     logger.info(f"Broadcast activity: {app} - {message}")
