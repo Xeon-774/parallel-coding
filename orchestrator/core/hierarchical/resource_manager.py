@@ -1,22 +1,22 @@
-"""Hierarchical resource manager with depth-based quotas.
+"""Hierarchical resource manager with depth - based quotas.
 
-This module provides an async, thread-safe resource manager for hierarchical
+This module provides an async, thread - safe resource manager for hierarchical
 orchestration. It enforces quotas per depth, tracks allocations by job, and
 exposes usage metrics suitable for dashboards.
 
 Design goals:
-- Non-blocking, asyncio-friendly
+- Non - blocking, asyncio - friendly
 - Atomic allocation and release
-- Depth-scoped quotas with warning thresholds
+- Depth - scoped quotas with warning thresholds
 - Leak detection and safe cleanup
 
 Examples:
     >>> import asyncio
     >>> async def main():
     ...     rm = HierarchicalResourceManager()
-    ...     alloc = await rm.allocate_resources(job_id="job-1", depth=1, requested_workers=3)
+    ...     alloc = await rm.allocate_resources(job_id="job - 1", depth=1, requested_workers=3)
     ...     assert alloc.granted == 3
-    ...     await rm.release_resources(job_id="job-1", depth=1)
+    ...     await rm.release_resources(job_id="job - 1", depth=1)
     ...
     >>> asyncio.run(main())
 """
@@ -90,7 +90,7 @@ class AllocationError(RuntimeError):
 
 
 class HierarchicalResourceManager:
-    """Depth-scoped resource manager with atomic operations.
+    """Depth - scoped resource manager with atomic operations.
 
     The manager is safe for concurrent use by async tasks. Each allocation
     is recorded per job and depth, allowing precise release and leak checks.

@@ -40,7 +40,7 @@ class TokenInputDialog:
 
         info = tk.Label(
             frame,
-            text="https://claude.ai/settings/developer でトークンを生成",
+            text="https://claude.ai / settings / developer でトークンを生成",
             fg="blue",
             cursor="hand2",
             font=("Arial", 9),
@@ -51,9 +51,9 @@ class TokenInputDialog:
         def open_url(event: tk.Event[tk.Misc]) -> None:
             import webbrowser
 
-            webbrowser.open("https://claude.ai/settings/developer")
+            webbrowser.open("https://claude.ai / settings / developer")
 
-        info.bind("<Button-1>", open_url)
+        info.bind("<Button - 1>", open_url)
 
         # トークン入力
         token_entry = scrolledtext.ScrolledText(frame, height=6, wrap=tk.WORD, font=("Courier", 9))
@@ -106,7 +106,7 @@ class TokenInputDialog:
 class WSLClaudeSetup:
     """WSL Claude CLI 自動セットアップ"""
 
-    def __init__(self, wsl_distribution: str = "Ubuntu-24.04"):
+    def __init__(self, wsl_distribution: str = "Ubuntu - 24.04"):
         self.wsl_distribution = wsl_distribution
         self.process: Optional[subprocess.Popen[str]] = None
         self.output_buffer: list[str] = []
@@ -142,7 +142,7 @@ class WSLClaudeSetup:
             output_lines = []
             start_time = time.time()
 
-            # Type guard: process is guaranteed to be non-None here
+            # Type guard: process is guaranteed to be non - None here
             assert self.process is not None
             assert self.process.stdout is not None
 
@@ -181,10 +181,10 @@ class WSLClaudeSetup:
 
     def check_claude_installed(self) -> bool:
         """Claude CLIがインストールされているか確認"""
-        print("[1/4] Claude CLI インストール確認中...")
+        print("[1 / 4] Claude CLI インストール確認中...")
 
         success, output = self.run_wsl_command(
-            "~/.local/bin/claude --version 2>/dev/null || echo 'not installed'", timeout=10
+            "~/.local / bin / claude --version 2>/dev / null || echo 'not installed'", timeout=10
         )
 
         if success and "not installed" not in output:
@@ -196,11 +196,11 @@ class WSLClaudeSetup:
 
     def install_claude_cli(self) -> bool:
         """Claude CLIをインストール"""
-        print("[2/4] Claude CLI インストール中...")
+        print("[2 / 4] Claude CLI インストール中...")
         print("  公式インストールスクリプトを実行します...")
 
         success, output = self.run_wsl_command(
-            "curl -fsSL https://claude.ai/install.sh | bash", timeout=180
+            "curl -fsSL https://claude.ai / install.sh | bash", timeout=180
         )
 
         if success:
@@ -214,21 +214,22 @@ class WSLClaudeSetup:
         """
         対話的にトークンを設定
 
-        setup-token コマンドを実行し、トークン入力が必要になったら
+        setup - token コマンドを実行し、トークン入力が必要になったら
         GUIダイアログを表示して入力を求める
         """
-        print("[3/4] トークン設定中...")
+        print("[3 / 4] トークン設定中...")
 
         # まず、既にトークンが設定されているかチェック
         success, output = self.run_wsl_command(
-            "test -f ~/.config/claude/token.txt && echo 'exists' || echo 'not exists'", timeout=10
+            "test -f ~/.config / claude / token.txt && echo 'exists' || echo 'not exists'",
+            timeout=10,
         )
 
         if "exists" in output:
             print("  [OK] トークン既に設定済み")
             # 認証確認
             success, output = self.run_wsl_command(
-                "~/.local/bin/claude --print <<< 'test' 2>&1", timeout=15
+                "~/.local / bin / claude --print <<< 'test' 2>&1", timeout=15
             )
             if success and "Invalid API key" not in output:
                 print("  [OK] 認証成功")
@@ -255,12 +256,12 @@ class WSLClaudeSetup:
         print("  トークンをWSLに保存中...")
 
         # 設定ディレクトリ作成
-        self.run_wsl_command("mkdir -p ~/.config/claude", timeout=10)
+        self.run_wsl_command("mkdir -p ~/.config / claude", timeout=10)
 
         # トークンを保存（エスケープ処理）
         escaped_token = token.replace("'", "'\\''")
         success, output = self.run_wsl_command(
-            f"echo '{escaped_token}' > ~/.config/claude/token.txt", timeout=10
+            f"echo '{escaped_token}' > ~/.config / claude / token.txt", timeout=10
         )
 
         if not success:
@@ -270,7 +271,7 @@ class WSLClaudeSetup:
         # 認証確認
         print("  認証を確認中...")
         success, output = self.run_wsl_command(
-            "~/.local/bin/claude --print <<< 'Hello' 2>&1", timeout=20
+            "~/.local / bin / claude --print <<< 'Hello' 2>&1", timeout=20
         )
 
         if success and "Invalid API key" not in output:
@@ -282,10 +283,10 @@ class WSLClaudeSetup:
 
     def verify_setup(self) -> bool:
         """セットアップを検証"""
-        print("[4/4] セットアップ検証中...")
+        print("[4 / 4] セットアップ検証中...")
 
         # バージョン確認
-        success, output = self.run_wsl_command("~/.local/bin/claude --version", timeout=10)
+        success, output = self.run_wsl_command("~/.local / bin / claude --version", timeout=10)
 
         if not success:
             print("  [X] Claude CLI が正しくインストールされていません")
@@ -296,11 +297,11 @@ class WSLClaudeSetup:
         # 簡単なテスト実行
         print("  簡単なテストを実行中...")
         success, output = self.run_wsl_command(
-            "~/.local/bin/claude --print <<< 'Say hello in one word' 2>&1", timeout=20
+            "~/.local / bin / claude --print <<< 'Say hello in one word' 2>&1", timeout=20
         )
 
         if success and len(output) > 0 and "Invalid API key" not in output:
-            print(f"  [OK] テスト成功")
+            print("  [OK] テスト成功")
             print(f"  Claude応答: {output[:100]}")
             return True
         else:
@@ -323,7 +324,7 @@ class WSLClaudeSetup:
             if not self.install_claude_cli():
                 return False
         else:
-            print("[2/4] インストール -> スキップ (既にインストール済み)")
+            print("[2 / 4] インストール -> スキップ (既にインストール済み)")
 
         # 3. トークン設定
         if not self.setup_token_interactive():
@@ -339,7 +340,7 @@ class WSLClaudeSetup:
         print("=" * 70)
         print()
         print("次のステップ:")
-        print("  python tests/test_simple_worker_wsl.py")
+        print("  python tests / test_simple_worker_wsl.py")
         print()
 
         return True
@@ -353,7 +354,7 @@ def main() -> None:
     if len(sys.argv) > 1:
         distribution = sys.argv[1]
     else:
-        distribution = "Ubuntu-24.04"
+        distribution = "Ubuntu - 24.04"
 
     setup = WSLClaudeSetup(wsl_distribution=distribution)
 

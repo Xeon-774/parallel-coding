@@ -47,7 +47,7 @@ class TestWorkerLifecycleMetrics:
         assert metrics_file.exists()
 
         # Verify metric content
-        with open(metrics_file, "r", encoding="utf-8") as f:
+        with open(metrics_file, "r", encoding="utf - 8") as f:
             line = f.readline().strip()
             metric = json.loads(line)
 
@@ -183,7 +183,7 @@ class TestMetricsRetrieval:
     """Test metrics retrieval and aggregation"""
 
     def test_get_metrics_empty(self, metrics_collector):
-        """Test retrieving metrics for non-existent worker"""
+        """Test retrieving metrics for non - existent worker"""
         metrics = metrics_collector.get_metrics("nonexistent_worker")
         assert metrics == []
 
@@ -252,7 +252,7 @@ class TestJSONLFormat:
 
         # Read file manually
         metrics_file = temp_workspace / worker_id / "metrics.jsonl"
-        with open(metrics_file, "r", encoding="utf-8") as f:
+        with open(metrics_file, "r", encoding="utf - 8") as f:
             lines = f.readlines()
 
         # Verify each line is valid JSON

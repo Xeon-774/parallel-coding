@@ -1,5 +1,5 @@
 """
-Integration Test: Claude-Codex Collaboration
+Integration Test: Claude - Codex Collaboration
 
 This script tests the real collaboration between Claude (orchestrator)
 and Codex (worker) using the ClaudeCodexManager.
@@ -15,7 +15,7 @@ Usage:
     python test_integration_claude_codex.py
 
 Author: Claude (Sonnet 4.5)
-Created: 2025-10-27
+Created: 2025 - 10 - 27
 """
 
 import asyncio
@@ -35,13 +35,13 @@ from orchestrator.core.manager.claude_codex_manager import (
 async def test_simple_task():
     """Test simple task: email validator"""
     print("=" * 70)
-    print("🧪 Integration Test: Claude-Codex Collaboration")
+    print("🧪 Integration Test: Claude - Codex Collaboration")
     print("=" * 70)
     print()
 
     try:
         # Step 1: Initialize Manager
-        print("📦 Step 1: Initializing Claude-Codex Manager...")
+        print("📦 Step 1: Initializing Claude - Codex Manager...")
         # Create test workspace
         workspace_dir = Path("./test_workspace")
         workspace_dir.mkdir(parents=True, exist_ok=True)
@@ -74,7 +74,7 @@ async def test_simple_task():
 
         # Step 3: Execute task
         print("🚀 Step 3: Executing task (Claude orchestrates, Codex generates)...")
-        print("   This may take 30-60 seconds...")
+        print("   This may take 30 - 60 seconds...")
         print()
 
         results = await manager.execute_task(user_task)
@@ -131,7 +131,7 @@ async def test_simple_task():
         # Final verdict
         if success_rate >= 80:
             print("✅ INTEGRATION TEST PASSED")
-            print("   Claude-Codex collaboration is working correctly!")
+            print("   Claude - Codex collaboration is working correctly!")
         else:
             print("⚠️  INTEGRATION TEST NEEDS REVIEW")
             print(f"   Success rate {success_rate:.1f}% is below 80% threshold")
@@ -183,10 +183,10 @@ async def main():
         ],
     }
 
-    report_file = Path("./test_results/claude_codex_integration.json")
+    report_file = Path("./test_results / claude_codex_integration.json")
     report_file.parent.mkdir(parents=True, exist_ok=True)
 
-    with open(report_file, "w", encoding="utf-8") as f:
+    with open(report_file, "w", encoding="utf - 8") as f:
         json.dump(report, f, indent=2, ensure_ascii=False)
 
     print(f"   Report saved: {report_file}")

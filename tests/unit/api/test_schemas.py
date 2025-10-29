@@ -72,7 +72,7 @@ class TestJobSubmitRequestValidation:
             )
 
     def test_worker_count_valid_range(self):
-        """Test worker_count valid range (1-1000)."""
+        """Test worker_count valid range (1 - 1000)."""
         request1 = JobSubmitRequest(task_description="test", worker_count=1)
         request2 = JobSubmitRequest(task_description="test", worker_count=1000)
 
@@ -127,9 +127,9 @@ class TestJobSubmitRequestValidation:
         request = JobSubmitRequest(
             task_description="test",
             worker_count=5,
-            parent_job_id="parent-job-123",
+            parent_job_id="parent - job - 123",
         )
-        assert request.parent_job_id == "parent-job-123"
+        assert request.parent_job_id == "parent - job - 123"
 
     def test_all_fields_specified(self):
         """Test creating request with all fields specified."""
@@ -137,13 +137,13 @@ class TestJobSubmitRequestValidation:
             task_description="Complex task",
             worker_count=10,
             depth=2,
-            parent_job_id="parent-456",
+            parent_job_id="parent - 456",
         )
 
         assert request.task_description == "Complex task"
         assert request.worker_count == 10
         assert request.depth == 2
-        assert request.parent_job_id == "parent-456"
+        assert request.parent_job_id == "parent - 456"
 
 
 # ======================= JobResponse Tests =======================
@@ -156,7 +156,7 @@ class TestJobResponseCreation:
         """Test creating valid job response."""
         now = datetime.now()
         response = JobResponse(
-            id="job-123",
+            id="job - 123",
             depth=0,
             worker_count=5,
             task_description="Build project",
@@ -166,7 +166,7 @@ class TestJobResponseCreation:
             updated_at=now,
         )
 
-        assert response.id == "job-123"
+        assert response.id == "job - 123"
         assert response.depth == 0
         assert response.worker_count == 5
         assert response.task_description == "Build project"
@@ -179,17 +179,17 @@ class TestJobResponseCreation:
         """Test job response with parent_job_id."""
         now = datetime.now()
         response = JobResponse(
-            id="job-child",
+            id="job - child",
             depth=1,
             worker_count=3,
             task_description="Subtask",
-            parent_job_id="job-parent",
+            parent_job_id="job - parent",
             status=JobStatus.RUNNING,
             created_at=now,
             updated_at=now,
         )
 
-        assert response.parent_job_id == "job-parent"
+        assert response.parent_job_id == "job - parent"
         assert response.depth == 1
 
     def test_job_response_all_statuses(self):
@@ -238,11 +238,11 @@ class TestJobResponseSerialization:
         """Test converting JobResponse to dict."""
         now = datetime.now()
         response = JobResponse(
-            id="job-789",
+            id="job - 789",
             depth=2,
             worker_count=7,
             task_description="Complex task",
-            parent_job_id="job-456",
+            parent_job_id="job - 456",
             status=JobStatus.COMPLETED,
             created_at=now,
             updated_at=now,
@@ -250,18 +250,18 @@ class TestJobResponseSerialization:
 
         response_dict = response.dict()
 
-        assert response_dict["id"] == "job-789"
+        assert response_dict["id"] == "job - 789"
         assert response_dict["depth"] == 2
         assert response_dict["worker_count"] == 7
         assert response_dict["task_description"] == "Complex task"
-        assert response_dict["parent_job_id"] == "job-456"
+        assert response_dict["parent_job_id"] == "job - 456"
         assert response_dict["status"] == JobStatus.COMPLETED
 
     def test_job_response_to_json(self):
         """Test converting JobResponse to JSON."""
         now = datetime.now()
         response = JobResponse(
-            id="job-json",
+            id="job - json",
             depth=0,
             worker_count=1,
             task_description="JSON test",
@@ -273,7 +273,7 @@ class TestJobResponseSerialization:
 
         json_str = response.json()
 
-        assert "job-json" in json_str
+        assert "job - json" in json_str
         assert "JSON test" in json_str
         assert "pending" in json_str.lower()
 
@@ -281,11 +281,11 @@ class TestJobResponseSerialization:
         """Test JSON serialization round trip."""
         now = datetime.now()
         response1 = JobResponse(
-            id="job-round-trip",
+            id="job - round - trip",
             depth=1,
             worker_count=3,
             task_description="Round trip test",
-            parent_job_id="parent-xyz",
+            parent_job_id="parent - xyz",
             status=JobStatus.RUNNING,
             created_at=now,
             updated_at=now,

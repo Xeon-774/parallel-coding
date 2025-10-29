@@ -1,7 +1,7 @@
 """
 Resilience Patterns for Production Systems (v9.0)
 
-World-class resilience patterns:
+World - class resilience patterns:
 - Circuit Breaker pattern
 - Retry with exponential backoff and jitter
 - Bulkhead isolation
@@ -34,8 +34,8 @@ class CircuitBreakerConfig:
     """Configuration for circuit breaker"""
 
     failure_threshold: int = 5  # Failures before opening
-    success_threshold: int = 2  # Successes to close from half-open
-    timeout: float = 60.0  # Seconds before trying half-open
+    success_threshold: int = 2  # Successes to close from half - open
+    timeout: float = 60.0  # Seconds before trying half - open
     expected_exceptions: Tuple[Type[BaseException], ...] = (Exception,)
 
 
@@ -330,7 +330,7 @@ class ResilientOperation:
 
         Order of execution:
         1. Bulkhead (resource limiting)
-        2. Circuit Breaker (fail-fast)
+        2. Circuit Breaker (fail - fast)
         3. Retry (transient failure handling)
         4. Function execution
         """
@@ -445,12 +445,12 @@ if __name__ == "__main__":
         try:
             breaker.call(failing_service)
         except (ValueError, CircuitBreakerOpenError) as e:
-            print(f"  Attempt {i+1}: {type(e).__name__}")
+            print(f"  Attempt {i + 1}: {type(e).__name__}")
 
     print(f"  Circuit status: {breaker.status}")
 
     # Test 2: Retry Strategy
-    print("\nTest 2: Retry with Exponential Backoff")
+    print("\nTest 2: Retry with Exponential Backof")
     print("-" * 70)
 
     retry_config = RetryConfig(max_attempts=3, initial_delay=0.1)

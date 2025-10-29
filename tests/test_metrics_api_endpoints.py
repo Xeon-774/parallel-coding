@@ -2,8 +2,8 @@
 Test Metrics API Endpoints
 
 Tests for the new hybrid engine metrics endpoints:
-- /api/v1/metrics/current
-- /api/v1/decisions/recent
+- /api / v1 / metrics / current
+- /api / v1 / decisions / recent
 """
 
 import pytest
@@ -19,8 +19,8 @@ def client():
 
 
 def test_get_current_metrics_structure(client):
-    """Test that /api/v1/metrics/current returns correct structure"""
-    response = client.get("/api/v1/metrics/current")
+    """Test that /api / v1 / metrics / current returns correct structure"""
+    response = client.get("/api / v1 / metrics / current")
     assert response.status_code == 200
 
     data = response.json()
@@ -49,7 +49,7 @@ def test_get_current_metrics_structure(client):
     assert data["average_latency_ms"] >= 0
     assert 0 <= data["rules_percentage"] <= 100
 
-    print(f"✅ Metrics endpoint works!")
+    print("✅ Metrics endpoint works!")
     print(f"   Total decisions: {data['total_decisions']}")
     print(f"   Rules decisions: {data['rules_decisions']} ({data['rules_percentage']:.1f}%)")
     print(f"   AI decisions: {data['ai_decisions']}")
@@ -59,7 +59,7 @@ def test_get_current_metrics_structure(client):
 
 def test_get_current_metrics_math(client):
     """Test that metrics calculations are correct"""
-    response = client.get("/api/v1/metrics/current")
+    response = client.get("/api / v1 / metrics / current")
     assert response.status_code == 200
 
     data = response.json()
@@ -82,8 +82,8 @@ def test_get_current_metrics_math(client):
 
 
 def test_get_recent_decisions_structure(client):
-    """Test that /api/v1/decisions/recent returns correct structure"""
-    response = client.get("/api/v1/decisions/recent?limit=10")
+    """Test that /api / v1 / decisions / recent returns correct structure"""
+    response = client.get("/api / v1 / decisions / recent?limit=10")
     assert response.status_code == 200
 
     data = response.json()
@@ -112,14 +112,14 @@ def test_get_recent_decisions_structure(client):
         assert isinstance(decision["confirmation_type"], str)
         assert isinstance(decision["reasoning"], str)
 
-        print(f"✅ Decisions endpoint works!")
+        print("✅ Decisions endpoint works!")
         print(f"   Found {len(data)} recent decisions")
         print(f"   Latest decision: {decision['decided_by']} at {decision['timestamp']}")
 
 
 def test_get_recent_decisions_sorting(client):
     """Test that decisions are sorted by timestamp (descending)"""
-    response = client.get("/api/v1/decisions/recent?limit=100")
+    response = client.get("/api / v1 / decisions / recent?limit=100")
     assert response.status_code == 200
 
     data = response.json()
@@ -134,8 +134,8 @@ def test_get_recent_decisions_sorting(client):
 
 def test_get_recent_decisions_limit(client):
     """Test that limit parameter works"""
-    response_10 = client.get("/api/v1/decisions/recent?limit=10")
-    response_5 = client.get("/api/v1/decisions/recent?limit=5")
+    response_10 = client.get("/api / v1 / decisions / recent?limit=10")
+    response_5 = client.get("/api / v1 / decisions / recent?limit=5")
 
     assert response_10.status_code == 200
     assert response_5.status_code == 200
@@ -154,7 +154,7 @@ def test_get_recent_decisions_limit(client):
 def test_metrics_with_no_workspace(client, tmp_path, monkeypatch):
     """Test metrics endpoint when no workspace exists"""
     # This test ensures graceful handling of missing data
-    response = client.get("/api/v1/metrics/current")
+    response = client.get("/api / v1 / metrics / current")
     assert response.status_code == 200
 
     data = response.json()
@@ -164,8 +164,8 @@ def test_metrics_with_no_workspace(client, tmp_path, monkeypatch):
 
 def test_integration_metrics_and_decisions(client):
     """Test that metrics and decisions are consistent"""
-    metrics_response = client.get("/api/v1/metrics/current")
-    decisions_response = client.get("/api/v1/decisions/recent?limit=1000")
+    metrics_response = client.get("/api / v1 / metrics / current")
+    decisions_response = client.get("/api / v1 / decisions / recent?limit=1000")
 
     assert metrics_response.status_code == 200
     assert decisions_response.status_code == 200
@@ -184,8 +184,8 @@ def test_integration_metrics_and_decisions(client):
     assert metrics["template_fallbacks"] == template_count
     assert metrics["total_decisions"] == len(decisions)
 
-    print(f"✅ Integration test passed!")
-    print(f"   Metrics and decisions are consistent")
+    print("✅ Integration test passed!")
+    print("   Metrics and decisions are consistent")
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Windows環境での高負荷計算テスト
 
@@ -49,7 +49,7 @@ Pythonで以下の計算タスクを実行してください：
 """
 
     print("タスク内容:")
-    print("  1. 素数探索 (10000-11000)")
+    print("  1. 素数探索 (10000 - 11000)")
     print("  2. フィボナッチ数 (40番目)")
     print("  3. 円周率近似 (モンテカルロ法、100万回試行)")
     print()
@@ -96,7 +96,7 @@ Pythonで以下の計算タスクを実行してください：
             print("=" * 80)
             print("ワーカー詳細出力")
             print("=" * 80)
-            with open(worker_output, "r", encoding="utf-8") as f:
+            with open(worker_output, "r", encoding="utf - 8") as f:
                 print(f.read())
 
     except Exception as e:

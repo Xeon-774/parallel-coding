@@ -148,7 +148,7 @@ def test_dialogue_monitor_with_existing_file(temp_workspace, sample_entries):
     transcript = temp_workspace / "dialogue_transcript.jsonl"
 
     # Write sample entries
-    with open(transcript, "w", encoding="utf-8") as f:
+    with open(transcript, "w", encoding="utf - 8") as f:
         for entry in sample_entries:
             f.write(json.dumps(entry) + "\n")
 
@@ -163,7 +163,7 @@ def test_dialogue_monitor_with_existing_file(temp_workspace, sample_entries):
 
 @pytest.mark.asyncio
 async def test_get_historical_entries_empty(temp_workspace):
-    """get_historical_entries returns empty list for non-existent file."""
+    """get_historical_entries returns empty list for non - existent file."""
     monitor = DialogueFileMonitor(temp_workspace)
     entries = await monitor.get_historical_entries()
 
@@ -176,7 +176,7 @@ async def test_get_historical_entries_with_data(temp_workspace, sample_entries):
     transcript = temp_workspace / "dialogue_transcript.jsonl"
 
     # Write sample entries
-    with open(transcript, "w", encoding="utf-8") as f:
+    with open(transcript, "w", encoding="utf - 8") as f:
         for entry in sample_entries:
             f.write(json.dumps(entry) + "\n")
 
@@ -196,7 +196,7 @@ async def test_get_historical_entries_with_limit(temp_workspace, sample_entries)
     transcript = temp_workspace / "dialogue_transcript.jsonl"
 
     # Write sample entries
-    with open(transcript, "w", encoding="utf-8") as f:
+    with open(transcript, "w", encoding="utf - 8") as f:
         for entry in sample_entries:
             f.write(json.dumps(entry) + "\n")
 
@@ -223,7 +223,7 @@ async def test_read_new_entries(temp_workspace, sample_entries):
     monitor._lock = asyncio.Lock()
 
     # Write entries
-    with open(transcript, "w", encoding="utf-8") as f:
+    with open(transcript, "w", encoding="utf - 8") as f:
         for entry in sample_entries:
             f.write(json.dumps(entry) + "\n")
 
@@ -251,7 +251,7 @@ async def test_read_new_entries_incremental(temp_workspace):
     transcript = temp_workspace / "dialogue_transcript.jsonl"
 
     # Write initial entry
-    with open(transcript, "w", encoding="utf-8") as f:
+    with open(transcript, "w", encoding="utf - 8") as f:
         f.write(
             json.dumps(
                 {"timestamp": 1000.0, "direction": "test", "content": "initial", "type": "output"}
@@ -271,7 +271,7 @@ async def test_read_new_entries_incremental(temp_workspace):
         await monitor._new_entries.get()
 
     # Append new entry
-    with open(transcript, "a", encoding="utf-8") as f:
+    with open(transcript, "a", encoding="utf - 8") as f:
         f.write(
             json.dumps(
                 {"timestamp": 2000.0, "direction": "test", "content": "new", "type": "output"}
@@ -303,7 +303,7 @@ async def test_read_new_entries_handles_invalid_json(temp_workspace):
     monitor._lock = asyncio.Lock()
 
     # Write mix of valid and invalid entries
-    with open(transcript, "w", encoding="utf-8") as f:
+    with open(transcript, "w", encoding="utf - 8") as f:
         f.write(
             json.dumps(
                 {"timestamp": 1000.0, "direction": "test", "content": "valid1", "type": "output"}
@@ -336,7 +336,7 @@ async def test_read_new_entries_handles_file_truncation(temp_workspace):
     transcript = temp_workspace / "dialogue_transcript.jsonl"
 
     # Write initial content
-    with open(transcript, "w", encoding="utf-8") as f:
+    with open(transcript, "w", encoding="utf - 8") as f:
         f.write(
             json.dumps(
                 {"timestamp": 1000.0, "direction": "test", "content": "initial", "type": "output"}
@@ -352,7 +352,7 @@ async def test_read_new_entries_handles_file_truncation(temp_workspace):
     monitor._lock = asyncio.Lock()
 
     # Write shorter content (simulates file being replaced with smaller file)
-    with open(transcript, "w", encoding="utf-8") as f:
+    with open(transcript, "w", encoding="utf - 8") as f:
         f.write(
             json.dumps(
                 {"timestamp": 2000.0, "direction": "test", "content": "new", "type": "output"}
@@ -382,7 +382,7 @@ async def test_read_new_entries_handles_empty_lines(temp_workspace):
     monitor._lock = asyncio.Lock()
 
     # Write entries with empty lines
-    with open(transcript, "w", encoding="utf-8") as f:
+    with open(transcript, "w", encoding="utf - 8") as f:
         f.write(
             json.dumps(
                 {"timestamp": 1000.0, "direction": "test", "content": "entry1", "type": "output"}
@@ -531,7 +531,7 @@ async def test_monitor_watch_with_pre_existing_entries(temp_workspace):
     monitor._lock = asyncio.Lock()
 
     # Write entries after creating monitor
-    with open(transcript, "w", encoding="utf-8") as f:
+    with open(transcript, "w", encoding="utf - 8") as f:
         f.write(
             json.dumps(
                 {"timestamp": 1000.0, "direction": "test", "content": "entry1", "type": "output"}

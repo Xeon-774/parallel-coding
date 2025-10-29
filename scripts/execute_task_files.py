@@ -1,18 +1,18 @@
-#!/usr/bin/env python
+#!/usr / bin / env python
 """
 Task File Executor for Parallel AI App
 
-Execute pre-defined task files directly without AI-driven decomposition.
+Execute pre - defined task files directly without AI - driven decomposition.
 This allows running detailed task files (like WORKER_1_MANAGER_AI_CORE.md)
 in parallel using the orchestrator system.
 
 Usage:
-    python scripts/execute_task_files.py task1.md task2.md [task3.md ...]
+    python scripts / execute_task_files.py task1.md task2.md [task3.md ...]
 
 Example:
-    python scripts/execute_task_files.py \
-        tasks/WORKER_1_MANAGER_AI_CORE.md \
-        tasks/WORKER_3_HIERARCHICAL_CORE.md
+    python scripts / execute_task_files.py \
+        tasks / WORKER_1_MANAGER_AI_CORE.md \
+        tasks / WORKER_3_HIERARCHICAL_CORE.md
 
 Features:
 - Reads task files and extracts content
@@ -22,7 +22,7 @@ Features:
 - Full Excellence AI Standard enforcement via task files
 
 Author: Claude (Sonnet 4.5)
-Created: 2025-10-25
+Created: 2025 - 10 - 25
 Version: 1.0.0
 """
 
@@ -70,10 +70,10 @@ class SimpleLogger:
 
 class TaskFileExecutor:
     """
-    Execute pre-defined task files in parallel.
+    Execute pre - defined task files in parallel.
 
     This class reads task markdown files and executes them using
-    the parallel AI orchestrator without requiring AI-driven task
+    the parallel AI orchestrator without requiring AI - driven task
     decomposition.
     """
 
@@ -90,18 +90,18 @@ class TaskFileExecutor:
         Args:
             config: Orchestrator configuration
             logger: Logger instance
-            auto_approve_caution: Auto-approve CAUTION-level operations (default: True)
+            auto_approve_caution: Auto - approve CAUTION - level operations (default: True)
                                  WorkerManager handles all safety levels:
-                                 - SAFE: Always auto-approved
+                                 - SAFE: Always auto - approved
                                  - CAUTION: Escalated to this callback
-                                 - DANGEROUS/PROHIBITED: Always denied
+                                 - DANGEROUS / PROHIBITED: Always denied
             use_codex: Use Codex workers instead of Claude workers (default: False)
         """
         self.config = config
         self.logger = logger
         self.use_codex = use_codex
 
-        # Callback for CAUTION-level operations escalated by WorkerManager
+        # Callback for CAUTION - level operations escalated by WorkerManager
         user_callback = self._approve_caution_operations if auto_approve_caution else None
 
         self.worker_manager = WorkerManager(config, logger, user_approval_callback=user_callback)
@@ -109,16 +109,16 @@ class TaskFileExecutor:
 
     def _approve_caution_operations(self, confirmation_request) -> bool:
         """
-        Approve CAUTION-level operations for pre-defined tasks.
+        Approve CAUTION - level operations for pre - defined tasks.
 
-        WorkerManager escalates only CAUTION-level operations to this callback.
-        For task file execution, we trust pre-defined tasks.
+        WorkerManager escalates only CAUTION - level operations to this callback.
+        For task file execution, we trust pre - defined tasks.
 
         Args:
             confirmation_request: Confirmation request from WorkerManager
 
         Returns:
-            True (approve all CAUTION operations for pre-defined tasks)
+            True (approve all CAUTION operations for pre - defined tasks)
         """
         return True
 
@@ -140,7 +140,7 @@ class TaskFileExecutor:
             raise FileNotFoundError(f"Task file not found: {task_file_path}")
 
         # Read task file content
-        with open(task_file_path, "r", encoding="utf-8") as f:
+        with open(task_file_path, "r", encoding="utf - 8") as f:
             content = f.read()
 
         if not content.strip():
@@ -152,7 +152,7 @@ class TaskFileExecutor:
         # Load Codex worker system prompt
         codex_prompt_path = Path(__file__).parent.parent / "CODEX_WORKER_SYSTEM_PROMPT.md"
         if codex_prompt_path.exists():
-            with open(codex_prompt_path, "r", encoding="utf-8") as f:
+            with open(codex_prompt_path, "r", encoding="utf - 8") as f:
                 codex_prompt = f.read()
         else:
             # Fallback if Codex prompt doesn't exist
@@ -161,7 +161,7 @@ Execute this task completely with excellence_ai_standard 100% compliance.
 DO NOT ask for permission repeatedly. Proceed with implementation immediately."""
 
         # Combine Codex prompt + task content
-        prompt = f"""{codex_prompt}
+        prompt = """{codex_prompt}
 
 ---
 
@@ -171,7 +171,7 @@ DO NOT ask for permission repeatedly. Proceed with implementation immediately.""
 
 ---
 
-**START EXECUTION NOW. This task is pre-approved.**
+**START EXECUTION NOW. This task is pre - approved.**
 """
 
         return {"name": task_name, "prompt": prompt, "source_file": str(task_file_path)}
@@ -187,7 +187,7 @@ DO NOT ask for permission repeatedly. Proceed with implementation immediately.""
             True if all tasks completed successfully
         """
         print(f"\n{'='*70}")
-        print(f"PARALLEL TASK FILE EXECUTION")
+        print("PARALLEL TASK FILE EXECUTION")
         print(f"{'='*70}")
         print(f"Tasks to execute: {len(task_files)}")
         for i, task_file in enumerate(task_files, 1):
@@ -234,10 +234,10 @@ DO NOT ask for permission repeatedly. Proceed with implementation immediately.""
                 return False
 
         print(f"\n{'='*70}")
-        print(f"MONITORING WORKERS")
+        print("MONITORING WORKERS")
         print(f"{'='*70}")
         print(f"All {len(sessions)} workers running.")
-        print(f"Open Web Dashboard: http://localhost:8000")
+        print("Open Web Dashboard: http://localhost:8000")
         print(f"{'='*70}\n")
 
         # Monitor workers until completion
@@ -248,7 +248,7 @@ DO NOT ask for permission repeatedly. Proceed with implementation immediately.""
 
                 async def run_codex_worker(worker_idx: int, task: dict) -> Any:
                     worker_id = f"worker_{worker_idx}"
-                    print(f"\n[CODEX-RUN] {worker_id}: {task['name']}")
+                    print(f"\n[CODEX - RUN] {worker_id}: {task['name']}")
                     # Run in executor to avoid blocking
                     loop = aio.get_event_loop()
                     result = await loop.run_in_executor(
@@ -270,7 +270,7 @@ DO NOT ask for permission repeatedly. Proceed with implementation immediately.""
             all_success = all(r.success for r in results)
 
             print(f"\n{'='*70}")
-            print(f"EXECUTION COMPLETE")
+            print("EXECUTION COMPLETE")
             print(f"{'='*70}")
             for i, result in enumerate(results, 1):
                 status = "✓" if result.success else "✗"
@@ -286,17 +286,17 @@ DO NOT ask for permission repeatedly. Proceed with implementation immediately.""
 def main():
     """Main entry point"""
     parser = argparse.ArgumentParser(
-        description="Execute pre-defined task files in parallel",
+        description="Execute pre - defined task files in parallel",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
   # Execute 2 tasks in parallel
-  python scripts/execute_task_files.py \\
-      tasks/WORKER_1_MANAGER_AI_CORE.md \\
-      tasks/WORKER_3_HIERARCHICAL_CORE.md
+  python scripts / execute_task_files.py \\
+      tasks / WORKER_1_MANAGER_AI_CORE.md \\
+      tasks / WORKER_3_HIERARCHICAL_CORE.md
 
   # Execute single task
-  python scripts/execute_task_files.py tasks/MY_TASK.md
+  python scripts / execute_task_files.py tasks / MY_TASK.md
 
 Notes:
   - Task files should be detailed markdown specifications
@@ -318,7 +318,7 @@ Notes:
     parser.add_argument(
         "--codex",
         action="store_true",
-        help="Use Codex workers (GPT-5) instead of Claude workers (cost-efficient)",
+        help="Use Codex workers (GPT - 5) instead of Claude workers (cost - efficient)",
     )
 
     args = parser.parse_args()

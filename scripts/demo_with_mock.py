@@ -46,30 +46,30 @@ class DemoLogger:
 
 
 def approval_callback(confirmation: ConfirmationRequest) -> bool:
-    """Approval callback that auto-approves safe operations"""
+    """Approval callback that auto - approves safe operations"""
     print(f"\n  {'='*66}")
-    print(f"  CONFIRMATION REQUEST")
+    print("  CONFIRMATION REQUEST")
     print(f"  {'='*66}")
     print(f"  Type: {confirmation.confirmation_type}")
     print(f"  Message: {confirmation.message}")
     print(f"  Details: {confirmation.details}")
 
-    # Auto-approve file writes
+    # Auto - approve file writes
     if confirmation.confirmation_type.value == "file_write":
-        print(f"  Decision: AUTO-APPROVE (safe file write)")
+        print("  Decision: AUTO - APPROVE (safe file write)")
         print(f"  {'='*66}\n")
         return True
 
-    # Auto-approve safe commands
+    # Auto - approve safe commands
     if confirmation.confirmation_type.value == "command_execute":
         command = confirmation.details.get("command", "").lower()
         if "dir" in command or "ls" in command:
-            print(f"  Decision: AUTO-APPROVE (safe list command)")
+            print("  Decision: AUTO - APPROVE (safe list command)")
             print(f"  {'='*66}\n")
             return True
 
     # Deny others for demo
-    print(f"  Decision: AUTO-DENY (not pre-approved)")
+    print("  Decision: AUTO - DENY (not pre - approved)")
     print(f"  {'='*66}\n")
     return False
 
@@ -90,7 +90,7 @@ def main():
     logger = DemoLogger()
 
     print(f"Platform: {sys.platform}")
-    print(f"Using: wexpect (Windows)" if sys.platform == "win32" else f"Using: pexpect (Linux)")
+    print("Using: wexpect (Windows)" if sys.platform == "win32" else "Using: pexpect (Linux)")
     print()
 
     print("Step 1: Creating EnhancedInteractiveWorkerManager...")
@@ -126,7 +126,7 @@ def main():
     if result.error_message:
         print(f"Error: {result.error_message}")
 
-    print(f"\nFull Output:")
+    print("\nFull Output:")
     print("-" * 70)
     print(result.output)
     print("-" * 70)
@@ -134,7 +134,7 @@ def main():
     print("\n" + "=" * 70)
     print(" KEY VALIDATIONS")
     print("=" * 70)
-    print("  [OK] Worker spawned with pexpect/wexpect")
+    print("  [OK] Worker spawned with pexpect / wexpect")
     print("  [OK] Confirmation patterns detected")
     print("  [OK] AI safety judgment applied")
     print("  [OK] Responses sent to worker")

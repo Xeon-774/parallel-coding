@@ -7,7 +7,7 @@ and debugging.
 
 
 class DashboardError(Exception):
-    """Base exception for all dashboard-related errors"""
+    """Base exception for all dashboard - related errors"""
 
     pass
 

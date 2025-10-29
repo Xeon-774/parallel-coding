@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 大規模プロジェクト対応能力のテスト
 
@@ -13,12 +13,12 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-# UTF-8出力設定
+# UTF - 8出力設定
 if sys.platform == "win32":
     import codecs
 
-    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
-    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
+    sys.stdout = codecs.getwriter("utf - 8")(sys.stdout.buffer, "replace")
+    sys.stderr = codecs.getwriter("utf - 8")(sys.stderr.buffer, "replace")
 
 from orchestrator import AdvancedOrchestrator, OrchestratorConfig
 
@@ -135,7 +135,7 @@ def test_case_2_ambiguous_request():
         workspace_path = Path(config.workspace_root)
         worker_count = sum(1 for item in workspace_path.glob("worker_*") if item.is_dir())
 
-        print(f"✅ テストケース2: 完了")
+        print("✅ テストケース2: 完了")
         print(f"  生成されたワーカー数: {worker_count}")
 
         if worker_count == 1:

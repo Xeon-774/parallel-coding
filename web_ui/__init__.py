@@ -1,7 +1,7 @@
 """
 Web UI Dashboard for Claude Orchestrator
 
-Provides a FastAPI-based web dashboard for monitoring and managing
+Provides a FastAPI - based web dashboard for monitoring and managing
 parallel AI execution.
 """
 

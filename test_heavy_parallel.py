@@ -12,7 +12,7 @@ from pathlib import Path
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
-# Configure UTF-8 encoding BEFORE any output
+# Configure UTF - 8 encoding BEFORE any output
 from orchestrator.utils.encoding_config import configure_console_encoding, safe_print
 
 configure_console_encoding()
@@ -95,7 +95,7 @@ def generate_tasks(num_workers: int):
         template = task_templates[i % len(task_templates)]
 
         task = {
-            "name": f"{template['name']} #{i+1}",
+            "name": f"{template['name']} #{i + 1}",
             "prompt": template["prompt"].replace("{worker_id}", str(i + 1)),
         }
         tasks.append(task)
@@ -117,9 +117,9 @@ def main():
     config = OrchestratorConfig()
     config.workspace_root = str(project_root / "workspace" / "heavy_parallel_test")
     config.execution_mode = "wsl"
-    config.wsl_distribution = "Ubuntu-24.04"
-    config.claude_command = "~/.local/bin/claude"
-    config.nvm_path = "/usr/bin"
+    config.wsl_distribution = "Ubuntu - 24.04"
+    config.claude_command = "~/.local / bin / claude"
+    config.nvm_path = "/usr / bin"
 
     # ワークスペース準備
     workspace = Path(config.workspace_root)
@@ -137,7 +137,7 @@ def main():
     tasks = generate_tasks(num_workers)
 
     safe_print(f"\n[テスト] {num_workers}個のWorkerAIを並列起動中...")
-    safe_print(f"[テスト] タスクタイプ: Fibonacci, Prime, TextProcessing, ListOps")
+    safe_print("[テスト] タスクタイプ: Fibonacci, Prime, TextProcessing, ListOps")
     safe_print(f"[テスト] Workspace: {config.workspace_root}\n")
 
     try:
@@ -148,16 +148,16 @@ def main():
         spawn_start = time.time()
 
         for i, task in enumerate(tasks):
-            worker_id = f"heavy_worker_{i+1}"
+            worker_id = f"heavy_worker_{i + 1}"
 
             session = worker_manager.spawn_worker(worker_id=worker_id, task=task)
 
             if not session:
-                safe_print(f"[ERROR] Worker {i+1} の起動に失敗しました")
+                safe_print(f"[ERROR] Worker {i + 1} の起動に失敗しました")
                 return False
 
             if (i + 1) % 4 == 0:
-                safe_print(f"  [{i+1}/{num_workers}] Workers 起動完了")
+                safe_print(f"  [{i + 1}/{num_workers}] Workers 起動完了")
 
         spawn_time = time.time() - spawn_start
         safe_print(f"\n[起動完了] 全{num_workers}個のWorkerを起動 (所要時間: {spawn_time:.1f}秒)\n")
@@ -165,7 +165,7 @@ def main():
         # 並列実行
         safe_print(f"[実行フェーズ] {num_workers}個のWorkerを並列実行中...")
         safe_print(
-            f"[注意] 各Workerが高負荷タスクを実行します。完了まで数分かかる場合があります。\n"
+            "[注意] 各Workerが高負荷タスクを実行します。完了まで数分かかる場合があります。\n"
         )
 
         execution_start = time.time()
@@ -248,7 +248,7 @@ def main():
 
         if success_count == len(results):
             safe_print("\n✅ 全Workerが成功！高負荷並列実行テスト完全成功！")
-            safe_print(f"16個のWorkerが同時に独立して高負荷タスクを実行しました。")
+            safe_print("16個のWorkerが同時に独立して高負荷タスクを実行しました。")
             safe_print(f"並列実行により約{speedup:.1f}倍の速度向上を達成しました。")
         elif success_count > len(results) * 0.8:
             safe_print(f"\n⚠️ 大半のWorkerが成功 ({success_count}/{len(results)})")

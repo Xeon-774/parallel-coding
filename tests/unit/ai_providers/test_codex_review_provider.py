@@ -71,7 +71,7 @@ def temp_document(tmp_path: Path) -> Path:
 - Use HTTPS
 - API key management
 """
-    doc.write_text(content, encoding="utf-8")
+    doc.write_text(content, encoding="utf - 8")
     return doc
 
 
@@ -470,7 +470,7 @@ async def test_review_document_provider_unavailable(
 
 
 # =============================================================================
-# Integration-style Tests
+# Integration - style Tests
 # =============================================================================
 
 

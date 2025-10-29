@@ -1,7 +1,7 @@
 """
 Worker Status REST and WebSocket API
 
-Provides endpoints for monitoring worker execution status in real-time.
+Provides endpoints for monitoring worker execution status in real - time.
 Milestone 1.3: Worker Status UI implementation.
 """
 
@@ -22,7 +22,7 @@ from orchestrator.core.worker_status_monitor import (
 logger = logging.getLogger(__name__)
 
 # Create API router
-router = APIRouter(prefix="/api/v1/status", tags=["worker-status"])
+router = APIRouter(prefix="/api / v1 / status", tags=["worker - status"])
 
 # Global workspace root (will be initialized from main.py)
 _workspace_root: Optional[Path] = None
@@ -87,7 +87,7 @@ async def get_status_summary():
 
 @router.websocket("/ws/{worker_id}")
 async def worker_status_websocket(websocket: WebSocket, worker_id: str):
-    """WebSocket endpoint for real-time worker status streaming."""
+    """WebSocket endpoint for real - time worker status streaming."""
     await websocket.accept()
     logger.info(f"New status WebSocket connection for worker {worker_id}")
 

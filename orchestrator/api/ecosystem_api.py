@@ -4,12 +4,12 @@ Ecosystem Dashboard API
 Provides aggregate endpoints for the entire AI_Investor ecosystem.
 
 Features:
-- System-wide health status
+- System - wide health status
 - Aggregate performance metrics
-- Real-time activity feed via WebSocket
-- Cross-app statistics
+- Real - time activity feed via WebSocket
+- Cross - app statistics
 
-Created: 2025-10-24
+Created: 2025 - 10 - 24
 Part of: Phase 2 Backend Integration
 """
 
@@ -25,7 +25,7 @@ from fastapi.responses import JSONResponse
 logger = logging.getLogger(__name__)
 
 router = APIRouter(
-    prefix="/api/v1/ecosystem",
+    prefix="/api / v1 / ecosystem",
     tags=["ecosystem"],
 )
 
@@ -122,9 +122,9 @@ async def get_ecosystem_health():
                     "uptime": uptime,
                     "version": "1.0.0",
                 },
-                "manager_ai": {"status": "coming_soon", "version": "N/A"},
-                "mt4_integration": {"status": "coming_soon", "version": "N/A"},
-                "trading_dashboard": {"status": "coming_soon", "version": "N/A"},
+                "manager_ai": {"status": "coming_soon", "version": "N / A"},
+                "mt4_integration": {"status": "coming_soon", "version": "N / A"},
+                "trading_dashboard": {"status": "coming_soon", "version": "N / A"},
             },
             "system": {
                 "cpu_usage": 0.0,  # TODO: Get real CPU usage
@@ -140,7 +140,7 @@ async def get_ecosystem_health():
         )
 
 
-@router.get("/metrics/summary")
+@router.get("/metrics / summary")
 async def get_metrics_summary():
     """
     Get aggregate performance metrics across all apps.
@@ -204,9 +204,9 @@ async def get_metrics_summary():
 @router.websocket("/activity")
 async def websocket_activity_feed(websocket: WebSocket):
     """
-    WebSocket endpoint for real-time activity feed.
+    WebSocket endpoint for real - time activity feed.
 
-    Streams activities from all ecosystem apps in real-time.
+    Streams activities from all ecosystem apps in real - time.
 
     Message Format:
         {
@@ -220,7 +220,7 @@ async def websocket_activity_feed(websocket: WebSocket):
 
     Example:
         ```javascript
-        const ws = new WebSocket('ws://localhost:8001/api/v1/ecosystem/activity');
+        const ws = new WebSocket('ws://localhost:8001 / api / v1 / ecosystem / activity');
         ws.onmessage = (event) => {
             const activity = JSON.parse(event.data);
             console.log(activity.app, activity.message);

@@ -52,7 +52,7 @@ def test_client(mock_manager):
     app.dependency_overrides[get_worker_manager] = lambda: mock_manager
 
     # Set test token
-    os.environ["API_TOKEN"] = "test-token"
+    os.environ["API_TOKEN"] = "test - token"
 
     return TestClient(app), mock_manager
 
@@ -60,10 +60,10 @@ def test_client(mock_manager):
 # Authentication tests
 def test_authenticate_valid_token():
     """Test successful authentication with valid bearer token."""
-    os.environ["API_TOKEN"] = "test-token"
+    os.environ["API_TOKEN"] = "test - token"
 
     class MockRequest:
-        headers = {"authorization": "Bearer test-token"}
+        headers = {"authorization": "Bearer test - token"}
 
     # Should not raise
     authenticate(MockRequest())
@@ -84,10 +84,10 @@ def test_authenticate_missing_header():
 
 def test_authenticate_invalid_token():
     """Test authentication fails with invalid token."""
-    os.environ["API_TOKEN"] = "correct-token"
+    os.environ["API_TOKEN"] = "correct - token"
 
     class MockRequest:
-        headers = {"authorization": "Bearer wrong-token"}
+        headers = {"authorization": "Bearer wrong - token"}
 
     with pytest.raises(HTTPException) as exc_info:
         authenticate(MockRequest())
@@ -111,16 +111,16 @@ def test_authenticate_malformed_header():
 def test_spawn_request_validation_success():
     """Test SpawnSupervisorRequest validation with valid data."""
     req = SpawnSupervisorRequest(
-        task_file="tasks/WORKER_2.md", workspace_root="workspace/worker_2", timeout=300
+        task_file="tasks / WORKER_2.md", workspace_root="workspace / worker_2", timeout=300
     )
-    assert req.task_file == "tasks/WORKER_2.md"
-    assert req.workspace_root == "workspace/worker_2"
+    assert req.task_file == "tasks / WORKER_2.md"
+    assert req.workspace_root == "workspace / worker_2"
     assert req.timeout == 300
 
 
 def test_spawn_request_validation_default_timeout():
     """Test SpawnSupervisorRequest uses default timeout when not specified."""
-    req = SpawnSupervisorRequest(task_file="tasks/test.md", workspace_root="workspace/test")
+    req = SpawnSupervisorRequest(task_file="tasks / test.md", workspace_root="workspace / test")
     assert req.timeout == 300  # Default value
 
 
@@ -128,14 +128,14 @@ def test_spawn_request_validation_invalid_timeout():
     """Test SpawnSupervisorRequest validation fails with invalid timeout."""
     with pytest.raises(ValueError):
         SpawnSupervisorRequest(
-            task_file="tasks/test.md", workspace_root="workspace/test", timeout=-1
+            task_file="tasks / test.md", workspace_root="workspace / test", timeout=-1
         )
 
 
 def test_spawn_request_validation_path_traversal():
     """Test SpawnSupervisorRequest rejects path traversal attempts."""
     with pytest.raises(ValueError):
-        SpawnSupervisorRequest(task_file="../etc/passwd", workspace_root="workspace/test")
+        SpawnSupervisorRequest(task_file="../etc / passwd", workspace_root="workspace / test")
 
 
 def test_confirmation_request_validation():
@@ -154,7 +154,7 @@ def test_confirmation_request_invalid_decision():
 # API endpoint tests
 @pytest.mark.asyncio
 async def test_spawn_supervisor_success(test_client):
-    """Test POST /api/v1/supervisor/spawn endpoint success."""
+    """Test POST /api / v1 / supervisor / spawn endpoint success."""
     client, manager = test_client
 
     # Mock response
@@ -163,9 +163,9 @@ async def test_spawn_supervisor_success(test_client):
     )
 
     response = client.post(
-        "/api/v1/supervisor/spawn",
-        json={"task_file": "tasks/WORKER_2.md", "workspace_root": "workspace/worker_2"},
-        headers={"Authorization": "Bearer test-token"},
+        "/api / v1 / supervisor / spawn",
+        json={"task_file": "tasks / WORKER_2.md", "workspace_root": "workspace / worker_2"},
+        headers={"Authorization": "Bearer test - token"},
     )
 
     assert response.status_code == 201  # HTTP_201_CREATED
@@ -183,8 +183,8 @@ async def test_spawn_supervisor_authentication_required(test_client):
     client, _ = test_client
 
     response = client.post(
-        "/api/v1/supervisor/spawn",
-        json={"task_file": "tasks/test.md", "workspace_root": "workspace/test"},
+        "/api / v1 / supervisor / spawn",
+        json={"task_file": "tasks / test.md", "workspace_root": "workspace / test"},
     )
 
     assert response.status_code == 401
@@ -196,9 +196,9 @@ async def test_spawn_supervisor_validation_error(test_client):
     client, _ = test_client
 
     response = client.post(
-        "/api/v1/supervisor/spawn",
-        json={"task_file": "tasks/test.md"},  # Missing workspace_root
-        headers={"Authorization": "Bearer test-token"},
+        "/api / v1 / supervisor / spawn",
+        json={"task_file": "tasks / test.md"},  # Missing workspace_root
+        headers={"Authorization": "Bearer test - token"},
     )
 
     assert response.status_code == 422
@@ -206,7 +206,7 @@ async def test_spawn_supervisor_validation_error(test_client):
 
 @pytest.mark.asyncio
 async def test_get_supervisor_status_success(test_client):
-    """Test GET /api/v1/supervisor/{id} endpoint success."""
+    """Test GET /api / v1 / supervisor/{id} endpoint success."""
     client, manager = test_client
 
     # Mock response
@@ -219,7 +219,7 @@ async def test_get_supervisor_status_success(test_client):
     )
 
     response = client.get(
-        "/api/v1/supervisor/worker_2", headers={"Authorization": "Bearer test-token"}
+        "/api / v1 / supervisor / worker_2", headers={"Authorization": "Bearer test - token"}
     )
 
     assert response.status_code == 200
@@ -239,7 +239,7 @@ async def test_get_supervisor_status_not_found(test_client):
     manager.get_supervisor_status.return_value = None
 
     response = client.get(
-        "/api/v1/supervisor/nonexistent", headers={"Authorization": "Bearer test-token"}
+        "/api / v1 / supervisor / nonexistent", headers={"Authorization": "Bearer test - token"}
     )
 
     assert response.status_code == 404
@@ -248,13 +248,13 @@ async def test_get_supervisor_status_not_found(test_client):
 
 @pytest.mark.asyncio
 async def test_terminate_supervisor_success(test_client):
-    """Test DELETE /api/v1/supervisor/{id} endpoint success."""
+    """Test DELETE /api / v1 / supervisor/{id} endpoint success."""
     client, manager = test_client
 
     manager.terminate_supervisor.return_value = True
 
     response = client.delete(
-        "/api/v1/supervisor/worker_2", headers={"Authorization": "Bearer test-token"}
+        "/api / v1 / supervisor / worker_2", headers={"Authorization": "Bearer test - token"}
     )
 
     assert response.status_code == 200
@@ -272,7 +272,7 @@ async def test_terminate_supervisor_not_found(test_client):
     manager.terminate_supervisor.return_value = False
 
     response = client.delete(
-        "/api/v1/supervisor/nonexistent", headers={"Authorization": "Bearer test-token"}
+        "/api / v1 / supervisor / nonexistent", headers={"Authorization": "Bearer test - token"}
     )
 
     assert response.status_code == 404
@@ -280,12 +280,14 @@ async def test_terminate_supervisor_not_found(test_client):
 
 @pytest.mark.asyncio
 async def test_list_supervisors_empty(test_client):
-    """Test GET /api/v1/supervisor endpoint with no supervisors."""
+    """Test GET /api / v1 / supervisor endpoint with no supervisors."""
     client, manager = test_client
 
     manager.list_supervisors.return_value = []
 
-    response = client.get("/api/v1/supervisor", headers={"Authorization": "Bearer test-token"})
+    response = client.get(
+        "/api / v1 / supervisor", headers={"Authorization": "Bearer test - token"}
+    )
 
     assert response.status_code == 200
     data = response.json()
@@ -315,7 +317,9 @@ async def test_list_supervisors_with_data(test_client):
         ),
     ]
 
-    response = client.get("/api/v1/supervisor", headers={"Authorization": "Bearer test-token"})
+    response = client.get(
+        "/api / v1 / supervisor", headers={"Authorization": "Bearer test - token"}
+    )
 
     assert response.status_code == 200
     data = response.json()
@@ -327,15 +331,15 @@ async def test_list_supervisors_with_data(test_client):
 
 @pytest.mark.asyncio
 async def test_record_confirmation_response_success(test_client):
-    """Test POST /api/v1/supervisor/{id}/respond endpoint success."""
+    """Test POST /api / v1 / supervisor/{id}/respond endpoint success."""
     client, manager = test_client
 
     manager.record_confirmation_response.return_value = True
 
     response = client.post(
-        "/api/v1/supervisor/worker_2/respond",
+        "/api / v1 / supervisor / worker_2 / respond",
         json={"decision": "APPROVE", "reason": "Task is safe"},
-        headers={"Authorization": "Bearer test-token"},
+        headers={"Authorization": "Bearer test - token"},
     )
 
     assert response.status_code == 200
@@ -355,9 +359,9 @@ async def test_record_confirmation_response_not_found(test_client):
     manager.record_confirmation_response.return_value = False
 
     response = client.post(
-        "/api/v1/supervisor/nonexistent/respond",
+        "/api / v1 / supervisor / nonexistent / respond",
         json={"decision": "DENY", "reason": "Too risky"},
-        headers={"Authorization": "Bearer test-token"},
+        headers={"Authorization": "Bearer test - token"},
     )
 
     assert response.status_code == 404
@@ -365,7 +369,7 @@ async def test_record_confirmation_response_not_found(test_client):
 
 @pytest.mark.asyncio
 async def test_get_output_success(test_client):
-    """Test GET /api/v1/supervisor/{id}/output endpoint success."""
+    """Test GET /api / v1 / supervisor/{id}/output endpoint success."""
     client, manager = test_client
 
     manager.get_output.return_value = [
@@ -374,7 +378,8 @@ async def test_get_output_success(test_client):
     ]
 
     response = client.get(
-        "/api/v1/supervisor/worker_2/output", headers={"Authorization": "Bearer test-token"}
+        "/api / v1 / supervisor / worker_2 / output",
+        headers={"Authorization": "Bearer test - token"},
     )
 
     assert response.status_code == 200
@@ -393,7 +398,8 @@ async def test_get_output_not_found(test_client):
     manager.get_output.return_value = None
 
     response = client.get(
-        "/api/v1/supervisor/nonexistent/output", headers={"Authorization": "Bearer test-token"}
+        "/api / v1 / supervisor / nonexistent / output",
+        headers={"Authorization": "Bearer test - token"},
     )
 
     assert response.status_code == 404
@@ -408,9 +414,9 @@ async def test_spawn_supervisor_runtime_error(test_client):
     manager.spawn_supervised_worker.side_effect = RuntimeError("Spawn failed")
 
     response = client.post(
-        "/api/v1/supervisor/spawn",
-        json={"task_file": "tasks/test.md", "workspace_root": "workspace/test"},
-        headers={"Authorization": "Bearer test-token"},
+        "/api / v1 / supervisor / spawn",
+        json={"task_file": "tasks / test.md", "workspace_root": "workspace / test"},
+        headers={"Authorization": "Bearer test - token"},
     )
 
     assert response.status_code == 500
@@ -431,11 +437,11 @@ async def test_spawn_supervisor_not_implemented_error(test_client):
     )
 
     response = client.post(
-        "/api/v1/supervisor/spawn",
-        json={"task_file": "tasks/test.md", "workspace_root": "workspace/test"},
-        headers={"Authorization": "Bearer test-token"},
+        "/api / v1 / supervisor / spawn",
+        json={"task_file": "tasks / test.md", "workspace_root": "workspace / test"},
+        headers={"Authorization": "Bearer test - token"},
     )
 
-    # Current implementation returns 500 for all exceptions except ValidationError/FileNotFoundError
+    # Current implementation returns 500 for all exceptions except ValidationError / FileNotFoundError
     assert response.status_code == 500
     assert "spawn failed" in response.json()["detail"].lower()

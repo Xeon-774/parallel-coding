@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Export OpenAPI specification to JSON file.
 
@@ -6,7 +6,7 @@ This script exports the FastAPI OpenAPI schema to a JSON file
 that can be used for documentation, testing, or client generation.
 
 Usage:
-    python scripts/export_openapi.py
+    python scripts / export_openapi.py
 
 Output:
     - openapi.json: OpenAPI 3.0 specification
@@ -37,7 +37,7 @@ def export_openapi_spec(output_path: Path = None) -> None:
     openapi_schema = app.openapi()
 
     # Write to file with pretty formatting
-    with open(output_path, "w", encoding="utf-8") as f:
+    with open(output_path, "w", encoding="utf - 8") as f:
         json.dump(openapi_schema, f, indent=2, ensure_ascii=False)
 
     print(f"✅ OpenAPI specification exported to: {output_path}")
@@ -51,7 +51,7 @@ def main():
     try:
         export_openapi_spec()
         print("\n💡 Tip: Import openapi.json into Postman to generate API collection")
-        print("💡 Tip: View interactive docs at http://localhost:8000/docs")
+        print("💡 Tip: View interactive docs at http://localhost:8000 / docs")
     except Exception as e:
         print(f"❌ Error exporting OpenAPI spec: {e}", file=sys.stderr)
         sys.exit(1)

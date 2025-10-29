@@ -51,7 +51,7 @@ class DependencyManager:
         Raises:
             DependencyError: If installation fails critically.
         """
-        print(f"Installing: fastapi, uvicorn, websockets, aiofiles, requests")
+        print("Installing: fastapi, uvicorn, websockets, aiofiles, requests")
         print()
 
         try:

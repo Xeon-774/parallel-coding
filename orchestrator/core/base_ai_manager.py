@@ -21,7 +21,7 @@ class BaseAIManager(ABC):
 
     @property
     def name(self) -> str:
-        """Human-friendly manager name."""
+        """Human - friendly manager name."""
 
         return self._name
 

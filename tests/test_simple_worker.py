@@ -28,7 +28,7 @@ def test_worker():
     config.workspace_root = str(project_root / "workspace" / "test_simple")
     config.execution_mode = "windows"
     config.windows_claude_path = "claude"  # Claude CLI使用
-    config.git_bash_path = r"C:\opt\Git.Git\usr\bin\bash.exe"  # git-bash設定
+    config.git_bash_path = r"C:\opt\Git.Git\usr\bin\bash.exe"  # git - bash設定
 
     # ワークスペース準備
     workspace = Path(config.workspace_root)
@@ -81,7 +81,7 @@ def test_worker():
         print(f"Worker ID: {result.worker_id}")
 
         if result.output:
-            print(f"\n出力（最後の500文字）:")
+            print("\n出力（最後の500文字）:")
             print("-" * 70)
             print(result.output[-500:])
             print("-" * 70)

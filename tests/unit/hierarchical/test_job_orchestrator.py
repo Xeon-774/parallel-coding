@@ -82,7 +82,7 @@ async def test_submit_job_with_invalid_depth_raises_error():
 
 @pytest.mark.asyncio
 async def test_spawn_sub_orchestrator_at_max_depth_raises_error():
-    """Test that spawning sub-orchestrator at max depth raises DepthLimitError."""
+    """Test that spawning sub - orchestrator at max depth raises DepthLimitError."""
     orch = HierarchicalJobOrchestrator(max_depth=5)
 
     with pytest.raises(DepthLimitError, match="Max depth reached"):
@@ -91,10 +91,10 @@ async def test_spawn_sub_orchestrator_at_max_depth_raises_error():
 
 @pytest.mark.asyncio
 async def test_cancel_nonexistent_job_returns_false():
-    """Test canceling non-existent job returns False."""
+    """Test canceling non - existent job returns False."""
     orch = HierarchicalJobOrchestrator()
 
-    result = await orch.cancel("nonexistent-job-id")
+    result = await orch.cancel("nonexistent - job - id")
     assert result is False
 
 
@@ -206,7 +206,7 @@ class MockReviewProvider(BaseReviewProvider):
 
     async def review_document(self, request: ReviewRequest) -> ReviewResult:
         return ReviewResult(
-            job_id="test-job-id",
+            job_id="test - job - id",
             document_path=request.document_path,
             review_type=request.review_type,
             perspective=request.perspective,

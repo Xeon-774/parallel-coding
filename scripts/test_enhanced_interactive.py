@@ -1,11 +1,11 @@
 """
 Test Script for Enhanced Interactive Worker Manager
 
-This script tests the pexpect/wexpect-based interactive mode with actual Claude CLI.
+This script tests the pexpect / wexpect - based interactive mode with actual Claude CLI.
 It captures and logs all confirmation requests to help tune pattern matching.
 
 Usage:
-    python scripts/test_enhanced_interactive.py
+    python scripts / test_enhanced_interactive.py
 """
 
 import sys
@@ -39,7 +39,7 @@ class TestLogger:
 
         print(log_line)
 
-        with open(self.log_file, "a", encoding="utf-8") as f:
+        with open(self.log_file, "a", encoding="utf - 8") as f:
             f.write(log_line + "\n")
 
     def log_worker_spawn(self, worker_id, task_name):
@@ -72,10 +72,10 @@ def user_approval_callback(confirmation: ConfirmationRequest) -> bool:
     print("=" * 70)
 
     # Save to log for analysis
-    log_file = Path("workspace/confirmation_requests.log")
+    log_file = Path("workspace / confirmation_requests.log")
     log_file.parent.mkdir(parents=True, exist_ok=True)
 
-    with open(log_file, "a", encoding="utf-8") as f:
+    with open(log_file, "a", encoding="utf - 8") as f:
         f.write("\n" + "=" * 70 + "\n")
         f.write(
             f"Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(confirmation.timestamp))}\n"
@@ -86,22 +86,22 @@ def user_approval_callback(confirmation: ConfirmationRequest) -> bool:
         f.write(f"Details: {confirmation.details}\n")
         f.write("=" * 70 + "\n")
 
-    # For testing, auto-approve safe operations
+    # For testing, auto - approve safe operations
     if confirmation.confirmation_type.value in ["file_write", "file_read", "package_install"]:
-        print("[AUTO-APPROVE] Safe operation")
+        print("[AUTO - APPROVE] Safe operation")
         return True
 
     # Ask user for dangerous operations
-    response = input("\nApprove this operation? (y/n): ").strip().lower()
+    response = input("\nApprove this operation? (y / n): ").strip().lower()
     approved = response == "y"
 
-    print(f"[USER-DECISION] {'APPROVED' if approved else 'DENIED'}")
+    print(f"[USER - DECISION] {'APPROVED' if approved else 'DENIED'}")
 
     return approved
 
 
 def test_1_simple_file_creation():
-    """Test 1: Simple file creation (should be auto-approved)"""
+    """Test 1: Simple file creation (should be auto - approved)"""
     print("\n" + "=" * 70)
     print("TEST 1: Simple File Creation")
     print("=" * 70)
@@ -109,7 +109,7 @@ def test_1_simple_file_creation():
     config = OrchestratorConfig.from_env()
     config.workspace_root = "./workspace"
 
-    logger = TestLogger("workspace/test_enhanced_interactive.log")
+    logger = TestLogger("workspace / test_enhanced_interactive.log")
 
     manager = EnhancedInteractiveWorkerManager(
         config=config, logger=logger, user_approval_callback=user_approval_callback
@@ -120,7 +120,7 @@ def test_1_simple_file_creation():
         "prompt": """
 Create a simple Python script that:
 1. Prints "Hello, World!"
-2. Save it to workspace/worker_test_1/hello.py
+2. Save it to workspace / worker_test_1 / hello.py
 
 Please proceed with creating the file.
 """,
@@ -139,7 +139,7 @@ Please proceed with creating the file.
         print("TEST 1 RESULT")
         print("=" * 70)
         print(f"Success: {result.success}")
-        print(f"Duration: {result.duration:.1f}s" if result.duration else "Duration: N/A")
+        print(f"Duration: {result.duration:.1f}s" if result.duration else "Duration: N / A")
         print(f"Error: {result.error_message}" if result.error_message else "Error: None")
         print(f"Output length: {len(result.output)} characters")
 
@@ -163,7 +163,7 @@ def test_2_command_execution():
     config = OrchestratorConfig.from_env()
     config.workspace_root = "./workspace"
 
-    logger = TestLogger("workspace/test_enhanced_interactive.log")
+    logger = TestLogger("workspace / test_enhanced_interactive.log")
 
     manager = EnhancedInteractiveWorkerManager(
         config=config, logger=logger, user_approval_callback=user_approval_callback
@@ -191,7 +191,7 @@ When asked to execute a command, please ask for confirmation.
         print("TEST 2 RESULT")
         print("=" * 70)
         print(f"Success: {result.success}")
-        print(f"Duration: {result.duration:.1f}s" if result.duration else "Duration: N/A")
+        print(f"Duration: {result.duration:.1f}s" if result.duration else "Duration: N / A")
         print(f"Error: {result.error_message}" if result.error_message else "Error: None")
         print(f"Output length: {len(result.output)} characters")
 
@@ -217,7 +217,7 @@ def test_3_pattern_discovery():
     config = OrchestratorConfig.from_env()
     config.workspace_root = "./workspace"
 
-    logger = TestLogger("workspace/test_enhanced_interactive.log")
+    logger = TestLogger("workspace / test_enhanced_interactive.log")
 
     # Create manager with verbose logging
     manager = EnhancedInteractiveWorkerManager(
@@ -256,19 +256,19 @@ After each confirmation, note what format the confirmation request took.
         print("TEST 3 RESULT")
         print("=" * 70)
         print(f"Success: {result.success}")
-        print(f"Duration: {result.duration:.1f}s" if result.duration else "Duration: N/A")
+        print(f"Duration: {result.duration:.1f}s" if result.duration else "Duration: N / A")
         print(f"Error: {result.error_message}" if result.error_message else "Error: None")
 
-        print("\n[SAVED] Full output saved to workspace/worker_test_3/output.txt")
-        print("[SAVED] Confirmation requests saved to workspace/confirmation_requests.log")
+        print("\n[SAVED] Full output saved to workspace / worker_test_3 / output.txt")
+        print("[SAVED] Confirmation requests saved to workspace / confirmation_requests.log")
 
         # Save full output for analysis
-        output_file = Path("workspace/worker_test_3/full_output.txt")
+        output_file = Path("workspace / worker_test_3 / full_output.txt")
         output_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(output_file, "w", encoding="utf-8") as f:
+        with open(output_file, "w", encoding="utf - 8") as f:
             f.write(result.output)
 
-        print(f"\n[INFO] Analyze the output to identify actual confirmation patterns")
+        print("\n[INFO] Analyze the output to identify actual confirmation patterns")
 
         return True
     else:
@@ -281,15 +281,15 @@ def main():
     print("\n" + "=" * 70)
     print(" Enhanced Interactive Worker Manager - Test Suite")
     print("=" * 70)
-    print("\nThis test suite validates pexpect/wexpect integration")
+    print("\nThis test suite validates pexpect / wexpect integration")
     print("and captures actual Claude CLI confirmation patterns.\n")
 
     print(f"Platform: {sys.platform}")
 
     if sys.platform == "win32":
-        print("Using: wexpect (Windows pseudo-terminal)")
+        print("Using: wexpect (Windows pseudo - terminal)")
     else:
-        print("Using: pexpect (Unix pseudo-terminal)")
+        print("Using: pexpect (Unix pseudo - terminal)")
 
     print("\n[!] NOTE: These tests require Claude CLI to be installed")
     print("   and properly configured in your environment.\n")
@@ -344,9 +344,9 @@ def main():
     print(" ANALYSIS FILES")
     print("=" * 70)
     print("Check these files for detailed information:")
-    print("  - workspace/test_enhanced_interactive.log")
-    print("  - workspace/confirmation_requests.log")
-    print("  - workspace/worker_*/full_output.txt")
+    print("  - workspace / test_enhanced_interactive.log")
+    print("  - workspace / confirmation_requests.log")
+    print("  - workspace / worker_*/full_output.txt")
     print("\nUse these to identify actual Claude CLI confirmation patterns")
     print("and tune the regex patterns in enhanced_interactive_worker_manager.py")
     print("=" * 70)

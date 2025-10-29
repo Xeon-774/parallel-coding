@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Update import statements after refactoring
 """
@@ -28,7 +28,7 @@ REPLACEMENTS = [
 def update_file(file_path: Path) -> bool:
     """Update imports in a single file"""
     try:
-        content = file_path.read_text(encoding="utf-8")
+        content = file_path.read_text(encoding="utf - 8")
         original_content = content
 
         # Apply all replacements
@@ -37,7 +37,7 @@ def update_file(file_path: Path) -> bool:
 
         # Write back if changed
         if content != original_content:
-            file_path.write_text(content, encoding="utf-8")
+            file_path.write_text(content, encoding="utf - 8")
             print(f"[OK] Updated: {file_path}")
             return True
         return False

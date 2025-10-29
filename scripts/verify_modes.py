@@ -21,22 +21,22 @@ def verify_modes():
     print("=" * 80)
     print()
 
-    # git-bash検出のテスト
-    print("0. GIT-BASH DETECTION")
+    # git - bash検出のテスト
+    print("0. GIT - BASH DETECTION")
     print("-" * 80)
     git_bash = find_git_bash()
     if git_bash:
-        print(f"git-bash found: {git_bash}")
+        print(f"git - bash found: {git_bash}")
     else:
-        print("git-bash NOT found")
+        print("git - bash NOT found")
     print()
 
     # テスト用のパス
     test_input_win = r"D:\user\parallel_ai_test_project\workspace\worker_1\task.txt"
     test_output_win = r"D:\user\parallel_ai_test_project\workspace\worker_1\output.txt"
 
-    test_input_wsl = "/mnt/d/user/parallel_ai_test_project/workspace/worker_1/task.txt"
-    test_output_wsl = "/mnt/d/user/parallel_ai_test_project/workspace/worker_1/output.txt"
+    test_input_wsl = "/mnt / d/user / parallel_ai_test_project / workspace / worker_1 / task.txt"
+    test_output_wsl = "/mnt / d/user / parallel_ai_test_project / workspace / worker_1 / output.txt"
 
     # WSLモードのテスト
     print("1. WSL MODE")
@@ -44,7 +44,7 @@ def verify_modes():
     config_wsl = OrchestratorConfig(execution_mode="wsl")
     cmd_wsl = config_wsl.get_claude_command(test_input_wsl, test_output_wsl)
     print(f"Execution Mode: {config_wsl.execution_mode}")
-    print(f"Command:")
+    print("Command:")
     print(f"  {cmd_wsl}")
     print()
 
@@ -54,7 +54,7 @@ def verify_modes():
     config_win = OrchestratorConfig(execution_mode="windows")
     cmd_win = config_win.get_claude_command(test_input_win, test_output_win)
     print(f"Execution Mode: {config_win.execution_mode}")
-    print(f"Command:")
+    print("Command:")
     print(f"  {cmd_win}")
     print()
 
@@ -68,7 +68,10 @@ def verify_modes():
         ("Uses wsl command", "wsl" in cmd_wsl),
         ("Uses WSL distribution", config_wsl.wsl_distribution in cmd_wsl),
         ("Uses NVM path", config_wsl.nvm_path in cmd_wsl),
-        ("Uses claude flags", "--print" in cmd_wsl and "--dangerously-skip-permissions" in cmd_wsl),
+        (
+            "Uses claude flags",
+            "--print" in cmd_wsl and "--dangerously - skip - permissions" in cmd_wsl,
+        ),
     ]
 
     print("\nWSL Mode Checks:")
@@ -80,13 +83,16 @@ def verify_modes():
     win_checks = [
         ("Uses bash or cmd", ("bash" in cmd_win.lower() or "cmd" in cmd_win)),
         ("Uses Windows paths", test_input_win in cmd_win),
-        ("Uses claude flags", "--print" in cmd_win and "--dangerously-skip-permissions" in cmd_win),
+        (
+            "Uses claude flags",
+            "--print" in cmd_win and "--dangerously - skip - permissions" in cmd_win,
+        ),
         ("Does not use wsl command", "wsl -d" not in cmd_win.lower()),
     ]
 
-    # git-bashが利用可能な場合の追加チェック
+    # git - bashが利用可能な場合の追加チェック
     if config_win.git_bash_path:
-        win_checks.append(("Uses git-bash", config_win.git_bash_path in cmd_win))
+        win_checks.append(("Uses git - bash", config_win.git_bash_path in cmd_win))
 
     print("\nWindows Mode Checks:")
     for check_name, result in win_checks:

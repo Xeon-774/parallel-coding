@@ -123,7 +123,7 @@ class AITaskAnalyzer:
         self, task_description: str, context: Optional[Dict[str, Any]] = None
     ) -> str:
         """分析プロンプトを構築"""
-        prompt = f"""あなたはタスク分析の専門家AIです。以下のタスクを分析してください。
+        prompt = """あなたはタスク分析の専門家AIです。以下のタスクを分析してください。
 
 タスク内容:
 {task_description}
@@ -146,14 +146,14 @@ class AITaskAnalyzer:
 回答形式（必ずこの形式で）:
 ```json
 {
-  "is_parallelizable": true/false,
-  "risk_level": "SAFE/LOW/MEDIUM/HIGH/SEQUENTIAL",
+  "is_parallelizable": true / false,
+  "risk_level": "SAFE / LOW / MEDIUM / HIGH / SEQUENTIAL",
   "dependencies": [],
   "shared_files": [],
   "shared_resources": [],
   "conflict_types": [],
-  "requires_worktree": true/false,
-  "estimated_complexity": "SIMPLE/MODERATE/COMPLEX",
+  "requires_worktree": true / false,
+  "estimated_complexity": "SIMPLE / MODERATE / COMPLEX",
   "recommendations": ["推奨事項1", "推奨事項2"],
   "reasoning": "判断理由の説明"
 }
@@ -191,19 +191,19 @@ class AITaskAnalyzer:
   "tasks": [
     {
       "task_id": "task_1",
-      "is_parallelizable": true/false,
-      "risk_level": "SAFE/LOW/MEDIUM/HIGH/SEQUENTIAL",
+      "is_parallelizable": true / false,
+      "risk_level": "SAFE / LOW / MEDIUM / HIGH / SEQUENTIAL",
       "dependencies": ["task_2"],
       "conflicts_with": ["task_3"],
       "shared_files": ["file.py"],
-      "requires_worktree": true/false,
+      "requires_worktree": true / false,
       "recommendations": []
     }
   ],
   "overall_strategy": {
     "parallel_groups": [[1, 2], [3]],
     "sequential_order": [1, 2, 3],
-    "worktree_recommended": true/false,
+    "worktree_recommended": true / false,
     "reasoning": "全体的な戦略の理由"
   }
 }
@@ -224,7 +224,7 @@ class AITaskAnalyzer:
         """
         # 一時ファイルにプロンプトを保存
         with tempfile.NamedTemporaryFile(
-            mode="w", encoding="utf-8", suffix=".txt", delete=False
+            mode="w", encoding="utf - 8", suffix=".txt", delete=False
         ) as f:
             f.write(prompt)
             temp_file = f.name
@@ -233,12 +233,17 @@ class AITaskAnalyzer:
             # Claudeを呼び出し
             cmd = (
                 f'"{self.git_bash_path}" -c '
-                f"\"export CLAUDE_CODE_GIT_BASH_PATH='{self.git_bash_path}' && "
-                f"claude --print --dangerously-skip-permissions < '{temp_file}'\""
+                "\"export CLAUDE_CODE_GIT_BASH_PATH='{self.git_bash_path}' && "
+                f"claude --print --dangerously - skip - permissions < '{temp_file}'\""
             )
 
             result = subprocess.run(
-                cmd, shell=True, capture_output=True, text=True, encoding="utf-8", errors="replace"
+                cmd,
+                shell=True,
+                capture_output=True,
+                text=True,
+                encoding="utf - 8",
+                errors="replace",
             )
 
             return result.stdout
@@ -300,7 +305,7 @@ class AITaskAnalyzer:
 
             task_analyses = []
             for i, task_data in enumerate(data.get("tasks", [])):
-                task_id = task_data.get("task_id", f"task_{i+1}")
+                task_id = task_data.get("task_id", f"task_{i + 1}")
 
                 analysis = TaskAnalysis(
                     task_id=task_id,

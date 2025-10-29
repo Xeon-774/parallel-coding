@@ -1,18 +1,18 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 完全自律実行エンジン - Fully Autonomous Execution Engine
 
-ユーザーの確認なしで24/7稼働し、タスクを自動実行します。
+ユーザーの確認なしで24 / 7稼働し、タスクを自動実行します。
 
 特徴:
 - NO user confirmation required (確認プロンプトなし)
 - 自動Git commit + push
 - エラー自動リトライ
 - 進捗レポート自動生成
-- 無限ループ実行 (Ctrl+C で停止)
+- 無限ループ実行 (Ctrl + C で停止)
 
 使用方法:
-    python autonomous_executor.py --roadmap ROADMAP.md --auto-push
+    python autonomous_executor.py --roadmap ROADMAP.md --auto - push
 """
 
 import argparse
@@ -79,13 +79,13 @@ class AutonomousExecutor:
         self.failed_count = 0
         self.commit_count = 0
 
-        self.report_path = workspace / f"reports/autonomous_{self.session_id}.json"
+        self.report_path = workspace / f"reports / autonomous_{self.session_id}.json"
         self.report_path.parent.mkdir(parents=True, exist_ok=True)
 
-        print(f"🤖 Autonomous Executor started")
+        print("🤖 Autonomous Executor started")
         print(f"   Session ID: {self.session_id}")
         print(f"   Workspace: {workspace}")
-        print(f"   Auto-push: {auto_push}")
+        print(f"   Auto - push: {auto_push}")
         print(f"   Report: {self.report_path}")
         print()
 
@@ -108,7 +108,7 @@ class AutonomousExecutor:
             Task(
                 id="task_2",
                 title="Hermetic Sandbox MVP",
-                description="Implement Docker-based hermetic sandbox",
+                description="Implement Docker - based hermetic sandbox",
                 priority=2,
                 status="pending",
             ),
@@ -122,7 +122,7 @@ class AutonomousExecutor:
             Task(
                 id="task_4",
                 title="Auto PR Creation",
-                description="Implement end-to-end autonomous PR creation",
+                description="Implement end - to - end autonomous PR creation",
                 priority=4,
                 status="pending",
             ),
@@ -176,14 +176,14 @@ class AutonomousExecutor:
 
     async def _execute_task_impl(self, task: Task) -> bool:
         """
-        タスク実装 (デモ用: 実際にはCodex/Claude APIを呼び出す)
+        タスク実装 (デモ用: 実際にはCodex / Claude APIを呼び出す)
 
         実装オプション:
         1. Codex CLI: subprocess.run(["codex", "exec", task.description])
         2. Claude API: anthropic.Anthropic().messages.create(...)
-        3. parallel-coding Orchestrator: OrchestratorAI.execute(task)
+        3. parallel - coding Orchestrator: OrchestratorAI.execute(task)
         """
-        print(f"⏳ Simulating task execution... (実装: Codex/Claude API呼び出し)")
+        print("⏳ Simulating task execution... (実装: Codex / Claude API呼び出し)")
 
         # デモ用: 3秒待機
         await asyncio.sleep(3)
@@ -193,7 +193,7 @@ class AutonomousExecutor:
         # env['PYTHON_BASIC_REPL'] = '1'  # Fix Python 3.13 _pyrepl console handle errors
         # env['PYTHONUNBUFFERED'] = '1'
         # result = subprocess.run(
-        #     ["codex", "exec", task.description, "--full-auto"],
+        #     ["codex", "exec", task.description, "--full - auto"],
         #     capture_output=True,
         #     text=True,
         #     cwd=self.workspace,
@@ -211,7 +211,7 @@ class AutonomousExecutor:
             subprocess.run(["git", "add", "."], cwd=self.workspace, check=True, capture_output=True)
 
             # Git commit
-            commit_message = f"""feat: {task.title}
+            commit_message = """feat: {task.title}
 
 {task.description}
 
@@ -219,9 +219,9 @@ Task ID: {task.id}
 Session: {self.session_id}
 Completed: {task.completed_at}
 
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
+🤖 Generated with [Claude Code](https://claude.com / claude - code)
 
-Co-Authored-By: Claude <noreply@anthropic.com>
+Co - Authored - By: Claude <noreply@anthropic.com>
 """
 
             subprocess.run(
@@ -232,12 +232,12 @@ Co-Authored-By: Claude <noreply@anthropic.com>
             )
 
             self.commit_count += 1
-            print(f"✅ Auto-commit successful (total: {self.commit_count})")
+            print(f"✅ Auto - commit successful (total: {self.commit_count})")
 
-            # Auto-push (オプション)
+            # Auto - push (オプション)
             if self.auto_push:
                 subprocess.run(["git", "push"], cwd=self.workspace, check=True, capture_output=True)
-                print(f"✅ Auto-push successful")
+                print("✅ Auto - push successful")
 
         except subprocess.CalledProcessError as e:
             print(f"⚠️  Git operation failed: {e}")
@@ -264,7 +264,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
     def save_report(self):
         """レポート保存"""
         report = self.generate_report()
-        with open(self.report_path, "w", encoding="utf-8") as f:
+        with open(self.report_path, "w", encoding="utf - 8") as f:
             json.dump(asdict(report), f, indent=2, ensure_ascii=False)
 
         print(f"\n📊 Report saved: {self.report_path}")
@@ -273,9 +273,9 @@ Co-Authored-By: Claude <noreply@anthropic.com>
         print(f"   Commits: {report.total_commits}")
 
     async def run_forever(self):
-        """無限ループ実行 (Ctrl+C で停止)"""
-        print(f"\n🔄 Starting infinite execution loop...")
-        print(f"   Press Ctrl+C to stop\n")
+        """無限ループ実行 (Ctrl + C で停止)"""
+        print("\n🔄 Starting infinite execution loop...")
+        print("   Press Ctrl + C to stop\n")
 
         last_report_time = time.time()
 
@@ -295,27 +295,32 @@ Co-Authored-By: Claude <noreply@anthropic.com>
                             last_report_time = time.time()
 
                 # 全タスク完了後、ROADMAPを再読み込み (新規タスク確認)
-                print(f"\n✅ All tasks completed. Checking for new tasks in 60 seconds...")
+                print("\n✅ All tasks completed. Checking for new tasks in 60 seconds...")
                 await asyncio.sleep(60)
 
         except KeyboardInterrupt:
-            print(f"\n\n⏸️  Execution stopped by user (Ctrl+C)")
+            print("\n\n⏸️  Execution stopped by user (Ctrl + C)")
             self.save_report()
-            print(f"\n📊 Final Report:")
+            print("\n📊 Final Report:")
             print(f"   Session ID: {self.session_id}")
             print(f"   Tasks Completed: {self.completed_count}")
             print(f"   Tasks Failed: {self.failed_count}")
             print(f"   Total Commits: {self.commit_count}")
-            print(f"\n👋 Goodbye!\n")
+            print("\n👋 Goodbye!\n")
 
 
 def main():
     parser = argparse.ArgumentParser(description="完全自律実行エンジン")
     parser.add_argument("--roadmap", default="ROADMAP.md", help="Roadmap file path")
     parser.add_argument("--workspace", default=".", help="Workspace directory")
-    parser.add_argument("--auto-push", action="store_true", help="Auto-push to remote after commit")
     parser.add_argument(
-        "--report-interval", type=int, default=300, help="Report interval in seconds (default: 300)"
+        "--auto - push", action="store_true", help="Auto - push to remote after commit"
+    )
+    parser.add_argument(
+        "--report - interval",
+        type=int,
+        default=300,
+        help="Report interval in seconds (default: 300)",
     )
 
     args = parser.parse_args()

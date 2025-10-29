@@ -51,7 +51,7 @@ class ResultIntegrator:
 
         # Save to file
         output_file = self.workspace_root / "FINAL_RESULT.md"
-        with open(output_file, "w", encoding="utf-8") as f:
+        with open(output_file, "w", encoding="utf - 8") as f:
             f.write(markdown_report)
 
         # Save JSON results
@@ -174,7 +174,7 @@ class ResultIntegrator:
             ],
         }
 
-        with open(json_file, "w", encoding="utf-8") as f:
+        with open(json_file, "w", encoding="utf - 8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
 
     def get_statistics(self, results: List[TaskResult]) -> Dict[str, Any]:

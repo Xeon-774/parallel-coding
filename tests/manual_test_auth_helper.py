@@ -2,7 +2,7 @@
 認証ヘルパーの手動テスト - GUI トークン入力
 
 注意: このテストはGUIを使用するため、pytest自動実行から除外されています。
-手動で実行する場合: python tests/manual_test_auth_helper.py
+手動で実行する場合: python tests / manual_test_auth_helper.py
 """
 
 import sys
@@ -28,7 +28,7 @@ def test_auth_gui():
 
     # WSLモードでトークン設定（GUI使用）
     success = setup_claude_token(
-        execution_mode="wsl", wsl_distribution="Ubuntu-24.04", use_gui=True  # GUIダイアログを表示
+        execution_mode="wsl", wsl_distribution="Ubuntu - 24.04", use_gui=True  # GUIダイアログを表示
     )
 
     print()
@@ -38,7 +38,7 @@ def test_auth_gui():
         print("[SUCCESS] トークン設定完了！")
         print()
         print("次のステップ:")
-        print("  python tests/test_simple_worker_wsl.py")
+        print("  python tests / test_simple_worker_wsl.py")
         print()
     else:
         print("[CANCELLED] トークン設定がキャンセルされました。")

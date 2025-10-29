@@ -2,7 +2,7 @@
 Database initialization script for Week 2 MVP.
 
 Usage:
-    python scripts/init_database.py [--env production|development]
+    python scripts / init_database.py [--env production|development]
 
 This script:
 - Resolves the database URL from `--env` and environment variables.
@@ -139,14 +139,16 @@ def _seed_development_data() -> None:
     session = SessionLocal()
     try:
         # Create a test worker and job only if they don't exist
-        if not session.query(Worker).filter_by(id="test-worker-1").first():
+        if not session.query(Worker).filter_by(id="test - worker - 1").first():
             session.add(
-                Worker(id="test-worker-1", workspace_id="dev-workspace", status=WorkerStatus.IDLE)
+                Worker(
+                    id="test - worker - 1", workspace_id="dev - workspace", status=WorkerStatus.IDLE
+                )
             )
-        if not session.query(Job).filter_by(id="test-job-1").first():
+        if not session.query(Job).filter_by(id="test - job - 1").first():
             session.add(
                 Job(
-                    id="test-job-1",
+                    id="test - job - 1",
                     depth=0,
                     worker_count=1,
                     status=JobStatus.PENDING,

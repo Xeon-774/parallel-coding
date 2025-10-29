@@ -25,26 +25,26 @@ from orchestrator.api.supervisor_websocket import (
 # Authentication tests
 def test_expected_token_from_env():
     """Test token retrieval from environment variable."""
-    os.environ["API_TOKEN"] = "test-token-123"
-    assert _expected_token() == "test-token-123"
+    os.environ["API_TOKEN"] = "test - token - 123"
+    assert _expected_token() == "test - token - 123"
 
 
 def test_expected_token_default():
     """Test default token when env var not set."""
     os.environ.pop("API_TOKEN", None)
-    assert _expected_token() == "dev-token"
+    assert _expected_token() == "dev - token"
 
 
 def test_auth_ok_valid_token():
     """Test authentication succeeds with valid token."""
-    os.environ["API_TOKEN"] = "valid-token"
-    assert _auth_ok("valid-token") is True
+    os.environ["API_TOKEN"] = "valid - token"
+    assert _auth_ok("valid - token") is True
 
 
 def test_auth_ok_invalid_token():
     """Test authentication fails with invalid token."""
-    os.environ["API_TOKEN"] = "correct-token"
-    assert _auth_ok("wrong-token") is False
+    os.environ["API_TOKEN"] = "correct - token"
+    assert _auth_ok("wrong - token") is False
 
 
 def test_auth_ok_none_token():
@@ -80,7 +80,7 @@ def test_rate_limiter_blocks_when_exhausted():
 
 def test_rate_limiter_refills_over_time():
     """Test rate limiter refills tokens over time."""
-    limiter = RateLimiter(rate=10, per_seconds=0.1)  # 10 per 0.1s = 100/s
+    limiter = RateLimiter(rate=10, per_seconds=0.1)  # 10 per 0.1s = 100 / s
 
     # Consume tokens
     for _ in range(10):
@@ -253,7 +253,7 @@ def test_event_types():
 
 # Note: WebSocket endpoint integration tests (websocket_endpoint function)
 # are complex and require TestClient WebSocket support. These are deferred
-# to integration tests to maintain focus on unit-testable components.
+# to integration tests to maintain focus on unit - testable components.
 #
 # Full coverage of supervisor_websocket.py would require:
 # 1. WebSocket connection lifecycle tests

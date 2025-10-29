@@ -1,5 +1,5 @@
 """
-Simple 2-Worker Parallel Execution Test
+Simple 2 - Worker Parallel Execution Test
 
 Test the new parallel execution feature with 2 simple tasks.
 """
@@ -11,7 +11,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-# Configure UTF-8 encoding BEFORE any output
+# Configure UTF - 8 encoding BEFORE any output
 from orchestrator.utils.encoding_config import configure_console_encoding, safe_print
 
 configure_console_encoding()
@@ -37,9 +37,9 @@ def test_parallel_execution_simple():
     config = OrchestratorConfig()
     config.workspace_root = str(project_root / "workspace" / "test_parallel_simple")
     config.execution_mode = "wsl"
-    config.wsl_distribution = "Ubuntu-24.04"
-    config.claude_command = "~/.local/bin/claude"
-    config.nvm_path = "/usr/bin"
+    config.wsl_distribution = "Ubuntu - 24.04"
+    config.claude_command = "~/.local / bin / claude"
+    config.nvm_path = "/usr / bin"
 
     # Prepare workspace
     workspace = Path(config.workspace_root)
@@ -50,7 +50,7 @@ def test_parallel_execution_simple():
 
     # Worker manager
     worker_manager = WorkerManager(
-        config=config, logger=logger, user_approval_callback=None  # Auto-approval mode
+        config=config, logger=logger, user_approval_callback=None  # Auto - approval mode
     )
 
     # Define 2 simple tasks
@@ -144,7 +144,7 @@ This is a simple test task. Complete it quickly.
                 safe_print(f"  Error: {result.error_message}")
 
         safe_print(f"\nTotal execution time: {total_time:.1f}s")
-        safe_print(f"Success rate: {success_count}/2 ({success_count/2*100:.0f}%)")
+        safe_print(f"Success rate: {success_count}/2 ({success_count / 2 * 100:.0f}%)")
 
         # Verify parallel execution
         safe_print("\n" + "=" * 80)
@@ -158,7 +158,7 @@ This is a simple test task. Complete it quickly.
             individual_sum = sum(r.duration for r in results)
             individual_max = max(r.duration for r in results)
 
-            safe_print(f"\nIndividual durations:")
+            safe_print("\nIndividual durations:")
             for r in results:
                 safe_print(f"  {r.worker_id}: {r.duration:.1f}s")
 

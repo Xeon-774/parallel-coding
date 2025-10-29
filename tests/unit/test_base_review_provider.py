@@ -33,7 +33,7 @@ class TestReviewRequestValidation:
             # Path traversal should be blocked
             with pytest.raises(ValueError, match="Path traversal not allowed"):
                 ReviewRequest(
-                    document_path="../../../etc/passwd",
+                    document_path="../../../etc / passwd",
                     review_type=ReviewType.DESIGN,
                     perspective=ReviewPerspective.ARCHITECTURE,
                 )
@@ -41,10 +41,10 @@ class TestReviewRequestValidation:
             Path(temp_path).unlink(missing_ok=True)
 
     def test_document_not_found(self):
-        """Test that non-existent document raises error."""
+        """Test that non - existent document raises error."""
         with pytest.raises(ValueError, match="Document not found"):
             ReviewRequest(
-                document_path="/nonexistent/file.md",
+                document_path="/nonexistent / file.md",
                 review_type=ReviewType.DESIGN,
                 perspective=ReviewPerspective.ARCHITECTURE,
             )
@@ -86,7 +86,7 @@ class TestReviewResultValidation:
 
         with pytest.raises(ValueError, match="Too many feedback items"):
             ReviewResult(
-                job_id="test-job",
+                job_id="test - job",
                 document_path="test.md",
                 review_type=ReviewType.DESIGN,
                 perspective=ReviewPerspective.ARCHITECTURE,
@@ -105,7 +105,7 @@ class TestReviewResultProperties:
     def test_is_success_property(self):
         """Test is_success property."""
         result = ReviewResult(
-            job_id="test-job",
+            job_id="test - job",
             document_path="test.md",
             review_type=ReviewType.DESIGN,
             perspective=ReviewPerspective.ARCHITECTURE,
@@ -143,7 +143,7 @@ class TestReviewResultProperties:
         ]
 
         result = ReviewResult(
-            job_id="test-job",
+            job_id="test - job",
             document_path="test.md",
             review_type=ReviewType.DESIGN,
             perspective=ReviewPerspective.ARCHITECTURE,
@@ -183,7 +183,7 @@ class TestReviewResultProperties:
         ]
 
         result = ReviewResult(
-            job_id="test-job",
+            job_id="test - job",
             document_path="test.md",
             review_type=ReviewType.DESIGN,
             perspective=ReviewPerspective.ARCHITECTURE,
@@ -223,7 +223,7 @@ class TestReviewResultProperties:
         ]
 
         result = ReviewResult(
-            job_id="test-job",
+            job_id="test - job",
             document_path="test.md",
             review_type=ReviewType.DESIGN,
             perspective=ReviewPerspective.ARCHITECTURE,

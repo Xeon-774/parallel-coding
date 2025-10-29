@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr / bin / env python
 """
 Claude Orchestrator Dashboard起動スクリプト
 
@@ -33,7 +33,7 @@ def main():
   python start_dashboard.py --host 0.0.0.0 --port 8080
 
   # ワークスペースを指定
-  python start_dashboard.py --workspace /path/to/workspace
+  python start_dashboard.py --workspace /path / to / workspace
         """,
     )
 

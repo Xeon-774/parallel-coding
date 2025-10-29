@@ -6,7 +6,7 @@ Tests the complete FastAPI application with WebSocket endpoints.
 Coverage:
 - WebSocket connection establishment
 - Historical entry retrieval via WebSocket
-- Real-time entry streaming
+- Real - time entry streaming
 - Error handling (worker not found, etc.)
 - REST API endpoints
 """
@@ -60,7 +60,7 @@ def create_worker_workspace(workspace_root: Path, worker_id: str) -> Path:
 def write_dialogue_entries(workspace_path: Path, entries: List[Dict[str, Any]]) -> None:
     """Helper to write dialogue entries to transcript file."""
     transcript = workspace_path / "dialogue_transcript.jsonl"
-    with open(transcript, "w", encoding="utf-8") as f:
+    with open(transcript, "w", encoding="utf - 8") as f:
         for entry in entries:
             f.write(json.dumps(entry) + "\n")
 
@@ -93,8 +93,8 @@ def test_health_check(client):
 
 
 def test_list_workers_empty(client):
-    """GET /api/v1/workers returns empty list when no workers."""
-    response = client.get("/api/v1/workers")
+    """GET /api / v1 / workers returns empty list when no workers."""
+    response = client.get("/api / v1 / workers")
     assert response.status_code == 200
 
     data = response.json()
@@ -103,7 +103,7 @@ def test_list_workers_empty(client):
 
 
 def test_list_workers_with_workers(client, temp_workspace):
-    """GET /api/v1/workers returns worker list."""
+    """GET /api / v1 / workers returns worker list."""
     # Create test workers
     create_worker_workspace(temp_workspace, "worker_001")
     create_worker_workspace(temp_workspace, "worker_002")
@@ -115,7 +115,7 @@ def test_list_workers_with_workers(client, temp_workspace):
         [{"timestamp": 1000.0, "direction": "test", "content": "test", "type": "output"}],
     )
 
-    response = client.get("/api/v1/workers")
+    response = client.get("/api / v1 / workers")
     assert response.status_code == 200
 
     data = response.json()
@@ -133,14 +133,14 @@ def test_list_workers_with_workers(client, temp_workspace):
 
 
 def test_get_worker_info(client, temp_workspace):
-    """GET /api/v1/workers/{worker_id} returns worker details."""
+    """GET /api / v1 / workers/{worker_id} returns worker details."""
     worker_path = create_worker_workspace(temp_workspace, "worker_001")
     write_dialogue_entries(
         worker_path,
         [{"timestamp": 1000.0, "direction": "test", "content": "test", "type": "output"}],
     )
 
-    response = client.get("/api/v1/workers/worker_001")
+    response = client.get("/api / v1 / workers / worker_001")
     assert response.status_code == 200
 
     data = response.json()
@@ -150,8 +150,8 @@ def test_get_worker_info(client, temp_workspace):
 
 
 def test_get_worker_info_not_found(client):
-    """GET /api/v1/workers/{worker_id} returns 404 for non-existent worker."""
-    response = client.get("/api/v1/workers/worker_999")
+    """GET /api / v1 / workers/{worker_id} returns 404 for non - existent worker."""
+    response = client.get("/api / v1 / workers / worker_999")
     assert response.status_code == 404
 
     data = response.json()
@@ -164,8 +164,8 @@ def test_get_worker_info_not_found(client):
 
 
 def test_websocket_worker_not_found(client):
-    """WebSocket connection sends error for non-existent worker."""
-    with client.websocket_connect("/ws/dialogue/worker_999") as websocket:
+    """WebSocket connection sends error for non - existent worker."""
+    with client.websocket_connect("/ws / dialogue / worker_999") as websocket:
         message = websocket.receive_json()
         assert message["type"] == "error"
         assert "not found" in message["message"].lower()
@@ -196,7 +196,7 @@ def test_websocket_historical_entries(client, temp_workspace):
     write_dialogue_entries(worker_path, entries)
 
     # Connect via WebSocket
-    with client.websocket_connect(f"/ws/dialogue/worker_001") as websocket:
+    with client.websocket_connect("/ws / dialogue / worker_001") as websocket:
         # Receive historical entries
         received_messages = []
 
@@ -235,7 +235,7 @@ def test_websocket_empty_dialogue(client, temp_workspace):
     create_worker_workspace(temp_workspace, "worker_001")
 
     # Connect via WebSocket
-    with client.websocket_connect(f"/ws/dialogue/worker_001") as websocket:
+    with client.websocket_connect("/ws / dialogue / worker_001") as websocket:
         # Should receive ready message (no historical entries)
         message = websocket.receive_json()
         assert message["type"] == "ready"
@@ -260,8 +260,8 @@ def test_websocket_connection_with_multiple_clients(client, temp_workspace):
     )
 
     # Connect two clients
-    with client.websocket_connect(f"/ws/dialogue/worker_001") as ws1:
-        with client.websocket_connect(f"/ws/dialogue/worker_001") as ws2:
+    with client.websocket_connect("/ws / dialogue / worker_001") as ws1:
+        with client.websocket_connect("/ws / dialogue / worker_001") as ws2:
             # Both should receive messages
             msg1 = ws1.receive_json()
             msg2 = ws2.receive_json()
@@ -279,12 +279,12 @@ def test_api_handles_invalid_worker_id(client):
     """API handles invalid worker ID formats gracefully."""
     # Test with various invalid formats
     invalid_ids = [
-        "../etc/passwd",  # Path traversal attempt
+        "../etc / passwd",  # Path traversal attempt
         "worker_001; rm -rf /",  # Command injection attempt
     ]
 
     for worker_id in invalid_ids:
-        response = client.get(f"/api/v1/workers/{worker_id}")
+        response = client.get(f"/api / v1 / workers/{worker_id}")
         # Should either return 404 or handle gracefully
         assert response.status_code in [404, 400, 422]
 
@@ -293,12 +293,12 @@ def test_websocket_handles_malformed_path(client):
     """WebSocket handles malformed paths gracefully."""
     # Test with invalid worker IDs
     with pytest.raises(Exception):
-        with client.websocket_connect("/ws/dialogue/") as websocket:
+        with client.websocket_connect("/ws / dialogue/") as websocket:
             pass
 
 
 # ============================================================================
-# Real-time Streaming Test (Simulation)
+# Real - time Streaming Test (Simulation)
 # ============================================================================
 
 
@@ -317,7 +317,7 @@ def test_websocket_entry_format(client, temp_workspace):
     ]
     write_dialogue_entries(worker_path, entries)
 
-    with client.websocket_connect(f"/ws/dialogue/worker_001") as websocket:
+    with client.websocket_connect("/ws / dialogue / worker_001") as websocket:
         message = websocket.receive_json()
 
         # Verify message structure
@@ -365,7 +365,7 @@ def test_websocket_handles_large_history(client, temp_workspace):
     ]
     write_dialogue_entries(worker_path, large_entries)
 
-    with client.websocket_connect(f"/ws/dialogue/worker_001") as websocket:
+    with client.websocket_connect("/ws / dialogue / worker_001") as websocket:
         # Collect all historical messages
         historical_count = 0
 

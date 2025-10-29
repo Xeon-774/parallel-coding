@@ -1,6 +1,6 @@
 """Unit tests for JWT authentication module.
 
-Tests password hashing, JWT token creation/verification, and scope checking.
+Tests password hashing, JWT token creation / verification, and scope checking.
 """
 
 from datetime import timedelta
@@ -37,7 +37,7 @@ class TestPasswordHashing:
             hash_password("")
 
     def test_hash_password_whitespace_only_raises_error(self):
-        """Test that whitespace-only password raises ValueError."""
+        """Test that whitespace - only password raises ValueError."""
         with pytest.raises(ValueError, match="Password cannot be empty"):
             hash_password("   ")
 
@@ -109,7 +109,7 @@ class TestJWTTokenCreation:
             create_access_token(user_id="", scopes=["supervisor:read"])
 
     def test_create_access_token_whitespace_user_id_raises_error(self):
-        """Test that whitespace-only user_id raises ValueError."""
+        """Test that whitespace - only user_id raises ValueError."""
         with pytest.raises(ValueError, match="user_id cannot be empty"):
             create_access_token(user_id="   ", scopes=["supervisor:read"])
 

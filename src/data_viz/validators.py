@@ -449,7 +449,7 @@ def validate_color(color: str) -> None:
     import re
 
     # Check if hex color
-    hex_pattern = r"^#(?:[0-9a-fA-F]{3}){1,2}$"
+    hex_pattern = r"^#(?:[0 - 9a - fA - F]{3}){1,2}$"
     if re.match(hex_pattern, color):
         return
 
@@ -472,7 +472,7 @@ def validate_color(color: str) -> None:
     if color.lower() in named_colors:
         return
 
-    # Check if rgb/rgba format
+    # Check if rgb / rgba format
     rgb_pattern = r"^rgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*(?:,\s*[\d.]+\s*)?\)$"
     if re.match(rgb_pattern, color):
         return

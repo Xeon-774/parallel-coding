@@ -10,8 +10,8 @@ import pytest
 
 def test_utils_package_imports_successfully():
     """Test that utils package (not deprecated utils.py) can be imported."""
-    # Note: orchestrator/utils.py exists as a deprecated file, but Python
-    # prefers the package (orchestrator/utils/__init__.py) when importing.
+    # Note: orchestrator / utils.py exists as a deprecated file, but Python
+    # prefers the package (orchestrator / utils / __init__.py) when importing.
     # The utils.py file is only loaded if explicitly imported as a module file.
     import orchestrator.utils as utils
 

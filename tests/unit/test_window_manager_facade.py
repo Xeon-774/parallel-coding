@@ -157,16 +157,16 @@ class TestWindowManagerFacade:
             result = wm.create_monitoring_window(
                 worker_id="w123",
                 task_name="test_task",
-                output_file="/tmp/output.txt",
-                error_file="/tmp/error.txt",
+                output_file="/tmp / output.txt",
+                error_file="/tmp / error.txt",
             )
 
             # Verify delegation
             wm._strategy.create_monitoring_window.assert_called_once_with(
                 worker_id="w123",
                 task_name="test_task",
-                output_file="/tmp/output.txt",
-                error_file="/tmp/error.txt",
+                output_file="/tmp / output.txt",
+                error_file="/tmp / error.txt",
             )
             assert result == mock_window_info
 
@@ -236,7 +236,7 @@ class TestWindowManagerFacade:
             wm._strategy.close_all_windows = Mock()
 
             # Execute workflow
-            window = wm.create_monitoring_window("w456", "build", "/tmp/out.txt")
+            window = wm.create_monitoring_window("w456", "build", "/tmp / out.txt")
             assert window.worker_id == "w456"
 
             wm.close_window("w456")

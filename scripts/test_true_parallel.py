@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 真の並列実行テスト - 複数ワーカーAIの同時実行
 
@@ -15,12 +15,12 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-# UTF-8出力設定
+# UTF - 8出力設定
 if sys.platform == "win32":
     import codecs
 
-    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
-    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
+    sys.stdout = codecs.getwriter("utf - 8")(sys.stdout.buffer, "replace")
+    sys.stderr = codecs.getwriter("utf - 8")(sys.stderr.buffer, "replace")
 
 from orchestrator import OrchestratorConfig, RefactoredOrchestrator
 
@@ -44,7 +44,7 @@ def test_true_parallel_execution(num_workers: int = 5):
 
     print(f"実行モード: {os.environ['ORCHESTRATOR_MODE']}")
     print(f"Git Bash: {os.environ['CLAUDE_CODE_GIT_BASH_PATH']}")
-    print(f"リアルタイム監視: 有効")
+    print("リアルタイム監視: 有効")
     print()
 
     # 各ワーカーに異なるタスクを割り当て
@@ -144,7 +144,7 @@ Pythonでシーザー暗号（shift=3）を実装し、
 
                 if worker_output.exists():
                     print(f"\n[Worker {i}: {task['name']}]")
-                    with open(worker_output, "r", encoding="utf-8") as f:
+                    with open(worker_output, "r", encoding="utf - 8") as f:
                         output = f.read()
                         # 最初の500文字のみ表示
                         if len(output) > 500:
@@ -162,7 +162,7 @@ Pythonでシーザー暗号（shift=3）を実装し、
             print("パフォーマンス統計:")
             print(f"  ワーカー数: {num_workers}")
             print(f"  総実行時間: {execution_time:.2f}秒")
-            print(f"  平均処理時間/ワーカー: {execution_time/num_workers:.2f}秒")
+            print(f"  平均処理時間 / ワーカー: {execution_time / num_workers:.2f}秒")
             print()
             print("[NOTE] 実際には並列実行されているため、")
             print("       総実行時間 < 平均処理時間 x ワーカー数")
@@ -188,12 +188,12 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="真の並列実行テスト")
     parser.add_argument(
-        "-w", "--workers", type=int, default=5, help="ワーカー数（1-5、デフォルト: 5）"
+        "-w", "--workers", type=int, default=5, help="ワーカー数（1 - 5、デフォルト: 5）"
     )
 
     args = parser.parse_args()
 
-    # ワーカー数を1-5に制限
+    # ワーカー数を1 - 5に制限
     num_workers = max(1, min(5, args.workers))
 
     test_true_parallel_execution(num_workers=num_workers)

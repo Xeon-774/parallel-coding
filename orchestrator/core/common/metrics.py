@@ -113,7 +113,7 @@ class MetricsCollector:
         metrics_file = self._get_metrics_file(worker_id)
 
         try:
-            with open(metrics_file, "a", encoding="utf-8") as f:
+            with open(metrics_file, "a", encoding="utf - 8") as f:
                 json.dump(metric.to_dict(), f, ensure_ascii=False)
                 f.write("\n")
                 f.flush()
@@ -261,7 +261,7 @@ class MetricsCollector:
 
         metrics = []
         try:
-            with open(metrics_file, "r", encoding="utf-8") as f:
+            with open(metrics_file, "r", encoding="utf - 8") as f:
                 for line in f:
                     line = line.strip()
                     if line:

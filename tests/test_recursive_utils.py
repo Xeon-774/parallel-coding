@@ -256,7 +256,7 @@ class TestIntegrationScenarios:
         shutil.rmtree(temp_dir)
 
     def test_two_level_recursion_structure(self, temp_workspace):
-        """Test creating a two-level recursion structure"""
+        """Test creating a two - level recursion structure"""
         # Create root job
         root_manager = RecursiveWorkspaceManager("root_job", temp_workspace)
 
@@ -277,7 +277,7 @@ class TestIntegrationScenarios:
             worker_id="worker_2",
             child_job_id="child_job",
             child_depth=1,
-            request_payload={"request": "Sub-tasks", "config": {}},
+            request_payload={"request": "Sub - tasks", "config": {}},
         )
 
         # Depth 1 workers

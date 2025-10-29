@@ -1,5 +1,5 @@
 """
-End-to-End Test: Worker AI + Hybrid Orchestrator
+End - to - End Test: Worker AI + Hybrid Orchestrator
 
 This test verifies the complete system:
 1. Worker AI (Claude CLI) spawns and runs
@@ -9,7 +9,7 @@ This test verifies the complete system:
 5. Dialogue is logged completely
 6. Task completes successfully
 
-This is the ultimate validation of true AI-to-AI communication.
+This is the ultimate validation of true AI - to - AI communication.
 """
 
 import sys
@@ -66,14 +66,14 @@ class TestLogger:
 
 def test_end_to_end_with_hybrid_engine():
     """
-    End-to-end test: Worker AI + Hybrid Orchestrator
+    End - to - end test: Worker AI + Hybrid Orchestrator
 
     This test spawns a real worker AI that will create a simple file,
     triggering the hybrid engine to make a decision.
     """
 
     print("\n" + "=" * 80)
-    print("END-TO-END TEST: Worker AI + Hybrid Orchestrator")
+    print("END - TO - END TEST: Worker AI + Hybrid Orchestrator")
     print("=" * 80)
     print("\nThis test will:")
     print("  1. Spawn a Claude CLI worker AI")
@@ -83,7 +83,7 @@ def test_end_to_end_with_hybrid_engine():
     print("  5. Orchestrator will respond to worker")
     print("  6. Worker will complete the task")
     print("  7. Dialogue will be logged completely")
-    print("\nThis validates TRUE AI-TO-AI COMMUNICATION with hybrid orchestration.")
+    print("\nThis validates TRUE AI - TO - AI COMMUNICATION with hybrid orchestration.")
     print("=" * 80)
 
     # Create test logger
@@ -106,7 +106,7 @@ def test_end_to_end_with_hybrid_engine():
 
 The script should:
 - Print "Hello, World!"
-- Print "This is a test of AI-to-AI communication"
+- Print "This is a test of AI - to - AI communication"
 - Print "Orchestrator: Claude AI"
 - Print "Worker: Claude AI"
 
@@ -135,7 +135,7 @@ After creating the file, print "Task completed successfully!" to confirm.
 
     # Run interactive session
     print("\n\nStep 2: Running interactive session...")
-    print("(This may take 30-60 seconds depending on AI response time)")
+    print("(This may take 30 - 60 seconds depending on AI response time)")
     print("-" * 80)
 
     start_time = time.time()
@@ -152,7 +152,7 @@ After creating the file, print "Task completed successfully!" to confirm.
     print("=" * 80)
 
     # Check task result
-    print(f"\n1. Task Result:")
+    print("\n1. Task Result:")
     print(f"   Success: {result.success}")
     print(f"   Duration: {result.duration:.1f}s")
     print(f"   Output length: {len(result.output)} chars")
@@ -160,14 +160,14 @@ After creating the file, print "Task completed successfully!" to confirm.
         print(f"   Error: {result.error_message}")
 
     # Check for dialogue transcript
-    print(f"\n2. Dialogue Transcript:")
+    print("\n2. Dialogue Transcript:")
     transcript_jsonl = session.workspace_dir / "dialogue_transcript.jsonl"
     transcript_txt = session.workspace_dir / "dialogue_transcript.txt"
 
     if transcript_jsonl.exists():
         print(f"   ✅ JSONL transcript saved: {transcript_jsonl}")
         # Count entries
-        with open(transcript_jsonl, "r", encoding="utf-8") as f:
+        with open(transcript_jsonl, "r", encoding="utf - 8") as f:
             entries = f.readlines()
         print(f"   Entries: {len(entries)}")
 
@@ -178,7 +178,7 @@ After creating the file, print "Task completed successfully!" to confirm.
             first_entry = json.loads(entries[0])
             print(f"   First entry direction: {first_entry.get('direction', 'unknown')}")
     else:
-        print(f"   ❌ JSONL transcript not found")
+        print("   ❌ JSONL transcript not found")
 
     if transcript_txt.exists():
         print(f"   ✅ TXT transcript saved: {transcript_txt}")
@@ -186,16 +186,16 @@ After creating the file, print "Task completed successfully!" to confirm.
         size = transcript_txt.stat().st_size
         print(f"   Size: {size} bytes")
     else:
-        print(f"   ❌ TXT transcript not found")
+        print("   ❌ TXT transcript not found")
 
     # Check for created file
-    print(f"\n3. Created File:")
+    print("\n3. Created File:")
     hello_world_file = session.workspace_dir / "hello_world.py"
 
     if hello_world_file.exists():
         print(f"   ✅ File created: {hello_world_file}")
         # Show content
-        with open(hello_world_file, "r", encoding="utf-8") as f:
+        with open(hello_world_file, "r", encoding="utf - 8") as f:
             content = f.read()
         print(f"   Content ({len(content)} chars):")
         print("   " + "-" * 76)
@@ -203,10 +203,10 @@ After creating the file, print "Task completed successfully!" to confirm.
             print(f"   {line}")
         print("   " + "-" * 76)
     else:
-        print(f"   ⚠ File not created (may have been denied or task incomplete)")
+        print("   ⚠ File not created (may have been denied or task incomplete)")
 
     # Check hybrid engine involvement
-    print(f"\n4. Hybrid Engine Decisions:")
+    print("\n4. Hybrid Engine Decisions:")
     print(f"   Session dialogue entries: {len(session.dialogue_transcript)}")
 
     confirmations = [
@@ -216,16 +216,16 @@ After creating the file, print "Task completed successfully!" to confirm.
     print(f"   Orchestrator responses: {len(confirmations)}")
 
     if confirmations:
-        print(f"   ✅ Hybrid engine made decisions:")
+        print("   ✅ Hybrid engine made decisions:")
         for i, conf in enumerate(confirmations, 1):
             conf_type = conf.get("confirmation_type", "unknown")
             content = conf.get("content", "")
             print(f"      {i}. Type: {conf_type}, Response: {content}")
     else:
-        print(f"   ⚠ No confirmations detected (task may have completed without needing approval)")
+        print("   ⚠ No confirmations detected (task may have completed without needing approval)")
 
     # Check logger events
-    print(f"\n5. Logger Events:")
+    print("\n5. Logger Events:")
     print(f"   Total events: {len(logger.events)}")
     for event in logger.events[:10]:  # First 10 events
         print(f"      - {event}")
@@ -283,17 +283,17 @@ After creating the file, print "Task completed successfully!" to confirm.
     print("=" * 80)
 
     if passed:
-        print("\n🎉 END-TO-END TEST PASSED!")
+        print("\n🎉 END - TO - END TEST PASSED!")
         print("\nThe complete system is working:")
         print("  ✓ Worker AI spawned")
         print("  ✓ Hybrid Engine made decisions")
         print("  ✓ Orchestrator responded")
         print("  ✓ Dialogue logged")
-        print("  ✓ TRUE AI-TO-AI COMMUNICATION VERIFIED")
+        print("  ✓ TRUE AI - TO - AI COMMUNICATION VERIFIED")
         print("\n" + "=" * 80)
         return True
     else:
-        print("\n⚠ END-TO-END TEST COMPLETED WITH ISSUES")
+        print("\n⚠ END - TO - END TEST COMPLETED WITH ISSUES")
         print("\nSome checks did not pass. Review the results above.")
         print("=" * 80)
         return False

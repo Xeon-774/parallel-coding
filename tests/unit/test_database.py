@@ -35,7 +35,7 @@ class TestDatabaseSettings:
     def test_custom_settings(self):
         """Test custom database settings."""
         settings = DatabaseSettings(
-            database_url="postgresql://user:pass@localhost/testdb",
+            database_url="postgresql://user:pass@localhost / testdb",
             echo_sql=True,
             pool_size=10,
         )
@@ -49,9 +49,9 @@ class TestMaskPassword:
 
     def test_mask_password_with_credentials(self):
         """Test masking password in URL with credentials."""
-        url = "postgresql://user:secret123@localhost:5432/mydb"
+        url = "postgresql://user:secret123@localhost:5432 / mydb"
         masked = _mask_password(url)
-        assert masked == "postgresql://user:***@localhost:5432/mydb"
+        assert masked == "postgresql://user:***@localhost:5432 / mydb"
         assert "secret123" not in masked
 
     def test_mask_password_without_credentials(self):
@@ -62,19 +62,19 @@ class TestMaskPassword:
 
     def test_mask_password_without_at_symbol(self):
         """Test URL without @ symbol."""
-        url = "postgresql://localhost/db"
+        url = "postgresql://localhost / db"
         masked = _mask_password(url)
         assert masked == url
 
     def test_mask_password_without_colon_in_credentials(self):
         """Test URL with username but no password."""
-        url = "postgresql://user@localhost/db"
+        url = "postgresql://user@localhost / db"
         masked = _mask_password(url)
         assert masked == url
 
     def test_mask_password_malformed_url(self):
         """Test malformed URL without protocol."""
-        url = "localhost:5432/db"
+        url = "localhost:5432 / db"
         masked = _mask_password(url)
         assert masked == url
 
@@ -107,7 +107,7 @@ class TestCreateDbEngine:
         assert "sqlite" in str(engine.url)
 
     def test_create_sqlite_memory_engine(self):
-        """Test creating in-memory SQLite engine."""
+        """Test creating in - memory SQLite engine."""
         settings = DatabaseSettings(database_url="sqlite:///:memory:")
         engine = create_db_engine(settings)
 
@@ -118,7 +118,7 @@ class TestCreateDbEngine:
     def test_create_postgresql_engine(self, mock_create_engine):
         """Test PostgreSQL engine configuration."""
         settings = DatabaseSettings(
-            database_url="postgresql://user:pass@localhost/db",
+            database_url="postgresql://user:pass@localhost / db",
             pool_size=10,
             max_overflow=20,
             pool_timeout=60,

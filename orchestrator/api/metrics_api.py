@@ -13,7 +13,7 @@ from fastapi import APIRouter, HTTPException
 from orchestrator.config import DEFAULT_CONFIG
 from orchestrator.core.common.metrics import MetricsCollector
 
-router = APIRouter(prefix="/api/v1", tags=["metrics"])
+router = APIRouter(prefix="/api / v1", tags=["metrics"])
 
 # Initialize metrics collector using default config
 metrics_collector = MetricsCollector(workspace_root=Path(DEFAULT_CONFIG.workspace_root))
@@ -36,7 +36,7 @@ async def get_worker_metrics(worker_id: str) -> Dict[str, Any]:
     return {"worker_id": worker_id, "metrics": metrics, "count": len(metrics)}
 
 
-@router.get("/workers/{worker_id}/metrics/summary")
+@router.get("/workers/{worker_id}/metrics / summary")
 async def get_worker_metrics_summary(worker_id: str) -> Dict[str, Any]:
     """
     Get aggregated metrics summary for a worker.
@@ -54,13 +54,13 @@ async def get_worker_metrics_summary(worker_id: str) -> Dict[str, Any]:
     return summary
 
 
-@router.get("/metrics/current")
+@router.get("/metrics / current")
 async def get_current_hybrid_metrics() -> Dict[str, Any]:
     """
     Get current hybrid engine metrics aggregated across all workers.
 
     This endpoint is used by the MetricsDashboard component to display
-    real-time decision statistics.
+    real - time decision statistics.
 
     Returns:
         {
@@ -126,7 +126,7 @@ async def get_current_hybrid_metrics() -> Dict[str, Any]:
     }
 
 
-@router.get("/decisions/recent")
+@router.get("/decisions / recent")
 async def get_recent_decisions(limit: int = 100) -> List[Dict[str, Any]]:
     """
     Get recent decision events from all workers.

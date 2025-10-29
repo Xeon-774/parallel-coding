@@ -44,7 +44,7 @@ from orchestrator.core.state_machine import (
 
 @pytest.fixture
 def test_db() -> Generator[Session, None, None]:
-    """Create in-memory SQLite database for testing."""
+    """Create in - memory SQLite database for testing."""
     engine = create_engine("sqlite:///:memory:", echo=False)
     Base.metadata.create_all(engine)
     SessionLocal = sessionmaker(bind=engine)
@@ -71,7 +71,7 @@ def job_sm(test_db: Session) -> JobStateMachine:
 @pytest.fixture
 def sample_worker(test_db: Session) -> Worker:
     """Create sample worker for testing."""
-    worker = Worker(id="test-worker-1", workspace_id="ws-1", status=WorkerStatus.IDLE)
+    worker = Worker(id="test - worker - 1", workspace_id="ws - 1", status=WorkerStatus.IDLE)
     test_db.add(worker)
     test_db.commit()
     test_db.refresh(worker)
@@ -82,7 +82,7 @@ def sample_worker(test_db: Session) -> Worker:
 def sample_job(test_db: Session) -> Job:
     """Create sample job for testing."""
     job = Job(
-        id="test-job-1",
+        id="test - job - 1",
         depth=0,
         worker_count=1,
         task_description="Test task",
@@ -103,14 +103,14 @@ def test_database_session_lifecycle(test_db: Session) -> None:
     """Test database session creation and cleanup."""
     assert test_db.is_active
 
-    worker = Worker(id="worker-lifecycle-1", workspace_id="ws-1", status=WorkerStatus.IDLE)
+    worker = Worker(id="worker - lifecycle - 1", workspace_id="ws - 1", status=WorkerStatus.IDLE)
     test_db.add(worker)
     test_db.commit()
 
     assert test_db.query(Worker).count() == 1
-    retrieved = test_db.query(Worker).filter_by(id="worker-lifecycle-1").first()
+    retrieved = test_db.query(Worker).filter_by(id="worker - lifecycle - 1").first()
     assert retrieved is not None
-    assert retrieved.id == "worker-lifecycle-1"
+    assert retrieved.id == "worker - lifecycle - 1"
     assert retrieved.status == WorkerStatus.IDLE
 
 
@@ -216,7 +216,7 @@ def test_job_cancellation_transitions(test_db: Session, job_sm: JobStateMachine)
     """Test job cancellation from various states."""
     # PENDING → CANCELLED
     job1 = Job(
-        id="cancel-test-1",
+        id="cancel - test - 1",
         depth=0,
         worker_count=1,
         task_description="Test task",
@@ -231,7 +231,7 @@ def test_job_cancellation_transitions(test_db: Session, job_sm: JobStateMachine)
 
     # RUNNING → CANCELLED
     job2 = Job(
-        id="cancel-test-2",
+        id="cancel - test - 2",
         depth=0,
         worker_count=1,
         task_description="Test task",
@@ -267,7 +267,7 @@ def test_password_hashing_security() -> None:
 def test_jwt_token_generation() -> None:
     """Test JWT token generation with valid structure."""
     token = create_access_token(
-        user_id="test-user-123",
+        user_id="test - user - 123",
         scopes=["supervisor:read", "supervisor:write"],
     )
 
@@ -280,13 +280,13 @@ def test_jwt_token_validation() -> None:
     """Test JWT token validation with signature verification and expiration."""
     # Valid token
     token = create_access_token(
-        user_id="test-user-123",
+        user_id="test - user - 123",
         scopes=["supervisor:read"],
         expires_delta=timedelta(minutes=30),
     )
 
     token_data = verify_token(token)
-    assert token_data.user_id == "test-user-123"
+    assert token_data.user_id == "test - user - 123"
     assert "supervisor:read" in token_data.scopes
 
     # Invalid token
@@ -298,7 +298,7 @@ def test_jwt_token_expiration() -> None:
     """Test JWT token expiration handling."""
     # Create expired token (expires in 0 seconds)
     token = create_access_token(
-        user_id="test-user-expired",
+        user_id="test - user - expired",
         scopes=["test:scope"],
         expires_delta=timedelta(seconds=-10),  # Already expired
     )
@@ -310,18 +310,18 @@ def test_jwt_token_expiration() -> None:
 def test_worker_model_crud(test_db: Session) -> None:
     """Test Worker model CRUD operations."""
     # Create
-    worker = Worker(id="crud-worker-1", workspace_id="ws-crud", status=WorkerStatus.IDLE)
+    worker = Worker(id="crud - worker - 1", workspace_id="ws - crud", status=WorkerStatus.IDLE)
     test_db.add(worker)
     test_db.commit()
     test_db.refresh(worker)
 
-    assert worker.id == "crud-worker-1"
+    assert worker.id == "crud - worker - 1"
     assert worker.status == WorkerStatus.IDLE
     assert worker.created_at is not None
     assert worker.updated_at is not None
 
     # Read
-    retrieved = test_db.query(Worker).filter_by(id="crud-worker-1").first()
+    retrieved = test_db.query(Worker).filter_by(id="crud - worker - 1").first()
     assert retrieved is not None
     assert retrieved.id == worker.id
 
@@ -334,7 +334,7 @@ def test_worker_model_crud(test_db: Session) -> None:
     # Delete
     test_db.delete(retrieved)
     test_db.commit()
-    assert test_db.query(Worker).filter_by(id="crud-worker-1").first() is None
+    assert test_db.query(Worker).filter_by(id="crud - worker - 1").first() is None
 
 
 def test_job_model_relationships(test_db: Session, sample_worker: Worker, sample_job: Job) -> None:
@@ -381,7 +381,7 @@ def test_resource_allocation_constraints(
 
 def test_idempotency_key_uniqueness(test_db: Session) -> None:
     """Test IdempotencyKey unique constraint for duplicate prevention."""
-    key_value = "idempotent-operation-123"
+    key_value = "idempotent - operation - 123"
 
     # First insertion
     key1 = IdempotencyKey(
@@ -424,13 +424,13 @@ def test_worker_status_enum_values(test_db: Session) -> None:
     ]
 
     for idx, status in enumerate(statuses):
-        worker = Worker(id=f"status-test-{idx}", workspace_id="ws-status", status=status)
+        worker = Worker(id=f"status - test-{idx}", workspace_id="ws - status", status=status)
         test_db.add(worker)
 
     test_db.commit()
 
     for idx, status in enumerate(statuses):
-        worker = test_db.query(Worker).filter_by(id=f"status-test-{idx}").first()
+        worker = test_db.query(Worker).filter_by(id=f"status - test-{idx}").first()
         assert worker is not None
         assert worker.status == status
 
@@ -447,7 +447,7 @@ def test_job_status_enum_values(test_db: Session) -> None:
 
     for idx, status in enumerate(statuses):
         job = Job(
-            id=f"job-status-test-{idx}",
+            id=f"job - status - test-{idx}",
             depth=0,
             worker_count=1,
             task_description="Test task",
@@ -458,6 +458,6 @@ def test_job_status_enum_values(test_db: Session) -> None:
     test_db.commit()
 
     for idx, status in enumerate(statuses):
-        job = test_db.query(Job).filter_by(id=f"job-status-test-{idx}").first()
+        job = test_db.query(Job).filter_by(id=f"job - status - test-{idx}").first()
         assert job is not None
         assert job.status == status

@@ -5,7 +5,7 @@ This script demonstrates the review system by reviewing project documents
 with Codex from multiple perspectives.
 
 Usage:
-    python scripts/test_codex_review.py
+    python scripts / test_codex_review.py
 """
 
 import asyncio
@@ -78,7 +78,7 @@ async def main():
     if not roadmap_path.exists():
         print(f"⚠️  ROADMAP.md not found at {roadmap_path}")
         print("   Trying alternative location...")
-        roadmap_path = project_root / "tools" / "parallel-coding" / "docs" / "ROADMAP.md"
+        roadmap_path = project_root / "tools" / "parallel - coding" / "docs" / "ROADMAP.md"
         if not roadmap_path.exists():
             print(f"⚠️  ROADMAP.md not found at {roadmap_path}")
             print("   Skipping ROADMAP.md review")
@@ -109,13 +109,13 @@ async def main():
     if not arch_path.exists():
         print(f"⚠️  ARCHITECTURE.md not found at {arch_path}")
         print("   Trying alternative location...")
-        arch_path = project_root / "tools" / "parallel-coding" / "docs" / "ARCHITECTURE.md"
+        arch_path = project_root / "tools" / "parallel - coding" / "docs" / "ARCHITECTURE.md"
         if not arch_path.exists():
             # Try workspace location
             arch_path = (
                 project_root
                 / "tools"
-                / "parallel-coding"
+                / "parallel - coding"
                 / "workspace"
                 / "worker_2"
                 / "docs"
@@ -175,7 +175,7 @@ async def review_document(
         },
     )
 
-    print("Executing review (this may take 1-5 minutes)...")
+    print("Executing review (this may take 1 - 5 minutes)...")
     print("Codex is analyzing the document...")
     print()
 
@@ -192,13 +192,13 @@ async def review_document(
 
         if result.metadata.get("usage"):
             usage = result.metadata["usage"]
-            print(f"Token Usage:")
+            print("Token Usage:")
             print(f"  - Input: {usage['input_tokens']:,} tokens")
             print(f"  - Output: {usage['output_tokens']:,} tokens")
             print()
 
         # Display feedback summary
-        print(f"Feedback Summary:")
+        print("Feedback Summary:")
         print(f"  - Total items: {len(result.feedbacks)}")
         print(f"  - Critical: {len(result.critical_issues)}")
         print(f"  - Warnings: {len(result.warnings)}")

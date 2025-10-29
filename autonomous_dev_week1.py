@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Autonomous Development Script for AI_Investor Developer Studio Week 1
-Executes Day 3-7 tasks in parallel with full quality assurance
+Executes Day 3 - 7 tasks in parallel with full quality assurance
 """
 
 import json
@@ -21,26 +21,26 @@ from orchestrator.core.logger import setup_logging
 setup_logging(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Task definition for Developer Studio Week 1 (Day 3-7)
+# Task definition for Developer Studio Week 1 (Day 3 - 7)
 WEEK1_DAY3_7_TASK = """
-AI_Investor Developer Studio Week 1 完成 (Day 3-7)
+AI_Investor Developer Studio Week 1 完成 (Day 3 - 7)
 
 ROADMAPに従って以下のタスクを並列実行してください:
 
-## Day 3-4: WebSocket通信実装 (2タスク並列)
+## Day 3 - 4: WebSocket通信実装 (2タスク並列)
 
 ### Task 1: FastAPI WebSocketエンドポイント実装
-**ファイル**: apps/backend-api/main.py
+**ファイル**: apps / backend - api / main.py
 **実装内容**:
-1. `/ws/worker-status` - Worker状態ストリーミング
+1. `/ws / worker - status` - Worker状態ストリーミング
    - 接続されたクライアントに1秒ごとにWorker状態を送信
    - JSON形式: {"worker_id": str, "status": str, "progress": float, "current_task": str}
 
-2. `/ws/worker-logs` - ログストリーミング
+2. `/ws / worker - logs` - ログストリーミング
    - リアルタイムログストリーミング
    - JSON形式: {"timestamp": str, "worker_id": str, "level": str, "message": str}
 
-3. `/ws/metrics` - パフォーマンスメトリクス
+3. `/ws / metrics` - パフォーマンスメトリクス
    - システムメトリクス送信
    - JSON形式: {"cpu_percent": float, "memory_percent": float, "active_workers": int}
 
@@ -52,7 +52,7 @@ ROADMAPに従って以下のタスクを並列実行してください:
 - Pytestユニットテスト (coverage ≥ 90%)
 
 ### Task 2: React WebSocket Client実装
-**ファイル**: apps/developer-studio/src/hooks/useWebSocket.ts
+**ファイル**: apps / developer - studio / src / hooks / useWebSocket.ts
 **実装内容**:
 1. カスタムフック `useWebSocket(url: string)`
    - 自動再接続ロジック
@@ -70,11 +70,11 @@ ROADMAPに従って以下のタスクを並列実行してください:
 - エラーバウンダリ実装
 - Jest + React Testing Library (coverage ≥ 90%)
 
-## Day 5-7: WorkerManager統合API (4タスク並列)
+## Day 5 - 7: WorkerManager統合API (4タスク並列)
 
 ### Task 3: Worker一覧取得API
-**エンドポイント**: GET `/api/workers/list`
-**ファイル**: apps/backend-api/routes/workers.py
+**エンドポイント**: GET `/api / workers / list`
+**ファイル**: apps / backend - api / routes / workers.py
 **実装内容**:
 - 全Worker情報取得
 - レスポンス: {"workers": [{"id": str, "status": str, "progress": float, "task": str}]}
@@ -82,14 +82,14 @@ ROADMAPに従って以下のタスクを並列実行してください:
 - 既存WorkerManagerとの統合
 
 ### Task 4: 個別Worker状態取得API
-**エンドポイント**: GET `/api/workers/{id}/status`
+**エンドポイント**: GET `/api / workers/{id}/status`
 **実装内容**:
 - 指定WorkerID の詳細情報取得
 - レスポンス: {"id": str, "status": str, "progress": float, "logs": [], "metrics": {}}
 - 404エラーハンドリング
 
 ### Task 5: Worker起動API
-**エンドポイント**: POST `/api/workers/spawn`
+**エンドポイント**: POST `/api / workers / spawn`
 **実装内容**:
 - 新規Worker起動
 - リクエスト: {"task": str, "config": {}}
@@ -97,7 +97,7 @@ ROADMAPに従って以下のタスクを並列実行してください:
 - 非同期処理対応
 
 ### Task 6: Worker停止API
-**エンドポイント**: POST `/api/workers/{id}/stop`
+**エンドポイント**: POST `/api / workers/{id}/stop`
 **実装内容**:
 - 指定Worker停止
 - グレースフルシャットダウン実装
@@ -106,11 +106,11 @@ ROADMAPに従って以下のタスクを並列実行してください:
 ## Day 7: 統合テスト (1タスク)
 
 ### Task 7: E2Eテスト実装
-**ファイル**: apps/backend-api/tests/test_e2e_websocket_api.py
+**ファイル**: apps / backend - api / tests / test_e2e_websocket_api.py
 **実装内容**:
 1. WebSocket接続テスト
 2. Worker起動→状態監視→停止のフルフロー
-3. 3-4 Worker同時実行テスト
+3. 3 - 4 Worker同時実行テスト
 4. エラーケーステスト
 
 **品質要件**:
@@ -131,13 +131,13 @@ ROADMAPに従って以下のタスクを並列実行してください:
 2. **型安全性**:
    - `Any`型禁止
    - 明示的型注釈100%
-   - TypeScript/Python strict mode
+   - TypeScript / Python strict mode
 
 3. **コード品質**:
    - 関数≤50行
    - 複雑度≤10
    - ネスト≤3
-   - ESLint/Pylintエラーゼロ
+   - ESLint / Pylintエラーゼロ
 
 4. **テスト**:
    - カバレッジ≥90%
@@ -157,27 +157,27 @@ ROADMAPに従って以下のタスクを並列実行してください:
 - すべてのコミットに明確なメッセージ
 
 ### 並列実行戦略
-1. Task 1-2を並列実行（WebSocket）
-2. Task 1-2完了後、Task 3-6を並列実行（API）
+1. Task 1 - 2を並列実行（WebSocket）
+2. Task 1 - 2完了後、Task 3 - 6を並列実行（API）
 3. 全タスク完了後、Task 7を実行（テスト）
 
 ### 成功基準
 - [ ] 7タスクすべて完了
 - [ ] 全テストパス（coverage ≥ 90%）
-- [ ] ESLint/Pylintエラーゼロ
+- [ ] ESLint / Pylintエラーゼロ
 - [ ] Git commit全追跡可能
 - [ ] ドキュメント完全更新
-- [ ] 3-4 Worker同時実行で動作確認
+- [ ] 3 - 4 Worker同時実行で動作確認
 
 以上、excellence_ai_standard標準を100%適用して実装してください。
 """
 
 
 def main():
-    """Execute autonomous development for Week 1 Day 3-7"""
+    """Execute autonomous development for Week 1 Day 3 - 7"""
 
     logger.info("=" * 80)
-    logger.info("AI_Investor Developer Studio Week 1 (Day 3-7) - Autonomous Development")
+    logger.info("AI_Investor Developer Studio Week 1 (Day 3 - 7) - Autonomous Development")
     logger.info("=" * 80)
 
     # Load configuration
@@ -229,13 +229,13 @@ def main():
         )
         report_path.parent.mkdir(exist_ok=True)
 
-        with open(report_path, "w", encoding="utf-8") as f:
+        with open(report_path, "w", encoding="utf - 8") as f:
             json.dump(report, f, indent=2, ensure_ascii=False)
 
         logger.info(f"Report saved to: {report_path}")
 
         if result.status == "success":
-            logger.info("✅ Week 1 Day 3-7 completed successfully!")
+            logger.info("✅ Week 1 Day 3 - 7 completed successfully!")
             return 0
         else:
             logger.error("❌ Execution failed. Check logs for details.")

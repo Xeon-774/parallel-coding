@@ -61,7 +61,7 @@ def auth_headers() -> dict[str, str]:
 
 @pytest.fixture
 def readonly_headers() -> dict[str, str]:
-    """Create JWT token with read-only scopes."""
+    """Create JWT token with read - only scopes."""
     token = create_dev_token(scopes=["supervisor:read", "jobs:read", "resources:read"])
     return {"Authorization": f"Bearer {token}"}
 
@@ -118,28 +118,28 @@ def _seed_job(
 
 def test_get_current_user_valid_token(client: TestClient, auth_headers: dict[str, str]) -> None:
     """Test JWT validation success with valid token."""
-    response = client.get("/api/supervisor/workers", headers=auth_headers)
+    response = client.get("/api / supervisor / workers", headers=auth_headers)
     assert response.status_code == 200
 
 
 def test_get_current_user_invalid_token(client: TestClient) -> None:
     """Test JWT validation failure with invalid token (401 Unauthorized)."""
     headers = {"Authorization": "Bearer invalid.token.here"}
-    response = client.get("/api/supervisor/workers", headers=headers)
+    response = client.get("/api / supervisor / workers", headers=headers)
     assert response.status_code == 401
     assert "detail" in response.json()
 
 
 def test_get_current_user_missing_token(client: TestClient) -> None:
     """Test JWT validation failure with missing token (401 Unauthorized)."""
-    response = client.get("/api/supervisor/workers")
+    response = client.get("/api / supervisor / workers")
     assert response.status_code == 401
 
 
 def test_require_scope_authorized(client: TestClient, auth_headers: dict[str, str]) -> None:
     """Test scope check success with proper authorization."""
     # auth_headers includes supervisor:read scope
-    response = client.get("/api/supervisor/workers", headers=auth_headers)
+    response = client.get("/api / supervisor / workers", headers=auth_headers)
     assert response.status_code == 200
 
 
@@ -149,7 +149,7 @@ def test_require_scope_forbidden(client: TestClient) -> None:
     token = create_dev_token(scopes=["jobs:read"])  # Missing supervisor:read
     headers = {"Authorization": f"Bearer {token}"}
 
-    response = client.get("/api/supervisor/workers", headers=headers)
+    response = client.get("/api / supervisor / workers", headers=headers)
     assert response.status_code == 403
     assert "detail" in response.json()
 
@@ -158,8 +158,8 @@ def test_require_scope_forbidden(client: TestClient) -> None:
 
 
 def test_supervisor_list_workers_empty(client: TestClient, auth_headers: dict[str, str]) -> None:
-    """Test GET /api/supervisor/workers endpoint with no workers."""
-    response = client.get("/api/supervisor/workers", headers=auth_headers)
+    """Test GET /api / supervisor / workers endpoint with no workers."""
+    response = client.get("/api / supervisor / workers", headers=auth_headers)
     assert response.status_code == 200
     data = response.json()
     assert "total" in data
@@ -172,11 +172,11 @@ def test_supervisor_list_workers_empty(client: TestClient, auth_headers: dict[st
 def test_supervisor_list_workers_populated(
     client: TestClient, auth_headers: dict[str, str]
 ) -> None:
-    """Test GET /api/supervisor/workers endpoint with seeded workers."""
-    _seed_worker("worker-1", "ws-1", WorkerStatus.IDLE)
-    _seed_worker("worker-2", "ws-1", WorkerStatus.RUNNING)
+    """Test GET /api / supervisor / workers endpoint with seeded workers."""
+    _seed_worker("worker - 1", "ws - 1", WorkerStatus.IDLE)
+    _seed_worker("worker - 2", "ws - 1", WorkerStatus.RUNNING)
 
-    response = client.get("/api/supervisor/workers", headers=auth_headers)
+    response = client.get("/api / supervisor / workers", headers=auth_headers)
     assert response.status_code == 200
     data = response.json()
     assert data["total"] == 2
@@ -184,30 +184,32 @@ def test_supervisor_list_workers_populated(
 
 
 def test_supervisor_get_worker_success(client: TestClient, auth_headers: dict[str, str]) -> None:
-    """Test GET /api/supervisor/workers/{id} endpoint with existing worker."""
-    worker = _seed_worker("worker-detail", "ws-1", WorkerStatus.IDLE)
+    """Test GET /api / supervisor / workers/{id} endpoint with existing worker."""
+    worker = _seed_worker("worker - detail", "ws - 1", WorkerStatus.IDLE)
 
-    response = client.get(f"/api/supervisor/workers/{worker.id}", headers=auth_headers)
+    response = client.get(f"/api / supervisor / workers/{worker.id}", headers=auth_headers)
     assert response.status_code == 200
     data = response.json()
     assert data["id"] == worker.id
-    assert data["workspace_id"] == "ws-1"
+    assert data["workspace_id"] == "ws - 1"
     assert data["status"] == "IDLE"
 
 
 def test_supervisor_get_worker_not_found(client: TestClient, auth_headers: dict[str, str]) -> None:
-    """Test GET /api/supervisor/workers/{id} endpoint with non-existent worker (404)."""
-    response = client.get("/api/supervisor/workers/nonexistent-worker", headers=auth_headers)
+    """Test GET /api / supervisor / workers/{id} endpoint with non - existent worker (404)."""
+    response = client.get(
+        "/api / supervisor / workers / nonexistent - worker", headers=auth_headers
+    )
     assert response.status_code == 404
     assert "detail" in response.json()
 
 
 def test_supervisor_terminate_worker(client: TestClient, auth_headers: dict[str, str]) -> None:
-    """Test POST /api/supervisor/workers/{id}/terminate endpoint."""
-    worker = _seed_worker("worker-terminate", "ws-1", WorkerStatus.RUNNING)
+    """Test POST /api / supervisor / workers/{id}/terminate endpoint."""
+    worker = _seed_worker("worker - terminate", "ws - 1", WorkerStatus.RUNNING)
 
     response = client.post(
-        f"/api/supervisor/workers/{worker.id}/terminate",
+        f"/api / supervisor / workers/{worker.id}/terminate",
         headers=auth_headers,
         json={"reason": "User requested termination"},
     )
@@ -218,11 +220,11 @@ def test_supervisor_terminate_worker(client: TestClient, auth_headers: dict[str,
 
 
 def test_supervisor_metrics(client: TestClient, auth_headers: dict[str, str]) -> None:
-    """Test GET /api/supervisor/metrics endpoint."""
-    _seed_worker("m1", "ws-1", WorkerStatus.IDLE)
-    _seed_worker("m2", "ws-1", WorkerStatus.RUNNING)
+    """Test GET /api / supervisor / metrics endpoint."""
+    _seed_worker("m1", "ws - 1", WorkerStatus.IDLE)
+    _seed_worker("m2", "ws - 1", WorkerStatus.RUNNING)
 
-    response = client.get("/api/supervisor/metrics", headers=auth_headers)
+    response = client.get("/api / supervisor / metrics", headers=auth_headers)
     assert response.status_code == 200
     data = response.json()
     assert "total_workers" in data
@@ -235,8 +237,8 @@ def test_supervisor_metrics(client: TestClient, auth_headers: dict[str, str]) ->
 
 
 def test_resources_get_quotas(client: TestClient, auth_headers: dict[str, str]) -> None:
-    """Test GET /api/resources/quotas endpoint."""
-    response = client.get("/api/resources/quotas", headers=auth_headers)
+    """Test GET /api / resources / quotas endpoint."""
+    response = client.get("/api / resources / quotas", headers=auth_headers)
     assert response.status_code == 200
     data = response.json()
     assert "quotas" in data
@@ -247,12 +249,14 @@ def test_resources_get_quotas(client: TestClient, auth_headers: dict[str, str]) 
 
 
 def test_resources_allocate_success(client: TestClient, auth_headers: dict[str, str]) -> None:
-    """Test POST /api/resources/allocate endpoint with valid allocation."""
-    worker = _seed_worker("alloc-worker", "ws-1", WorkerStatus.IDLE)
-    job = _seed_job("alloc-job", "Test allocation task", JobStatus.PENDING, depth=0, worker_count=1)
+    """Test POST /api / resources / allocate endpoint with valid allocation."""
+    worker = _seed_worker("alloc - worker", "ws - 1", WorkerStatus.IDLE)
+    job = _seed_job(
+        "alloc - job", "Test allocation task", JobStatus.PENDING, depth=0, worker_count=1
+    )
 
     response = client.post(
-        "/api/resources/allocate",
+        "/api / resources / allocate",
         headers=auth_headers,
         json={"job_id": job.id, "depth": 0, "worker_count": 1},
     )
@@ -263,12 +267,14 @@ def test_resources_allocate_success(client: TestClient, auth_headers: dict[str, 
 
 
 def test_resources_release(client: TestClient, auth_headers: dict[str, str]) -> None:
-    """Test POST /api/resources/release endpoint."""
-    worker = _seed_worker("release-worker", "ws-1", WorkerStatus.RUNNING)
-    job = _seed_job("release-job", "Test release task", JobStatus.RUNNING, depth=0, worker_count=1)
+    """Test POST /api / resources / release endpoint."""
+    worker = _seed_worker("release - worker", "ws - 1", WorkerStatus.RUNNING)
+    job = _seed_job(
+        "release - job", "Test release task", JobStatus.RUNNING, depth=0, worker_count=1
+    )
 
     response = client.post(
-        "/api/resources/release",
+        "/api / resources / release",
         headers=auth_headers,
         json={"job_id": job.id, "depth": 0},
     )
@@ -278,11 +284,11 @@ def test_resources_release(client: TestClient, auth_headers: dict[str, str]) -> 
 
 
 def test_resources_usage(client: TestClient, auth_headers: dict[str, str]) -> None:
-    """Test GET /api/resources/usage endpoint."""
-    _seed_worker("usage-w1", "ws-1", WorkerStatus.IDLE)
-    _seed_worker("usage-w2", "ws-1", WorkerStatus.RUNNING)
+    """Test GET /api / resources / usage endpoint."""
+    _seed_worker("usage - w1", "ws - 1", WorkerStatus.IDLE)
+    _seed_worker("usage - w2", "ws - 1", WorkerStatus.RUNNING)
 
-    response = client.get("/api/resources/usage", headers=auth_headers)
+    response = client.get("/api / resources / usage", headers=auth_headers)
     assert response.status_code == 200
     data = response.json()
     assert "usage" in data
@@ -293,9 +299,9 @@ def test_resources_usage(client: TestClient, auth_headers: dict[str, str]) -> No
 
 
 def test_jobs_submit(client: TestClient, auth_headers: dict[str, str]) -> None:
-    """Test POST /api/jobs/submit endpoint."""
+    """Test POST /api / jobs / submit endpoint."""
     response = client.post(
-        "/api/jobs/submit",
+        "/api / jobs / submit",
         headers=auth_headers,
         json={
             "task_description": "Test task submission",
@@ -310,12 +316,12 @@ def test_jobs_submit(client: TestClient, auth_headers: dict[str, str]) -> None:
 
 
 def test_jobs_get_success(client: TestClient, auth_headers: dict[str, str]) -> None:
-    """Test GET /api/jobs/{id} endpoint with existing job."""
+    """Test GET /api / jobs/{id} endpoint with existing job."""
     job = _seed_job(
-        "job-get-test", "Test job retrieval", JobStatus.PENDING, depth=0, worker_count=1
+        "job - get - test", "Test job retrieval", JobStatus.PENDING, depth=0, worker_count=1
     )
 
-    response = client.get(f"/api/jobs/{job.id}", headers=auth_headers)
+    response = client.get(f"/api / jobs/{job.id}", headers=auth_headers)
     assert response.status_code == 200
     data = response.json()
     assert data["id"] == job.id
@@ -323,18 +329,18 @@ def test_jobs_get_success(client: TestClient, auth_headers: dict[str, str]) -> N
 
 
 def test_jobs_get_not_found(client: TestClient, auth_headers: dict[str, str]) -> None:
-    """Test GET /api/jobs/{id} endpoint with non-existent job (404)."""
-    response = client.get("/api/jobs/nonexistent-job-id", headers=auth_headers)
+    """Test GET /api / jobs/{id} endpoint with non - existent job (404)."""
+    response = client.get("/api / jobs / nonexistent - job - id", headers=auth_headers)
     assert response.status_code == 404
     assert "detail" in response.json()
 
 
 def test_jobs_list(client: TestClient, auth_headers: dict[str, str]) -> None:
-    """Test GET /api/jobs/list endpoint."""
-    _seed_job("list-job-1", "Test task 1", JobStatus.PENDING, depth=0, worker_count=1)
-    _seed_job("list-job-2", "Test task 2", JobStatus.RUNNING, depth=0, worker_count=2)
+    """Test GET /api / jobs / list endpoint."""
+    _seed_job("list - job - 1", "Test task 1", JobStatus.PENDING, depth=0, worker_count=1)
+    _seed_job("list - job - 2", "Test task 2", JobStatus.RUNNING, depth=0, worker_count=2)
 
-    response = client.get("/api/jobs", headers=auth_headers)
+    response = client.get("/api / jobs", headers=auth_headers)
     assert response.status_code == 200
     data = response.json()
     assert isinstance(data, list)
@@ -342,11 +348,11 @@ def test_jobs_list(client: TestClient, auth_headers: dict[str, str]) -> None:
 
 
 def test_jobs_cancel(client: TestClient, auth_headers: dict[str, str]) -> None:
-    """Test POST /api/jobs/{id}/cancel endpoint."""
-    job = _seed_job("cancel-job", "Test cancel task", JobStatus.RUNNING, depth=0, worker_count=1)
+    """Test POST /api / jobs/{id}/cancel endpoint."""
+    job = _seed_job("cancel - job", "Test cancel task", JobStatus.RUNNING, depth=0, worker_count=1)
 
     response = client.post(
-        f"/api/jobs/{job.id}/cancel",
+        f"/api / jobs/{job.id}/cancel",
         headers=auth_headers,
     )
     assert response.status_code == 200
@@ -361,7 +367,7 @@ def test_jobs_cancel(client: TestClient, auth_headers: dict[str, str]) -> None:
 def test_validation_error_422(client: TestClient, auth_headers: dict[str, str]) -> None:
     """Test validation error (422 Unprocessable Entity) with invalid request body."""
     response = client.post(
-        "/api/jobs/submit",
+        "/api / jobs / submit",
         headers=auth_headers,
         json={"invalid_field": "value"},  # Missing required fields
     )
@@ -370,11 +376,11 @@ def test_validation_error_422(client: TestClient, auth_headers: dict[str, str]) 
 
 
 def test_readonly_user_cannot_write(client: TestClient, readonly_headers: dict[str, str]) -> None:
-    """Test that read-only user cannot perform write operations (403 Forbidden)."""
+    """Test that read - only user cannot perform write operations (403 Forbidden)."""
     response = client.post(
-        "/api/jobs/submit",
+        "/api / jobs / submit",
         headers=readonly_headers,
-        json={"task_file_path": "/tmp/task.txt", "priority": 5},
+        json={"task_file_path": "/tmp / task.txt", "priority": 5},
     )
     assert response.status_code == 403
     assert "detail" in response.json()

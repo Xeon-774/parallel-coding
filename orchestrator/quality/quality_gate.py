@@ -1,14 +1,14 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Quality Gates Engine - Phase 0 Week 2
 Excellence AI Standard (100% compliance)
 
 Implements comprehensive quality checks:
-- Coverage ≥90% (pytest-cov)
+- Coverage ≥90% (pytest - cov)
 - Lint checks (flake8, black, isort)
 - Type checks (mypy strict mode)
 - Security scans (bandit)
-- Auto-fix capabilities
+- Auto - fix capabilities
 """
 
 import asyncio
@@ -90,7 +90,7 @@ class QualityGateEngine:
 
     Features:
     - Coverage check (≥90%)
-    - Lint check with auto-fix
+    - Lint check with auto - fix
     - Type check (mypy strict)
     - Security scan (bandit)
     - Configurable thresholds
@@ -182,7 +182,7 @@ class QualityGateEngine:
 
         duration = time.time() - start_time
 
-        # Determine overall pass/fail
+        # Determine overall pass / fail
         overall_passed = all(
             [
                 coverage_result.passed,
@@ -226,7 +226,7 @@ class QualityGateEngine:
 
     async def run_coverage(self, threshold: Optional[float] = None) -> QualityCheckResult:
         """
-        Run coverage check using pytest-cov
+        Run coverage check using pytest - cov
 
         Args:
             threshold: Coverage threshold (default from config)
@@ -244,9 +244,9 @@ class QualityGateEngine:
             cmd = [
                 "pytest",
                 "--cov=orchestrator",
-                "--cov-report=term-missing",
-                "--cov-report=json",
-                f"--cov-fail-under={int(threshold)}",
+                "--cov - report=term - missing",
+                "--cov - report=json",
+                f"--cov - fail - under={int(threshold)}",
                 "-v",
             ]
 
@@ -311,10 +311,10 @@ class QualityGateEngine:
 
     async def run_lint(self, auto_fix: Optional[bool] = None) -> QualityCheckResult:
         """
-        Run lint checks (flake8, black, isort) with auto-fix
+        Run lint checks (flake8, black, isort) with auto - fix
 
         Args:
-            auto_fix: Enable auto-fix (default from config)
+            auto_fix: Enable auto - fix (default from config)
 
         Returns:
             QualityCheckResult for lint
@@ -331,9 +331,9 @@ class QualityGateEngine:
         try:
             # 1. Black formatting
             if auto_fix and "black" in self.config["lint_tools"]:
-                logger.info("Running black auto-format...")
+                logger.info("Running black auto - format...")
                 result = subprocess.run(
-                    ["black", ".", "--line-length", str(self.config["lint_max_line_length"])],
+                    ["black", ".", "--line - length", str(self.config["lint_max_line_length"])],
                     cwd=self.project_dir,
                     capture_output=True,
                     text=True,
@@ -341,11 +341,11 @@ class QualityGateEngine:
                 )
                 if "reformatted" in result.stdout:
                     auto_fixed = True
-                    logger.info("Black auto-formatted files")
+                    logger.info("Black auto - formatted files")
 
             # 2. isort import sorting
             if auto_fix and "isort" in self.config["lint_tools"]:
-                logger.info("Running isort auto-fix...")
+                logger.info("Running isort auto - fix...")
                 result = subprocess.run(
                     ["isort", ".", "--profile", "black"],
                     cwd=self.project_dir,
@@ -355,7 +355,7 @@ class QualityGateEngine:
                 )
                 if result.returncode == 0:
                     auto_fixed = True
-                    logger.info("isort auto-fixed imports")
+                    logger.info("isort auto - fixed imports")
 
             # 3. Flake8 check
             if "flake8" in self.config["lint_tools"]:
@@ -364,7 +364,7 @@ class QualityGateEngine:
                     [
                         "flake8",
                         ".",
-                        "--max-line-length",
+                        "--max - line - length",
                         str(self.config["lint_max_line_length"]),
                         "--count",
                     ],
@@ -476,9 +476,9 @@ class QualityGateEngine:
                 "bandit",
                 "-r",
                 "orchestrator",
-                "-f",
+                "-",
                 "json",
-                "-ll",  # Only show medium/high severity
+                "-ll",  # Only show medium / high severity
             ]
 
             result = subprocess.run(
@@ -536,7 +536,7 @@ async def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="Quality Gates Engine")
-    parser.add_argument("--project-dir", type=Path, default=Path.cwd(), help="Project directory")
+    parser.add_argument("--project - dir", type=Path, default=Path.cwd(), help="Project directory")
     parser.add_argument("--output", type=Path, help="Output JSON file")
     parser.add_argument("--verbose", action="store_true", help="Verbose logging")
 

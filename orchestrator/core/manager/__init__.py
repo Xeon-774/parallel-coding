@@ -8,7 +8,7 @@ Available Managers:
     - ClaudeCodexManager: Hybrid manager using Claude for orchestration and Codex for execution
 
 Author: Claude (Sonnet 4.5)
-Created: 2025-10-27
+Created: 2025 - 10 - 27
 Version: 1.0.0
 """
 

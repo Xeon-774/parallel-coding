@@ -6,16 +6,16 @@ replacing Codex CLI for autonomous file operations without terminal emulation.
 
 Key Features:
     - Direct Anthropic API access via official Python SDK
-    - Tool Use API for file operations (read/write/edit)
+    - Tool Use API for file operations (read / write / edit)
     - Comprehensive error handling with retry logic
-    - Type-safe configuration with Pydantic
-    - Streaming support for real-time output
+    - Type - safe configuration with Pydantic
+    - Streaming support for real - time output
     - 90%+ test coverage compliance
 
 Architecture:
     ClaudeAPIProvider (main class)
     ├── execute_async() - Async execution with tool use
-    ├── stream_execution() - Streaming with real-time updates
+    ├── stream_execution() - Streaming with real - time updates
     └── file_operation_tools - Tool definitions for file ops
 
 Security:
@@ -26,7 +26,7 @@ Security:
     - Input validation via Pydantic
 
 Author: Claude (Sonnet 4.5)
-Created: 2025-10-27
+Created: 2025 - 10 - 27
 Version: 1.0.0
 Excellence AI Standard: 100% Applied
 """
@@ -47,7 +47,7 @@ from pydantic import BaseModel, Field, validator
 # Constants
 # =============================================================================
 
-DEFAULT_MODEL: str = "claude-sonnet-4.5"
+DEFAULT_MODEL: str = "claude - sonnet - 4.5"
 DEFAULT_TIMEOUT_SECONDS: int = 300  # 5 minutes
 DEFAULT_MAX_TOKENS: int = 4096
 MAX_PROMPT_LENGTH: int = 100000  # 100K characters
@@ -125,16 +125,16 @@ class ClaudeAPIConfig(BaseModel):
     """
     Configuration for Claude API Provider.
 
-    This model provides type-safe configuration with comprehensive validation.
+    This model provides type - safe configuration with comprehensive validation.
 
     Attributes:
         api_key: Anthropic API key (from environment)
-        model: Claude model to use (default: claude-sonnet-4.5)
-        timeout_seconds: Maximum execution time (10-1800 seconds)
-        max_tokens: Maximum tokens in response (100-8192)
-        max_retries: Maximum retry attempts (0-5)
+        model: Claude model to use (default: claude - sonnet - 4.5)
+        timeout_seconds: Maximum execution time (10 - 1800 seconds)
+        max_tokens: Maximum tokens in response (100 - 8192)
+        max_retries: Maximum retry attempts (0 - 5)
         workspace_root: Root directory for file operations
-        temperature: Temperature for generation (0.0-1.0)
+        temperature: Temperature for generation (0.0 - 1.0)
         enable_streaming: Whether to enable streaming responses
 
     Example:
@@ -217,8 +217,8 @@ class ClaudeAPIConfig(BaseModel):
         Raises:
             ValueError: If API key is invalid
         """
-        if not v.startswith("sk-ant-"):
-            raise ValueError("Invalid Anthropic API key format (must start with 'sk-ant-')")
+        if not v.startswith("sk - ant-"):
+            raise ValueError("Invalid Anthropic API key format (must start with 'sk - ant-')")
 
         return v
 
@@ -236,7 +236,7 @@ class FileOperation:
     Attributes:
         operation_type: Type of file operation
         file_path: Path to file (relative to workspace)
-        content: File content (for write/edit operations)
+        content: File content (for write / edit operations)
         success: Whether operation succeeded
         error_message: Error message if operation failed
     """
@@ -399,9 +399,9 @@ class ClaudeAPIProvider:
         - Tool Use API for file operations
         - Async and sync execution modes
         - Automatic retry with exponential backoff
-        - Streaming support for real-time output
+        - Streaming support for real - time output
         - Comprehensive error handling
-        - Type-safe configuration
+        - Type - safe configuration
 
     Usage:
         >>> config = ClaudeAPIConfig(
@@ -462,7 +462,7 @@ class ClaudeAPIProvider:
         Execute Claude API request asynchronously with tool use.
 
         Args:
-            prompt: Task description for Claude (10-100000 characters)
+            prompt: Task description for Claude (10 - 100000 characters)
             system_prompt: Optional system prompt for behavior control
             context: Optional context information (metadata, files, etc.)
 
@@ -473,7 +473,7 @@ class ClaudeAPIProvider:
             ValueError: If prompt is invalid
             ClaudeTimeoutError: If execution times out after max retries
             ClaudeRateLimitError: If rate limit exceeded after max retries
-            ClaudeExecutionError: If execution fails with non-retryable error
+            ClaudeExecutionError: If execution fails with non - retryable error
 
         Example:
             >>> result = await provider.execute_async(
@@ -616,7 +616,7 @@ class ClaudeAPIProvider:
                     await asyncio.sleep(RATE_LIMIT_RETRY_DELAY)
                     continue
 
-                # Non-retryable error
+                # Non - retryable error
                 return ClaudeExecutionResult(
                     status=ExecutionStatus.API_ERROR,
                     output="",
@@ -671,7 +671,7 @@ class ClaudeAPIProvider:
         """
         Execute Claude API request with streaming output.
 
-        Yields text chunks as they are generated for real-time display.
+        Yields text chunks as they are generated for real - time display.
 
         Args:
             prompt: Task description for Claude
@@ -731,7 +731,7 @@ class ClaudeAPIProvider:
                 if not str(full_path).startswith(str(workspace.resolve())):
                     raise ValueError("Path traversal attempt detected")
 
-                content = full_path.read_text(encoding="utf-8")
+                content = full_path.read_text(encoding="utf - 8")
                 return FileOperation(
                     operation_type=FileOperationType.READ,
                     file_path=file_path,
@@ -753,7 +753,7 @@ class ClaudeAPIProvider:
                 full_path.parent.mkdir(parents=True, exist_ok=True)
 
                 # Write content
-                full_path.write_text(content, encoding="utf-8")
+                full_path.write_text(content, encoding="utf - 8")
 
                 return FileOperation(
                     operation_type=FileOperationType.WRITE,
@@ -774,9 +774,9 @@ class ClaudeAPIProvider:
                     raise ValueError("Path traversal attempt detected")
 
                 # Read, edit, write
-                content = full_path.read_text(encoding="utf-8")
+                content = full_path.read_text(encoding="utf - 8")
                 edited_content = content.replace(old_text, new_text)
-                full_path.write_text(edited_content, encoding="utf-8")
+                full_path.write_text(edited_content, encoding="utf - 8")
 
                 return FileOperation(
                     operation_type=FileOperationType.EDIT,

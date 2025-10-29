@@ -105,7 +105,7 @@ class TestCommandBuilding:
 
     def test_build_command_windows(self, manager):
         """Test command building for Windows"""
-        task_file = "workspace/task.txt"
+        task_file = "workspace / task.txt"
         cmd = manager._build_command(task_file)
 
         assert "claude" in cmd.lower()
@@ -217,15 +217,15 @@ class TestConfirmationHandling:
             worker_id="worker_1",
             confirmation_type=ConfirmationType.FILE_WRITE,
             message="Write to file 'output.py'?",
-            details={"file": "workspace/output.py"},
+            details={"file": "workspace / output.py"},
         )
 
         # Handle confirmation
         response = manager._handle_confirmation(confirmation)
 
-        # Safe operations are auto-approved without calling the judge
+        # Safe operations are auto - approved without calling the judge
         assert response == "yes"
-        # For SAFE operations, the judge should NOT be called (auto-approved)
+        # For SAFE operations, the judge should NOT be called (auto - approved)
         mock_judge.judge_confirmation.assert_not_called()
 
     @patch("orchestrator.core.common.ai_safety_judge.AISafetyJudge")
@@ -249,7 +249,7 @@ class TestConfirmationHandling:
             worker_id="worker_1",
             confirmation_type=ConfirmationType.FILE_DELETE,
             message="Delete file 'temp.txt'?",
-            details={"file": "workspace/temp.txt"},
+            details={"file": "workspace / temp.txt"},
         )
 
         # Handle confirmation

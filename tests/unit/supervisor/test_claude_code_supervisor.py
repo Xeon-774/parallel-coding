@@ -35,7 +35,7 @@ class DummyChild:
 def workspace(tmp_path):
     p = tmp_path / "ws"
     p.mkdir()
-    (p / "task.txt").write_text("do stuff\n", encoding="utf-8")
+    (p / "task.txt").write_text("do stuff\n", encoding="utf - 8")
     return p
 
 
@@ -65,7 +65,7 @@ def test_spawn_validation_error(workspace):
 def test_detect_confirmation_patterns(workspace):
     sup = ClaudeCodeSupervisor(str(workspace))
     assert sup.detect_confirmation_prompt("Are you sure?") is not None
-    assert sup.detect_confirmation_prompt("Proceed? yes/no") is not None
+    assert sup.detect_confirmation_prompt("Proceed? yes / no") is not None
     assert sup.detect_confirmation_prompt("normal line") is None
 
 

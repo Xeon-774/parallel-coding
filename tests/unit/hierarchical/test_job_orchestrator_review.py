@@ -4,7 +4,7 @@ Unit tests for HierarchicalJobOrchestrator review functionality.
 Tests cover:
 - Provider registration
 - Review document execution
-- Parallel multi-perspective review
+- Parallel multi - perspective review
 - Provider selection logic
 - Result aggregation
 - Error handling
@@ -65,7 +65,7 @@ class MockReviewProvider(BaseReviewProvider):
         self.review_calls.append(request)
 
         return ReviewResult(
-            job_id=f"mock-job-{len(self.review_calls)}",
+            job_id=f"mock - job-{len(self.review_calls)}",
             document_path=request.document_path,
             review_type=request.review_type,
             perspective=request.perspective,
@@ -98,7 +98,7 @@ def mock_provider() -> MockReviewProvider:
 def temp_document(tmp_path: Path) -> Path:
     """Create temporary test document"""
     doc = tmp_path / "test_roadmap.md"
-    doc.write_text("# Roadmap\n\n- Task 1\n- Task 2", encoding="utf-8")
+    doc.write_text("# Roadmap\n\n- Task 1\n- Task 2", encoding="utf - 8")
     return doc
 
 
@@ -258,7 +258,7 @@ async def test_review_document_auto_provider_selection(
 async def test_review_document_provider_not_found(
     orchestrator: HierarchicalJobOrchestrator, sample_request: ReviewRequest
 ) -> None:
-    """Test review with non-existent provider"""
+    """Test review with non - existent provider"""
     with pytest.raises(ValueError, match="Review provider not found"):
         await orchestrator.review_document(sample_request, provider="nonexistent")
 

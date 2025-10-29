@@ -62,7 +62,7 @@ class AITaskDecomposer:
 
     def _build_decomposition_prompt(self, user_request: str, max_tasks: int) -> str:
         """タスク分解プロンプトを構築"""
-        prompt = f"""あなたはソフトウェアアーキテクトです。以下のプロジェクトリクエストを分析し、
+        prompt = """あなたはソフトウェアアーキテクトです。以下のプロジェクトリクエストを分析し、
 実装可能な独立したタスクに分解してください。
 
 【ユーザーリクエスト】
@@ -82,18 +82,18 @@ class AITaskDecomposer:
 【回答形式】（必ずこの形式で）
 ```json
 {{
-  "should_decompose": true/false,
+  "should_decompose": true / false,
   "reasoning": "分解すべき理由、または分解不要の理由",
-  "project_type": "web_app/cli_tool/library/api/other",
-  "estimated_total_complexity": "SIMPLE/MODERATE/COMPLEX/VERY_COMPLEX",
+  "project_type": "web_app / cli_tool / library / api / other",
+  "estimated_total_complexity": "SIMPLE / MODERATE / COMPLEX / VERY_COMPLEX",
   "tasks": [
     {{
       "task_id": "task_1",
       "name": "タスク名（簡潔に）",
       "description": "具体的な実装内容（ワーカーAIへの指示として明確に）",
-      "estimated_complexity": "SIMPLE/MODERATE/COMPLEX",
+      "estimated_complexity": "SIMPLE / MODERATE / COMPLEX",
       "dependencies": ["task_2"],
-      "can_parallelize": true/false,
+      "can_parallelize": true / false,
       "reasoning": "このタスクが必要な理由"
     }}
   ],
@@ -126,7 +126,7 @@ class AITaskDecomposer:
         """
         # 一時ファイルにプロンプトを保存
         with tempfile.NamedTemporaryFile(
-            mode="w", encoding="utf-8", suffix=".txt", delete=False
+            mode="w", encoding="utf - 8", suffix=".txt", delete=False
         ) as f:
             f.write(prompt)
             temp_file = f.name
@@ -145,7 +145,7 @@ class AITaskDecomposer:
             # Claudeを呼び出し（bashの中ではCLAUDE_CODE_GIT_BASH_PATHは不要）
             cmd = (
                 f'"{self.git_bash_path}" -c '
-                f"\"claude --print --dangerously-skip-permissions < '{temp_file_bash}'\""
+                "\"claude --print --dangerously - skip - permissions < '{temp_file_bash}'\""
             )
 
             result = subprocess.run(
@@ -153,14 +153,14 @@ class AITaskDecomposer:
                 shell=True,
                 capture_output=True,
                 text=True,
-                encoding="utf-8",
+                encoding="utf - 8",
                 errors="replace",
                 timeout=180,  # タスク分解は3分以内（大規模プロジェクトに対応）
             )
 
             # デバッグ情報を出力
             if result.returncode != 0:
-                print(f"[DEBUG] Claude CLI returned non-zero exit code: {result.returncode}")
+                print(f"[DEBUG] Claude CLI returned non - zero exit code: {result.returncode}")
                 if result.stderr:
                     print(f"[DEBUG] stderr: {result.stderr[:500]}")
 

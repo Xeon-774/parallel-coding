@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr / bin / env python
 """
-Test Codex CLI with pexpect for full I/O control
+Test Codex CLI with pexpect for full I / O control
 
 This test verifies if we can:
 1. Spawn codex exec process
-2. Capture all output (including thinking/confirmation prompts)
+2. Capture all output (including thinking / confirmation prompts)
 3. Send responses automatically
 4. Verify file creation
 
@@ -15,7 +15,7 @@ import sys
 import time
 from pathlib import Path
 
-# Cross-platform pexpect import
+# Cross - platform pexpect import
 if sys.platform == "win32":
     import wexpect as pexpect
 else:
@@ -23,9 +23,9 @@ else:
 
 
 def test_codex_with_pexpect():
-    """Test Codex CLI execution with full I/O control"""
+    """Test Codex CLI execution with full I / O control"""
     print("=" * 70)
-    print("🧪 Testing Codex CLI with pexpect/wexpect")
+    print("🧪 Testing Codex CLI with pexpect / wexpect")
     print("=" * 70)
     print()
 
@@ -38,22 +38,22 @@ def test_codex_with_pexpect():
 Save it to hello.py in the current directory.
 The function should be named 'hello' and return 'Hello, World!'"""
 
-    task_file.write_text(task_content, encoding="utf-8")
+    task_file.write_text(task_content, encoding="utf - 8")
 
     print(f"📁 Workspace: {workspace.absolute()}")
     print(f"📝 Task file: {task_file}")
     print()
 
     # Build command
-    cmd = f"codex exec --dangerously-bypass-approvals-and-sandbox"
+    cmd = "codex exec --dangerously - bypass - approvals - and - sandbox"
     print(f"🚀 Command: {cmd}")
-    print(f"📤 Sending task via stdin")
+    print("📤 Sending task via stdin")
     print()
 
     try:
         # Spawn process
         print("Spawning: Spawning codex process...")
-        child = pexpect.spawn(cmd, cwd=str(workspace.absolute()), encoding="utf-8", timeout=60)
+        child = pexpect.spawn(cmd, cwd=str(workspace.absolute()), encoding="utf - 8", timeout=60)
 
         # Send task via stdin
         print("📨 Sending task content...")
@@ -138,7 +138,7 @@ The function should be named 'hello' and return 'Hello, World!'"""
             print()
             print("📄 File content:")
             print("-" * 70)
-            print(hello_file.read_text(encoding="utf-8"))
+            print(hello_file.read_text(encoding="utf - 8"))
             print("-" * 70)
             return True
         else:

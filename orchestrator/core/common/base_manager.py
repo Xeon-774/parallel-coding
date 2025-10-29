@@ -2,7 +2,7 @@
 Base AI Manager - Abstract base class for AI instance managers.
 
 This module provides the foundational architecture for managing AI instances
-(both Worker AI and Supervisor/Manager AI) with standardized lifecycle,
+(both Worker AI and Supervisor / Manager AI) with standardized lifecycle,
 monitoring, and safety features.
 
 Architecture:
@@ -15,10 +15,10 @@ Design Principles:
     2. Template Method Pattern - Base defines workflow, derived customizes steps
     3. Dependency Injection - Config and logger injected via constructor
     4. Type Safety - Comprehensive type hints for all methods
-    5. Observability - Built-in metrics and logging
+    5. Observability - Built - in metrics and logging
 
 Author: Claude (Sonnet 4.5)
-Created: 2025-10-24
+Created: 2025 - 10 - 24
 Version: 1.0.0
 """
 
@@ -40,7 +40,7 @@ class ManagerType(str, Enum):
     """Type of AI manager"""
 
     WORKER = "worker"  # Worker AI instance manager
-    SUPERVISOR = "supervisor"  # Supervisor/Manager AI monitor
+    SUPERVISOR = "supervisor"  # Supervisor / Manager AI monitor
 
 
 class ManagerStatus(str, Enum):
@@ -162,7 +162,7 @@ class BaseAIManager(ABC):
         self.status = ManagerStatus.READY
 
         self.logger.info(
-            f"BaseAIManager initialized",
+            "BaseAIManager initialized",
             manager_id=manager_id,
             manager_type=manager_type.value,
             workspace=str(self.workspace_root),
@@ -180,7 +180,7 @@ class BaseAIManager(ABC):
         This method should:
         1. Initialize necessary resources
         2. Start AI instance(s)
-        3. Begin monitoring/communication loops
+        3. Begin monitoring / communication loops
         4. Update status to RUNNING
 
         Returns:
@@ -199,7 +199,7 @@ class BaseAIManager(ABC):
         This method should:
         1. Gracefully stop AI instance(s)
         2. Clean up resources
-        3. Save final state/metrics
+        3. Save final state / metrics
         4. Update status to STOPPED
 
         Returns:
@@ -213,13 +213,13 @@ class BaseAIManager(ABC):
     @abstractmethod
     def _health_check_impl(self) -> HealthCheckResult:
         """
-        Perform manager-specific health check.
+        Perform manager - specific health check.
 
         This method should check:
         - AI instance(s) are responsive
         - Resources are available
         - Communication channels are working
-        - Any manager-specific health indicators
+        - Any manager - specific health indicators
 
         Returns:
             HealthCheckResult with detailed health status
@@ -232,7 +232,7 @@ class BaseAIManager(ABC):
     @abstractmethod
     def _handle_confirmation_impl(self, confirmation: ConfirmationRequest) -> Optional[str]:
         """
-        Handle confirmation request (manager-specific logic).
+        Handle confirmation request (manager - specific logic).
 
         This method should:
         1. Evaluate the confirmation request
@@ -262,12 +262,12 @@ class BaseAIManager(ABC):
         Returns:
             True if restart successful, False otherwise
         """
-        self.logger.info(f"Restarting manager", manager_id=self.manager_id)
+        self.logger.info("Restarting manager", manager_id=self.manager_id)
 
         stop_success = self.stop()
         if not stop_success:
             self.logger.error(
-                f"Failed to stop manager during restart",
+                "Failed to stop manager during restart",
                 manager_id=self.manager_id,
             )
             return False
@@ -278,12 +278,12 @@ class BaseAIManager(ABC):
         start_success = self.start()
         if not start_success:
             self.logger.error(
-                f"Failed to start manager during restart",
+                "Failed to start manager during restart",
                 manager_id=self.manager_id,
             )
             return False
 
-        self.logger.info(f"Manager restarted successfully", manager_id=self.manager_id)
+        self.logger.info("Manager restarted successfully", manager_id=self.manager_id)
         return True
 
     def pause(self) -> bool:
@@ -298,14 +298,14 @@ class BaseAIManager(ABC):
         """
         if self.status != ManagerStatus.RUNNING:
             self.logger.warning(
-                f"Cannot pause manager - not running",
+                "Cannot pause manager - not running",
                 manager_id=self.manager_id,
                 current_status=self.status.value,
             )
             return False
 
         self.status = ManagerStatus.PAUSED
-        self.logger.info(f"Manager paused", manager_id=self.manager_id)
+        self.logger.info("Manager paused", manager_id=self.manager_id)
         return True
 
     def resume(self) -> bool:
@@ -317,14 +317,14 @@ class BaseAIManager(ABC):
         """
         if self.status != ManagerStatus.PAUSED:
             self.logger.warning(
-                f"Cannot resume manager - not paused",
+                "Cannot resume manager - not paused",
                 manager_id=self.manager_id,
                 current_status=self.status.value,
             )
             return False
 
         self.status = ManagerStatus.RUNNING
-        self.logger.info(f"Manager resumed", manager_id=self.manager_id)
+        self.logger.info("Manager resumed", manager_id=self.manager_id)
         return True
 
     def health_check(self) -> HealthCheckResult:
@@ -351,7 +351,7 @@ class BaseAIManager(ABC):
 
         except Exception as e:
             self.logger.error(
-                f"Health check failed with exception",
+                "Health check failed with exception",
                 manager_id=self.manager_id,
                 error=str(e),
             )
@@ -382,7 +382,7 @@ class BaseAIManager(ABC):
         self._confirmation_count += 1
 
         self.logger.info(
-            f"Handling confirmation",
+            "Handling confirmation",
             manager_id=self.manager_id,
             confirmation_type=confirmation.confirmation_type.value,
             worker_id=confirmation.worker_id,
@@ -400,7 +400,7 @@ class BaseAIManager(ABC):
             self._increment_failure()
 
             self.logger.error(
-                f"Confirmation handling failed",
+                "Confirmation handling failed",
                 manager_id=self.manager_id,
                 error=str(e),
             )
@@ -457,7 +457,7 @@ class BaseAIManager(ABC):
 
         Args:
             event_type: Type of event (e.g., "start", "stop", "error")
-            message: Human-readable message
+            message: Human - readable message
             **kwargs: Additional context to log
         """
         self.logger.info(
@@ -479,7 +479,7 @@ class BaseAIManager(ABC):
 
         This is a common helper for writing terminal output with:
         - ANSI code stripping (optional)
-        - Immediate flush for real-time streaming
+        - Immediate flush for real - time streaming
         - Error handling
 
         Args:
@@ -498,7 +498,7 @@ class BaseAIManager(ABC):
             log_file.parent.mkdir(parents=True, exist_ok=True)
 
             # Append to file
-            with open(log_file, "a", encoding="utf-8") as f:
+            with open(log_file, "a", encoding="utf - 8") as f:
                 f.write(clean_text)
                 if not clean_text.endswith("\n"):
                     f.write("\n")
@@ -509,7 +509,7 @@ class BaseAIManager(ABC):
 
         except Exception as e:
             self.logger.error(
-                f"Failed to write terminal output",
+                "Failed to write terminal output",
                 manager_id=self.manager_id,
                 log_file=str(log_file),
                 error=str(e),
@@ -562,7 +562,7 @@ class BaseAIManager(ABC):
             f"type={self.manager_type.value}, "
             f"status={self.status.value}, "
             f"uptime={self.get_uptime():.1f}s"
-            f")>"
+            ")>"
         )
 
 
@@ -606,7 +606,7 @@ if __name__ == "__main__":
 
         def _handle_confirmation_impl(self, confirmation: ConfirmationRequest) -> Optional[str]:
             # Your confirmation handling logic
-            return "yes"  # Auto-approve
+            return "yes"  # Auto - approve
 
     # Usage
     from orchestrator.config import OrchestratorConfig

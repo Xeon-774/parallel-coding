@@ -3,12 +3,12 @@ Hermetic Execution Sandbox
 
 Phase 0 Week 2 - MVP Implementation
 
-Docker-based isolated execution environment with:
+Docker - based isolated execution environment with:
 - Resource quotas (CPU, memory, processes)
 - No network by default
-- Read-only root filesystem
-- Non-root user execution
-- Auto-cleanup
+- Read - only root filesystem
+- Non - root user execution
+- Auto - cleanup
 """
 
 from orchestrator.sandbox.docker_sandbox import (

@@ -17,7 +17,7 @@ from orchestrator.core.common.models import ConfirmationRequest, ConfirmationTyp
 class SafetyLevel(str, Enum):
     """Safety level assessment"""
 
-    SAFE = "safe"  # Safe to auto-approve
+    SAFE = "safe"  # Safe to auto - approve
     CAUTION = "caution"  # Proceed with caution
     DANGEROUS = "dangerous"  # Requires user approval
     PROHIBITED = "prohibited"  # Never allow
@@ -58,13 +58,13 @@ class AISafetyJudge:
         self.dangerous_patterns = [
             (r"rm\s+-rf\s+/", "Recursive delete of root directory"),
             (r"rm\s+-rf\s+\*", "Recursive delete of all files"),
-            (r"format\s+[A-Z]:", "Format disk drive"),
+            (r"format\s+[A - Z]:", "Format disk drive"),
             (r"del\s+/[SF]", "Delete system files"),
             (r"shutdown", "System shutdown"),
             (r"reboot", "System reboot"),
-            (r"chmod\s+777", "Overly permissive file permissions"),
-            (r"curl.*\|\s*bash", "Pipe download to bash (security risk)"),
-            (r"wget.*\|\s*sh", "Pipe download to shell (security risk)"),
+            (r"chmod\s + 777", "Overly permissive file permissions"),
+            (r"curl.*\|\s * bash", "Pipe download to bash (security risk)"),
+            (r"wget.*\|\s * sh", "Pipe download to shell (security risk)"),
         ]
 
         # Safe patterns (when in workspace)
@@ -261,15 +261,15 @@ class AISafetyJudge:
 
     def explain_decision(self, judgment: SafetyJudgment) -> str:
         """
-        Generate human-readable explanation of decision
+        Generate human - readable explanation of decision
 
         Args:
             judgment: Safety judgment to explain
 
         Returns:
-            Human-readable explanation string
+            Human - readable explanation string
         """
-        explanation = f"""
+        explanation = """
 Safety Assessment:
   Level: {judgment.level.upper()}
   Decision: {'APPROVE' if judgment.should_approve else 'DENY'}
@@ -280,7 +280,7 @@ Reasoning:
 """
 
         if judgment.suggested_modifications:
-            explanation += f"""
+            explanation += """
 Suggested Alternative:
   {judgment.suggested_modifications}
 """
@@ -300,14 +300,14 @@ if __name__ == "__main__":
         ConfirmationRequest(
             worker_id="worker_1",
             confirmation_type=ConfirmationType.FILE_WRITE,
-            message="Write to file 'workspace/output.py'?",
-            details={"file": "workspace/output.py"},
+            message="Write to file 'workspace / output.py'?",
+            details={"file": "workspace / output.py"},
         ),
         ConfirmationRequest(
             worker_id="worker_2",
             confirmation_type=ConfirmationType.FILE_DELETE,
             message="Delete file 'important.txt'?",
-            details={"file": "/home/user/important.txt"},
+            details={"file": "/home / user / important.txt"},
         ),
         ConfirmationRequest(
             worker_id="worker_3",
@@ -333,7 +333,7 @@ if __name__ == "__main__":
 
         judgment = judge.judge_confirmation(conf)
 
-        print(f"\n  Judgment:")
+        print("\n  Judgment:")
         print(f"    Level: {judgment.level}")
         print(f"    Approve: {judgment.should_approve}")
         print(f"    Escalate: {judgment.should_escalate}")

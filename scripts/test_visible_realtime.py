@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 視覚的なターミナル表示 + オーケストレーターによるリアルタイム監視
 
@@ -17,12 +17,12 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-# UTF-8出力設定
+# UTF - 8出力設定
 if sys.platform == "win32":
     import codecs
 
-    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
-    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
+    sys.stdout = codecs.getwriter("utf - 8")(sys.stdout.buffer, "replace")
+    sys.stderr = codecs.getwriter("utf - 8")(sys.stderr.buffer, "replace")
 
 
 def monitor_output_file(output_file: Path, worker_id: int, stop_event: threading.Event):
@@ -46,7 +46,7 @@ def monitor_output_file(output_file: Path, worker_id: int, stop_event: threading
         return
 
     print(f"[ORCHESTRATOR] Worker {worker_id} の出力ファイルを検出しました")
-    print(f"[ORCHESTRATOR] リアルタイム監視開始...")
+    print("[ORCHESTRATOR] リアルタイム監視開始...")
     print()
     print("=" * 80)
     print(f"Worker {worker_id} のリアルタイム出力:")
@@ -55,7 +55,7 @@ def monitor_output_file(output_file: Path, worker_id: int, stop_event: threading
     last_position = 0
     line_count = 0
 
-    with open(output_file, "r", encoding="utf-8", errors="replace") as f:
+    with open(output_file, "r", encoding="utf - 8", errors="replace") as f:
         while not stop_event.is_set():
             # 現在の位置に移動
             f.seek(last_position)
@@ -107,7 +107,7 @@ def create_visible_worker(
 
     # タスクファイル作成
     task_file = worker_dir / "task.txt"
-    with open(task_file, "w", encoding="utf-8") as f:
+    with open(task_file, "w", encoding="utf - 8") as f:
         f.write(task_prompt)
 
     # 出力ファイル
@@ -117,7 +117,7 @@ def create_visible_worker(
     batch_file = worker_dir / f"run_worker_{worker_id}.bat"
 
     # tee風のコマンド：画面とファイルの両方に出力
-    batch_content = f"""@echo off
+    batch_content = """@echo off
 chcp 65001 >nul
 title Worker {worker_id}: {task_name}
 color 0{worker_id % 6 + 2}
@@ -134,7 +134,7 @@ echo.
 echo --------------------------------------------------------------------------------
 
 REM 出力を画面とファイルの両方に送る
-"{git_bash_path}" -c "export CLAUDE_CODE_GIT_BASH_PATH='{git_bash_path}' && claude --print --dangerously-skip-permissions < '{str(task_file).replace(chr(92), '/')}' 2>&1 | tee '{str(output_file).replace(chr(92), '/')}'"
+"{git_bash_path}" -c "export CLAUDE_CODE_GIT_BASH_PATH='{git_bash_path}' && claude --print --dangerously - skip - permissions < '{str(task_file).replace(chr(92), '/')}' 2>&1 | tee '{str(output_file).replace(chr(92), '/')}'"
 
 echo.
 echo --------------------------------------------------------------------------------
@@ -147,7 +147,7 @@ echo.
 pause
 """
 
-    with open(batch_file, "w", encoding="utf-8") as f:
+    with open(batch_file, "w", encoding="utf - 8") as f:
         f.write(batch_content)
 
     # 新しいウィンドウで実行
@@ -250,7 +250,7 @@ def test_visible_realtime():
     monitor_thread.start()
 
     print()
-    print("[ORCHESTRATOR] 監視中... (Ctrl+C で終了)")
+    print("[ORCHESTRATOR] 監視中... (Ctrl + C で終了)")
     print()
 
     try:

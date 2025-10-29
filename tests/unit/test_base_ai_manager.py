@@ -188,7 +188,7 @@ class TestBaseAIManager:
 
     @pytest.mark.asyncio
     async def test_async_lifecycle(self):
-        """Test async start/stop lifecycle."""
+        """Test async start / stop lifecycle."""
         manager = ConcreteAIManager("async_test")
 
         # Start

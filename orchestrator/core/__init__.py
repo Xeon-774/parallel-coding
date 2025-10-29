@@ -7,7 +7,7 @@ separated by responsibility following the Single Responsibility Principle.
 Modules:
 - models: Core data models (WorkerInfo, TaskResult)
 - worker_manager: Worker process management
-- stream_monitor: Real-time stream monitoring
+- stream_monitor: Real - time stream monitoring
 - result_integrator: Result collection and reporting
 - task_analyzer_service: Task analysis and splitting
 """

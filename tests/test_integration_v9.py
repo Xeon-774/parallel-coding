@@ -1,12 +1,12 @@
 """
 Comprehensive Integration Tests for v9.0
 
-Tests all new world-class features:
+Tests all new world - class features:
 - Structured logging
 - Resilience patterns
 - Observability system
 - Validated configuration
-- End-to-end workflows
+- End - to - end workflows
 """
 
 import tempfile
@@ -56,10 +56,10 @@ class TestStructuredLogging:
             name="test_logger",
             level=LogLevel.DEBUG,
             log_dir=tmp_path,
-            context=LogContext(session_id="test-session"),
+            context=LogContext(session_id="test - session"),
         ) as logger:
             assert logger.name == "test_logger"
-            assert logger.context.session_id == "test-session"
+            assert logger.context.session_id == "test - session"
 
     def test_basic_logging(self, tmp_path):
         """Test basic log methods"""
@@ -92,12 +92,12 @@ class TestStructuredLogging:
     def test_context_propagation(self, tmp_path):
         """Test context propagation"""
         with StructuredLogger(
-            name="test", log_dir=tmp_path, context=LogContext(session_id="session-123")
+            name="test", log_dir=tmp_path, context=LogContext(session_id="session - 123")
         ) as logger:
-            worker_logger = logger.with_context(worker_id="worker-1")
+            worker_logger = logger.with_context(worker_id="worker - 1")
 
-            assert worker_logger.context.session_id == "session-123"
-            assert worker_logger.context.worker_id == "worker-1"
+            assert worker_logger.context.session_id == "session - 123"
+            assert worker_logger.context.worker_id == "worker - 1"
 
             # Close worker logger too
             worker_logger.close()
@@ -124,7 +124,7 @@ class TestResiliencePatterns:
             breaker.call(failing_func)
 
     def test_circuit_breaker_half_open(self):
-        """Test circuit breaker half-open state"""
+        """Test circuit breaker half - open state"""
         config = CircuitBreakerConfig(failure_threshold=2, success_threshold=2, timeout=0.1)
         breaker = CircuitBreaker(config)
 
@@ -136,7 +136,7 @@ class TestResiliencePatterns:
         # Wait for timeout
         time.sleep(0.2)
 
-        # Should allow one attempt (half-open)
+        # Should allow one attempt (half - open)
         with pytest.raises(ValueError):
             breaker.call(lambda: (_ for _ in ()).throw(ValueError("fail")))
 
@@ -337,7 +337,7 @@ class TestValidatedConfiguration:
 
 
 class TestEndToEndWorkflow:
-    """Test end-to-end workflows with v9.0 features"""
+    """Test end - to - end workflows with v9.0 features"""
 
     def test_complete_workflow_with_all_features(self, tmp_path):
         """Test complete workflow using all v9.0 features"""

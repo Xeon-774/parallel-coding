@@ -26,7 +26,7 @@ class APIError(RuntimeError):
 
 
 class ClientValidationError(ValueError):
-    """Client-side validation failure."""
+    """Client - side validation failure."""
 
 
 class AuthenticationError(APIError):
@@ -34,20 +34,20 @@ class AuthenticationError(APIError):
 
 
 class NetworkError(APIError):
-    """Network-related error, e.g., timeouts or connection issues."""
+    """Network - related error, e.g., timeouts or connection issues."""
 
 
 class APIKeyValidator:
     """Validate API keys for recursive calls.
 
     Security policy:
-    - Must be non-empty
+    - Must be non - empty
     - At least 32 characters
-    - Start with "sk-orch-"
+    - Start with "sk - orch-"
     """
 
     _MIN_LENGTH = 32
-    _PREFIX = "sk-orch-"
+    _PREFIX = "sk - orch-"
 
     @staticmethod
     def validate_api_key(api_key: str) -> bool:
@@ -95,7 +95,7 @@ class RecursiveOrchestratorClient:
     Usage example:
         async with RecursiveOrchestratorClient(
             api_url="http://localhost:8000",
-            api_key="sk-orch-" + "x" * 32,
+            api_key="sk - orch-" + "x" * 32,
         ) as client:
             job_id = await client.submit_job(
                 request="Create authentication module",
@@ -128,7 +128,7 @@ class RecursiveOrchestratorClient:
             raise ClientValidationError("Invalid API URL")
         try:
             APIKeyValidator.validate_api_key(api_key)
-        except ValueError as e:  # re-wrap with typed error
+        except ValueError as e:  # re - wrap with typed error
             raise ClientValidationError(str(e))
 
         if timeout <= 0:
@@ -146,7 +146,7 @@ class RecursiveOrchestratorClient:
         """Async context manager entry creating a pooled client instance."""
         self.client = httpx.AsyncClient(
             base_url=self.api_url,
-            headers={"X-API-Key": self.api_key},
+            headers={"X - API - Key": self.api_key},
             timeout=self.timeout,
         )
         return self
@@ -171,7 +171,7 @@ class RecursiveOrchestratorClient:
             httpx.Response on success.
 
         Raises:
-            APIError: When non-retriable or exhausted retries occur.
+            APIError: When non - retriable or exhausted retries occur.
         """
         assert self.client is not None, "Client context not entered"
         retries = 0
@@ -189,8 +189,8 @@ class RecursiveOrchestratorClient:
                 if retries >= self.max_retries:
                     raise NetworkError(f"Network error after {retries} retries: {e}") from e
             except httpx.HTTPStatusError as e:
-                # Non-2xx response other than 401 already handled above
-                # Consider 5xx retriable, 4xx non-retriable
+                # Non - 2xx response other than 401 already handled above
+                # Consider 5xx retriable, 4xx non - retriable
                 status = e.response.status_code
                 if 500 <= status < 600 and retries < self.max_retries:
                     pass
@@ -206,7 +206,7 @@ class RecursiveOrchestratorClient:
         """Sleep with exponential backoff and jitter.
 
         Args:
-            retries: Current retry attempt number (1-based).
+            retries: Current retry attempt number (1 - based).
 
         Notes:
             Uses base 0.2s with exponential factor and random jitter to avoid
@@ -260,7 +260,7 @@ class RecursiveOrchestratorClient:
         )
 
         response = await self._request_with_retry(
-            "POST", "/api/v1/orchestrate", json=payload.model_dump()
+            "POST", "/api / v1 / orchestrate", json=payload.model_dump()
         )
         data = response.json()
         job_id = data.get("job_id")
@@ -290,7 +290,7 @@ class RecursiveOrchestratorClient:
             raise ClientValidationError("poll_interval must be positive")
 
         while True:
-            response = await self._request_with_retry("GET", f"/api/v1/jobs/{job_id}/status")
+            response = await self._request_with_retry("GET", f"/api / v1 / jobs/{job_id}/status")
             status = JobStatus(**response.json())
             yield status
             if status.status in ("completed", "failed"):
@@ -312,7 +312,7 @@ class RecursiveOrchestratorClient:
         """
         if not job_id:
             raise ClientValidationError("job_id cannot be empty")
-        response = await self._request_with_retry("GET", f"/api/v1/jobs/{job_id}/results")
+        response = await self._request_with_retry("GET", f"/api / v1 / jobs/{job_id}/results")
         data = response.json()
         if not isinstance(data, dict):
             raise APIError("API returned invalid results payload")

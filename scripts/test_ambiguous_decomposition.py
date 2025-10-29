@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 曖昧なリクエストの自動分解テスト（v4.1）
 
@@ -13,12 +13,12 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-# UTF-8出力設定
+# UTF - 8出力設定
 if sys.platform == "win32":
     import codecs
 
-    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
-    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
+    sys.stdout = codecs.getwriter("utf - 8")(sys.stdout.buffer, "replace")
+    sys.stderr = codecs.getwriter("utf - 8")(sys.stderr.buffer, "replace")
 
 from orchestrator import AdvancedOrchestrator, OrchestratorConfig
 
@@ -90,7 +90,7 @@ Pythonで実装してください。
             workspace_path = Path(config.workspace_root)
             worker_count = sum(1 for item in workspace_path.glob("worker_*") if item.is_dir())
 
-            print(f"[検証結果]")
+            print("[検証結果]")
             print(f"  生成されたワーカー数: {worker_count}")
             print()
 

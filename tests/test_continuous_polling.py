@@ -2,10 +2,10 @@
 Test Continuous Output Polling (Phase 2.2 - Feature 3)
 
 Validates that the enhanced polling mechanism captures output more frequently
-and completely than the previous confirmation-only approach.
+and completely than the previous confirmation - only approach.
 
 Author: Claude (Sonnet 4.5)
-Date: 2025-10-24
+Date: 2025 - 10 - 24
 Phase: 2.2 - Feature 3
 """
 
@@ -17,7 +17,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-# Configure UTF-8 encoding
+# Configure UTF - 8 encoding
 from orchestrator.utils.encoding_config import configure_console_encoding, safe_print
 
 configure_console_encoding()
@@ -47,9 +47,9 @@ def test_continuous_polling():
     test_workspace = project_root / "workspace" / "test_continuous_polling"
     config.workspace_root = str(test_workspace)
     config.execution_mode = "wsl"
-    config.wsl_distribution = "Ubuntu-24.04"
-    config.claude_command = "~/.local/bin/claude"
-    config.nvm_path = "/usr/bin"
+    config.wsl_distribution = "Ubuntu - 24.04"
+    config.claude_command = "~/.local / bin / claude"
+    config.nvm_path = "/usr / bin"
 
     # Prepare workspace
     test_workspace.mkdir(parents=True, exist_ok=True)
@@ -80,7 +80,7 @@ Start now. DO NOT ask for confirmation - just execute the task.
 
     worker_id = "polling_test"
 
-    safe_print(f"Test Configuration:")
+    safe_print("Test Configuration:")
     safe_print(f"   Worker ID: {worker_id} (will become worker_{worker_id})")
     safe_print(f"   Workspace: {test_workspace}")
     safe_print(f"   Execution mode: {config.execution_mode}")
@@ -94,7 +94,7 @@ Start now. DO NOT ask for confirmation - just execute the task.
         safe_print("FAILED: Could not spawn worker")
         return False
 
-    safe_print(f"Worker spawned successfully")
+    safe_print("Worker spawned successfully")
     safe_print(
         f"   Session started at: {time.strftime('%H:%M:%S', time.localtime(session.started_at))}"
     )
@@ -106,7 +106,7 @@ Start now. DO NOT ask for confirmation - just execute the task.
 
     # Run interactive session
     safe_print("Running interactive session with continuous polling...")
-    safe_print("   (Polling enabled: every 3s timeout + pre-iteration poll)")
+    safe_print("   (Polling enabled: every 3s timeout + pre - iteration poll)")
     safe_print()
 
     start_time = time.time()
@@ -132,7 +132,7 @@ Start now. DO NOT ask for confirmation - just execute the task.
     terminal_size = terminal_log.stat().st_size if terminal_log.exists() else 0
     orchestrator_size = orchestrator_log.stat().st_size if orchestrator_log.exists() else 0
 
-    safe_print(f"Log Files:")
+    safe_print("Log Files:")
     safe_print(f"   Worker terminal log: {terminal_log}")
     safe_print(f"      Size: {terminal_size} bytes")
     safe_print(f"   Orchestrator log: {orchestrator_log}")
@@ -141,10 +141,10 @@ Start now. DO NOT ask for confirmation - just execute the task.
 
     # Read and display terminal log
     if terminal_log.exists():
-        with open(terminal_log, "r", encoding="utf-8") as f:
+        with open(terminal_log, "r", encoding="utf - 8") as f:
             content = f.read()
 
-        safe_print(f"Worker Terminal Output:")
+        safe_print("Worker Terminal Output:")
         safe_print("-" * 70)
         safe_print(content)
         safe_print("-" * 70)
@@ -159,7 +159,7 @@ Start now. DO NOT ask for confirmation - just execute the task.
             "Test complete": "Completion message",
         }
 
-        safe_print(f"Output Completeness Checks:")
+        safe_print("Output Completeness Checks:")
         all_found = True
         for pattern, description in checks.items():
             found = pattern in content
@@ -179,14 +179,14 @@ Start now. DO NOT ask for confirmation - just execute the task.
 
     # Read orchestrator log to check polling messages
     if orchestrator_log.exists():
-        with open(orchestrator_log, "r", encoding="utf-8") as f:
+        with open(orchestrator_log, "r", encoding="utf - 8") as f:
             orch_content = f.read()
 
         # Count polling messages
         poll_count = orch_content.count("[POLL]")
         output_count = orch_content.count("[OUTPUT]")
 
-        safe_print(f"Orchestrator Activity:")
+        safe_print("Orchestrator Activity:")
         safe_print(f"   Polling events: {poll_count}")
         safe_print(f"   Output events: {output_count}")
         safe_print()
@@ -194,17 +194,17 @@ Start now. DO NOT ask for confirmation - just execute the task.
     # Final verdict
     safe_print("=" * 70)
     # Consider test successful if output is complete, regardless of exit code
-    # (Claude AI workers may return non-zero exit codes even on successful execution)
+    # (Claude AI workers may return non - zero exit codes even on successful execution)
     if all_found:
         safe_print("TEST PASSED: Continuous polling is working correctly!")
         safe_print("   Output captured completely (100%)")
         safe_print("   Polling frequency increased (3s timeout)")
         safe_print(
-            f"   Polling events detected: {poll_count if 'poll_count' in locals() else 'N/A'}"
+            f"   Polling events detected: {poll_count if 'poll_count' in locals() else 'N / A'}"
         )
         safe_print(f"   Worker execution time: {duration:.2f}s")
         if not result.success:
-            safe_print("   Note: Exit code non-zero, but output complete (acceptable)")
+            safe_print("   Note: Exit code non - zero, but output complete (acceptable)")
         return True
     else:
         safe_print("TEST FAILED: Issues detected")

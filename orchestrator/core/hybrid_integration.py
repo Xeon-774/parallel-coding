@@ -2,7 +2,7 @@
 Hybrid Engine Integration Layer
 
 Bridges the worker_manager's confirmation system with the hybrid decision engine.
-Handles async/sync conversion and data format mapping.
+Handles async / sync conversion and data format mapping.
 """
 
 import asyncio
@@ -67,13 +67,13 @@ class HybridEngineAdapter:
     Adapter that makes HybridDecisionEngine compatible with worker_manager.
 
     Features:
-    - Async/sync conversion
+    - Async / sync conversion
     - Data format mapping
     - Compatibility with existing SafetyJudgment interface
     """
 
     def __init__(
-        self, workspace_root: str, wsl_distribution: str = "Ubuntu-24.04", verbose: bool = False
+        self, workspace_root: str, wsl_distribution: str = "Ubuntu - 24.04", verbose: bool = False
     ):
         """
         Initialize adapter
@@ -155,7 +155,7 @@ class HybridEngineAdapter:
         # Map action to safety judgment
         if decision.action == "approve":
             if decision.decided_by == "rules":
-                # Fast rule-based approval
+                # Fast rule - based approval
                 level = SafetyLevel.SAFE
                 should_approve = True
                 should_escalate = False
@@ -166,7 +166,7 @@ class HybridEngineAdapter:
                 should_escalate = False
         else:  # deny
             if decision.decided_by == "rules":
-                # Fast rule-based denial (dangerous)
+                # Fast rule - based denial (dangerous)
                 level = SafetyLevel.DANGEROUS
                 should_approve = False
                 should_escalate = True  # Could escalate to user
@@ -212,10 +212,10 @@ class HybridEngineAdapter:
         return self.engine.get_stats()
 
 
-# For backward compatibility - can be used as drop-in replacement for AISafetyJudge
+# For backward compatibility - can be used as drop - in replacement for AISafetyJudge
 class AISafetyJudge(HybridEngineAdapter):
     """
-    Backward-compatible wrapper for HybridEngineAdapter
+    Backward - compatible wrapper for HybridEngineAdapter
 
     This allows existing code using AISafetyJudge to seamlessly
     use the hybrid engine without code changes.
@@ -230,7 +230,7 @@ if __name__ == "__main__":
 
     # Create adapter
     adapter = HybridEngineAdapter(
-        workspace_root=r"D:\user\ai_coding\AI_Investor\tools\parallel-coding\workspace",
+        workspace_root=r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\workspace",
         verbose=True,
     )
 
@@ -238,8 +238,8 @@ if __name__ == "__main__":
     worker_request = WorkerConfirmationRequest(
         worker_id="worker_001",
         confirmation_type=WorkerConfirmationType.FILE_WRITE,
-        message="I want to create a file 'models/user.py' with database model code.",
-        details={"file": "workspace/models/user.py"},
+        message="I want to create a file 'models / user.py' with database model code.",
+        details={"file": "workspace / models / user.py"},
         timestamp=time.time(),
     )
 
@@ -250,7 +250,7 @@ if __name__ == "__main__":
 
     judgment = adapter.judge_confirmation(worker_request)
 
-    print(f"\nResult:")
+    print("\nResult:")
     print(f"  Level: {judgment.level}")
     print(f"  Should Approve: {judgment.should_approve}")
     print(f"  Should Escalate: {judgment.should_escalate}")
@@ -259,7 +259,7 @@ if __name__ == "__main__":
 
     # Show stats
     stats = adapter.get_stats()
-    print(f"\nStatistics:")
+    print("\nStatistics:")
     print(f"  Total decisions: {stats['total_decisions']}")
     print(f"  Rules: {stats['rules_decisions']}")
     print(f"  AI: {stats['ai_decisions']}")

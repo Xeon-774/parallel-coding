@@ -2,11 +2,11 @@
 Comprehensive integration tests for Codex Worker implementation.
 
 This test suite validates the complete Codex integration:
-- CodexExecutor class (subprocess-based)
+- CodexExecutor class (subprocess - based)
 - WorkerManager integration (spawn_codex_worker, run_codex_session)
 - JSONL event parsing
 - File change tracking
-- End-to-end task execution
+- End - to - end task execution
 
 Coverage target: ≥90% (Excellence AI Standard)
 
@@ -20,7 +20,7 @@ Test cases:
 7. File change tracking validation
 
 Author: Claude (Anthropic)
-Date: 2025-10-27
+Date: 2025 - 10 - 27
 """
 
 from __future__ import annotations
@@ -65,8 +65,8 @@ def config(test_workspace: Path) -> OrchestratorConfig:
     return OrchestratorConfig(
         execution_mode="wsl",
         workspace_root=str(test_workspace),
-        wsl_distribution="Ubuntu-24.04",
-        nvm_path="/home/chemi/.local/bin:/home/chemi/.nvm/versions/node/v22.21.0/bin",  # Claude CLI + Node.js paths
+        wsl_distribution="Ubuntu - 24.04",
+        nvm_path="/home / chemi/.local / bin:/home / chemi/.nvm / versions / node / v22.21.0 / bin",  # Claude CLI + Node.js paths
         codex_command="codex",
         default_timeout=300,
     )
@@ -120,21 +120,23 @@ def worker_manager(config: OrchestratorConfig, simple_logger: Any) -> WorkerMana
 
 def test_codex_executor_initialization(executor: CodexExecutor) -> None:
     """Test CodexExecutor initialization"""
-    assert executor.wsl_distribution == "Ubuntu-24.04"
+    assert executor.wsl_distribution == "Ubuntu - 24.04"
     assert executor.codex_command == "codex"
     assert executor.execution_mode == "wsl"
     assert executor.DEFAULT_TIMEOUT == 300
-    assert executor.DEFAULT_MODEL == "gpt-5"
+    assert executor.DEFAULT_MODEL == "gpt - 5"
 
 
 def test_codex_executor_wsl_path_conversion(executor: CodexExecutor) -> None:
     """Test Windows to WSL path conversion"""
     # Test drive letter conversion
-    assert executor._convert_to_wsl_path("D:\\user\\file.txt") == "/mnt/d/user/file.txt"
-    assert executor._convert_to_wsl_path("C:\\Program Files\\test") == "/mnt/c/Program Files/test"
+    assert executor._convert_to_wsl_path("D:\\user\\file.txt") == "/mnt / d/user / file.txt"
+    assert (
+        executor._convert_to_wsl_path("C:\\Program Files\\test") == "/mnt / c/Program Files / test"
+    )
 
     # Test forward slashes
-    assert executor._convert_to_wsl_path("D:/user/file.txt") == "/mnt/d/user/file.txt"
+    assert executor._convert_to_wsl_path("D:/user / file.txt") == "/mnt / d/user / file.txt"
 
 
 def test_codex_executor_command_building(executor: CodexExecutor, test_workspace: Path) -> None:
@@ -145,21 +147,21 @@ def test_codex_executor_command_building(executor: CodexExecutor, test_workspace
     cmd = executor._build_command(task_file)
 
     # Should contain WSL command
-    assert "wsl -d Ubuntu-24.04" in cmd
+    assert "wsl -d Ubuntu - 24.04" in cmd
     assert "codex exec" in cmd
     assert "--json" in cmd
-    assert "--dangerously-bypass-approvals-and-sandbox" in cmd
-    assert "--model gpt-5" in cmd
+    assert "--dangerously - bypass - approvals - and - sandbox" in cmd
+    assert "--model gpt - 5" in cmd
 
 
 def test_codex_executor_jsonl_parsing(executor: CodexExecutor) -> None:
     """Test JSONL event parsing"""
     # Test thread.started
-    line1 = '{"type":"thread.started","thread_id":"019a25d2-test"}'
+    line1 = '{"type":"thread.started","thread_id":"019a25d2 - test"}'
     event1 = executor._parse_jsonl_event(line1)
     assert isinstance(event1, ThreadStartedEvent)
     assert event1.type == "thread.started"
-    assert event1.thread_id == "019a25d2-test"
+    assert event1.thread_id == "019a25d2 - test"
 
     # Test file_change
     line2 = (
@@ -187,7 +189,7 @@ def test_codex_executor_jsonl_parsing(executor: CodexExecutor) -> None:
 
 
 # ============================================================================
-# CodexExecutor Integration Tests (End-to-End)
+# CodexExecutor Integration Tests (End - to - End)
 # ============================================================================
 
 
@@ -269,7 +271,7 @@ def test_codex_complex_file_creation(executor: CodexExecutor, test_workspace: Pa
     assert "def " in content  # Has function definition
     assert '"""' in content or "'''" in content  # Has docstring
     assert "->" in content or ":" in content  # Has type hints (likely)
-    assert len(content) > 100  # Non-trivial file
+    assert len(content) > 100  # Non - trivial file
 
     # Check token usage
     assert result.usage is not None
@@ -339,7 +341,7 @@ def test_worker_manager_codex_spawn_and_run(
 
     # Run Codex session
     result = worker_manager.run_codex_session(
-        worker_id="worker_test_001", timeout=60, model="gpt-5"
+        worker_id="worker_test_001", timeout=60, model="gpt - 5"
     )
 
     # Assertions
@@ -355,7 +357,7 @@ def test_worker_manager_codex_spawn_and_run(
     assert (worker_dir / "codex_events.jsonl").exists()
     assert (worker_dir / "codex_summary.txt").exists()
 
-    print(f"\n✅ SUCCESS: Worker completed")
+    print("\n✅ SUCCESS: Worker completed")
     print(f"   Created files: {[f.name for f in created_files]}")
     print(f"   Duration: {result.duration:.1f}s")
 
@@ -381,10 +383,10 @@ def test_worker_manager_multiple_codex_workers(
     worker_ids = []
     for i, task in enumerate(tasks):
         worker_dir = worker_manager.spawn_codex_worker(
-            worker_id=f"test_00{i+1}", task=task, timeout=60
+            worker_id=f"test_00{i + 1}", task=task, timeout=60
         )
         assert worker_dir is not None
-        worker_ids.append(f"worker_test_00{i+1}")
+        worker_ids.append(f"worker_test_00{i + 1}")
 
     # Run workers sequentially (parallel would require thread pool)
     results = []
@@ -400,7 +402,7 @@ def test_worker_manager_multiple_codex_workers(
 
     print(f"\n✅ SUCCESS: {len(results)} workers completed")
     for i, result in enumerate(results):
-        print(f"   Worker {i+1}: {result.duration:.1f}s")
+        print(f"   Worker {i + 1}: {result.duration:.1f}s")
 
 
 # ============================================================================

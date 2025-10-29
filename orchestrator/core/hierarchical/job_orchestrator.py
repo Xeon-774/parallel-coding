@@ -1,7 +1,7 @@
 """Hierarchical job orchestrator.
 
 Coordinates recursive job execution across depth levels using a
-HierarchicalResourceManager. This implementation uses in-memory tracking and
+HierarchicalResourceManager. This implementation uses in - memory tracking and
 simulated worker tasks suitable for unit and integration tests.
 
 It is designed for extensibility and safe recursion limits, leveraging the
@@ -9,7 +9,7 @@ existing RecursionValidator for safety checks.
 
 Extended features:
 - Document review delegation to AI providers (Codex, Claude Code, etc.)
-- Multi-perspective parallel review support
+- Multi - perspective parallel review support
 - Review result aggregation
 """
 
@@ -46,7 +46,7 @@ class DepthLimitError(OrchestratorError):
 
 
 class RetryDecision(BaseModel):
-    """Decision on whether to retry a failed sub-job."""
+    """Decision on whether to retry a failed sub - job."""
 
     should_retry: bool
     delay_seconds: float = 0.0
@@ -54,7 +54,7 @@ class RetryDecision(BaseModel):
 
 
 class JobResult(BaseModel):
-    """Result/status of a single job."""
+    """Result / status of a single job."""
 
     job_id: str
     depth: int
@@ -67,7 +67,7 @@ class JobResult(BaseModel):
 
 
 class AggregatedResult(BaseModel):
-    """Aggregate result of a parent job combining sub-jobs."""
+    """Aggregate result of a parent job combining sub - jobs."""
 
     job_id: str
     success: bool
@@ -83,12 +83,12 @@ def _new_job_id() -> str:
 
 
 class HierarchicalJobOrchestrator:
-    """In-memory hierarchical job orchestrator.
+    """In - memory hierarchical job orchestrator.
 
     Responsibilities:
     - Validate recursion via RecursionValidator
-    - Allocate/release resources by depth
-    - Split a request into sub-tasks and schedule them
+    - Allocate / release resources by depth
+    - Split a request into sub - tasks and schedule them
     - Track job graph and aggregate results
     - Provide status queries for APIs
     """
@@ -124,7 +124,7 @@ class HierarchicalJobOrchestrator:
     async def submit_job(self, request: str, depth: int = 0) -> JobResult:
         """Submit a job at a depth.
 
-        Splits the request into sub-tasks if possible and schedules
+        Splits the request into sub - tasks if possible and schedules
         asynchronous execution. Returns initial JobResult.
         """
         if not (0 <= depth <= self._max_depth):
@@ -144,7 +144,7 @@ class HierarchicalJobOrchestrator:
         return jr
 
     async def spawn_sub_orchestrator(self, subtask: str, parent_depth: int) -> JobResult:
-        """Spawn a sub-job one level deeper than parent."""
+        """Spawn a sub - job one level deeper than parent."""
         depth = parent_depth + 1
         if depth > self._max_depth:
             raise DepthLimitError("Max depth reached")
@@ -156,7 +156,7 @@ class HierarchicalJobOrchestrator:
                 jr = self._jobs[job_id]
                 jr.status = "running"
 
-            # Determine sub-tasks and concurrency by validation
+            # Determine sub - tasks and concurrency by validation
             sub_tasks = self._decompose_request(request)
             val = RecursionValidator.validate_depth(
                 current_depth=jr.depth,
@@ -168,7 +168,7 @@ class HierarchicalJobOrchestrator:
                 # Leaf task or cannot go deeper: simulate unit of work
                 await self._execute_leaf(job_id, request)
             else:
-                # Parallelize sub-tasks with limited workers at next depth
+                # Parallelize sub - tasks with limited workers at next depth
                 await self._execute_composed(job_id, jr.depth, sub_tasks, val.max_workers or 1)
 
             async with self._lock:
@@ -184,7 +184,7 @@ class HierarchicalJobOrchestrator:
                 jr.finished_at = _now()
                 self._metrics["canceled"] += 1
             raise
-        except Exception as e:  # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad - except
             async with self._lock:
                 jr = self._jobs[job_id]
                 jr.status = "failed"
@@ -330,7 +330,7 @@ class HierarchicalJobOrchestrator:
 
     async def review_document(self, request: ReviewRequest, provider: str = "auto") -> ReviewResult:
         """
-        Execute document review using specified or auto-selected provider.
+        Execute document review using specified or auto - selected provider.
 
         Args:
             request: Review request with document path and parameters
@@ -345,14 +345,14 @@ class HierarchicalJobOrchestrator:
 
         Example:
             >>> request = ReviewRequest(
-            ...     document_path="docs/ROADMAP.md",
+            ...     document_path="docs / ROADMAP.md",
             ...     review_type=ReviewType.ROADMAP,
             ...     perspective=ReviewPerspective.FEASIBILITY
             ... )
             >>> result = await orchestrator.review_document(request, provider="codex")
             >>> print(f"Score: {result.overall_score}")
         """
-        # Auto-select provider
+        # Auto - select provider
         if provider == "auto":
             provider = self._select_best_provider()
 
@@ -392,7 +392,7 @@ class HierarchicalJobOrchestrator:
         Example:
             >>> from orchestrator.core.ai_providers.base_review_provider import ReviewType, ReviewPerspective
             >>> result = await orchestrator.parallel_review(
-            ...     document_path="docs/DESIGN.md",
+            ...     document_path="docs / DESIGN.md",
             ...     review_type=ReviewType.DESIGN,
             ...     perspectives=[
             ...         ReviewPerspective.ARCHITECTURE,

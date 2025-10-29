@@ -1,14 +1,14 @@
 """
 Base Review Provider - Abstract Interface for AI Document Review
 
-This module provides a provider-agnostic interface for document review
+This module provides a provider - agnostic interface for document review
 functionality. It enables the orchestrator to delegate review tasks to
 different AI providers (Codex, Claude Code, Claude API) seamlessly.
 
 Key Features:
-    - Provider-agnostic abstract interface
-    - Type-safe request/response models with Pydantic
-    - Multi-perspective review support (architecture, security, feasibility)
+    - Provider - agnostic abstract interface
+    - Type - safe request / response models with Pydantic
+    - Multi - perspective review support (architecture, security, feasibility)
     - Extensible feedback categorization
     - Comprehensive error handling
 
@@ -30,7 +30,7 @@ Security:
     - Timeout enforcement
 
 Author: Claude (Sonnet 4.5)
-Created: 2025-10-28
+Created: 2025 - 10 - 28
 Version: 1.0.0
 Excellence AI Standard: 100% Applied
 """
@@ -70,7 +70,7 @@ class ReviewType(str, Enum):
 
 
 class ReviewPerspective(str, Enum):
-    """Perspective/focus area for review"""
+    """Perspective / focus area for review"""
 
     ARCHITECTURE = "architecture"
     SECURITY = "security"
@@ -117,7 +117,7 @@ class ReviewRequest(BaseModel):
 
     Example:
         >>> request = ReviewRequest(
-        ...     document_path="docs/ROADMAP.md",
+        ...     document_path="docs / ROADMAP.md",
         ...     review_type=ReviewType.ROADMAP,
         ...     perspective=ReviewPerspective.FEASIBILITY,
         ...     context={"project": "AI_Investor", "phase": "Week 2"}
@@ -130,7 +130,7 @@ class ReviewRequest(BaseModel):
 
     review_type: ReviewType = Field(description="Type of review to perform")
 
-    perspective: ReviewPerspective = Field(description="Review perspective/focus area")
+    perspective: ReviewPerspective = Field(description="Review perspective / focus area")
 
     context: Dict[str, Any] = Field(
         default_factory=dict, description="Additional context for review"
@@ -190,10 +190,10 @@ class ReviewFeedback(BaseModel):
         category: Feedback category (architecture, security, etc.)
         severity: Severity level (critical, warning, info)
         line_number: Optional line number in document
-        section: Optional section/heading name
+        section: Optional section / heading name
         message: Feedback message
         suggestion: Optional improvement suggestion
-        reference: Optional reference to standards/docs
+        reference: Optional reference to standards / docs
 
     Example:
         >>> feedback = ReviewFeedback(
@@ -211,7 +211,9 @@ class ReviewFeedback(BaseModel):
 
     line_number: Optional[int] = Field(default=None, ge=1, description="Line number in document")
 
-    section: Optional[str] = Field(default=None, max_length=200, description="Section/heading name")
+    section: Optional[str] = Field(
+        default=None, max_length=200, description="Section / heading name"
+    )
 
     message: str = Field(min_length=1, max_length=1000, description="Feedback message")
 
@@ -220,7 +222,7 @@ class ReviewFeedback(BaseModel):
     )
 
     reference: Optional[str] = Field(
-        default=None, max_length=500, description="Reference to standards/docs"
+        default=None, max_length=500, description="Reference to standards / docs"
     )
 
 
@@ -235,15 +237,15 @@ class ReviewResult(BaseModel):
         perspective: Review perspective used
         status: Execution status
         feedbacks: List of feedback items
-        overall_score: Overall quality score (0-100)
+        overall_score: Overall quality score (0 - 100)
         execution_time_seconds: Total execution time
         provider_name: AI provider used
-        metadata: Additional provider-specific metadata
+        metadata: Additional provider - specific metadata
 
     Example:
         >>> result = ReviewResult(
         ...     job_id="abc123",
-        ...     document_path="docs/ROADMAP.md",
+        ...     document_path="docs / ROADMAP.md",
         ...     review_type=ReviewType.ROADMAP,
         ...     perspective=ReviewPerspective.FEASIBILITY,
         ...     status=ReviewStatus.SUCCESS,
@@ -268,13 +270,15 @@ class ReviewResult(BaseModel):
         default_factory=list, description="List of feedback items"
     )
 
-    overall_score: float = Field(ge=0.0, le=100.0, description="Overall quality score (0-100)")
+    overall_score: float = Field(ge=0.0, le=100.0, description="Overall quality score (0 - 100)")
 
     execution_time_seconds: float = Field(ge=0.0, description="Total execution time in seconds")
 
     provider_name: str = Field(description="AI provider used for review")
 
-    metadata: Dict[str, Any] = Field(default_factory=dict, description="Provider-specific metadata")
+    metadata: Dict[str, Any] = Field(
+        default_factory=dict, description="Provider - specific metadata"
+    )
 
     error_message: Optional[str] = Field(default=None, description="Error message if review failed")
 
@@ -334,7 +338,7 @@ class AggregatedReview(BaseModel):
 
     Example:
         >>> aggregated = AggregatedReview(
-        ...     document_path="docs/DESIGN.md",
+        ...     document_path="docs / DESIGN.md",
         ...     review_type=ReviewType.DESIGN,
         ...     perspectives=[ReviewPerspective.ARCHITECTURE, ReviewPerspective.SECURITY],
         ...     results=[result1, result2],
@@ -416,7 +420,7 @@ class BaseReviewProvider(ABC):
 
         Example:
             >>> request = ReviewRequest(
-            ...     document_path="docs/ROADMAP.md",
+            ...     document_path="docs / ROADMAP.md",
             ...     review_type=ReviewType.ROADMAP,
             ...     perspective=ReviewPerspective.FEASIBILITY
             ... )
@@ -492,7 +496,7 @@ class ProviderNotAvailableError(ReviewProviderError):
 if __name__ == "__main__":
     # Example: Creating a review request
     request = ReviewRequest(
-        document_path="docs/ROADMAP.md",
+        document_path="docs / ROADMAP.md",
         review_type=ReviewType.ROADMAP,
         perspective=ReviewPerspective.FEASIBILITY,
         context={"project": "AI_Investor", "phase": "Week 2"},

@@ -14,7 +14,7 @@ from __future__ import annotations
 import re
 from typing import Final
 
-_ANSI_RE: Final[re.Pattern[str]] = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
+_ANSI_RE: Final[re.Pattern[str]] = re.compile(r"\x1b\[[0 - 9;?]*[A - Za - z]")
 
 
 def strip_ansi(text: str) -> str:

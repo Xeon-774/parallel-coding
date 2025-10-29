@@ -1,13 +1,13 @@
 """
-Basic pexpect/wexpect test without Claude CLI
+Basic pexpect / wexpect test without Claude CLI
 
-Tests that the pseudo-terminal functionality works correctly
+Tests that the pseudo - terminal functionality works correctly
 """
 
 import sys
 from pathlib import Path
 
-# Cross-platform pexpect import
+# Cross - platform pexpect import
 if sys.platform == "win32":
     import wexpect as expect_module
 
@@ -19,7 +19,7 @@ else:
 
 
 def test_basic_interaction():
-    """Test basic pseudo-terminal interaction"""
+    """Test basic pseudo - terminal interaction"""
     print(f"\n{'='*60}")
     print(f"Platform: {PLATFORM}")
     print(f"Module: {expect_module.__name__}")
@@ -29,14 +29,14 @@ def test_basic_interaction():
     print("[TEST 1] Simple command execution")
     try:
         if PLATFORM == "windows":
-            child = expect_module.spawn("cmd", encoding="utf-8", timeout=5)
+            child = expect_module.spawn("cmd", encoding="utf - 8", timeout=5)
             child.expect(">")  # Wait for prompt
             child.sendline("echo Hello World")
             child.expect("Hello World")
             print("[OK] Command executed and output captured")
             child.sendline("exit")
         else:
-            child = expect_module.spawn("bash", encoding="utf-8", timeout=5)
+            child = expect_module.spawn("bash", encoding="utf - 8", timeout=5)
             child.expect("\\$")  # Wait for prompt
             child.sendline("echo Hello World")
             child.expect("Hello World")
@@ -52,7 +52,7 @@ def test_basic_interaction():
     print("[TEST 2] Pattern matching")
     try:
         if PLATFORM == "windows":
-            child = expect_module.spawn("cmd", encoding="utf-8", timeout=5)
+            child = expect_module.spawn("cmd", encoding="utf - 8", timeout=5)
 
             # Wait for one of several patterns
             index = child.expect([">", "Microsoft", expect_module.TIMEOUT])
@@ -66,7 +66,7 @@ def test_basic_interaction():
 
             child.sendline("exit")
         else:
-            child = expect_module.spawn("bash", encoding="utf-8", timeout=5)
+            child = expect_module.spawn("bash", encoding="utf - 8", timeout=5)
             index = child.expect(["\\$", "#", expect_module.TIMEOUT])
 
             if index in [0, 1]:
@@ -85,17 +85,17 @@ def test_basic_interaction():
     print("[TEST 3] Simulated interactive Q&A")
     try:
         # Create a simple Python script that asks questions
-        test_script = Path("workspace/test_qa.py")
+        test_script = Path("workspace / test_qa.py")
         test_script.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(test_script, "w", encoding="utf-8") as f:
+        with open(test_script, "w", encoding="utf - 8") as f:
             f.write(
                 """
 import sys
 print("Starting interactive test...", flush=True)
 sys.stdout.flush()
 
-response1 = input("Question 1: Write to file 'output.txt'? (y/n): ")
+response1 = input("Question 1: Write to file 'output.txt'? (y / n): ")
 print(f"You answered: {response1}", flush=True)
 
 if response1.lower() == 'y':
@@ -103,18 +103,18 @@ if response1.lower() == 'y':
 else:
     print("File write denied!", flush=True)
 
-response2 = input("Question 2: Delete file 'temp.txt'? (y/n): ")
+response2 = input("Question 2: Delete file 'temp.txt'? (y / n): ")
 print(f"You answered: {response2}", flush=True)
 
 print("Interactive test complete!", flush=True)
 """
             )
 
-        # Run the script with pexpect/wexpect
-        child = expect_module.spawn(f'python "{test_script}"', encoding="utf-8", timeout=10)
+        # Run the script with pexpect / wexpect
+        child = expect_module.spawn(f'python "{test_script}"', encoding="utf - 8", timeout=10)
 
         # Wait for first question
-        index = child.expect(["output.txt.*\\(y/n\\)", expect_module.TIMEOUT])
+        index = child.expect(["output.txt.*\\(y / n\\)", expect_module.TIMEOUT])
 
         if index == 0:
             print("[OK] Detected first question")
@@ -125,7 +125,7 @@ print("Interactive test complete!", flush=True)
             print("[OK] Response processed correctly")
 
             # Wait for second question
-            index = child.expect(["temp.txt.*\\(y/n\\)", expect_module.TIMEOUT])
+            index = child.expect(["temp.txt.*\\(y / n\\)", expect_module.TIMEOUT])
 
             if index == 0:
                 print("[OK] Detected second question")
@@ -158,7 +158,7 @@ print("Interactive test complete!", flush=True)
 
 
 if __name__ == "__main__":
-    print("\nBasic pexpect/wexpect functionality test")
-    print("This validates pseudo-terminal control without Claude CLI\n")
+    print("\nBasic pexpect / wexpect functionality test")
+    print("This validates pseudo - terminal control without Claude CLI\n")
 
     test_basic_interaction()

@@ -46,10 +46,10 @@ class TestHierarchicalResourceManager:
 
         # Allocate at max depth
         allocation = await rm.allocate_resources(
-            job_id="test-max-depth", depth=5, requested_workers=1
+            job_id="test - max - depth", depth=5, requested_workers=1
         )
 
-        assert allocation.job_id == "test-max-depth"
+        assert allocation.job_id == "test - max - depth"
         assert allocation.depth == 5
         assert allocation.granted >= 0
         assert allocation.granted <= 1  # Max quota at depth 5
@@ -61,7 +61,7 @@ class TestHierarchicalResourceManager:
 
         # Request more than quota at depth 5 (quota = 1)
         allocation = await rm.allocate_resources(
-            job_id="test-exceed-quota", depth=5, requested_workers=10
+            job_id="test - exceed - quota", depth=5, requested_workers=10
         )
 
         # Should grant only what's available
@@ -70,11 +70,11 @@ class TestHierarchicalResourceManager:
 
     @pytest.mark.asyncio
     async def test_release_nonexistent_job(self):
-        """Test releasing resources for non-existent job."""
+        """Test releasing resources for non - existent job."""
         rm = HierarchicalResourceManager()
 
         # Release for job that was never allocated
-        released = await rm.release_resources(job_id="nonexistent-job", depth=0)
+        released = await rm.release_resources(job_id="nonexistent - job", depth=0)
 
         # Should return False (nothing to release)
         assert released is False
@@ -86,7 +86,7 @@ class TestHierarchicalResourceManager:
 
         usage = await rm.get_hierarchy_usage()
 
-        # Should have entries for depths 0-5
+        # Should have entries for depths 0 - 5
         assert len(usage) == 6
         for depth in range(6):
             assert depth in usage
@@ -99,7 +99,9 @@ class TestHierarchicalResourceManager:
         rm = HierarchicalResourceManager()
 
         with pytest.raises(AllocationError, match="requested_workers must be positive"):
-            await rm.allocate_resources(job_id="test-zero-workers", depth=0, requested_workers=0)
+            await rm.allocate_resources(
+                job_id="test - zero - workers", depth=0, requested_workers=0
+            )
 
     @pytest.mark.asyncio
     async def test_multiple_allocations_same_depth(self):
@@ -107,10 +109,10 @@ class TestHierarchicalResourceManager:
         rm = HierarchicalResourceManager()
 
         # First allocation
-        alloc1 = await rm.allocate_resources(job_id="job-1", depth=0, requested_workers=3)
+        alloc1 = await rm.allocate_resources(job_id="job - 1", depth=0, requested_workers=3)
 
         # Second allocation
-        alloc2 = await rm.allocate_resources(job_id="job-2", depth=0, requested_workers=3)
+        alloc2 = await rm.allocate_resources(job_id="job - 2", depth=0, requested_workers=3)
 
         # Total granted should not exceed quota
         usage = await rm.get_hierarchy_usage()
@@ -119,7 +121,7 @@ class TestHierarchicalResourceManager:
 
     @pytest.mark.asyncio
     async def test_allocate_release_cycle(self):
-        """Test full allocate-release cycle."""
+        """Test full allocate - release cycle."""
         rm = HierarchicalResourceManager()
 
         # Get initial usage
@@ -127,14 +129,14 @@ class TestHierarchicalResourceManager:
         initial_used = initial_usage[0].used
 
         # Allocate resources
-        await rm.allocate_resources(job_id="test-cycle", depth=0, requested_workers=2)
+        await rm.allocate_resources(job_id="test - cycle", depth=0, requested_workers=2)
 
         # Check usage increased
         after_alloc = await rm.get_hierarchy_usage()
         assert after_alloc[0].used >= initial_used
 
         # Release resources
-        released = await rm.release_resources(job_id="test-cycle", depth=0)
+        released = await rm.release_resources(job_id="test - cycle", depth=0)
 
         assert released is True
 
@@ -182,18 +184,18 @@ class TestResourceManagerAdvanced:
         rm = HierarchicalResourceManager()
 
         # Exhaust all quota at depth 5 (quota=1)
-        await rm.allocate_resources(job_id="job-1", depth=5, requested_workers=1)
+        await rm.allocate_resources(job_id="job - 1", depth=5, requested_workers=1)
 
         # Try to allocate more - should fail
         with pytest.raises(AllocationError, match="No capacity available"):
-            await rm.allocate_resources(job_id="job-2", depth=5, requested_workers=1)
+            await rm.allocate_resources(job_id="job - 2", depth=5, requested_workers=1)
 
     @pytest.mark.asyncio
     async def test_cleanup_job_multiple_depths(self):
         """Test cleanup_job releases resources across all depths."""
         rm = HierarchicalResourceManager()
 
-        job_id = "multi-depth-job"
+        job_id = "multi - depth - job"
 
         # Allocate at multiple depths
         await rm.allocate_resources(job_id=job_id, depth=0, requested_workers=2)
@@ -219,9 +221,11 @@ class TestResourceManagerAdvanced:
         initial_used = initial_usage[0].used
 
         # Use context manager
-        async with await rm.resource_scope(job_id="ctx-job", depth=0, requested_workers=3) as alloc:
+        async with await rm.resource_scope(
+            job_id="ctx - job", depth=0, requested_workers=3
+        ) as alloc:
             assert alloc.granted == 3
-            assert alloc.job_id == "ctx-job"
+            assert alloc.job_id == "ctx - job"
 
             # Check resources are allocated
             mid_usage = await rm.get_hierarchy_usage()
@@ -237,7 +241,7 @@ class TestResourceManagerAdvanced:
         rm = HierarchicalResourceManager()
 
         # Allocate 8 workers at depth 0 (quota=10)
-        await rm.allocate_resources(job_id="warn-job", depth=0, requested_workers=8)
+        await rm.allocate_resources(job_id="warn - job", depth=0, requested_workers=8)
 
         status = await rm.check_quota(depth=0)
         assert status.depth == 0
@@ -247,7 +251,7 @@ class TestResourceManagerAdvanced:
         assert status.warnings[1] is False  # 90% not reached yet
 
         # Allocate 1 more to reach 90%
-        await rm.allocate_resources(job_id="warn-job-2", depth=0, requested_workers=1)
+        await rm.allocate_resources(job_id="warn - job - 2", depth=0, requested_workers=1)
 
         status2 = await rm.check_quota(depth=0)
         assert status2.warnings[0] is True  # 80% still true

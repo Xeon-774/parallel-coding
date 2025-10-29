@@ -51,12 +51,12 @@ class ScreenshotManager:
         screenshot_path = self.screenshots_dir / f"{worker_id}_{timestamp}.png"
 
         # PowerShellスクリプトでスクリーンショットを撮影
-        ps_script = f"""
-Add-Type -AssemblyName System.Windows.Forms
-Add-Type -AssemblyName System.Drawing
+        ps_script = """
+Add - Type -AssemblyName System.Windows.Forms
+Add - Type -AssemblyName System.Drawing
 
 # 特定のウィンドウを探す
-Add-Type @"
+Add - Type @"
     using System;
     using System.Runtime.InteropServices;
     using System.Text;
@@ -84,7 +84,7 @@ Add-Type @"
 
 # ウィンドウを探す（worker_idでマッチ - より確実）
 # タイトルに改行が含まれる可能性があるため、worker_idのみで検索
-$windows = Get-Process | Where-Object {{ $_.MainWindowTitle -like "*[{worker_id}]*" }}
+$windows = Get - Process | Where - Object {{ $_.MainWindowTitle -like "*[{worker_id}]*" }}
 
 if ($windows) {{
     $window = $windows[0]
@@ -92,10 +92,10 @@ if ($windows) {{
 
     # ウィンドウを前面に
     [WindowHelper]::SetForegroundWindow($hwnd)
-    Start-Sleep -Milliseconds 500
+    Start - Sleep -Milliseconds 500
 
     # ウィンドウの矩形を取得
-    $rect = New-Object RECT
+    $rect = New - Object RECT
     [WindowHelper]::GetWindowRect($hwnd, [ref]$rect)
 
     $width = $rect.Right - $rect.Left
@@ -103,7 +103,7 @@ if ($windows) {{
 
     if ($width -gt 0 -and $height -gt 0) {{
         # ビットマップを作成
-        $bitmap = New-Object System.Drawing.Bitmap($width, $height)
+        $bitmap = New - Object System.Drawing.Bitmap($width, $height)
         $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
 
         # ウィンドウをキャプチャ
@@ -116,18 +116,18 @@ if ($windows) {{
         $bitmap.Dispose()
         $graphics.Dispose()
 
-        Write-Host "Screenshot saved: {screenshot_path}"
+        Write - Host "Screenshot saved: {screenshot_path}"
     }}
 }} else {{
     # ウィンドウが見つからない場合、全画面をキャプチャ
     $screen = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
-    $bitmap = New-Object System.Drawing.Bitmap($screen.Width, $screen.Height)
+    $bitmap = New - Object System.Drawing.Bitmap($screen.Width, $screen.Height)
     $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
     $graphics.CopyFromScreen($screen.Location, [System.Drawing.Point]::Empty, $screen.Size)
     $bitmap.Save("{screenshot_path}", [System.Drawing.Imaging.ImageFormat]::Png)
     $bitmap.Dispose()
     $graphics.Dispose()
-    Write-Host "Window not found. Full screen captured: {screenshot_path}"
+    Write - Host "Window not found. Full screen captured: {screenshot_path}"
 }}
 """
 

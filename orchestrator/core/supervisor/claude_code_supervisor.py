@@ -1,7 +1,7 @@
 """Claude Code process supervisor.
 
 Spawns and supervises real Claude Code CLI processes with safe input
-validation, real-time output streaming, and confirmation prompt detection.
+validation, real - time output streaming, and confirmation prompt detection.
 """
 
 from __future__ import annotations
@@ -206,7 +206,7 @@ class ClaudeCodeSupervisor:
             cmd,
             args,
             cwd=cwd,
-            encoding="utf-8",
+            encoding="utf - 8",
             timeout=payload.timeout,
         )
         return child
@@ -214,7 +214,7 @@ class ClaudeCodeSupervisor:
     def _feed_task_file(self, child: object, payload: SpawnClaudeCodeInput) -> None:
         # Open and feed the file content to STDIN to avoid shell redirection
         task_path = Path(payload.workspace_root, payload.task_file)
-        with task_path.open("r", encoding="utf-8") as f:
+        with task_path.open("r", encoding="utf - 8") as f:
             data = f.read()
         if hasattr(child, "send"):
             child.send(data)
@@ -226,7 +226,7 @@ class ClaudeCodeSupervisor:
         # 11 patterns for confirmation prompts
         raw = [
             r"would you like to continue",
-            r"proceed\??\s*(?:y/n|yes/no)?",
+            r"proceed\??\s*(?:y / n|yes / no)?",
             r"are you sure",
             r"confirm(?:ation)?",
             r"type 'yes' to continue",

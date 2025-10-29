@@ -56,9 +56,9 @@ class AdaptiveStandardEmbedding:
     """Adaptively embed standards in Codex prompts based on context.
 
     Optimizes token usage by selecting appropriate embedding level:
-    - REFERENCE: Security-free utility functions (10 tokens)
+    - REFERENCE: Security - free utility functions (10 tokens)
     - SUMMARY: Standard business logic (200 tokens)
-    - FULL: Security-critical or violation-prone (800 tokens)
+    - FULL: Security - critical or violation - prone (800 tokens)
 
     Example:
         >>> adapter = AdaptiveStandardEmbedding()
@@ -83,7 +83,7 @@ class AdaptiveStandardEmbedding:
         self.standard_dir = standard_dir or Path("excellence_ai_standard")
         self.violation_history = violation_history or ViolationHistory()
 
-        # Security-critical task types requiring FULL embedding
+        # Security - critical task types requiring FULL embedding
         self.security_critical_types = {
             "auth",
             "authentication",
@@ -100,7 +100,7 @@ class AdaptiveStandardEmbedding:
         """Determine appropriate embedding level for task.
 
         Strategy:
-        1. Security-critical → FULL (800 tokens)
+        1. Security - critical → FULL (800 tokens)
         2. Frequent violations → SUMMARY (200 tokens)
         3. Clean history → REFERENCE (10 tokens)
 
@@ -110,11 +110,11 @@ class AdaptiveStandardEmbedding:
         Returns:
             Appropriate embedding level
         """
-        # Security-critical always gets full standard
+        # Security - critical always gets full standard
         if any(critical in task_type.lower() for critical in self.security_critical_types):
             return EmbeddingLevel.FULL
 
-        # Violation-prone gets summary
+        # Violation - prone gets summary
         if self.violation_history.has_frequent_violations():
             return EmbeddingLevel.SUMMARY
 
@@ -128,7 +128,7 @@ class AdaptiveStandardEmbedding:
         if not summary_path.exists():
             raise FileNotFoundError(f"Standard summary not found: {summary_path}")
 
-        return summary_path.read_text(encoding="utf-8")
+        return summary_path.read_text(encoding="utf - 8")
 
     def extract_critical_rules(self, full_summary: str) -> str:
         """Extract critical rules from full summary (800 → 200 tokens).
@@ -176,7 +176,7 @@ class AdaptiveStandardEmbedding:
             return (
                 "## Excellence AI Standard\n"
                 "Standard: enforced\n"
-                "Full reference: excellence_ai_standard/summaries/"
+                "Full reference: excellence_ai_standard / summaries/"
                 "excellence_ai_standard_summary.md"
             )
 
@@ -187,7 +187,7 @@ class AdaptiveStandardEmbedding:
             return (
                 "## Excellence AI Standard (CRITICAL RULES)\n"
                 f"{critical_rules}\n\n"
-                "Full standard: excellence_ai_standard/summaries/"
+                "Full standard: excellence_ai_standard / summaries/"
                 "excellence_ai_standard_summary.md"
             )
 

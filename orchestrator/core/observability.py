@@ -1,13 +1,13 @@
 """
 Comprehensive Observability System (v9.0)
 
-World-class observability with:
+World - class observability with:
 - Metrics collection and aggregation
 - Performance monitoring
 - Health checks
 - Resource utilization tracking
 - Distributed tracing support
-- Real-time dashboards data
+- Real - time dashboards data
 """
 
 import statistics
@@ -26,7 +26,7 @@ class MetricType(str, Enum):
     """Types of metrics"""
 
     COUNTER = "counter"  # Monotonically increasing
-    GAUGE = "gauge"  # Point-in-time value
+    GAUGE = "gauge"  # Point - in - time value
     HISTOGRAM = "histogram"  # Distribution of values
     SUMMARY = "summary"  # Summary statistics
 
@@ -537,7 +537,7 @@ if __name__ == "__main__":
     # Get operation stats
     print("\nOperation statistics:")
     stats = obs.performance.get_operation_stats("api_call")
-    print(f"  API calls:")
+    print("  API calls:")
     print(f"    Count: {stats.get('count', 0)}")
     print(f"    Mean: {stats.get('mean', 0):.3f}s")
     print(f"    P95: {stats.get('p95', 0):.3f}s")

@@ -1,7 +1,7 @@
-"""Non-blocking process I/O handling.
+"""Non - blocking process I / O handling.
 
 Provides an async interface to stream output from `pexpect`/`wexpect`
-children in a resource-efficient manner, with ANSI-stripping and line
+children in a resource - efficient manner, with ANSI - stripping and line
 buffering.
 """
 
@@ -88,10 +88,10 @@ class ProcessIOHandler:
 
         def _read() -> str:
             try:
-                # pexpect/wexpect share read_nonblocking
+                # pexpect / wexpect share read_nonblocking
                 data = self._child.read_nonblocking(size=self._config.chunk_size, timeout=0)
                 return (
-                    data.decode("utf-8", errors="replace")
+                    data.decode("utf - 8", errors="replace")
                     if isinstance(data, (bytes, bytearray))
                     else str(data)
                 )

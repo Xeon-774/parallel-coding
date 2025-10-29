@@ -5,7 +5,7 @@ Provides WebSocket endpoint to stream raw terminal output from worker processes.
 Similar to dialogue_ws.py but streams the raw terminal log file.
 
 Features:
-- Real-time streaming of raw terminal output
+- Real - time streaming of raw terminal output
 - File monitoring with watchdog
 - WebSocket communication
 """
@@ -39,7 +39,7 @@ class TerminalFileMonitor(FileSystemEventHandler):
         Args:
             workspace: Worker workspace directory
             terminal_file: Specific terminal file to monitor (defaults to raw_terminal.log)
-            loop: Event loop for thread-safe async operations
+            loop: Event loop for thread - safe async operations
         """
         super().__init__()
         self.workspace = workspace
@@ -60,7 +60,7 @@ class TerminalFileMonitor(FileSystemEventHandler):
             event: File modification event
         """
         if not event.is_directory and event.src_path == str(self.terminal_file):
-            # Schedule async task in the event loop (thread-safe)
+            # Schedule async task in the event loop (thread - safe)
             if self._loop and self._new_lines is not None:
                 asyncio.run_coroutine_threadsafe(self._read_new_lines(), self._loop)
 
@@ -73,7 +73,7 @@ class TerminalFileMonitor(FileSystemEventHandler):
 
         try:
             async with self._lock:
-                with open(self.terminal_file, "r", encoding="utf-8", errors="replace") as f:
+                with open(self.terminal_file, "r", encoding="utf - 8", errors="replace") as f:
                     # Seek to last position
                     f.seek(self._last_position)
 
@@ -94,7 +94,7 @@ class TerminalFileMonitor(FileSystemEventHandler):
                                 if line:
                                     await self._new_lines.put(line)
                             # Don't advance position past partial line
-                            # (will re-read partial line next time)
+                            # (will re - read partial line next time)
 
                     # Update position
                     self._last_position = f.tell()
@@ -119,7 +119,7 @@ class TerminalFileMonitor(FileSystemEventHandler):
             logger.info(f"Reading historical terminal output from {self.terminal_file}")
 
             try:
-                with open(self.terminal_file, "r", encoding="utf-8", errors="replace") as f:
+                with open(self.terminal_file, "r", encoding="utf - 8", errors="replace") as f:
                     for line in f:
                         line = line.rstrip("\n")
                         if line:
@@ -171,7 +171,7 @@ async def terminal_websocket_endpoint(
     WebSocket endpoint for streaming raw terminal output.
 
     This endpoint accepts WebSocket connections and streams terminal
-    output lines for the specified worker in real-time.
+    output lines for the specified worker in real - time.
 
     Args:
         websocket: FastAPI WebSocket connection
@@ -184,7 +184,7 @@ async def terminal_websocket_endpoint(
 
     Usage:
         # In FastAPI app:
-        @app.websocket("/ws/terminal/{worker_id}")
+        @app.websocket("/ws / terminal/{worker_id}")
         async def terminal_ws(websocket: WebSocket, worker_id: str, terminal_type: str = "worker"):
             await terminal_websocket_endpoint(websocket, worker_id, terminal_type=terminal_type)
     """

@@ -11,7 +11,7 @@ from orchestrator.window_strategies.wsl_strategy import WSLWindowManager
 
 class WindowManagerFactory:
     """
-    Factory for creating platform-specific window managers
+    Factory for creating platform - specific window managers
 
     Uses the Factory pattern to instantiate the correct window manager
     implementation based on the execution mode.
@@ -31,7 +31,7 @@ class WindowManagerFactory:
         Args:
             execution_mode: Either "windows" or "wsl"
             workspace_root: Workspace root directory
-            auto_close: Auto-close windows on completion
+            auto_close: Auto - close windows on completion
             close_delay: Delay before closing
             enable_screenshots: Enable screenshot capture
 
@@ -58,5 +58,5 @@ class WindowManagerFactory:
         else:
             raise ValueError(
                 f"Unsupported execution mode: {execution_mode}. "
-                f"Supported modes: 'windows', 'wsl'"
+                "Supported modes: 'windows', 'wsl'"
             )

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Codex Background Execution Wrapper
 Fixes Python 3.13 _pyrepl console handle issues in background processes
@@ -37,7 +37,7 @@ def main():
 
     except FileNotFoundError:
         print("ERROR: 'codex' command not found. Please ensure it's installed.", file=sys.stderr)
-        print("Install with: npm install -g @openai/codex", file=sys.stderr)
+        print("Install with: npm install -g @openai / codex", file=sys.stderr)
         sys.exit(1)
 
     except KeyboardInterrupt:

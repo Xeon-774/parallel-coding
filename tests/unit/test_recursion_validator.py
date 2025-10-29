@@ -127,8 +127,8 @@ class TestCircularReferenceDetection:
 
     def test_detect_circular_reference_found(self):
         """Test circular reference is detected."""
-        parent_ids = ["job-a", "job-b", "job-c"]
-        current_id = "job-b"  # Already in parents
+        parent_ids = ["job - a", "job - b", "job - c"]
+        current_id = "job - b"  # Already in parents
 
         result = RecursionValidator.detect_circular_reference(parent_ids, current_id)
 
@@ -136,8 +136,8 @@ class TestCircularReferenceDetection:
 
     def test_detect_circular_reference_not_found(self):
         """Test no circular reference when ID is unique."""
-        parent_ids = ["job-a", "job-b", "job-c"]
-        current_id = "job-d"  # Not in parents
+        parent_ids = ["job - a", "job - b", "job - c"]
+        current_id = "job - d"  # Not in parents
 
         result = RecursionValidator.detect_circular_reference(parent_ids, current_id)
 
@@ -146,7 +146,7 @@ class TestCircularReferenceDetection:
     def test_detect_circular_reference_empty_parents(self):
         """Test no circular reference with empty parent list."""
         parent_ids = []
-        current_id = "job-a"
+        current_id = "job - a"
 
         result = RecursionValidator.detect_circular_reference(parent_ids, current_id)
 
@@ -154,8 +154,8 @@ class TestCircularReferenceDetection:
 
     def test_detect_circular_reference_self_reference(self):
         """Test circular reference with same ID."""
-        parent_ids = ["job-a"]
-        current_id = "job-a"
+        parent_ids = ["job - a"]
+        current_id = "job - a"
 
         result = RecursionValidator.detect_circular_reference(parent_ids, current_id)
 
@@ -163,8 +163,8 @@ class TestCircularReferenceDetection:
 
     def test_detect_circular_reference_long_chain(self):
         """Test circular reference in long parent chain."""
-        parent_ids = ["job-1", "job-2", "job-3", "job-4", "job-5", "job-6", "job-7"]
-        current_id = "job-4"  # In the middle of chain
+        parent_ids = ["job - 1", "job - 2", "job - 3", "job - 4", "job - 5", "job - 6", "job - 7"]
+        current_id = "job - 4"  # In the middle of chain
 
         result = RecursionValidator.detect_circular_reference(parent_ids, current_id)
 

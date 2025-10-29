@@ -15,7 +15,7 @@ from orchestrator.recursive import (
     RecursiveOrchestratorClient,
 )
 
-VALID_KEY = "sk-orch-" + "x" * 32
+VALID_KEY = "sk - orch-" + "x" * 32
 BASE = "https://orch.test"
 
 
@@ -23,16 +23,16 @@ BASE = "https://orch.test"
 async def test_submit_poll_results_happy_path():
     with respx.mock(base_url=BASE) as router:
         # Submit
-        router.post("/api/v1/orchestrate").mock(
-            return_value=Response(200, json={"job_id": "job-123"})
+        router.post("/api / v1 / orchestrate").mock(
+            return_value=Response(200, json={"job_id": "job - 123"})
         )
         # Poll running -> completed
-        router.get("/api/v1/jobs/job-123/status").mock(
+        router.get("/api / v1 / jobs / job - 123 / status").mock(
             side_effect=[
                 Response(
                     200,
                     json={
-                        "job_id": "job-123",
+                        "job_id": "job - 123",
                         "status": "running",
                         "progress": {"pct": 50},
                         "results": None,
@@ -41,7 +41,7 @@ async def test_submit_poll_results_happy_path():
                 Response(
                     200,
                     json={
-                        "job_id": "job-123",
+                        "job_id": "job - 123",
                         "status": "completed",
                         "progress": {"pct": 100},
                         "results": {"ok": True},
@@ -50,7 +50,7 @@ async def test_submit_poll_results_happy_path():
             ]
         )
         # Results
-        router.get("/api/v1/jobs/job-123/results").mock(
+        router.get("/api / v1 / jobs / job - 123 / results").mock(
             return_value=Response(200, json={"status": "completed", "results": {"ok": True}})
         )
 
@@ -60,7 +60,7 @@ async def test_submit_poll_results_happy_path():
                 max_workers=2,
                 current_depth=0,
             )
-            assert job_id == "job-123"
+            assert job_id == "job - 123"
 
             updates = []
             async for status in client.poll_job(job_id, poll_interval=0.01):
@@ -75,15 +75,15 @@ def test_sync_wrapper_roundtrip(monkeypatch):
     # Use the async client but run via asyncio to validate wrapper behavior
     async def scenario() -> Dict[str, Any]:
         with respx.mock(base_url=BASE) as router:
-            router.post("/api/v1/orchestrate").mock(
-                return_value=Response(200, json={"job_id": "job-xyz"})
+            router.post("/api / v1 / orchestrate").mock(
+                return_value=Response(200, json={"job_id": "job - xyz"})
             )
-            router.get("/api/v1/jobs/job-xyz/status").mock(
+            router.get("/api / v1 / jobs / job - xyz / status").mock(
                 side_effect=[
                     Response(
                         200,
                         json={
-                            "job_id": "job-xyz",
+                            "job_id": "job - xyz",
                             "status": "completed",
                             "progress": {},
                             "results": {},
@@ -91,7 +91,7 @@ def test_sync_wrapper_roundtrip(monkeypatch):
                     ),
                 ]
             )
-            router.get("/api/v1/jobs/job-xyz/results").mock(
+            router.get("/api / v1 / jobs / job - xyz / results").mock(
                 return_value=Response(200, json={"ok": True})
             )
             async with RecursiveOrchestratorClient(BASE, VALID_KEY) as client:
@@ -107,13 +107,13 @@ def test_sync_wrapper_roundtrip(monkeypatch):
 @pytest.mark.asyncio
 async def test_validation_errors_raised():
     with pytest.raises(ClientValidationError):
-        RecursiveOrchestratorClient("invalid-url", VALID_KEY)
+        RecursiveOrchestratorClient("invalid - url", VALID_KEY)
 
     with pytest.raises(ClientValidationError):
         RecursiveOrchestratorClient(BASE, "short")
 
     with pytest.raises(ClientValidationError):
-        RecursiveOrchestratorClient(BASE, "sk-orch-too-short")
+        RecursiveOrchestratorClient(BASE, "sk - orch - too - short")
 
     async with RecursiveOrchestratorClient(BASE, VALID_KEY) as client:
         with pytest.raises(ClientValidationError):
@@ -136,7 +136,9 @@ async def test_validation_errors_raised():
 @pytest.mark.asyncio
 async def test_authentication_error_401():
     with respx.mock(base_url=BASE) as router:
-        router.post("/api/v1/orchestrate").mock(return_value=Response(401, json={"error": "nope"}))
+        router.post("/api / v1 / orchestrate").mock(
+            return_value=Response(401, json={"error": "nope"})
+        )
         async with RecursiveOrchestratorClient(BASE, VALID_KEY) as client:
             with pytest.raises(AuthenticationError):
                 await client.submit_job("A valid submission body", max_workers=1)
@@ -151,20 +153,22 @@ async def test_retry_on_5xx_then_success():
             calls["count"] += 1
             if calls["count"] < 2:
                 return Response(503, json={"error": "temporary"})
-            return Response(200, json={"job_id": "job-r"})
+            return Response(200, json={"job_id": "job - r"})
 
-        router.post("/api/v1/orchestrate").mock(side_effect=handler)
+        router.post("/api / v1 / orchestrate").mock(side_effect=handler)
 
         async with RecursiveOrchestratorClient(BASE, VALID_KEY, max_retries=2) as client:
             job_id = await client.submit_job("This will succeed after retry", max_workers=1)
-            assert job_id == "job-r"
+            assert job_id == "job - r"
 
 
 @pytest.mark.asyncio
 async def test_network_error_after_retries():
     with respx.mock(base_url=BASE) as router:
         # Any request errors out with 503, exceeding retries
-        router.post("/api/v1/orchestrate").mock(return_value=Response(503, json={"error": "down"}))
+        router.post("/api / v1 / orchestrate").mock(
+            return_value=Response(503, json={"error": "down"})
+        )
         async with RecursiveOrchestratorClient(BASE, VALID_KEY, max_retries=1) as client:
             with pytest.raises(APIError):
                 await client.submit_job("Will fail after retries", max_workers=1)
@@ -173,8 +177,8 @@ async def test_network_error_after_retries():
 @pytest.mark.asyncio
 async def test_performance_overhead_under_100ms():
     with respx.mock(base_url=BASE) as router:
-        router.post("/api/v1/orchestrate").mock(
-            return_value=Response(200, json={"job_id": "perf-1"})
+        router.post("/api / v1 / orchestrate").mock(
+            return_value=Response(200, json={"job_id": "perf - 1"})
         )
         async with RecursiveOrchestratorClient(BASE, VALID_KEY) as client:
             import time

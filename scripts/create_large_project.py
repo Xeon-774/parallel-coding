@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 大規模プロジェクト実装デモ
 
@@ -14,12 +14,12 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-# UTF-8出力設定
+# UTF - 8出力設定
 if sys.platform == "win32":
     import codecs
 
-    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
-    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
+    sys.stdout = codecs.getwriter("utf - 8")(sys.stdout.buffer, "replace")
+    sys.stderr = codecs.getwriter("utf - 8")(sys.stderr.buffer, "replace")
 
 from orchestrator import AdvancedOrchestrator, OrchestratorConfig
 
@@ -36,7 +36,7 @@ def main():
     print()
 
     print("[説明]")
-    print("  CSV/JSONデータを読み込み、様々なグラフを生成し、")
+    print("  CSV / JSONデータを読み込み、様々なグラフを生成し、")
     print("  インタラクティブなダッシュボードを提供するPythonアプリケーション")
     print()
 
@@ -46,7 +46,7 @@ def main():
 
 【主要機能】
 1. データ読み込み
-   - CSV/JSONファイルの読み込み
+   - CSV / JSONファイルの読み込み
    - データバリデーション
    - データプレビュー
 
@@ -66,7 +66,7 @@ def main():
    - インタラクティブ操作
    - エクスポート機能（PNG、PDF）
 
-5. CLI/GUI
+5. CLI / GUI
    - コマンドラインインターフェース
    - 簡易的なテキストベースUI
 
@@ -91,7 +91,7 @@ Pythonで実装してください。
 
     print("[期待される動作]")
     print("  ✅ AI分析: 大規模プロジェクトと認識")
-    print("  ✅ 自動分解: 10-15個のコンポーネントに分割")
+    print("  ✅ 自動分解: 10 - 15個のコンポーネントに分割")
     print("  ✅ 依存関係検出: 基盤→アプリケーション層の順序")
     print("  ✅ 並列実行: 可能な限り並列化")
     print("  ✅ 自動統合: 完成したプロジェクト")
@@ -132,7 +132,7 @@ Pythonで実装してください。
         print()
 
         print("[完了時刻]", time.strftime("%H:%M:%S"))
-        print(f"[実行時間] {execution_time:.2f}秒 ({execution_time/60:.2f}分)")
+        print(f"[実行時間] {execution_time:.2f}秒 ({execution_time / 60:.2f}分)")
         print()
 
         if result:
@@ -149,7 +149,7 @@ Pythonで実装してください。
             print(f"  生成されたコンポーネント数: {worker_count}")
             print(f"  総文字数: {len(result):,} 文字")
             print(f"  実行時間: {execution_time:.2f}秒")
-            print(f"  平均速度: {len(result)/execution_time:.0f} 文字/秒")
+            print(f"  平均速度: {len(result)/execution_time:.0f} 文字 / 秒")
             print()
 
             # 結果ファイルの場所
@@ -170,7 +170,7 @@ Pythonで実装してください。
 
                 if task_file.exists() and output_file.exists():
                     # タスク名を抽出（最初の行）
-                    with open(task_file, "r", encoding="utf-8", errors="replace") as f:
+                    with open(task_file, "r", encoding="utf - 8", errors="replace") as f:
                         task_name = f.readline().strip()
 
                     # 出力サイズ

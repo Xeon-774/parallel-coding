@@ -43,7 +43,7 @@ def test_simple_file_creation():
     config.workspace_root = str(project_root / "workspace" / "test_interaction")
     config.execution_mode = "windows"  # Windowsモード
     config.windows_claude_path = "claude"  # Claude CLI使用
-    config.git_bash_path = r"C:\opt\Git.Git\usr\bin\bash.exe"  # git-bash設定
+    config.git_bash_path = r"C:\opt\Git.Git\usr\bin\bash.exe"  # git - bash設定
 
     # ワークスペース準備
     workspace = Path(config.workspace_root)
@@ -115,7 +115,7 @@ def test_simple_file_creation():
         test_file = workspace / "test_output.txt"
         if test_file.exists():
             print(f"\n[OK] ファイル作成成功: {test_file}")
-            with open(test_file, "r", encoding="utf-8") as f:
+            with open(test_file, "r", encoding="utf - 8") as f:
                 content = f.read()
             print(f"内容: {content}")
         else:
@@ -150,7 +150,7 @@ def test_interactive_task():
     config.workspace_root = str(project_root / "workspace" / "test_interaction_2")
     config.execution_mode = "windows"
     config.windows_claude_path = "claude"  # Claude CLI使用
-    config.git_bash_path = r"C:\opt\Git.Git\usr\bin\bash.exe"  # git-bash設定
+    config.git_bash_path = r"C:\opt\Git.Git\usr\bin\bash.exe"  # git - bash設定
 
     # ワークスペース準備
     workspace = Path(config.workspace_root)
@@ -229,13 +229,13 @@ def test_interactive_task():
                 with open(step1, "r") as f:
                     print(f"  [OK] step1.txt: {f.read()}")
             else:
-                print(f"  [ERROR] step1.txt が作成されませんでした")
+                print("  [ERROR] step1.txt が作成されませんでした")
 
             if step2.exists():
                 with open(step2, "r") as f:
                     print(f"  [OK] step2.txt: {f.read()}")
             else:
-                print(f"  [ERROR] step2.txt が作成されませんでした")
+                print("  [ERROR] step2.txt が作成されませんでした")
         else:
             print(f"\n[ERROR] ディレクトリが作成されませんでした: {test_dir}")
 

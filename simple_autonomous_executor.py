@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Simple Autonomous Executor - NO user confirmation required
-Directly executes Week 1 Day 3-7 tasks using Claude Code via subprocess
+Directly executes Week 1 Day 3 - 7 tasks using Claude Code via subprocess
 """
 
 import json
@@ -17,25 +17,25 @@ from typing import Dict, List
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
-# Task definitions for Week 1 Day 3-7
+# Task definitions for Week 1 Day 3 - 7
 TASKS = [
     {
         "id": "task_1_fastapi_websocket",
         "name": "FastAPI WebSocket Endpoints",
-        "description": "Implement /ws/worker-status, /ws/worker-logs, /ws/metrics",
-        "file": "../../apps/backend-api/main.py",
+        "description": "Implement /ws / worker - status, /ws / worker - logs, /ws / metrics",
+        "file": "../../apps / backend - api / main.py",
         "prompt": """
-Implement FastAPI WebSocket endpoints in apps/backend-api/main.py:
+Implement FastAPI WebSocket endpoints in apps / backend - api / main.py:
 
-1. /ws/worker-status - Worker状態ストリーミング
+1. /ws / worker - status - Worker状態ストリーミング
    - 1秒ごとにWorker状態を送信
    - JSON: {"worker_id": str, "status": str, "progress": float, "current_task": str}
 
-2. /ws/worker-logs - ログストリーミング
+2. /ws / worker - logs - ログストリーミング
    - リアルタイムログ配信
    - JSON: {"timestamp": str, "worker_id": str, "level": str, "message": str}
 
-3. /ws/metrics - パフォーマンスメトリクス
+3. /ws / metrics - パフォーマンスメトリクス
    - システムメトリクス送信
    - JSON: {"cpu_percent": float, "memory_percent": float, "active_workers": int}
 
@@ -53,9 +53,9 @@ Implement FastAPI WebSocket endpoints in apps/backend-api/main.py:
         "id": "task_2_react_websocket",
         "name": "React WebSocket Client",
         "description": "Implement useWebSocket hook and context provider",
-        "file": "../../apps/developer-studio/src/hooks/useWebSocket.ts",
+        "file": "../../apps / developer - studio / src / hooks / useWebSocket.ts",
         "prompt": """
-Create React WebSocket client in apps/developer-studio/src/hooks/useWebSocket.ts:
+Create React WebSocket client in apps / developer - studio / src / hooks / useWebSocket.ts:
 
 1. Custom hook: useWebSocket(url: string)
    - 自動再接続ロジック
@@ -80,12 +80,12 @@ Create React WebSocket client in apps/developer-studio/src/hooks/useWebSocket.ts
     {
         "id": "task_3_worker_list_api",
         "name": "Worker List API",
-        "description": "GET /api/workers/list",
-        "file": "../../apps/backend-api/routes/workers.py",
+        "description": "GET /api / workers / list",
+        "file": "../../apps / backend - api / routes / workers.py",
         "prompt": """
-Implement Worker List API in apps/backend-api/routes/workers.py:
+Implement Worker List API in apps / backend - api / routes / workers.py:
 
-エンドポイント: GET /api/workers/list
+エンドポイント: GET /api / workers / list
 
 実装内容:
 - 全Worker情報取得
@@ -105,12 +105,12 @@ Implement Worker List API in apps/backend-api/routes/workers.py:
     {
         "id": "task_4_worker_status_api",
         "name": "Worker Status API",
-        "description": "GET /api/workers/{id}/status",
-        "file": "../../apps/backend-api/routes/workers.py",
+        "description": "GET /api / workers/{id}/status",
+        "file": "../../apps / backend - api / routes / workers.py",
         "prompt": """
-Add Worker Status API to apps/backend-api/routes/workers.py:
+Add Worker Status API to apps / backend - api / routes / workers.py:
 
-エンドポイント: GET /api/workers/{id}/status
+エンドポイント: GET /api / workers/{id}/status
 
 実装内容:
 - 指定WorkerIDの詳細情報取得
@@ -124,18 +124,18 @@ Add Worker Status API to apps/backend-api/routes/workers.py:
 - Pytest (coverage ≥ 90%)
 - Excellence AI Standard 100%準拠
 
-既存のrouters/workers.pyに追加してください。
+既存のrouters / workers.pyに追加してください。
 """,
     },
     {
         "id": "task_5_worker_spawn_api",
         "name": "Worker Spawn API",
-        "description": "POST /api/workers/spawn",
-        "file": "../../apps/backend-api/routes/workers.py",
+        "description": "POST /api / workers / spawn",
+        "file": "../../apps / backend - api / routes / workers.py",
         "prompt": """
-Add Worker Spawn API to apps/backend-api/routes/workers.py:
+Add Worker Spawn API to apps / backend - api / routes / workers.py:
 
-エンドポイント: POST /api/workers/spawn
+エンドポイント: POST /api / workers / spawn
 
 実装内容:
 - 新規Worker起動
@@ -150,18 +150,18 @@ Add Worker Spawn API to apps/backend-api/routes/workers.py:
 - Pytest (coverage ≥ 90%)
 - Excellence AI Standard 100%準拠
 
-既存のrouters/workers.pyに追加してください。
+既存のrouters / workers.pyに追加してください。
 """,
     },
     {
         "id": "task_6_worker_stop_api",
         "name": "Worker Stop API",
-        "description": "POST /api/workers/{id}/stop",
-        "file": "../../apps/backend-api/routes/workers.py",
+        "description": "POST /api / workers/{id}/stop",
+        "file": "../../apps / backend - api / routes / workers.py",
         "prompt": """
-Add Worker Stop API to apps/backend-api/routes/workers.py:
+Add Worker Stop API to apps / backend - api / routes / workers.py:
 
-エンドポイント: POST /api/workers/{id}/stop
+エンドポイント: POST /api / workers/{id}/stop
 
 実装内容:
 - 指定Worker停止
@@ -176,21 +176,21 @@ Add Worker Stop API to apps/backend-api/routes/workers.py:
 - Pytest (coverage ≥ 90%)
 - Excellence AI Standard 100%準拠
 
-既存のrouters/workers.pyに追加してください。
+既存のrouters / workers.pyに追加してください。
 """,
     },
     {
         "id": "task_7_e2e_tests",
         "name": "E2E Tests",
         "description": "WebSocket + API integration tests",
-        "file": "../../apps/backend-api/tests/test_e2e_websocket_api.py",
+        "file": "../../apps / backend - api / tests / test_e2e_websocket_api.py",
         "prompt": """
-Create E2E tests in apps/backend-api/tests/test_e2e_websocket_api.py:
+Create E2E tests in apps / backend - api / tests / test_e2e_websocket_api.py:
 
 テスト内容:
 1. WebSocket接続テスト
 2. Worker起動→状態監視→停止のフルフロー
-3. 3-4 Worker同時実行テスト
+3. 3 - 4 Worker同時実行テスト
 4. エラーケーステスト
 
 品質要件:
@@ -211,8 +211,8 @@ def execute_task_with_claude(task: Dict) -> bool:
     logger.info(f"Description: {task['description']}")
 
     # Create task file
-    task_file = Path(f"/tmp/task_{task['id']}.md")
-    task_file.write_text(task["prompt"], encoding="utf-8")
+    task_file = Path(f"/tmp / task_{task['id']}.md")
+    task_file.write_text(task["prompt"], encoding="utf - 8")
 
     # Execute with Claude Code API (simulated - would use actual Claude API)
     # For now, just log the task
@@ -229,7 +229,7 @@ def execute_task_with_claude(task: Dict) -> bool:
 def main():
     """Main execution function"""
     logger.info("=" * 80)
-    logger.info("Simple Autonomous Executor - Week 1 Day 3-7")
+    logger.info("Simple Autonomous Executor - Week 1 Day 3 - 7")
     logger.info("NO USER CONFIRMATION REQUIRED")
     logger.info("=" * 80)
 
@@ -275,7 +275,7 @@ def main():
 
     # Save report
     report_file = log_dir / f"execution_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-    report_file.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+    report_file.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf - 8")
 
     logger.info("\n" + "=" * 80)
     logger.info("EXECUTION COMPLETED")

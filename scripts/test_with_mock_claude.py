@@ -5,7 +5,7 @@ Uses mock_claude_cli.py to simulate Claude CLI behavior.
 Tests the complete interactive flow without requiring actual Claude CLI.
 
 Usage:
-    python scripts/test_with_mock_claude.py
+    python scripts / test_with_mock_claude.py
 """
 
 import sys
@@ -39,20 +39,20 @@ class MockEnhancedInteractiveWorkerManager(EnhancedInteractiveWorkerManager):
 # Logger for testing
 class TestLogger:
     def log_worker_spawn(self, worker_id, task_name):
-        print(f"[LOG-SPAWN] {worker_id}: {task_name}")
+        print(f"[LOG - SPAWN] {worker_id}: {task_name}")
 
     def info(self, message, **kwargs):
-        print(f"[LOG-INFO] {message}")
+        print(f"[LOG - INFO] {message}")
         if kwargs:
             print(f"          {kwargs}")
 
     def warning(self, message, **kwargs):
-        print(f"[LOG-WARN] {message}")
+        print(f"[LOG - WARN] {message}")
         if kwargs:
             print(f"          {kwargs}")
 
     def error(self, message, **kwargs):
-        print(f"[LOG-ERROR] {message}")
+        print(f"[LOG - ERROR] {message}")
         if kwargs:
             print(f"           {kwargs}")
 
@@ -61,10 +61,10 @@ def user_approval_callback(confirmation: ConfirmationRequest) -> bool:
     """
     User approval callback for testing
 
-    Auto-approves file writes, asks user for other operations
+    Auto - approves file writes, asks user for other operations
     """
     print(f"\n{'='*60}")
-    print(f"USER APPROVAL CALLBACK")
+    print("USER APPROVAL CALLBACK")
     print(f"{'='*60}")
     print(f"Worker: {confirmation.worker_id}")
     print(f"Type: {confirmation.confirmation_type}")
@@ -72,28 +72,28 @@ def user_approval_callback(confirmation: ConfirmationRequest) -> bool:
     print(f"Details: {confirmation.details}")
     print(f"{'='*60}")
 
-    # Auto-approve file writes for testing
+    # Auto - approve file writes for testing
     if confirmation.confirmation_type.value == "file_write":
-        print("[AUTO-APPROVE] File write operation")
+        print("[AUTO - APPROVE] File write operation")
         return True
 
-    # Auto-approve file reads
+    # Auto - approve file reads
     if confirmation.confirmation_type.value == "file_read":
-        print("[AUTO-APPROVE] File read operation")
+        print("[AUTO - APPROVE] File read operation")
         return True
 
     # For command execution, approve safe commands
     if confirmation.confirmation_type.value == "command_execute":
         command = confirmation.details.get("command", "").lower()
         if "dir" in command or "ls" in command:
-            print("[AUTO-APPROVE] Safe list command")
+            print("[AUTO - APPROVE] Safe list command")
             return True
 
     # Ask user for everything else
-    response = input("\nApprove? (y/n): ").strip().lower()
+    response = input("\nApprove? (y / n): ").strip().lower()
     approved = response == "y"
 
-    print(f"[USER-DECISION] {'APPROVED' if approved else 'DENIED'}")
+    print(f"[USER - DECISION] {'APPROVED' if approved else 'DENIED'}")
 
     return approved
 
@@ -142,7 +142,7 @@ and save it to a file.
     print(" TEST RESULT")
     print("=" * 70)
     print(f"Success: {result.success}")
-    print(f"Duration: {result.duration:.2f}s" if result.duration else "Duration: N/A")
+    print(f"Duration: {result.duration:.2f}s" if result.duration else "Duration: N / A")
     print(f"Error: {result.error_message if result.error_message else 'None'}")
     print(f"\nOutput ({len(result.output)} chars):")
     print("-" * 70)
@@ -152,7 +152,7 @@ and save it to a file.
     if result.success:
         print("\n[PASS] Test completed successfully!")
         print("\nKey validations:")
-        print("  [OK] Worker spawned with pexpect/wexpect")
+        print("  [OK] Worker spawned with pexpect / wexpect")
         print("  [OK] Confirmation requests detected")
         print("  [OK] Responses sent to worker")
         print("  [OK] Worker completed normally")
@@ -175,7 +175,7 @@ def main():
     if sys.platform == "win32":
         print("Using: wexpect (Windows)")
     else:
-        print("Using: pexpect (Unix/Linux)")
+        print("Using: pexpect (Unix / Linux)")
 
     print("\n" + "-" * 70)
 

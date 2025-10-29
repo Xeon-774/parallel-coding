@@ -3,12 +3,12 @@
 Provides FastAPI endpoints for managing supervised Claude Code processes.
 
 Endpoints:
-    POST   /api/v1/supervisor/spawn       -> Spawn new supervisor
-    GET    /api/v1/supervisor/{id}        -> Get supervisor status
-    DELETE /api/v1/supervisor/{id}        -> Terminate supervisor
-    GET    /api/v1/supervisor             -> List active supervisors
-    POST   /api/v1/supervisor/{id}/respond-> Respond to confirmation
-    GET    /api/v1/supervisor/{id}/output -> Get buffered output
+    POST   /api / v1 / supervisor / spawn       -> Spawn new supervisor
+    GET    /api / v1 / supervisor/{id}        -> Get supervisor status
+    DELETE /api / v1 / supervisor/{id}        -> Terminate supervisor
+    GET    /api / v1 / supervisor             -> List active supervisors
+    POST   /api / v1 / supervisor/{id}/respond-> Respond to confirmation
+    GET    /api / v1 / supervisor/{id}/output -> Get buffered output
 
 All endpoints require an Authorization token and validate inputs via Pydantic.
 """
@@ -37,16 +37,16 @@ DEFAULT_TIMEOUT = 300
 
 # Authentication
 def _get_expected_token() -> str:
-    return os.environ.get("API_TOKEN", "dev-token")
+    return os.environ.get("API_TOKEN", "dev - token")
 
 
 def authenticate(request: Request) -> None:
     """Simple bearer token authentication dependency.
 
-    Raises 401 when the Authorization header is missing/invalid.
+    Raises 401 when the Authorization header is missing / invalid.
 
     Examples:
-        In tests, set header: Authorization: Bearer dev-token
+        In tests, set header: Authorization: Bearer dev - token
     """
 
     auth = request.headers.get("authorization") or request.headers.get("Authorization")
@@ -57,7 +57,7 @@ def authenticate(request: Request) -> None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized")
 
 
-# Request/Response models
+# Request / Response models
 class SpawnSupervisorRequest(BaseModel):
     """Request validation for spawning a supervisor process."""
 
@@ -110,14 +110,14 @@ class OutputResponse(BaseModel):
     next_offset: int
 
 
-# In-memory app state
+# In - memory app state
 _worker_manager: Optional[WorkerManager] = None
 
 
 def get_worker_manager() -> WorkerManager:
     """Singleton WorkerManager accessor for API layer.
 
-    Uses dependency injection-friendly factory; tests can monkeypatch this
+    Uses dependency injection - friendly factory; tests can monkeypatch this
     function to return a mocked manager.
     """
 
@@ -127,7 +127,7 @@ def get_worker_manager() -> WorkerManager:
     return _worker_manager
 
 
-router = APIRouter(prefix="/api/v1/supervisor", tags=["supervisor"])
+router = APIRouter(prefix="/api / v1 / supervisor", tags=["supervisor"])
 
 
 @router.post("/spawn", response_model=SpawnSupervisorResponse, status_code=status.HTTP_201_CREATED)

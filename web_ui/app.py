@@ -23,8 +23,8 @@ app = FastAPI(
 
 # グローバル設定
 WORKSPACE_ROOT = Path(os.getenv("ORCHESTRATOR_WORKSPACE", "./workspace"))
-LOGS_DIR = Path(os.getenv("ORCHESTRATOR_LOGS", "./workspace/logs"))
-SCREENSHOTS_DIR = Path(os.getenv("ORCHESTRATOR_SCREENSHOTS", "./workspace/screenshots"))
+LOGS_DIR = Path(os.getenv("ORCHESTRATOR_LOGS", "./workspace / logs"))
+SCREENSHOTS_DIR = Path(os.getenv("ORCHESTRATOR_SCREENSHOTS", "./workspace / screenshots"))
 
 
 # WebSocket接続管理
@@ -57,16 +57,16 @@ manager = ConnectionManager()
 
 
 # Static files
-app.mount("/static", StaticFiles(directory="web_ui/static"), name="static")
+app.mount("/static", StaticFiles(directory="web_ui / static"), name="static")
 
 
 @app.get("/")
 async def index() -> FileResponse:
     """ダッシュボードのトップページ"""
-    return FileResponse("web_ui/static/index.html")
+    return FileResponse("web_ui / static / index.html")
 
 
-@app.get("/api/status")
+@app.get("/api / status")
 async def get_status() -> JSONResponse:
     """システム全体の状態を取得"""
     try:
@@ -83,13 +83,13 @@ async def get_status() -> JSONResponse:
                 # タスク内容を読み込み
                 task_content = ""
                 if task_file.exists():
-                    with open(task_file, "r", encoding="utf-8") as f:
+                    with open(task_file, "r", encoding="utf - 8") as f:
                         task_content = f.read().strip()[:100]  # 最初の100文字
 
                 # 出力の最後の数行を読み込み
                 recent_output = ""
                 if output_file.exists():
-                    with open(output_file, "r", encoding="utf-8") as f:
+                    with open(output_file, "r", encoding="utf - 8") as f:
                         lines = f.readlines()
                         recent_output = "".join(lines[-5:]) if lines else ""
 
@@ -137,7 +137,7 @@ async def get_status() -> JSONResponse:
         return JSONResponse({"error": str(e)}, status_code=500)
 
 
-@app.get("/api/logs/{log_file}")
+@app.get("/api / logs/{log_file}")
 async def get_logs(log_file: str, lines: int = 100) -> JSONResponse:
     """ログファイルの内容を取得"""
     try:
@@ -160,7 +160,7 @@ async def get_logs(log_file: str, lines: int = 100) -> JSONResponse:
         if not log_path.exists():
             return JSONResponse({"error": "Log file not found"}, status_code=404)
 
-        with open(log_path, "r", encoding="utf-8") as f:
+        with open(log_path, "r", encoding="utf - 8") as f:
             all_lines = f.readlines()
             recent_lines = all_lines[-lines:] if len(all_lines) > lines else all_lines
 
@@ -180,7 +180,7 @@ async def get_logs(log_file: str, lines: int = 100) -> JSONResponse:
         return JSONResponse({"error": str(e)}, status_code=500)
 
 
-@app.get("/api/screenshots/{screenshot_file}", response_model=None)
+@app.get("/api / screenshots/{screenshot_file}", response_model=None)
 async def get_screenshot(screenshot_file: str) -> FileResponse | JSONResponse:
     """スクリーンショット画像を取得"""
     # Security: Prevent path traversal attacks
@@ -203,7 +203,7 @@ async def get_screenshot(screenshot_file: str) -> FileResponse | JSONResponse:
     return FileResponse(screenshot_path)
 
 
-@app.get("/api/worker/{worker_id}/output")
+@app.get("/api / worker/{worker_id}/output")
 async def get_worker_output(worker_id: str, lines: int = 50) -> JSONResponse:
     """ワーカーの出力を取得"""
     try:
@@ -231,7 +231,7 @@ async def get_worker_output(worker_id: str, lines: int = 50) -> JSONResponse:
         if not output_file.exists():
             return JSONResponse({"error": "Worker output not found"}, status_code=404)
 
-        with open(output_file, "r", encoding="utf-8") as f:
+        with open(output_file, "r", encoding="utf - 8") as f:
             all_lines = f.readlines()
             recent_lines = all_lines[-lines:] if len(all_lines) > lines else all_lines
 
@@ -264,7 +264,7 @@ def start_server(host: str = "127.0.0.1", port: int = 8000) -> None:
     """Webサーバーを起動"""
     print("=" * 62)
     print("  Claude Orchestrator Dashboard v10.0")
-    print("  Real-time AI Parallel Execution Dashboard")
+    print("  Real - time AI Parallel Execution Dashboard")
     print("=" * 62)
     print()
     print(f"Dashboard URL: http://{host}:{port}")

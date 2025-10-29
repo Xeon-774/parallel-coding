@@ -29,7 +29,7 @@ def test_dialogue_logging():
 
     # Setup
     config = OrchestratorConfig()
-    config.workspace_root = r"D:\user\ai_coding\AI_Investor\tools\parallel-coding\test_workspace"
+    config.workspace_root = r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\test_workspace"
 
     # Create workspace
     workspace = Path(config.workspace_root)
@@ -42,7 +42,7 @@ def test_dialogue_logging():
     manager = WorkerManager(
         config=config,
         logger=logger,
-        user_approval_callback=lambda req: True,  # Auto-approve for test
+        user_approval_callback=lambda req: True,  # Auto - approve for test
     )
 
     # Create simple task
@@ -61,10 +61,10 @@ def test_dialogue_logging():
         print("\n❌ Failed to spawn worker")
         return False
 
-    print(f"\n✓ Worker spawned successfully")
+    print("\n✓ Worker spawned successfully")
 
     # Run interactive session
-    print(f"\n✓ Running interactive session...")
+    print("\n✓ Running interactive session...")
     result = manager.run_interactive_session("worker_test_001", max_iterations=10)
 
     # Analyze results

@@ -5,7 +5,7 @@ This script reviews the Week 2 design documents (OpenAPI spec, State Machine,
 Database Schema) to validate architecture, feasibility, and security.
 
 Usage:
-    python scripts/review_week2_design.py
+    python scripts / review_week2_design.py
 """
 
 import asyncio
@@ -274,9 +274,9 @@ async def main() -> None:
 
     # Ask user confirmation
     print(f"⏱️  推定実行時間: {total_estimated_minutes:.1f}分")
-    print(f"このレビューを実行しますか？ (y/n): ", end="")
-    # Auto-proceed for now (in production, use input())
-    print("y (auto-proceed)")
+    print("このレビューを実行しますか？ (y / n): ", end="")
+    # Auto - proceed for now (in production, use input())
+    print("y (auto - proceed)")
     print()
 
     try:

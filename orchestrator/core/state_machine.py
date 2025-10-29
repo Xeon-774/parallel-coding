@@ -2,7 +2,7 @@
 State machine module for worker and job lifecycle management.
 
 Provides explicit state transition validation and audit trail logging.
-Uses simple Enum-based approach for clarity and maintainability.
+Uses simple Enum - based approach for clarity and maintainability.
 
 Security:
 - SQL parameterization via SQLAlchemy ORM
@@ -135,7 +135,7 @@ class WorkerStateMachine:
     Worker state machine with transition validation.
 
     Manages worker lifecycle states with explicit validation and
-    audit trail logging. Uses simple Enum-based approach.
+    audit trail logging. Uses simple Enum - based approach.
 
     Example:
         >>> sm = WorkerStateMachine(db_session)
@@ -322,7 +322,7 @@ class JobStateMachine:
         Transition job to new state with validation.
 
         Validates transition, updates job status, and logs to audit trail.
-        Also updates started_at/completed_at timestamps as appropriate.
+        Also updates started_at / completed_at timestamps as appropriate.
 
         Args:
             job_id: Job identifier

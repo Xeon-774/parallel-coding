@@ -4,7 +4,7 @@ FastAPI Application for Parallel AI Coding Orchestrator
 This is the main entry point for the orchestrator's REST and WebSocket API.
 
 Features:
-- Real-time dialogue streaming via WebSocket
+- Real - time dialogue streaming via WebSocket
 - Worker status monitoring
 - Metrics collection and reporting
 - CORS support for frontend development
@@ -53,12 +53,12 @@ tags_metadata = [
         **Worker Supervision and Control**
 
         Monitor and manage Claude Code worker instances. Control worker lifecycle,
-        retrieve real-time status, and access aggregate metrics.
+        retrieve real - time status, and access aggregate metrics.
 
         **Endpoints:**
         - List workers with filtering
         - Get worker details
-        - Pause/resume/terminate workers
+        - Pause / resume / terminate workers
         - Retrieve system metrics
         """,
     },
@@ -71,13 +71,13 @@ tags_metadata = [
         from submission through completion with state machine validation.
 
         **Job States:**
-        SUBMITTED → PENDING → RUNNING → COMPLETED/FAILED/CANCELED
+        SUBMITTED → PENDING → RUNNING → COMPLETED / FAILED / CANCELED
 
         **Features:**
         - Job submission with hierarchy support
         - Job status tracking
         - Job cancellation
-        - Parent-child job relationships
+        - Parent - child job relationships
         """,
     },
     {
@@ -88,9 +88,9 @@ tags_metadata = [
         Allocate and manage compute resources across hierarchy depth levels.
         Enforce quotas and track resource usage for optimal job execution.
 
-        **Depth-Based Quotas:**
+        **Depth - Based Quotas:**
         - Depth 0: Root jobs (highest quota)
-        - Depth 1-5: Nested jobs (decreasing quotas)
+        - Depth 1 - 5: Nested jobs (decreasing quotas)
 
         **Features:**
         - Resource quota queries
@@ -107,13 +107,13 @@ app = FastAPI(
     description="""
 ## Week 2 MVP - Manager AI Integration API
 
-Enterprise-grade REST API for orchestrating and monitoring parallel AI coding workflows.
+Enterprise - grade REST API for orchestrating and monitoring parallel AI coding workflows.
 
 ### Key Features
 - **Supervisor API**: Monitor and control Claude Code worker instances
-- **Resource Management**: Hierarchical resource allocation with depth-based quotas
+- **Resource Management**: Hierarchical resource allocation with depth - based quotas
 - **Job Orchestration**: Manage job lifecycle with state machine validation
-- **Authentication**: JWT-based authentication with scope-based authorization
+- **Authentication**: JWT - based authentication with scope - based authorization
 
 ### Architecture
 - **Database**: SQLite (development) / PostgreSQL (production)
@@ -122,21 +122,21 @@ Enterprise-grade REST API for orchestrating and monitoring parallel AI coding wo
 - **Testing**: 44 integration tests with 29% code coverage
 
 ### Quick Start
-1. Generate test token: Use `/api/auth/token` endpoint
+1. Generate test token: Use `/api / auth / token` endpoint
 2. Access protected endpoints with `Authorization: Bearer <token>` header
 3. Explore interactive docs at `/docs` or `/redoc`
 
 ### Support
-- **GitHub**: [parallel-coding](https://github.com/your-org/parallel-coding)
-- **Documentation**: [Wiki](https://github.com/your-org/parallel-coding/wiki)
+- **GitHub**: [parallel - coding](https://github.com / your - org / parallel - coding)
+- **Documentation**: [Wiki](https://github.com / your - org / parallel - coding / wiki)
 """,
-    version="2.0.0-week2-mvp",
+    version="2.0.0 - week2 - mvp",
     docs_url="/docs",
     redoc_url="/redoc",
     openapi_tags=tags_metadata,
     contact={
         "name": "Parallel AI Development Team",
-        "email": "dev@parallel-ai.example.com",
+        "email": "dev@parallel - ai.example.com",
     },
     license_info={
         "name": "MIT",
@@ -182,7 +182,7 @@ async def root():
         "message": "Parallel AI Coding Orchestrator API",
         "version": "1.0.0",
         "endpoints": {
-            "dialogue_ws": "/ws/dialogue/{worker_id}",
+            "dialogue_ws": "/ws / dialogue/{worker_id}",
             "health": "/health",
             "docs": "/docs",
         },
@@ -204,7 +204,7 @@ async def health_check():
     }
 
 
-@app.get("/api/v1/workers")
+@app.get("/api / v1 / workers")
 async def list_workers():
     """
     List all available workers.
@@ -233,7 +233,7 @@ async def list_workers():
     return {"workers": workers, "count": len(workers)}
 
 
-@app.get("/api/v1/workers/{worker_id}")
+@app.get("/api / v1 / workers/{worker_id}")
 async def get_worker_info(worker_id: str):
     """
     Get information about a specific worker.
@@ -267,12 +267,12 @@ async def get_worker_info(worker_id: str):
     }
 
 
-@app.websocket("/ws/dialogue/{worker_id}")
+@app.websocket("/ws / dialogue/{worker_id}")
 async def websocket_dialogue_endpoint(websocket: WebSocket, worker_id: str):
     """
     WebSocket endpoint for streaming worker dialogue.
 
-    This endpoint streams dialogue entries in real-time from the specified
+    This endpoint streams dialogue entries in real - time from the specified
     worker's dialogue_transcript.jsonl file.
 
     Args:
@@ -294,7 +294,7 @@ async def websocket_dialogue_endpoint(websocket: WebSocket, worker_id: str):
 
     Example:
         ```javascript
-        const ws = new WebSocket('ws://localhost:8000/ws/dialogue/worker_001');
+        const ws = new WebSocket('ws://localhost:8000 / ws / dialogue / worker_001');
         ws.onmessage = (event) => {
             const message = JSON.parse(event.data);
             console.log(message.type, message.data);
@@ -312,14 +312,14 @@ async def websocket_dialogue_endpoint(websocket: WebSocket, worker_id: str):
         raise
 
 
-@app.websocket("/ws/terminal/{worker_id}")
+@app.websocket("/ws / terminal/{worker_id}")
 async def websocket_terminal_endpoint(
     websocket: WebSocket, worker_id: str, terminal_type: str = "worker"
 ):
     """
     WebSocket endpoint for streaming raw terminal output.
 
-    This endpoint streams raw terminal output lines in real-time from the
+    This endpoint streams raw terminal output lines in real - time from the
     specified worker's terminal log file (worker or orchestrator).
 
     Args:
@@ -339,10 +339,10 @@ async def websocket_terminal_endpoint(
     Example:
         ```javascript
         // Worker terminal
-        const ws = new WebSocket('ws://localhost:8000/ws/terminal/worker_001?terminal_type=worker');
+        const ws = new WebSocket('ws://localhost:8000 / ws / terminal / worker_001?terminal_type=worker');
 
         // Orchestrator terminal
-        const ws2 = new WebSocket('ws://localhost:8000/ws/terminal/worker_001?terminal_type=orchestrator');
+        const ws2 = new WebSocket('ws://localhost:8000 / ws / terminal / worker_001?terminal_type=orchestrator');
 
         ws.onmessage = (event) => {
             const message = JSON.parse(event.data);
@@ -414,7 +414,7 @@ async def startup_event():
 # Added directly to main.py due to router registration issues
 
 
-@app.get("/api/v1/ecosystem/health")
+@app.get("/api / v1 / ecosystem / health")
 async def get_ecosystem_health():
     """Get comprehensive health status for entire ecosystem"""
     import time
@@ -443,7 +443,7 @@ async def get_ecosystem_health():
     }
 
 
-@app.get("/api/v1/ecosystem/metrics/summary")
+@app.get("/api / v1 / ecosystem / metrics / summary")
 async def get_ecosystem_metrics_summary():
     """Get aggregate performance metrics across all apps"""
     import random
@@ -471,7 +471,7 @@ async def get_ecosystem_metrics_summary():
     }
 
 
-@app.get("/api/v1/ecosystem/status")
+@app.get("/api / v1 / ecosystem / status")
 async def get_ecosystem_status():
     """Get basic status of ecosystem API"""
     import time
@@ -515,9 +515,9 @@ class ActivityBroadcaster:
 activity_broadcaster = ActivityBroadcaster()
 
 
-@app.websocket("/api/v1/ecosystem/activity")
+@app.websocket("/api / v1 / ecosystem / activity")
 async def websocket_ecosystem_activity(websocket: WebSocket):
-    """WebSocket endpoint for real-time activity feed"""
+    """WebSocket endpoint for real - time activity feed"""
     from datetime import datetime
 
     await activity_broadcaster.connect(websocket)

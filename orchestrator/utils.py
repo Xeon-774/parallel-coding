@@ -1,7 +1,7 @@
 """
 DEPRECATED: This module is deprecated. Use orchestrator.utils package instead.
 
-This file provides backward compatibility by re-exporting from the new location.
+This file provides backward compatibility by re - exporting from the new location.
 Will be removed in v12.0.
 
 Migration guide:

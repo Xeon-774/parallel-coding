@@ -1,7 +1,7 @@
 """WebSocket endpoint for hierarchical event streaming.
 
 Provides a connection manager with simple depth filtering, heartbeat, and
-rate limiting per connection. Events are broadcast via a lightweight pub/sub
+rate limiting per connection. Events are broadcast via a lightweight pub / sub
 in this module suitable for unit testing without external brokers.
 """
 
@@ -48,7 +48,7 @@ class _RateLimiter:
 
 
 class EventBus:
-    """Simple in-process pub/sub for events."""
+    """Simple in - process pub / sub for events."""
 
     def __init__(self) -> None:
         self._connections: Set[_Conn] = set()
@@ -97,7 +97,7 @@ class EventBus:
 bus = EventBus()
 
 
-@router.websocket("/ws/recursion")
+@router.websocket("/ws / recursion")
 async def ws_recursion(ws: WebSocket) -> None:
     # Parse query params for depth filter, defaults wide open
     qp = ws.query_params

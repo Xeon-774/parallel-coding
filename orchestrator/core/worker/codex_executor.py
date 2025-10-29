@@ -1,21 +1,21 @@
 """
-Codex CLI Executor (subprocess-based, NOT pexpect)
+Codex CLI Executor (subprocess - based, NOT pexpect)
 
-Production-grade executor for Codex CLI using subprocess.Popen with JSONL parsing.
+Production - grade executor for Codex CLI using subprocess.Popen with JSONL parsing.
 This implementation is based on 180+ minutes of investigation that determined:
 - Codex CLI works perfectly with direct subprocess execution
-- pexpect/wexpect spawn is incompatible with Codex's stdout/JSONL output
-- --json flag is REQUIRED for proper non-interactive execution
+- pexpect / wexpect spawn is incompatible with Codex's stdout / JSONL output
+- --json flag is REQUIRED for proper non - interactive execution
 
 Excellence AI Standard: 100% compliance
 - Type safety: NO 'any', explicit Pydantic models
-- Error handling: All subprocess operations wrapped in try-catch
+- Error handling: All subprocess operations wrapped in try - catch
 - Tests: Comprehensive test suite (≥90% coverage)
 - Documentation: Complete docstrings with examples
 - Code quality: Functions ≤50 lines, complexity ≤10
 
 Author: Claude (Anthropic)
-Date: 2025-10-27
+Date: 2025 - 10 - 27
 """
 
 from __future__ import annotations
@@ -95,7 +95,7 @@ class TurnCompletedEvent(BaseModel):
 
 
 class UnknownEvent(BaseModel):
-    """Unknown/unhandled event type"""
+    """Unknown / unhandled event type"""
 
     type: str
     raw_data: dict[str, Any] = Field(default_factory=dict)
@@ -170,16 +170,16 @@ class CodexExecutionResult:
 
 class CodexExecutor:
     """
-    Subprocess-based Codex CLI executor with JSONL event parsing.
+    Subprocess - based Codex CLI executor with JSONL event parsing.
 
     This executor uses subprocess.Popen (NOT pexpect) because investigation
-    showed that Codex CLI's stdout/JSONL output is incompatible with pexpect's
-    pseudo-TTY capture mechanism.
+    showed that Codex CLI's stdout / JSONL output is incompatible with pexpect's
+    pseudo - TTY capture mechanism.
 
     Example:
         >>> executor = CodexExecutor(
-        ...     wsl_distribution="Ubuntu-24.04",
-        ...     nvm_path="/home/user/.nvm/versions/node/v22.11.0/bin",
+        ...     wsl_distribution="Ubuntu - 24.04",
+        ...     nvm_path="/home / user/.nvm / versions / node / v22.11.0 / bin",
         ...     codex_command="codex"
         ... )
         >>> result = executor.execute(
@@ -193,9 +193,9 @@ class CodexExecutor:
 
     # Constants
     DEFAULT_TIMEOUT: Final[int] = 300  # 5 minutes
-    DEFAULT_MODEL: Final[str] = "gpt-5"
+    DEFAULT_MODEL: Final[str] = "gpt - 5"
     REQUIRED_FLAGS: Final[str] = (
-        "--json --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check"
+        "--json --dangerously - bypass - approvals - and - sandbox --skip - git - repo - check"
     )
 
     def __init__(
@@ -211,7 +211,7 @@ class CodexExecutor:
         Initialize Codex executor.
 
         Args:
-            wsl_distribution: WSL distribution name (e.g., "Ubuntu-24.04")
+            wsl_distribution: WSL distribution name (e.g., "Ubuntu - 24.04")
             nvm_path: Path to nvm bin directory with codex CLI
             codex_command: Codex CLI command name (usually "codex")
             execution_mode: Execution mode ("wsl", "windows", or "unix")
@@ -220,8 +220,8 @@ class CodexExecutor:
 
         Example:
             >>> executor = CodexExecutor(
-            ...     wsl_distribution="Ubuntu-24.04",
-            ...     nvm_path="/home/user/.nvm/versions/node/v22.11.0/bin",
+            ...     wsl_distribution="Ubuntu - 24.04",
+            ...     nvm_path="/home / user/.nvm / versions / node / v22.11.0 / bin",
             ...     codex_command="codex"
             ... )
         """
@@ -240,18 +240,18 @@ class CodexExecutor:
             windows_path: Windows path (e.g., "D:\\user\\file.txt")
 
         Returns:
-            WSL path (e.g., "/mnt/d/user/file.txt")
+            WSL path (e.g., "/mnt / d/user / file.txt")
 
         Example:
             >>> executor._convert_to_wsl_path("D:\\user\\file.txt")
-            '/mnt/d/user/file.txt'
+            '/mnt / d/user / file.txt'
         """
         import re
 
         # Replace backslashes with forward slashes
         path = windows_path.replace("\\", "/")
-        # Convert drive letter (D:/ -> /mnt/d/)
-        path = re.sub(r"^([A-Za-z]):", lambda m: f"/mnt/{m.group(1).lower()}", path)
+        # Convert drive letter (D:/ -> /mnt / d/)
+        path = re.sub(r"^([A - Za - z]):", lambda m: f"/mnt/{m.group(1).lower()}", path)
         return path
 
     def _build_command(self, task_file: Path, model: str = DEFAULT_MODEL) -> str:
@@ -263,14 +263,14 @@ class CodexExecutor:
 
         Args:
             task_file: Path to task file
-            model: Model to use (default: gpt-5)
+            model: Model to use (default: gpt - 5)
 
         Returns:
             Complete command string for subprocess execution
 
         Example:
             >>> executor._build_command(Path("task.txt"))
-            'wsl -d Ubuntu-24.04 bash -c "export PATH=...; codex exec --json ..."'
+            'wsl -d Ubuntu - 24.04 bash -c "export PATH=...; codex exec --json ..."'
         """
         flags = f"{self.REQUIRED_FLAGS} --model {model}"
 
@@ -280,7 +280,7 @@ class CodexExecutor:
             # Use PATH environment variable to find codex
             return (
                 f"wsl -d {self.wsl_distribution} bash -c "
-                f"\"export PATH='{self.nvm_path}:$PATH' && "
+                "\"export PATH='{self.nvm_path}:$PATH' && "
                 f"{self.codex_command} exec {flags} < '{wsl_task_file}'\""
             )
         elif self.execution_mode == "windows":
@@ -289,13 +289,13 @@ class CodexExecutor:
                 # Use Git Bash on Windows
                 return (
                     f'"{self.git_bash_path}" -c '
-                    f"\"{self.windows_codex_path} exec {flags} < '{task_file.absolute()}'\""
+                    "\"{self.windows_codex_path} exec {flags} < '{task_file.absolute()}'\""
                 )
             else:
                 # Direct Windows command (not recommended - may fail)
                 return f'cmd /c "{self.windows_codex_path} exec {flags} < "{task_file.absolute()}""'
         else:
-            # Native Linux/Unix
+            # Native Linux / Unix
             return f"{self.codex_command} exec {flags} < {task_file.absolute()}"
 
     def _parse_jsonl_event(self, line: str) -> Optional[CodexEvent]:
@@ -333,14 +333,14 @@ class CodexExecutor:
                 return UnknownEvent(type=event_type, raw_data=data)
 
         except json.JSONDecodeError as e:
-            # Not JSON - skip (might be non-JSON output like banners)
-            # Log decode error for debugging (UTF-8 encoding issues)
+            # Not JSON - skip (might be non - JSON output like banners)
+            # Log decode error for debugging (UTF - 8 encoding issues)
             return None
         except UnicodeDecodeError as e:
             # Encoding error - log and skip
             return UnknownEvent(
                 type="encoding_error",
-                raw_data={"error": f"UTF-8 decode error: {str(e)}", "line_repr": repr(line)},
+                raw_data={"error": f"UTF - 8 decode error: {str(e)}", "line_repr": repr(line)},
             )
         except Exception as e:
             # Parse error - create unknown event
@@ -358,8 +358,8 @@ class CodexExecutor:
 
         This method:
         1. Builds the Codex CLI command
-        2. Spawns subprocess with stdout/stderr capture
-        3. Reads JSONL output line-by-line
+        2. Spawns subprocess with stdout / stderr capture
+        3. Reads JSONL output line - by - line
         4. Parses events with Pydantic models
         5. Tracks file changes
         6. Returns comprehensive result
@@ -368,7 +368,7 @@ class CodexExecutor:
             task_file: Path to task file
             workspace_dir: Working directory for execution
             timeout: Execution timeout in seconds (default: 300)
-            model: Model to use (default: gpt-5)
+            model: Model to use (default: gpt - 5)
 
         Returns:
             CodexExecutionResult with status, events, and file changes
@@ -408,20 +408,20 @@ class CodexExecutor:
 
         try:
             # Execute subprocess (Excellence Standard: Error handling for all subprocess ops)
-            # Force UTF-8 encoding to prevent cp932 codec errors on Windows
+            # Force UTF - 8 encoding to prevent cp932 codec errors on Windows
             process = subprocess.Popen(
                 cmd,
                 shell=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
-                encoding="utf-8",
+                encoding="utf - 8",
                 errors="replace",  # Replace invalid characters instead of raising
                 bufsize=1,  # Line buffering
                 cwd=str(workspace_dir),
             )
 
-            # Read stdout line-by-line with timeout
+            # Read stdout line - by - line with timeout
             assert process.stdout is not None  # Type narrowing
             for line in iter(process.stdout.readline, ""):
                 if not line:
@@ -434,7 +434,7 @@ class CodexExecutor:
                 if event:
                     events.append(event)
 
-                    # Track file changes (top-level)
+                    # Track file changes (top - level)
                     if isinstance(event, FileChangeEvent):
                         file_changes.extend(event.changes)
 
@@ -483,7 +483,7 @@ class CodexExecutor:
                 error_message = None
             else:
                 status = ExecutionStatus.FAILED
-                error_message = f"Non-zero exit code: {exit_code}"
+                error_message = f"Non - zero exit code: {exit_code}"
 
             return CodexExecutionResult(
                 status=status,
@@ -573,8 +573,8 @@ def create_codex_executor_from_config(config: Any) -> CodexExecutor:
 if __name__ == "__main__":
     # Example: Execute a simple task
     executor = CodexExecutor(
-        wsl_distribution="Ubuntu-24.04",
-        nvm_path="/home/chemi/.local/bin:/home/chemi/.nvm/versions/node/v22.21.0/bin",
+        wsl_distribution="Ubuntu - 24.04",
+        nvm_path="/home / chemi/.local / bin:/home / chemi/.nvm / versions / node / v22.21.0 / bin",
         codex_command="codex",
     )
 

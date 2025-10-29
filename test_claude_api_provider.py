@@ -38,14 +38,14 @@ async def test_claude_api_provider():
             api_key=api_key, workspace_root="./test_workspace", timeout_seconds=120, max_tokens=2048
         )
 
-        print(f"✓ Configuration created")
+        print("✓ Configuration created")
         print(f"  Model: {config.model}")
         print(f"  Workspace: {config.workspace_root}")
         print(f"  Timeout: {config.timeout_seconds}s\n")
 
         # Create provider
         provider = ClaudeAPIProvider(config)
-        print(f"✓ Provider initialized\n")
+        print("✓ Provider initialized\n")
 
         # Test execution
         print("Executing test task...")

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 対話型Claude UI + オーケストレーターによる自動制御
 
@@ -16,12 +16,12 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-# UTF-8出力設定
+# UTF - 8出力設定
 if sys.platform == "win32":
     import codecs
 
-    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
-    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
+    sys.stdout = codecs.getwriter("utf - 8")(sys.stdout.buffer, "replace")
+    sys.stderr = codecs.getwriter("utf - 8")(sys.stderr.buffer, "replace")
 
 
 def create_interactive_worker_script(
@@ -45,12 +45,12 @@ def create_interactive_worker_script(
     output_file = worker_dir / "output.txt"
 
     # 初期状態
-    status_file.write_text("READY", encoding="utf-8")
+    status_file.write_text("READY", encoding="utf - 8")
 
     # PowerShellスクリプト（対話型Claude CLIを制御）
     ps_script = worker_dir / "worker_controller.ps1"
 
-    ps_content = f"""
+    ps_content = """
 # Worker {worker_id} Controller
 $WorkerID = {worker_id}
 $WorkerName = "{task_name}"
@@ -58,26 +58,26 @@ $CommandFile = "{command_file}"
 $StatusFile = "{status_file}"
 $OutputFile = "{output_file}"
 
-Write-Host "================================================================================" -ForegroundColor Cyan
-Write-Host "Worker $WorkerID`: $WorkerName" -ForegroundColor Yellow
-Write-Host "================================================================================" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "[STATUS] READY - オーケストレーターからの指示を待機中..." -ForegroundColor Green
-Write-Host ""
-Write-Host "このウィンドウで対話型Claude AIが動作します" -ForegroundColor White
-Write-Host "オーケストレーターが自動的にコマンドを送信します" -ForegroundColor White
-Write-Host ""
-Write-Host "-------------------------------------------------------------------------------" -ForegroundColor Gray
+Write - Host "================================================================================" -ForegroundColor Cyan
+Write - Host "Worker $WorkerID`: $WorkerName" -ForegroundColor Yellow
+Write - Host "================================================================================" -ForegroundColor Cyan
+Write - Host ""
+Write - Host "[STATUS] READY - オーケストレーターからの指示を待機中..." -ForegroundColor Green
+Write - Host ""
+Write - Host "このウィンドウで対話型Claude AIが動作します" -ForegroundColor White
+Write - Host "オーケストレーターが自動的にコマンドを送信します" -ForegroundColor White
+Write - Host ""
+Write - Host "-------------------------------------------------------------------------------" -ForegroundColor Gray
 
 # Claude CLIのパスを設定
 $env:CLAUDE_CODE_GIT_BASH_PATH = "{git_bash_path}"
 
 # 対話型Claudeを起動（バックグラウンドプロセス）
-$claudeProcess = Start-Process -FilePath "claude" -NoNewWindow -PassThru -RedirectStandardInput $CommandFile -RedirectStandardOutput $OutputFile -RedirectStandardError $OutputFile
+$claudeProcess = Start - Process -FilePath "claude" -NoNewWindow -PassThru -RedirectStandardInput $CommandFile -RedirectStandardOutput $OutputFile -RedirectStandardError $OutputFile
 
-Write-Host ""
-Write-Host "[STARTED] Claude AI起動完了 (PID: $($claudeProcess.Id))" -ForegroundColor Green
-Write-Host ""
+Write - Host ""
+Write - Host "[STARTED] Claude AI起動完了 (PID: $($claudeProcess.Id))" -ForegroundColor Green
+Write - Host ""
 
 # オーケストレーターからのコマンドを待つ
 $pollInterval = 1  # 1秒ごとにチェック
@@ -85,75 +85,75 @@ $timeout = 120  # 最大2分
 $elapsed = 0
 
 while ($elapsed -lt $timeout) {{
-    if (Test-Path $CommandFile) {{
-        $command = Get-Content $CommandFile -Raw -Encoding UTF8
+    if (Test - Path $CommandFile) {{
+        $command = Get - Content $CommandFile -Raw -Encoding UTF8
 
         if ($command -and $command.Trim() -ne "") {{
-            Write-Host ""
-            Write-Host "================================================================================" -ForegroundColor Cyan
-            Write-Host "[ORCHESTRATOR] 新しいタスクを受信しました" -ForegroundColor Yellow
-            Write-Host "================================================================================" -ForegroundColor Cyan
-            Write-Host ""
-            Write-Host "タスク内容:" -ForegroundColor White
-            Write-Host $command -ForegroundColor Gray
-            Write-Host ""
-            Write-Host "-------------------------------------------------------------------------------" -ForegroundColor Gray
-            Write-Host "[Claude AI] 実行中..." -ForegroundColor Yellow
-            Write-Host ""
+            Write - Host ""
+            Write - Host "================================================================================" -ForegroundColor Cyan
+            Write - Host "[ORCHESTRATOR] 新しいタスクを受信しました" -ForegroundColor Yellow
+            Write - Host "================================================================================" -ForegroundColor Cyan
+            Write - Host ""
+            Write - Host "タスク内容:" -ForegroundColor White
+            Write - Host $command -ForegroundColor Gray
+            Write - Host ""
+            Write - Host "-------------------------------------------------------------------------------" -ForegroundColor Gray
+            Write - Host "[Claude AI] 実行中..." -ForegroundColor Yellow
+            Write - Host ""
 
             # ステータス更新
-            Set-Content -Path $StatusFile -Value "PROCESSING" -Encoding UTF8
+            Set - Content -Path $StatusFile -Value "PROCESSING" -Encoding UTF8
 
             # Claudeに送信（標準入力経由）
-            $command | Out-File -FilePath $CommandFile -Encoding UTF8 -NoNewline
+            $command | Out - File -FilePath $CommandFile -Encoding UTF8 -NoNewline
 
             # 処理完了を待つ
-            Start-Sleep -Seconds 5
+            Start - Sleep -Seconds 5
 
             # 出力を表示
-            if (Test-Path $OutputFile) {{
-                $output = Get-Content $OutputFile -Raw -Encoding UTF8
-                Write-Host ""
-                Write-Host "-------------------------------------------------------------------------------" -ForegroundColor Gray
-                Write-Host "[Claude AI] 応答:" -ForegroundColor Green
-                Write-Host ""
-                Write-Host $output -ForegroundColor White
-                Write-Host ""
-                Write-Host "================================================================================" -ForegroundColor Cyan
+            if (Test - Path $OutputFile) {{
+                $output = Get - Content $OutputFile -Raw -Encoding UTF8
+                Write - Host ""
+                Write - Host "-------------------------------------------------------------------------------" -ForegroundColor Gray
+                Write - Host "[Claude AI] 応答:" -ForegroundColor Green
+                Write - Host ""
+                Write - Host $output -ForegroundColor White
+                Write - Host ""
+                Write - Host "================================================================================" -ForegroundColor Cyan
             }}
 
             # ステータス更新
-            Set-Content -Path $StatusFile -Value "COMPLETE" -Encoding UTF8
+            Set - Content -Path $StatusFile -Value "COMPLETE" -Encoding UTF8
 
-            Write-Host ""
-            Write-Host "[COMPLETE] タスク完了" -ForegroundColor Green
-            Write-Host ""
+            Write - Host ""
+            Write - Host "[COMPLETE] タスク完了" -ForegroundColor Green
+            Write - Host ""
 
             break
         }}
     }}
 
-    Start-Sleep -Seconds $pollInterval
+    Start - Sleep -Seconds $pollInterval
     $elapsed += $pollInterval
 }}
 
 if ($elapsed -ge $timeout) {{
-    Write-Host ""
-    Write-Host "[TIMEOUT] タイムアウト - コマンドを受信しませんでした" -ForegroundColor Red
-    Set-Content -Path $StatusFile -Value "TIMEOUT" -Encoding UTF8
+    Write - Host ""
+    Write - Host "[TIMEOUT] タイムアウト - コマンドを受信しませんでした" -ForegroundColor Red
+    Set - Content -Path $StatusFile -Value "TIMEOUT" -Encoding UTF8
 }}
 
-Write-Host ""
-Write-Host "Enterキーを押して終了..."
-$null = Read-Host
+Write - Host ""
+Write - Host "Enterキーを押して終了..."
+$null = Read - Host
 """
 
-    ps_script.write_text(ps_content, encoding="utf-8")
+    ps_script.write_text(ps_content, encoding="utf - 8")
 
     # バッチファイル（PowerShellスクリプトを起動）
     batch_file = worker_dir / f"start_worker_{worker_id}.bat"
 
-    batch_content = f"""@echo off
+    batch_content = """@echo off
 chcp 65001 >nul
 title Worker {worker_id}: {task_name}
 color 0{worker_id % 6 + 2}
@@ -161,7 +161,7 @@ color 0{worker_id % 6 + 2}
 powershell -ExecutionPolicy Bypass -File "{ps_script}"
 """
 
-    batch_file.write_text(batch_content, encoding="utf-8")
+    batch_file.write_text(batch_content, encoding="utf - 8")
 
     return batch_file, command_file, status_file, output_file
 
@@ -259,7 +259,7 @@ def test_interactive_parallel():
         print(f"  内容: {worker['task']}")
 
         # コマンドファイルに書き込み
-        worker["command_file"].write_text(worker["task"], encoding="utf-8")
+        worker["command_file"].write_text(worker["task"], encoding="utf - 8")
 
         print(f"  [送信完了] Worker {worker['id']} がタスクを実行中...")
         print()
@@ -283,7 +283,7 @@ def test_interactive_parallel():
 
         for worker in workers:
             if worker["status_file"].exists():
-                status = worker["status_file"].read_text(encoding="utf-8").strip()
+                status = worker["status_file"].read_text(encoding="utf - 8").strip()
                 if status != "COMPLETE":
                     all_complete = False
 
@@ -302,10 +302,10 @@ def test_interactive_parallel():
         print(f"[Worker {worker['id']}: {worker['name']}]")
 
         if worker["output_file"].exists():
-            output = worker["output_file"].read_text(encoding="utf-8")
+            output = worker["output_file"].read_text(encoding="utf - 8")
             print(f"  出力: {output[:200]}...")
         else:
-            print(f"  [WARNING] 出力ファイルが見つかりません")
+            print("  [WARNING] 出力ファイルが見つかりません")
 
         print()
 

@@ -1,15 +1,15 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Claude CLI トークン設定スクリプト
 
 使用方法:
-1. https://claude.ai/settings/developer でトークンを生成
+1. https://claude.ai / settings / developer でトークンを生成
 2. このスクリプトを実行してトークンを入力
 
-または、環境変数/ファイルを使用:
-  export CLAUDE_API_TOKEN="your-token-here"
+または、環境変数 / ファイルを使用:
+  export CLAUDE_API_TOKEN="your - token - here"
   # または
-  echo "your-token-here" > ~/.claude_token
+  echo "your - token - here" > ~/.claude_token
 """
 
 import sys
@@ -33,7 +33,7 @@ def main():
 
     if existing_token:
         print()
-        use_existing = input("既存のトークンを使用しますか？ (Y/n): ").strip().lower()
+        use_existing = input("既存のトークンを使用しますか？ (Y / n): ").strip().lower()
         if use_existing in ("", "y", "yes"):
             token = existing_token
         else:
@@ -45,8 +45,8 @@ def main():
     if token is None:
         print()
         print("Claude APIトークンの取得方法:")
-        print("  1. https://claude.ai/settings/developer にアクセス")
-        print("  2. 'Create Long-Lived Session Token' をクリック")
+        print("  1. https://claude.ai / settings / developer にアクセス")
+        print("  2. 'Create Long - Lived Session Token' をクリック")
         print("  3. トークンをコピー")
         print()
 
@@ -64,11 +64,11 @@ def main():
     print("  2. Windows ネイティブ")
     print()
 
-    mode_choice = input("選択してください (1/2) [1]: ").strip() or "1"
+    mode_choice = input("選択してください (1 / 2) [1]: ").strip() or "1"
 
     if mode_choice == "1":
         execution_mode = "wsl"
-        dist = input("WSLディストリビューション名 [Ubuntu-24.04]: ").strip() or "Ubuntu-24.04"
+        dist = input("WSLディストリビューション名 [Ubuntu - 24.04]: ").strip() or "Ubuntu - 24.04"
     else:
         execution_mode = "windows"
         dist = None
@@ -89,7 +89,7 @@ def main():
         print("✅ トークン設定完了！")
         print()
         print("次のステップ:")
-        print("  python tests/test_simple_worker_wsl.py")
+        print("  python tests / test_simple_worker_wsl.py")
         print()
     else:
         print("❌ トークン設定に失敗しました。")

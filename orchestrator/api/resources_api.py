@@ -1,7 +1,7 @@
 """Resource Manager API endpoints.
 
-Implements depth-based quotas, allocation, release, and usage endpoints
-backed by the in-memory HierarchicalResourceManager. Designed for FastAPI.
+Implements depth - based quotas, allocation, release, and usage endpoints
+backed by the in - memory HierarchicalResourceManager. Designed for FastAPI.
 """
 
 from __future__ import annotations
@@ -14,14 +14,14 @@ from pydantic import BaseModel, Field
 from orchestrator.api.dependencies import TokenData, require_scope
 from orchestrator.core.hierarchical import HierarchicalResourceManager
 
-router = APIRouter(prefix="/api/resources", tags=["resources"])
+router = APIRouter(prefix="/api / resources", tags=["resources"])
 
 
 _rm_singleton: Optional[HierarchicalResourceManager] = None
 
 
 def get_rm() -> HierarchicalResourceManager:
-    """Return a process-wide resource manager singleton.
+    """Return a process - wide resource manager singleton.
 
     Keeping a singleton aligns usage across requests and tests.
     """
@@ -49,7 +49,7 @@ class QuotasResponse(BaseModel):
 
     **Hierarchical Resource Model:**
     - Depth 0 (root): Maximum workers available
-    - Depth 1-5: Decreasing quotas for nested jobs
+    - Depth 1 - 5: Decreasing quotas for nested jobs
 
     **Default Configuration:**
     ```

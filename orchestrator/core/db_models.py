@@ -12,7 +12,7 @@ Security:
 - No raw SQL string concatenation
 
 Type Safety:
-- Explicit type annotations with Optional/List
+- Explicit type annotations with Optional / List
 - Enum types for status fields
 
 Usage:
@@ -109,10 +109,10 @@ class Worker(Base):
 
     Attributes:
         id: Unique worker identifier (format: w_<12 hex chars>)
-        workspace_id: Workspace identifier for multi-tenancy
+        workspace_id: Workspace identifier for multi - tenancy
         status: Current worker status (WorkerStatus enum)
         created_at: Worker creation timestamp
-        updated_at: Last update timestamp (auto-updated)
+        updated_at: Last update timestamp (auto - updated)
         metadata: Additional worker metadata (JSON)
 
     Relationships:
@@ -136,7 +136,7 @@ class Worker(Base):
         String(36),
         nullable=False,
         index=True,
-        comment="Workspace ID for multi-tenancy",
+        comment="Workspace ID for multi - tenancy",
     )
     status = Column(
         SQLEnum(WorkerStatus),
@@ -169,7 +169,7 @@ class Worker(Base):
     state_transitions = relationship(
         "WorkerStateTransition",
         back_populates="worker",
-        cascade="all, delete-orphan",
+        cascade="all, delete - orphan",
         lazy="selectin",
     )
 
@@ -194,7 +194,7 @@ class WorkerStateTransition(Base):
     Provides complete audit trail for compliance and debugging.
 
     Attributes:
-        id: Auto-incrementing primary key
+        id: Auto - incrementing primary key
         worker_id: Foreign key to workers table
         from_state: Previous state (NULL for initial state)
         to_state: New state after transition
@@ -270,12 +270,12 @@ class Job(Base):
     Job submission model.
 
     Represents a task submitted for hierarchical execution.
-    Supports parent-child relationships for recursive task decomposition.
+    Supports parent - child relationships for recursive task decomposition.
 
     Attributes:
         id: Unique job identifier (format: j_<12 hex chars>)
         parent_job_id: Parent job ID (NULL for root jobs)
-        depth: Depth in hierarchy (0-5, 0 = root)
+        depth: Depth in hierarchy (0 - 5, 0 = root)
         status: Current job status (JobStatus enum)
         worker_count: Number of workers allocated
         task_description: Task description or file path
@@ -321,7 +321,7 @@ class Job(Base):
     depth = Column(
         Integer,
         nullable=False,
-        comment="Depth in hierarchy (0-5)",
+        comment="Depth in hierarchy (0 - 5)",
     )
     status = Column(
         SQLEnum(JobStatus),
@@ -386,13 +386,13 @@ class Job(Base):
     state_transitions = relationship(
         "JobStateTransition",
         back_populates="job",
-        cascade="all, delete-orphan",
+        cascade="all, delete - orphan",
         lazy="selectin",
     )
     resource_allocations = relationship(
         "ResourceAllocation",
         back_populates="job",
-        cascade="all, delete-orphan",
+        cascade="all, delete - orphan",
         lazy="selectin",
     )
 
@@ -418,7 +418,7 @@ class JobStateTransition(Base):
     Records all state changes for jobs with timestamp and reason.
 
     Attributes:
-        id: Auto-incrementing primary key
+        id: Auto - incrementing primary key
         job_id: Foreign key to jobs table
         from_state: Previous state (NULL for initial)
         to_state: New state after transition
@@ -486,9 +486,9 @@ class ResourceAllocation(Base):
     Enables resource quota management and tracking.
 
     Attributes:
-        id: Auto-incrementing primary key
+        id: Auto - incrementing primary key
         job_id: Foreign key to jobs table
-        depth: Depth level (0-5)
+        depth: Depth level (0 - 5)
         worker_count: Number of workers allocated
         allocated_at: When resources were allocated
         released_at: When resources were released (NULL if still allocated)
@@ -521,7 +521,7 @@ class ResourceAllocation(Base):
     depth = Column(
         Integer,
         nullable=False,
-        comment="Depth level (0-5)",
+        comment="Depth level (0 - 5)",
     )
     worker_count = Column(
         Integer,
@@ -569,7 +569,7 @@ class IdempotencyKey(Base):
     Idempotency key tracking model.
 
     Stores processed requests to enable idempotent API operations.
-    Prevents duplicate executions of state-changing operations.
+    Prevents duplicate executions of state - changing operations.
 
     Attributes:
         request_id: Unique request identifier (primary key)
@@ -582,7 +582,7 @@ class IdempotencyKey(Base):
     Example:
         >>> key = IdempotencyKey(
         ...     request_id="req_abc123",
-        ...     endpoint="/api/supervisor/workers/pause",
+        ...     endpoint="/api / supervisor / workers / pause",
         ...     response_status=200,
         ...     response_body='{"status": "paused"}',
         ...     expires_at=datetime.utcnow() + timedelta(hours=1)

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 リアルタイム対話プロトコルの実証
 
@@ -11,12 +11,12 @@ import sys
 import time
 from pathlib import Path
 
-# UTF-8出力設定
+# UTF - 8出力設定
 if sys.platform == "win32":
     import codecs
 
-    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
-    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
+    sys.stdout = codecs.getwriter("utf - 8")(sys.stdout.buffer, "replace")
+    sys.stderr = codecs.getwriter("utf - 8")(sys.stderr.buffer, "replace")
 
 # プロジェクトルートをPythonパスに追加
 project_root = Path(__file__).parent.parent
@@ -85,7 +85,7 @@ def main():
     worker_1_output = workspace_path / "worker_1" / "output.txt"
 
     if worker_1_output.exists():
-        with open(worker_1_output, "r", encoding="utf-8", errors="replace") as f:
+        with open(worker_1_output, "r", encoding="utf - 8", errors="replace") as f:
             file_content = f.read()
 
         print("=" * 80)

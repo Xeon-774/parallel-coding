@@ -17,7 +17,7 @@ DEFAULT_COLOR_PALETTE: List[str] = [
     "#9467bd",
     "#8c564b",
     "#e377c2",
-    "#7f7f7f",
+    "#7f7f7",
     "#bcbd22",
     "#17becf",
 ]
@@ -28,11 +28,11 @@ CATEGORICAL_COLORS: Dict[str, str] = {
     "success": "#2ca02c",
     "danger": "#d62728",
     "warning": "#ff9800",
-    "info": "#17becf",
+    "info": "#17bec",
 }
 
 SEABORN_PALETTE: str = "husl"
-MATPLOTLIB_STYLE: str = "seaborn-v0_8-darkgrid"
+MATPLOTLIB_STYLE: str = "seaborn - v0_8 - darkgrid"
 
 # Font settings
 DEFAULT_FONT_SIZE: int = 12
@@ -41,7 +41,7 @@ LABEL_FONT_SIZE: int = 12
 LEGEND_FONT_SIZE: int = 10
 TICK_FONT_SIZE: int = 10
 
-FONT_FAMILY: str = "sans-serif"
+FONT_FAMILY: str = "sans - seri"
 FONT_WEIGHT: str = "normal"
 
 # DPI settings
@@ -50,7 +50,7 @@ HIGH_DPI: int = 300
 SCREEN_DPI: int = 96
 
 # File formats
-SUPPORTED_IMAGE_FORMATS: List[str] = ["png", "jpg", "jpeg", "svg", "pdf"]
+SUPPORTED_IMAGE_FORMATS: List[str] = ["png", "jpg", "jpeg", "svg", "pd"]
 DEFAULT_IMAGE_FORMAT: str = "png"
 SUPPORTED_DATA_FORMATS: List[str] = ["csv", "json", "xlsx", "parquet"]
 

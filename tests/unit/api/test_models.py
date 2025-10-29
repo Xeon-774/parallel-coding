@@ -58,7 +58,7 @@ class TestOrchestratorConfigRecursionValidation:
 
     def test_max_recursion_depth_valid_range(self):
         """Test valid max_recursion_depth values."""
-        for depth in range(0, 6):  # 0-5 inclusive
+        for depth in range(0, 6):  # 0 - 5 inclusive
             config = OrchestratorConfigRecursion(max_recursion_depth=depth)
             assert config.max_recursion_depth == depth
 
@@ -103,7 +103,7 @@ class TestOrchestratorConfigRecursionValidation:
         assert config.orchestrator_api_url == "https://orchestrator.example.com"
 
     def test_orchestrator_api_url_invalid_scheme(self):
-        """Test that URLs without http/https scheme are rejected."""
+        """Test that URLs without http / https scheme are rejected."""
         with pytest.raises(ValidationError, match="API URL must start with http:// or https://"):
             OrchestratorConfigRecursion(orchestrator_api_url="ftp://example.com")
 
@@ -122,8 +122,8 @@ class TestOrchestratorConfigRecursionValidation:
         config1 = OrchestratorConfigRecursion()
         assert config1.orchestrator_api_key is None
 
-        config2 = OrchestratorConfigRecursion(orchestrator_api_key="secret-key-123")
-        assert config2.orchestrator_api_key == "secret-key-123"
+        config2 = OrchestratorConfigRecursion(orchestrator_api_key="secret - key - 123")
+        assert config2.orchestrator_api_key == "secret - key - 123"
 
 
 class TestOrchestratorConfigRecursionCustomization:
@@ -164,15 +164,15 @@ class TestOrchestratorConfigRecursionCustomization:
         config = OrchestratorConfigRecursion(
             max_recursion_depth=4,
             current_depth=2,
-            orchestrator_api_url="https://parent.orchestrator.com/api",
-            orchestrator_api_key="parent-api-key-xyz",
+            orchestrator_api_url="https://parent.orchestrator.com / api",
+            orchestrator_api_key="parent - api - key - xyz",
             workers_by_depth={0: 12, 1: 10, 2: 6, 3: 4, 4: 2},
         )
 
         assert config.max_recursion_depth == 4
         assert config.current_depth == 2
-        assert config.orchestrator_api_url == "https://parent.orchestrator.com/api"
-        assert config.orchestrator_api_key == "parent-api-key-xyz"
+        assert config.orchestrator_api_url == "https://parent.orchestrator.com / api"
+        assert config.orchestrator_api_key == "parent - api - key - xyz"
         assert config.workers_by_depth[2] == 6
 
 
@@ -204,22 +204,24 @@ class TestOrchestratorConfigRecursionEdgeCases:
 
     def test_url_with_port(self):
         """Test orchestrator_api_url with port number."""
-        config = OrchestratorConfigRecursion(orchestrator_api_url="http://localhost:8080/api/v1")
-        assert config.orchestrator_api_url == "http://localhost:8080/api/v1"
+        config = OrchestratorConfigRecursion(
+            orchestrator_api_url="http://localhost:8080 / api / v1"
+        )
+        assert config.orchestrator_api_url == "http://localhost:8080 / api / v1"
 
     def test_url_with_path(self):
         """Test orchestrator_api_url with path."""
         config = OrchestratorConfigRecursion(
-            orchestrator_api_url="https://example.com/orchestrator/api"
+            orchestrator_api_url="https://example.com / orchestrator / api"
         )
-        assert config.orchestrator_api_url == "https://example.com/orchestrator/api"
+        assert config.orchestrator_api_url == "https://example.com / orchestrator / api"
 
 
 # ======================= OrchestratorConfig Tests =======================
 
 
 class TestOrchestratorConfig:
-    """Test top-level OrchestratorConfig model."""
+    """Test top - level OrchestratorConfig model."""
 
     def test_default_recursion_config(self):
         """Test that default recursion config is created."""
@@ -256,7 +258,7 @@ class TestOrchestratorConfig:
         assert config.recursion.orchestrator_api_url == "https://example.com"
 
     def test_recursion_validation_through_top_level(self):
-        """Test that recursion validation works through top-level config."""
+        """Test that recursion validation works through top - level config."""
         with pytest.raises(ValidationError, match="Current depth .* exceeds max depth"):
             OrchestratorConfig(
                 recursion={

@@ -1,5 +1,5 @@
 """
-Test CLI-based Orchestrator AI
+Test CLI - based Orchestrator AI
 """
 
 import asyncio
@@ -23,21 +23,21 @@ async def test_basic_approval():
     print("=" * 70)
 
     orchestrator = CLIOrchestratorAI(
-        workspace=r"D:\user\ai_coding\AI_Investor\tools\parallel-coding\workspace", verbose=True
+        workspace=r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\workspace", verbose=True
     )
 
     decision = await orchestrator.ask(
-        question="I need to create a file 'models/user.py' with database model code. Is this OK?",
+        question="I need to create a file 'models / user.py' with database model code. Is this OK?",
         context={
             "worker_id": "worker_001",
             "task_name": "Database models implementation",
             "project_name": "AI_Investor",
-            "project_goal": "Build AI-powered investment platform MVP",
+            "project_goal": "Build AI - powered investment platform MVP",
         },
     )
 
     print(f"\n{'='*70}")
-    print(f"RESULT:")
+    print("RESULT:")
     print(f"  Action: {decision.action}")
     print(f"  Reasoning: {decision.reasoning}")
     print(f"  Latency: {decision.latency_ms:.0f}ms")
@@ -62,7 +62,7 @@ async def test_dangerous_operation():
     print("=" * 70)
 
     orchestrator = CLIOrchestratorAI(
-        workspace=r"D:\user\ai_coding\AI_Investor\tools\parallel-coding\workspace", verbose=True
+        workspace=r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\workspace", verbose=True
     )
 
     decision = await orchestrator.ask(
@@ -71,12 +71,12 @@ async def test_dangerous_operation():
             "worker_id": "worker_002",
             "task_name": "Cleanup task",
             "project_name": "AI_Investor",
-            "project_goal": "Build AI-powered investment platform MVP",
+            "project_goal": "Build AI - powered investment platform MVP",
         },
     )
 
     print(f"\n{'='*70}")
-    print(f"RESULT:")
+    print("RESULT:")
     print(f"  Action: {decision.action}")
     print(f"  Reasoning: {decision.reasoning}")
     print(f"  Latency: {decision.latency_ms:.0f}ms")
@@ -100,7 +100,7 @@ async def test_package_install():
     print("=" * 70)
 
     orchestrator = CLIOrchestratorAI(
-        workspace=r"D:\user\ai_coding\AI_Investor\tools\parallel-coding\workspace", verbose=True
+        workspace=r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\workspace", verbose=True
     )
 
     decision = await orchestrator.ask(
@@ -109,12 +109,12 @@ async def test_package_install():
             "worker_id": "worker_003",
             "task_name": "Test setup",
             "project_name": "AI_Investor",
-            "project_goal": "Build AI-powered investment platform MVP",
+            "project_goal": "Build AI - powered investment platform MVP",
         },
     )
 
     print(f"\n{'='*70}")
-    print(f"RESULT:")
+    print("RESULT:")
     print(f"  Action: {decision.action}")
     print(f"  Reasoning: {decision.reasoning}")
     print(f"  Latency: {decision.latency_ms:.0f}ms")

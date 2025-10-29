@@ -20,14 +20,14 @@ def convert_windows_to_wsl_path(windows_path: str) -> str:
         windows_path: Windowsパス（例: C:\\Users\\name\\file.txt）
 
     Returns:
-        WSLパス（例: /mnt/c/Users/name/file.txt）
+        WSLパス（例: /mnt / c/Users / name / file.txt）
 
     Examples:
         >>> convert_windows_to_wsl_path("D:\\user\\test\\file.txt")
-        '/mnt/d/user/test/file.txt'
+        '/mnt / d/user / test / file.txt'
     """
     # ドライブレターとパスを分離
-    match = re.match(r"([A-Za-z]):(.*)", windows_path)
+    match = re.match(r"([A - Za - z]):(.*)", windows_path)
     if not match:
         return windows_path
 
@@ -45,17 +45,17 @@ def convert_wsl_to_windows_path(wsl_path: str) -> str:
     WSLパスをWindowsパスに変換
 
     Args:
-        wsl_path: WSLパス（例: /mnt/c/Users/name/file.txt）
+        wsl_path: WSLパス（例: /mnt / c/Users / name / file.txt）
 
     Returns:
         Windowsパス（例: C:\\Users\\name\\file.txt）
 
     Examples:
-        >>> convert_wsl_to_windows_path("/mnt/d/user/test/file.txt")
+        >>> convert_wsl_to_windows_path("/mnt / d/user / test / file.txt")
         'D:\\\\user\\\\test\\\\file.txt'
     """
-    # /mnt/X/... パターンをマッチ
-    match = re.match(r"/mnt/([a-z])(.*)", wsl_path)
+    # /mnt / X/... パターンをマッチ
+    match = re.match(r"/mnt/([a - z])(.*)", wsl_path)
     if not match:
         return wsl_path
 
@@ -118,7 +118,7 @@ def validate_file_path(file_path: str, must_exist: bool = False) -> bool:
         妥当な場合True
 
     Examples:
-        >>> validate_file_path("/path/to/file.txt", must_exist=False)
+        >>> validate_file_path("/path / to / file.txt", must_exist=False)
         True
     """
     if not file_path:
@@ -148,7 +148,7 @@ def ensure_directory(directory: str) -> bool:
         成功した場合True
 
     Examples:
-        >>> ensure_directory("/path/to/dir")
+        >>> ensure_directory("/path / to / dir")
         True
     """
     try:
@@ -223,7 +223,7 @@ def get_timestamp(format_str: str = "%Y-%m-%d %H:%M:%S") -> str:
 
     Examples:
         >>> get_timestamp()
-        '2025-10-19 19:00:00'
+        '2025 - 10 - 19 19:00:00'
     """
     return datetime.now().strftime(format_str)
 
@@ -250,7 +250,7 @@ def truncate_string(text: str, max_length: int, suffix: str = "...") -> str:
 
 
 def safe_read_file(
-    file_path: str, encoding: str = "utf-8", default: Optional[str] = None
+    file_path: str, encoding: str = "utf - 8", default: Optional[str] = None
 ) -> Optional[str]:
     """
     ファイルを安全に読み込む（エラー時はデフォルト値を返す）
@@ -264,7 +264,7 @@ def safe_read_file(
         ファイルの内容、またはデフォルト値
 
     Examples:
-        >>> safe_read_file("/path/to/file.txt", default="")
+        >>> safe_read_file("/path / to / file.txt", default="")
         'file contents'
     """
     try:
@@ -274,7 +274,7 @@ def safe_read_file(
         return default
 
 
-def safe_write_file(file_path: str, content: str, encoding: str = "utf-8") -> bool:
+def safe_write_file(file_path: str, content: str, encoding: str = "utf - 8") -> bool:
     """
     ファイルを安全に書き込む
 
@@ -287,7 +287,7 @@ def safe_write_file(file_path: str, content: str, encoding: str = "utf-8") -> bo
         成功した場合True
 
     Examples:
-        >>> safe_write_file("/path/to/file.txt", "content")
+        >>> safe_write_file("/path / to / file.txt", "content")
         True
     """
     try:

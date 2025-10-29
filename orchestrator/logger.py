@@ -1,7 +1,7 @@
 """
 DEPRECATED: This module is deprecated. Use orchestrator.core.structured_logging instead.
 
-This file provides backward compatibility by re-exporting from the new location.
+This file provides backward compatibility by re - exporting from the new location.
 Will be removed in v12.0.
 """
 

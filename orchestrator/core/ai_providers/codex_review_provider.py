@@ -2,15 +2,15 @@
 Codex Review Provider - OpenAI Codex CLI Document Review Implementation
 
 This module provides Codex CLI integration for document review functionality.
-It leverages the existing CodexExecutor for task execution and adds review-specific
+It leverages the existing CodexExecutor for task execution and adds review - specific
 prompt engineering and result parsing.
 
 Key Features:
-    - Perspective-specific review prompts (architecture, security, feasibility)
+    - Perspective - specific review prompts (architecture, security, feasibility)
     - Structured feedback parsing from Codex output
     - Integration with existing CodexExecutor
     - Comprehensive error handling
-    - Type-safe with Pydantic models
+    - Type - safe with Pydantic models
 
 Architecture:
     CodexReviewProvider
@@ -24,7 +24,7 @@ Dependencies:
     - BaseReviewProvider (interface)
 
 Author: Claude (Sonnet 4.5)
-Created: 2025-10-28
+Created: 2025 - 10 - 28
 Version: 1.0.0
 Excellence AI Standard: 100% Applied
 """
@@ -105,7 +105,7 @@ You are a performance optimization expert reviewing a technical document.
 
 Focus on:
 - Performance bottlenecks
-- Resource utilization (CPU, memory, I/O)
+- Resource utilization (CPU, memory, I / O)
 - Caching strategies
 - Algorithm complexity
 - Database query optimization
@@ -137,8 +137,8 @@ Focus on:
 - Priority alignment with business goals
 - Task dependencies and sequencing
 - Resource allocation efficiency
-- Risk-based prioritization
-- MVP vs. nice-to-have features
+- Risk - based prioritization
+- MVP vs. nice - to - have features
 
 Provide feedback in this format:
 [SEVERITY:CRITICAL|WARNING|INFO] [LINE:number] Message
@@ -200,13 +200,13 @@ Suggestion: improvement suggestion
 
 class CodexReviewProvider(BaseReviewProvider):
     """
-    Codex CLI-based document review provider.
+    Codex CLI - based document review provider.
 
     This provider uses OpenAI Codex CLI to perform document reviews from
     various perspectives (architecture, security, feasibility, etc.).
 
     Features:
-        - Perspective-specific prompts
+        - Perspective - specific prompts
         - Structured feedback parsing
         - Score calculation based on feedback severity
         - Integration with existing CodexExecutor
@@ -218,7 +218,7 @@ class CodexReviewProvider(BaseReviewProvider):
         >>> provider = CodexReviewProvider(executor)
         >>>
         >>> request = ReviewRequest(
-        ...     document_path="docs/ROADMAP.md",
+        ...     document_path="docs / ROADMAP.md",
         ...     review_type=ReviewType.ROADMAP,
         ...     perspective=ReviewPerspective.FEASIBILITY
         ... )
@@ -278,7 +278,7 @@ class CodexReviewProvider(BaseReviewProvider):
 
         Example:
             >>> request = ReviewRequest(
-            ...     document_path="docs/ROADMAP.md",
+            ...     document_path="docs / ROADMAP.md",
             ...     review_type=ReviewType.ROADMAP,
             ...     perspective=ReviewPerspective.FEASIBILITY
             ... )
@@ -299,7 +299,7 @@ class CodexReviewProvider(BaseReviewProvider):
 
             # Create temporary task file
             task_file = Path(f"temp_review_{job_id}.txt")
-            task_file.write_text(prompt, encoding="utf-8")
+            task_file.write_text(prompt, encoding="utf - 8")
 
             try:
                 # Execute review using Codex
@@ -387,14 +387,14 @@ class CodexReviewProvider(BaseReviewProvider):
         Example:
             >>> prompt = provider._build_review_prompt(request)
         """
-        # Get perspective-specific instructions
+        # Get perspective - specific instructions
         perspective_prompt = REVIEW_PROMPTS.get(
             request.perspective,
             REVIEW_PROMPTS[ReviewPerspective.ARCHITECTURE],  # Default fallback
         )
 
         # Read document content
-        doc_content = Path(request.document_path).read_text(encoding="utf-8")
+        doc_content = Path(request.document_path).read_text(encoding="utf - 8")
 
         # Build context information
         context_str = ""
@@ -404,7 +404,7 @@ class CodexReviewProvider(BaseReviewProvider):
                 context_str += f"- {key}: {value}\n"
 
         # Combine into full prompt
-        prompt = f"""Review the following {request.review_type.value} document from a {request.perspective.value} perspective.
+        prompt = """Review the following {request.review_type.value} document from a {request.perspective.value} perspective.
 
 {perspective_prompt}
 
@@ -417,8 +417,8 @@ Document content:
 ---
 
 Please provide structured feedback in the format specified above.
-For each issue found, specify severity (CRITICAL/WARNING/INFO), line number if applicable, message, and suggestion.
-End your review with a summary line: OVERALL_SCORE: [0-100]
+For each issue found, specify severity (CRITICAL / WARNING / INFO), line number if applicable, message, and suggestion.
+End your review with a summary line: OVERALL_SCORE: [0 - 100]
 """
 
         return prompt
@@ -504,7 +504,7 @@ End your review with a summary line: OVERALL_SCORE: [0-100]
             feedbacks: List of feedback items
 
         Returns:
-            Score from 0-100
+            Score from 0 - 100
 
         Example:
             >>> score = provider._calculate_score(feedbacks)
@@ -572,7 +572,7 @@ if __name__ == "__main__":
 
         # Example review request
         request = ReviewRequest(
-            document_path="docs/ROADMAP.md",
+            document_path="docs / ROADMAP.md",
             review_type=ReviewType.ROADMAP,
             perspective=ReviewPerspective.FEASIBILITY,
             context={"project": "AI_Investor", "phase": "Week 2"},
@@ -594,7 +594,7 @@ if __name__ == "__main__":
         if result.critical_issues:
             print("\nCritical issues:")
             for fb in result.critical_issues:
-                print(f"  [{fb.line_number or 'N/A'}] {fb.message}")
+                print(f"  [{fb.line_number or 'N / A'}] {fb.message}")
                 if fb.suggestion:
                     print(f"      → {fb.suggestion}")
 

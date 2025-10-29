@@ -2,7 +2,7 @@
 Window manager facade (Refactored v6.0)
 
 This module provides a simple facade to the window management strategies.
-The actual implementations are in orchestrator/window_strategies/.
+The actual implementations are in orchestrator / window_strategies/.
 
 This maintains backwards compatibility while using the Strategy pattern internally.
 """
@@ -11,7 +11,7 @@ from typing import Any, Optional
 
 from orchestrator.window_strategies import WindowInfo, WindowManagerBase, WindowManagerFactory
 
-# Re-export for backwards compatibility
+# Re - export for backwards compatibility
 __all__ = ["WindowManager", "WindowInfo"]
 
 
@@ -19,8 +19,8 @@ class WindowManager:
     """
     Window manager facade
 
-    This class provides backwards-compatible interface while delegating
-    to platform-specific strategies internally.
+    This class provides backwards - compatible interface while delegating
+    to platform - specific strategies internally.
 
     Refactored in v6.0 to use Strategy pattern for better separation of concerns.
     """
@@ -39,7 +39,7 @@ class WindowManager:
         Args:
             workspace_root: Workspace root directory
             execution_mode: Execution mode ("windows" or "wsl")
-            auto_close: Auto-close windows on completion
+            auto_close: Auto - close windows on completion
             close_delay: Delay before closing (seconds)
             enable_screenshots: Enable screenshot capture
         """

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 並列素数探索テスト
 
@@ -65,7 +65,7 @@ def create_prime_search_task(range_start: int, range_end: int) -> str:
         range_start: 探索範囲の開始
         range_end: 探索範囲の終了
     """
-    return f"""**タスク**: 指定範囲の素数を探索
+    return """**タスク**: 指定範囲の素数を探索
 
 **探索範囲**: {range_start} から {range_end} まで
 
@@ -118,7 +118,7 @@ def run_parallel_prime_search(num_workers: int = 5, range_size: int = 1000):
     print("探索範囲の分割:")
     total_range = 0
     for i, (start, end) in enumerate(ranges):
-        print(f"  Worker {i+1}: {start:,} - {end:,}")
+        print(f"  Worker {i + 1}: {start:,} - {end:,}")
         total_range += end - start + 1
     print(f"  合計: {total_range:,}個の整数")
     print()
@@ -171,8 +171,8 @@ def run_parallel_prime_search(num_workers: int = 5, range_size: int = 1000):
             output_file = worker_dir / "output.txt"
 
             if output_file.exists():
-                print(f"\n[Worker {i}] (範囲: {ranges[i-1][0]:,} - {ranges[i-1][1]:,})")
-                with open(output_file, "r", encoding="utf-8") as f:
+                print(f"\n[Worker {i}] (範囲: {ranges[i - 1][0]:,} - {ranges[i - 1][1]:,})")
+                with open(output_file, "r", encoding="utf - 8") as f:
                     output = f.read()
 
                 # 出力から素数を抽出
@@ -205,7 +205,7 @@ def run_parallel_prime_search(num_workers: int = 5, range_size: int = 1000):
                         }
                     )
                 else:
-                    print(f"  [WARNING] 有効な素数が見つかりませんでした")
+                    print("  [WARNING] 有効な素数が見つかりませんでした")
 
         # 統合結果
         print()

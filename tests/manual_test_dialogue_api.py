@@ -8,7 +8,7 @@ Usage:
        python -m uvicorn orchestrator.api.main:app --reload --port 8000
 
     2. In another terminal, run this test:
-       python tests/manual_test_dialogue_api.py
+       python tests / manual_test_dialogue_api.py
 """
 
 import asyncio
@@ -49,7 +49,7 @@ def create_test_workspace():
         {
             "timestamp": time.time() - 290,
             "direction": "worker→orchestrator",
-            "content": "Successfully installed numpy-1.26.4",
+            "content": "Successfully installed numpy - 1.26.4",
             "type": "output",
             "confirmation_type": None,
             "confirmation_message": None,
@@ -82,14 +82,14 @@ def create_test_workspace():
 
     # Write to JSONL file
     transcript_jsonl = worker_path / "dialogue_transcript.jsonl"
-    with open(transcript_jsonl, "w", encoding="utf-8") as f:
+    with open(transcript_jsonl, "w", encoding="utf - 8") as f:
         for entry in dialogue_entries:
             f.write(json.dumps(entry) + "\n")
 
-    # Write to TXT file (human-readable)
+    # Write to TXT file (human - readable)
     transcript_txt = worker_path / "dialogue_transcript.txt"
-    with open(transcript_txt, "w", encoding="utf-8") as f:
-        f.write("=== Worker-Orchestrator Dialogue ===\n\n")
+    with open(transcript_txt, "w", encoding="utf - 8") as f:
+        f.write("=== Worker - Orchestrator Dialogue ===\n\n")
         for entry in dialogue_entries:
             timestamp_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(entry["timestamp"]))
             f.write(f"[{timestamp_str}] {entry['direction']}\n")
@@ -129,8 +129,8 @@ async def test_rest_api():
         print(f"   [OK] Workspace: {data['workspace_root']}")
 
         # Test list workers
-        print("\n3. Testing GET /api/v1/workers")
-        response = await client.get("/api/v1/workers")
+        print("\n3. Testing GET /api / v1 / workers")
+        response = await client.get("/api / v1 / workers")
         assert response.status_code == 200
         data = response.json()
         print(f"   [OK] Workers found: {data['count']}")
@@ -138,8 +138,8 @@ async def test_rest_api():
             print(f"     - {worker['worker_id']}: dialogue={worker['has_dialogue']}")
 
         # Test get worker info
-        print("\n4. Testing GET /api/v1/workers/worker_test_001")
-        response = await client.get("/api/v1/workers/worker_test_001")
+        print("\n4. Testing GET /api / v1 / workers / worker_test_001")
+        response = await client.get("/api / v1 / workers / worker_test_001")
         if response.status_code == 200:
             data = response.json()
             print(f"   [OK] Worker ID: {data['worker_id']}")
@@ -153,7 +153,7 @@ async def test_websocket():
     """Test WebSocket endpoint."""
     print("\n=== Testing WebSocket ===")
 
-    uri = "ws://localhost:8000/ws/dialogue/worker_test_001"
+    uri = "ws://localhost:8000 / ws / dialogue / worker_test_001"
 
     print(f"\n1. Connecting to {uri}")
 
@@ -180,19 +180,19 @@ async def test_websocket():
                         print(f"     Confirmation: {data['confirmation_type']}")
 
                 elif message["type"] == "ready":
-                    print(f"\n   [Ready]")
+                    print("\n   [Ready]")
                     print(f"     {message['message']}")
                     break
 
                 elif message["type"] == "error":
-                    print(f"\n   [Error]")
+                    print("\n   [Error]")
                     print(f"     {message['message']}")
                     break
 
             print(f"\n   [OK] Received {message_count} messages total")
 
-            # Test real-time streaming (simulate new entry)
-            print("\n3. Testing real-time streaming:")
+            # Test real - time streaming (simulate new entry)
+            print("\n3. Testing real - time streaming:")
             print("   Appending new entry to dialogue file...")
 
             workspace_root = Path(__file__).parent.parent / "workspace"
@@ -207,7 +207,7 @@ async def test_websocket():
                 "confirmation_message": None,
             }
 
-            with open(transcript, "a", encoding="utf-8") as f:
+            with open(transcript, "a", encoding="utf - 8") as f:
                 f.write(json.dumps(new_entry) + "\n")
 
             print("   Waiting for new entry...")
@@ -218,7 +218,7 @@ async def test_websocket():
                 message = json.loads(message_str)
 
                 if message["type"] == "entry":
-                    print(f"   [OK] Received new entry!")
+                    print("   [OK] Received new entry!")
                     print(f"     Content: {message['data']['content']}")
                 else:
                     print(f"   Unexpected message type: {message['type']}")

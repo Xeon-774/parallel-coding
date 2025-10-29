@@ -1,5 +1,5 @@
 """
-Unit Tests for Claude-Codex Manager
+Unit Tests for Claude - Codex Manager
 
 Comprehensive test suite for ClaudeCodexManager with 90%+ coverage.
 
@@ -18,7 +18,7 @@ Excellence AI Standard: 100% Applied
     - NO flaky tests
 
 Author: Claude (Sonnet 4.5)
-Created: 2025-10-27
+Created: 2025 - 10 - 27
 Version: 1.0.0
 """
 
@@ -93,7 +93,7 @@ def validate_email(email: str) -> bool:
         True
     \"\"\"
     import re
-    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
+    pattern = r'^[a - zA - Z0 - 9._%+-]+@[a - zA - Z0 - 9.-]+\\.[a - zA - Z]{2,}$'
     return bool(re.match(pattern, email))
 """,
         error=None,

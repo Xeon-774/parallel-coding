@@ -97,7 +97,7 @@ class RecursiveWorkspaceManager:
             **metadata,
         }
 
-        with open(metadata_file, "w", encoding="utf-8") as f:
+        with open(metadata_file, "w", encoding="utf - 8") as f:
             json.dump(full_metadata, f, indent=2, ensure_ascii=False)
 
     def read_depth_metadata(self, depth: int) -> Optional[Dict[str, Any]]:
@@ -107,7 +107,7 @@ class RecursiveWorkspaceManager:
         if not metadata_file.exists() or metadata_file.stat().st_size == 0:
             return None
 
-        with open(metadata_file, "r", encoding="utf-8") as f:
+        with open(metadata_file, "r", encoding="utf - 8") as f:
             data: Dict[str, Any] = json.load(f)
             return data
 
@@ -132,7 +132,7 @@ class RecursiveWorkspaceManager:
             "child_depth": depth,
         }
 
-        with open(depth_dir / "parent_info.json", "w", encoding="utf-8") as f:
+        with open(depth_dir / "parent_info.json", "w", encoding="utf - 8") as f:
             json.dump(parent_info, f, indent=2, ensure_ascii=False)
 
     def write_recursive_call_info(
@@ -163,7 +163,7 @@ class RecursiveWorkspaceManager:
             "child_workspace": str(self.get_depth_directory(child_depth)),
         }
 
-        with open(worker_dir / "recursive_call.json", "w", encoding="utf-8") as f:
+        with open(worker_dir / "recursive_call.json", "w", encoding="utf - 8") as f:
             json.dump(recursive_info, f, indent=2, ensure_ascii=False)
 
     def write_child_job_ref(
@@ -177,7 +177,7 @@ class RecursiveWorkspaceManager:
             "child_report": f"{child_workspace}/LEVEL_{depth + 1}_REPORT.md",
         }
 
-        with open(worker_dir / "child_job_ref.json", "w", encoding="utf-8") as f:
+        with open(worker_dir / "child_job_ref.json", "w", encoding="utf - 8") as f:
             json.dump(child_ref, f, indent=2, ensure_ascii=False)
 
     def create_logs_directory(self) -> Path:
@@ -193,7 +193,7 @@ class RecursiveWorkspaceManager:
         return reports_dir
 
     def write_job_metadata(self, metadata: Dict[str, Any]) -> None:
-        """Write job-level metadata"""
+        """Write job - level metadata"""
         # Ensure job directory exists
         self.job_dir.mkdir(parents=True, exist_ok=True)
 
@@ -206,7 +206,7 @@ class RecursiveWorkspaceManager:
             **metadata,
         }
 
-        with open(metadata_file, "w", encoding="utf-8") as f:
+        with open(metadata_file, "w", encoding="utf - 8") as f:
             json.dump(full_metadata, f, indent=2, ensure_ascii=False)
 
     def get_all_depths(self) -> List[int]:
@@ -226,7 +226,7 @@ class RecursiveWorkspaceManager:
         Build hierarchical tree of recursion structure
 
         Returns:
-            Tree structure showing parent-child relationships
+            Tree structure showing parent - child relationships
         """
         tree: Dict[str, Any] = {"job_id": self.job_id, "depths": {}}
 
@@ -237,7 +237,7 @@ class RecursiveWorkspaceManager:
             depth_info: Dict[str, Any] = {"depth": depth, "workers": []}
 
             if parent_info_file.exists():
-                with open(parent_info_file, "r", encoding="utf-8") as f:
+                with open(parent_info_file, "r", encoding="utf - 8") as f:
                     depth_info["parent_info"] = json.load(f)
 
             if metadata:
@@ -252,7 +252,7 @@ class RecursiveWorkspaceManager:
                     # Check if recursive
                     recursive_call_file = worker_dir / "recursive_call.json"
                     if recursive_call_file.exists() and recursive_call_file.stat().st_size > 0:
-                        with open(recursive_call_file, "r", encoding="utf-8") as f:
+                        with open(recursive_call_file, "r", encoding="utf - 8") as f:
                             worker_info["recursive_call"] = json.load(f)
 
                     depth_info["workers"].append(worker_info)
@@ -276,7 +276,7 @@ def validate_recursion_depth(current_depth: int, max_depth: int) -> None:
     if current_depth >= max_depth:
         raise ValueError(
             f"Maximum recursion depth ({max_depth}) reached at level {current_depth}. "
-            f"Cannot spawn child orchestration."
+            "Cannot spawn child orchestration."
         )
 
 

@@ -4,10 +4,10 @@ This module provides a fast, practical validator for typical email
 addresses. It avoids full RFC 5322 complexity while enforcing
 commonly accepted constraints:
 
-- Local part up to 64 chars, no leading/trailing dots, no consecutive dots
+- Local part up to 64 chars, no leading / trailing dots, no consecutive dots
 - Allowed local characters: letters, digits, and !#$%&'*+/=?^_`{|}~.-
-- Domain uses label rules (letters/digits, internal hyphens), at least one dot
-- TLD-style ending enforced by requiring at least one dot in domain
+- Domain uses label rules (letters / digits, internal hyphens), at least one dot
+- TLD - style ending enforced by requiring at least one dot in domain
 - Overall length up to 254 chars
 
 Usage
@@ -22,17 +22,17 @@ import argparse
 import re
 from typing import Iterable
 
-# Local part: atoms separated by single dots; no leading/trailing dot
-# Domain: labels 1-63 chars, alnum with internal hyphens, at least one dot
+# Local part: atoms separated by single dots; no leading / trailing dot
+# Domain: labels 1 - 63 chars, alnum with internal hyphens, at least one dot
 EMAIL_REGEX = re.compile(
     r"^"
     # Local part
     r"(?!\.)"  # no leading dot
-    r"(?:[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*)"
+    r"(?:[A - Za - z0 - 9!#$%&'*+/=?^_`{|}~-]+(?:\.[A - Za - z0 - 9!#$%&'*+/=?^_`{|}~-]+)*)"
     r"@"
     # Domain part
-    r"(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+"
-    r"[A-Za-z]{2,}"  # final TLD-like label
+    r"(?:[A - Za - z0 - 9](?:[A - Za - z0 - 9-]{0,61}[A - Za - z0 - 9])?\.)+"
+    r"[A - Za - z]{2,}"  # final TLD - like label
     r"$",
 )
 

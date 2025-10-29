@@ -12,10 +12,10 @@ from typing import List, Optional
 
 def find_git_bash() -> Optional[str]:
     """
-    git-bashのパスを検出
+    git - bashのパスを検出
 
     Returns:
-        git-bashのパス、見つからない場合はNone
+        git - bashのパス、見つからない場合はNone
     """
     # 環境変数から取得
     if "CLAUDE_CODE_GIT_BASH_PATH" in os.environ:
@@ -61,12 +61,12 @@ class OrchestratorConfig:
 
     # ワークスペース設定
     workspace_root: str = r"d:\user\parallel_ai_test_project\workspace"
-    wsl_workspace_root: str = "/mnt/d/user/parallel_ai_test_project/workspace"
+    wsl_workspace_root: str = "/mnt / d/user / parallel_ai_test_project / workspace"
 
     # WSL設定
-    wsl_distribution: str = "Ubuntu-24.04"
+    wsl_distribution: str = "Ubuntu - 24.04"
     nvm_path: str = (
-        "/home/chemi/.local/bin:/home/chemi/.nvm/versions/node/v22.21.0/bin"  # Claude CLI + Node.js paths
+        "/home / chemi/.local / bin:/home / chemi/.nvm / versions / node / v22.21.0 / bin"  # Claude CLI + Node.js paths
     )
     claude_command: str = "claude"
     codex_command: str = "codex"  # Codex CLI command
@@ -74,7 +74,7 @@ class OrchestratorConfig:
     # Windows設定
     windows_claude_path: str = "claude"  # PATHに含まれている場合は"claude"のみ
     windows_codex_path: str = "codex"  # Codex CLI path
-    git_bash_path: Optional[str] = None  # git-bashのパス（自動検出）
+    git_bash_path: Optional[str] = None  # git - bashのパス（自動検出）
 
     # 実行設定
     default_timeout: int = 120  # 秒
@@ -94,11 +94,11 @@ class OrchestratorConfig:
         if self.claude_flags is None:
             self.claude_flags = [
                 "--print"  # 非対話モード
-                # --dangerously-skip-permissions REMOVED (v8.0 compliance)
+                # --dangerously - skip - permissions REMOVED (v8.0 compliance)
                 # Now enables true AI Safety Judge and dialogue system
             ]
 
-        # Windowsモードの場合、git-bashを自動検出
+        # Windowsモードの場合、git - bashを自動検出
         if self.execution_mode == "windows" and self.git_bash_path is None:
             self.git_bash_path = find_git_bash()
 
@@ -138,14 +138,14 @@ class OrchestratorConfig:
             # stdout と stderr を分離
             cmd = (
                 f"wsl -d {self.wsl_distribution} bash -c "
-                f"\"export PATH='{self.nvm_path}:$PATH' && "
+                "\"export PATH='{self.nvm_path}:$PATH' && "
                 f"{self.claude_command} {flags_str} < '{input_file}' > '{output_file}' 2> '{error_file}'\""
             )
         else:
             # stderr を stdout に統合（従来の動作）
             cmd = (
                 f"wsl -d {self.wsl_distribution} bash -c "
-                f"\"export PATH='{self.nvm_path}:$PATH' && "
+                "\"export PATH='{self.nvm_path}:$PATH' && "
                 f"{self.claude_command} {flags_str} < '{input_file}' > '{output_file}' 2>&1\""
             )
 
@@ -163,28 +163,28 @@ class OrchestratorConfig:
         """
         flags_str = " ".join(self.claude_flags or [])
 
-        # git-bashが利用可能な場合はbash経由で実行
+        # git - bashが利用可能な場合はbash経由で実行
         if self.git_bash_path:
             # 環境変数CLAUDE_CODE_GIT_BASH_PATHを設定してclaudeを実行
-            # これによりClaude CLI自体がgit-bashを認識できる
+            # これによりClaude CLI自体がgit - bashを認識できる
             bash_path_escaped = self.git_bash_path.replace("\\", "/")
 
             if error_file:
                 # stdout と stderr を分離
                 cmd = (
                     f'"{self.git_bash_path}" -c '
-                    f"\"export CLAUDE_CODE_GIT_BASH_PATH='{self.git_bash_path}' && "
+                    "\"export CLAUDE_CODE_GIT_BASH_PATH='{self.git_bash_path}' && "
                     f"{self.windows_claude_path} {flags_str} < '{input_file}' > '{output_file}' 2> '{error_file}'\""
                 )
             else:
                 # stderr を stdout に統合（従来の動作）
                 cmd = (
                     f'"{self.git_bash_path}" -c '
-                    f"\"export CLAUDE_CODE_GIT_BASH_PATH='{self.git_bash_path}' && "
+                    "\"export CLAUDE_CODE_GIT_BASH_PATH='{self.git_bash_path}' && "
                     f"{self.windows_claude_path} {flags_str} < '{input_file}' > '{output_file}' 2>&1\""
                 )
         else:
-            # git-bashがない場合はcmd経由（動作しない可能性がある）
+            # git - bashがない場合はcmd経由（動作しない可能性がある）
             if error_file:
                 cmd = f'cmd /c "{self.windows_claude_path} {flags_str} < "{input_file}" > "{output_file}" 2> "{error_file}""'
             else:
@@ -206,11 +206,12 @@ class OrchestratorConfig:
                 "ORCHESTRATOR_WORKSPACE", r"d:\user\parallel_ai_test_project\workspace"
             ),
             wsl_workspace_root=os.getenv(
-                "ORCHESTRATOR_WSL_WORKSPACE", "/mnt/d/user/parallel_ai_test_project/workspace"
+                "ORCHESTRATOR_WSL_WORKSPACE", "/mnt / d/user / parallel_ai_test_project / workspace"
             ),
-            wsl_distribution=os.getenv("WSL_DISTRIBUTION", "Ubuntu-24.04"),
+            wsl_distribution=os.getenv("WSL_DISTRIBUTION", "Ubuntu - 24.04"),
             nvm_path=os.getenv(
-                "NVM_PATH", "/home/chemi/.local/bin:/home/chemi/.nvm/versions/node/v22.21.0/bin"
+                "NVM_PATH",
+                "/home / chemi/.local / bin:/home / chemi/.nvm / versions / node / v22.21.0 / bin",
             ),
             windows_claude_path=os.getenv("WINDOWS_CLAUDE_PATH", "claude"),
             git_bash_path=git_bash_path,  # 環境変数から、なければ自動検出

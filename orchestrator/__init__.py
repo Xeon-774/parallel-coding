@@ -8,7 +8,7 @@ WSLまたはWindows経由で複数のClaude AIを起動し、タスクを並列�
 - 依存関係の自動検出
 - リスク評価と安全性判断
 - git worktreeによる競合回避
-- 並列AI実行（WSL/Windows Claude CLI対応）
+- 並列AI実行（WSL / Windows Claude CLI対応）
 - ワーカーAIの可視化ウィンドウ表示（v4.2）
 - 完全双方向通信（v8.0）
 - AI安全判断・自動承認（v8.0）

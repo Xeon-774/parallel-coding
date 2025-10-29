@@ -5,7 +5,7 @@ Simulates Claude CLI behavior including confirmation requests.
 This allows testing EnhancedInteractiveWorkerManager without actual Claude CLI.
 
 Usage:
-    python scripts/mock_claude_cli.py < task.txt
+    python scripts / mock_claude_cli.py < task.txt
 """
 
 import sys
@@ -32,7 +32,7 @@ def simulate_claude_response():
     print("I'm going to create a new file.", flush=True)
     time.sleep(0.3)
 
-    print("Write to file 'output.py'? (y/n): ", end="", flush=True)
+    print("Write to file 'output.py'? (y / n): ", end="", flush=True)
 
     # Wait for response
     response = input()
@@ -50,7 +50,7 @@ def simulate_claude_response():
     print("\n[Mock Claude] Now I'll create the actual content.", flush=True)
     time.sleep(0.3)
 
-    print("Create file 'hello.py' with Hello World code? (y/n): ", end="", flush=True)
+    print("Create file 'hello.py' with Hello World code? (y / n): ", end="", flush=True)
 
     response = input()
 
@@ -70,7 +70,7 @@ def simulate_claude_response():
     print("\n[Mock Claude] Let me verify the file was created.", flush=True)
     time.sleep(0.3)
 
-    print("Execute command 'dir' to list files? (y/n): ", end="", flush=True)
+    print("Execute command 'dir' to list files? (y / n): ", end="", flush=True)
 
     response = input()
 

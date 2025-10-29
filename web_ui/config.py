@@ -24,8 +24,8 @@ class DashboardConfig:
 
     # Workspace paths
     workspace_root: Path = Path("./workspace")
-    logs_dir: Path = Path("./workspace/logs")
-    screenshots_dir: Path = Path("./workspace/screenshots")
+    logs_dir: Path = Path("./workspace / logs")
+    screenshots_dir: Path = Path("./workspace / screenshots")
 
     def __post_init__(self):
         """Validate and normalize configuration"""
@@ -37,7 +37,7 @@ class DashboardConfig:
             raise ValueError(f"Invalid port number: {self.port}")
 
         if self.startup_timeout < 1:
-            raise ValueError(f"Startup timeout must be >= 1 second")
+            raise ValueError("Startup timeout must be >= 1 second")
 
     @property
     def dashboard_url(self) -> str:
@@ -53,8 +53,10 @@ class DashboardConfig:
             auto_open_browser=os.getenv("DASHBOARD_AUTO_BROWSER", "true").lower() == "true",
             startup_timeout=int(os.getenv("DASHBOARD_STARTUP_TIMEOUT", "30")),
             workspace_root=Path(os.getenv("ORCHESTRATOR_WORKSPACE", "./workspace")),
-            logs_dir=Path(os.getenv("ORCHESTRATOR_LOGS", "./workspace/logs")),
-            screenshots_dir=Path(os.getenv("ORCHESTRATOR_SCREENSHOTS", "./workspace/screenshots")),
+            logs_dir=Path(os.getenv("ORCHESTRATOR_LOGS", "./workspace / logs")),
+            screenshots_dir=Path(
+                os.getenv("ORCHESTRATOR_SCREENSHOTS", "./workspace / screenshots")
+            ),
         )
 
 

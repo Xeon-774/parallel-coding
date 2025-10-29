@@ -1,15 +1,15 @@
 """
 Worker Status Monitoring System
 
-Centralized service for tracking and reporting worker execution status in real-time.
+Centralized service for tracking and reporting worker execution status in real - time.
 Milestone 1.3: Worker Status UI implementation.
 
 Features:
-- Real-time worker state tracking (spawning, running, waiting, completed, error)
+- Real - time worker state tracking (spawning, running, waiting, completed, error)
 - Progress calculation based on output and confirmations
 - Health monitoring with last activity timestamps
 - Integration with MetricsCollector for historical data
-- Thread-safe operations for concurrent access
+- Thread - safe operations for concurrent access
 """
 
 import asyncio
@@ -53,7 +53,7 @@ class WorkerStatus:
     worker_id: str
     state: WorkerState
     current_task: str
-    progress: int  # 0-100 percentage
+    progress: int  # 0 - 100 percentage
     elapsed_time: float  # Seconds since spawn
     output_lines: int  # Total output lines captured
     confirmation_count: int  # Number of confirmations handled
@@ -84,7 +84,7 @@ class WorkerStatus:
 
     @property
     def is_terminal(self) -> bool:
-        """Check if worker is in terminal state (completed/error/terminated)"""
+        """Check if worker is in terminal state (completed / error / terminated)"""
         return self.state in {WorkerState.COMPLETED, WorkerState.ERROR, WorkerState.TERMINATED}
 
 
@@ -92,7 +92,7 @@ class WorkerStatusMonitor:
     """
     Centralized worker status tracking service.
 
-    Thread-safe singleton service that maintains real-time status for all workers.
+    Thread - safe singleton service that maintains real - time status for all workers.
     Integrates with WorkerManager and MetricsCollector for comprehensive monitoring.
 
     Usage:
@@ -121,7 +121,7 @@ class WorkerStatusMonitor:
         """
         self.workspace_root = workspace_root
         self._statuses: Dict[str, WorkerStatus] = {}
-        self._lock = Lock()  # Thread-safe access
+        self._lock = Lock()  # Thread - safe access
 
     def register_worker(
         self, worker_id: str, task_name: str, state: WorkerState = WorkerState.SPAWNING
@@ -172,7 +172,7 @@ class WorkerStatusMonitor:
         """
         with self._lock:
             if worker_id not in self._statuses:
-                # Auto-register if not exists
+                # Auto - register if not exists
                 self.register_worker(worker_id, task or "Unknown task", state)
                 return
 
@@ -355,7 +355,7 @@ class WorkerStatusMonitor:
             status: Worker status
 
         Returns:
-            Progress percentage (0-100)
+            Progress percentage (0 - 100)
         """
         # Terminal states have fixed progress
         if status.state == WorkerState.COMPLETED:
@@ -366,23 +366,23 @@ class WorkerStatusMonitor:
         if status.state == WorkerState.SPAWNING:
             return 5
 
-        # Heuristic calculation for RUNNING/WAITING states
+        # Heuristic calculation for RUNNING / WAITING states
         progress = 10  # Base progress for running
 
-        # Add progress based on output (0-40 points)
+        # Add progress based on output (0 - 40 points)
         if status.output_lines > 0:
             # Assume 50 output lines = significant progress
             output_progress = min(40, (status.output_lines / 50) * 40)
             progress += output_progress
 
-        # Add progress based on confirmations (0-30 points)
+        # Add progress based on confirmations (0 - 30 points)
         if status.confirmation_count > 0:
             # Assume 5 confirmations = significant milestones
             confirmation_progress = min(30, (status.confirmation_count / 5) * 30)
             progress += confirmation_progress
 
-        # Add progress based on time (0-20 points)
-        # Assume 5 minutes = 100% time-based progress
+        # Add progress based on time (0 - 20 points)
+        # Assume 5 minutes = 100% time - based progress
         time_progress = min(20, (status.elapsed_time / 300) * 20)
         progress += time_progress
 

@@ -20,7 +20,7 @@ from orchestrator.core.state_machine import (
     StateTransitionError,
 )
 
-router = APIRouter(prefix="/api/jobs", tags=["jobs"])
+router = APIRouter(prefix="/api / jobs", tags=["jobs"])
 
 
 def _get_job_or_404(db: Session, job_id: str) -> Job:
@@ -39,9 +39,9 @@ def _get_job_or_404(db: Session, job_id: str) -> Job:
     Create and submit a new job for hierarchical execution.
 
     **Request Body:**
-    - `task_description`: Task to execute (required, 1-4096 chars)
-    - `worker_count`: Number of workers to allocate (1-1000)
-    - `depth`: Hierarchy depth level (0-1000, default: 0)
+    - `task_description`: Task to execute (required, 1 - 4096 chars)
+    - `worker_count`: Number of workers to allocate (1 - 1000)
+    - `depth`: Hierarchy depth level (0 - 1000, default: 0)
     - `parent_job_id`: Parent job ID for hierarchical jobs (optional)
 
     **Job Lifecycle:**
@@ -71,8 +71,8 @@ def _get_job_or_404(db: Session, job_id: str) -> Job:
       "worker_count": 3,
       "depth": 0,
       "parent_job_id": null,
-      "created_at": "2025-10-28T10:00:00Z",
-      "updated_at": "2025-10-28T10:00:01Z"
+      "created_at": "2025 - 10 - 28T10:00:00Z",
+      "updated_at": "2025 - 10 - 28T10:00:01Z"
     }
     ```
     """,

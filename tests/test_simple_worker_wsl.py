@@ -11,7 +11,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-# Configure UTF-8 encoding BEFORE any output
+# Configure UTF - 8 encoding BEFORE any output
 from orchestrator.utils.encoding_config import configure_console_encoding, safe_print
 
 configure_console_encoding()
@@ -32,9 +32,9 @@ def test_worker():
     config = OrchestratorConfig()
     config.workspace_root = str(project_root / "workspace" / "test_simple_wsl")
     config.execution_mode = "wsl"  # WSLモード
-    config.wsl_distribution = "Ubuntu-24.04"  # WSLディストリビューション名
-    config.claude_command = "~/.local/bin/claude"  # Claude CLI パス
-    config.nvm_path = "/usr/bin"  # PATH設定（~/.local/binはシェルで展開される）
+    config.wsl_distribution = "Ubuntu - 24.04"  # WSLディストリビューション名
+    config.claude_command = "~/.local / bin / claude"  # Claude CLI パス
+    config.nvm_path = "/usr / bin"  # PATH設定（~/.local / binはシェルで展開される）
 
     # ワークスペース準備
     workspace = Path(config.workspace_root)
@@ -65,7 +65,7 @@ def test_worker():
 
     try:
         print("\n[Test] WorkerAI起動中...")
-        print(f"[Test] Mode: WSL")
+        print("[Test] Mode: WSL")
         print(f"[Test] Distribution: {config.wsl_distribution}")
         print(f"[Test] Workspace: {config.workspace_root}\n")
 
@@ -92,14 +92,14 @@ def test_worker():
             print(f"実行時間: {result.duration:.1f}秒")
 
         if result.output:
-            # 出力をファイルに保存 (UTF-8 with BOM)
+            # 出力をファイルに保存 (UTF - 8 with BOM)
             output_file = workspace / "worker_output.txt"
-            with open(output_file, "w", encoding="utf-8-sig") as f:
+            with open(output_file, "w", encoding="utf - 8-sig") as f:
                 f.write(result.output)
             safe_print(f"\n出力を保存しました: {output_file}")
             safe_print(f"出力長: {len(result.output)} 文字")
 
-            # 出力の最後の部分を表示（UTF-8対応）
+            # 出力の最後の部分を表示（UTF - 8対応）
             try:
                 output_preview = result.output[-500:]
                 safe_print("\n出力プレビュー（最後の500文字）:")

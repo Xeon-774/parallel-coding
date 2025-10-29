@@ -11,7 +11,7 @@ from typing import Dict
 
 
 class ConfirmationType(str, Enum):
-    """Types of confirmation requests from AI workers/supervisors"""
+    """Types of confirmation requests from AI workers / supervisors"""
 
     FILE_WRITE = "file_write"
     FILE_DELETE = "file_delete"

@@ -40,13 +40,13 @@ def db_session_override() -> Generator[None, None, None]:
 
 
 @pytest.fixture()
-def client(db_session_override: None) -> TestClient:  # noqa: PT004: effect-only fixture
+def client(db_session_override: None) -> TestClient:  # noqa: PT004: effect - only fixture
     app = create_app()
     return TestClient(app)
 
 
 def auth_headers(scopes: str) -> Dict[str, str]:
-    return {"X-Scopes": scopes}
+    return {"X - Scopes": scopes}
 
 
 def submit_sample_job(client: TestClient, **overrides):
@@ -58,7 +58,7 @@ def submit_sample_job(client: TestClient, **overrides):
     }
     payload.update(overrides)
     resp = client.post(
-        "/api/jobs/submit", json=payload, headers=auth_headers("jobs:write jobs:read")
+        "/api / jobs / submit", json=payload, headers=auth_headers("jobs:write jobs:read")
     )
     assert resp.status_code == 201, resp.text
     return resp.json()
@@ -74,7 +74,7 @@ def test_submit_job_transitions_to_pending(client: TestClient):
 def test_get_job_details(client: TestClient):
     created = submit_sample_job(client)
     job_id = created["id"]
-    resp = client.get(f"/api/jobs/{job_id}", headers=auth_headers("jobs:read"))
+    resp = client.get(f"/api / jobs/{job_id}", headers=auth_headers("jobs:read"))
     assert resp.status_code == 200
     body = resp.json()
     assert body["id"] == job_id
@@ -84,7 +84,7 @@ def test_get_job_details(client: TestClient):
 def test_cancel_job_from_pending(client: TestClient):
     created = submit_sample_job(client)
     job_id = created["id"]
-    resp = client.post(f"/api/jobs/{job_id}/cancel", headers=auth_headers("jobs:write jobs:read"))
+    resp = client.post(f"/api / jobs/{job_id}/cancel", headers=auth_headers("jobs:write jobs:read"))
     assert resp.status_code == 200
     assert resp.json()["status"] == "CANCELLED"
 
@@ -101,7 +101,7 @@ def test_cancel_completed_job_returns_400(client: TestClient):
         db.commit()
         break
 
-    resp = client.post(f"/api/jobs/{job_id}/cancel", headers=auth_headers("jobs:write"))
+    resp = client.post(f"/api / jobs/{job_id}/cancel", headers=auth_headers("jobs:write"))
     assert resp.status_code == 400
     assert "Invalid transition" in resp.json()["detail"]
 
@@ -113,7 +113,7 @@ def test_list_jobs_with_filters_and_pagination(client: TestClient):
     other_root = submit_sample_job(client, depth=0)  # noqa: F841
 
     # Filter by depth
-    resp = client.get("/api/jobs", params={"depth": 1}, headers=auth_headers("jobs:read"))
+    resp = client.get("/api / jobs", params={"depth": 1}, headers=auth_headers("jobs:read"))
     assert resp.status_code == 200
     jobs = resp.json()
     assert all(j["depth"] == 1 for j in jobs)
@@ -121,7 +121,7 @@ def test_list_jobs_with_filters_and_pagination(client: TestClient):
 
     # Filter by parent_job_id
     resp = client.get(
-        "/api/jobs",
+        "/api / jobs",
         params={"parent_job_id": root["id"]},
         headers=auth_headers("jobs:read"),
     )
@@ -132,7 +132,7 @@ def test_list_jobs_with_filters_and_pagination(client: TestClient):
 
     # Pagination
     resp = client.get(
-        "/api/jobs", params={"limit": 1, "offset": 0}, headers=auth_headers("jobs:read")
+        "/api / jobs", params={"limit": 1, "offset": 0}, headers=auth_headers("jobs:read")
     )
     assert resp.status_code == 200
     jobs = resp.json()
@@ -147,10 +147,10 @@ def test_security_scopes_enforced(client: TestClient):
         "depth": 0,
         "parent_job_id": None,
     }
-    resp = client.post("/api/jobs/submit", json=payload, headers=auth_headers("jobs:read"))
+    resp = client.post("/api / jobs / submit", json=payload, headers=auth_headers("jobs:read"))
     assert resp.status_code == 403
 
     # Missing read scope
     created = submit_sample_job(client)
-    resp = client.get(f"/api/jobs/{created['id']}")
+    resp = client.get(f"/api / jobs/{created['id']}")
     assert resp.status_code == 403

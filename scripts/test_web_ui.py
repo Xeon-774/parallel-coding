@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr / bin / env python
 """
 Web UIテストスクリプト
 
@@ -30,7 +30,7 @@ def test_web_ui():
     print()
 
     # テスト1: サーバーが起動しているか確認
-    print("[1/4] Testing server availability...")
+    print("[1 / 4] Testing server availability...")
     try:
         response = requests.get(f"{base_url}/", timeout=5)
         if response.status_code == 200:
@@ -49,13 +49,13 @@ def test_web_ui():
         print(f"❌ Error: {e}")
         return False
 
-    # テスト2: /api/statusエンドポイント
-    print("[2/4] Testing /api/status endpoint...")
+    # テスト2: /api / statusエンドポイント
+    print("[2 / 4] Testing /api / status endpoint...")
     try:
-        response = requests.get(f"{base_url}/api/status", timeout=5)
+        response = requests.get(f"{base_url}/api / status", timeout=5)
         if response.status_code == 200:
             data = response.json()
-            print(f"✅ Status endpoint working")
+            print("✅ Status endpoint working")
             print(f"   - System status: {data.get('status')}")
             print(f"   - Workers count: {data.get('workers_count')}")
             print(f"   - Workspace: {data.get('workspace')}")
@@ -67,9 +67,9 @@ def test_web_ui():
         return False
 
     # テスト3: 静的ファイル
-    print("[3/4] Testing static files...")
+    print("[3 / 4] Testing static files...")
     try:
-        response = requests.get(f"{base_url}/static/style.css", timeout=5)
+        response = requests.get(f"{base_url}/static / style.css", timeout=5)
         if response.status_code == 200:
             print("✅ Static files are served correctly")
         else:
@@ -80,9 +80,9 @@ def test_web_ui():
         return False
 
     # テスト4: JavaScriptファイル
-    print("[4/4] Testing JavaScript files...")
+    print("[4 / 4] Testing JavaScript files...")
     try:
-        response = requests.get(f"{base_url}/static/app.js", timeout=5)
+        response = requests.get(f"{base_url}/static / app.js", timeout=5)
         if response.status_code == 200:
             print("✅ JavaScript files are served correctly")
         else:
@@ -102,8 +102,8 @@ def test_web_ui():
     print("Next steps:")
     print("  1. Open your browser and go to the URL above")
     print("  2. In another terminal, run:")
-    print('     python orchestrator/main.py "Create a simple app"')
-    print("  3. Watch the dashboard update in real-time!")
+    print('     python orchestrator / main.py "Create a simple app"')
+    print("  3. Watch the dashboard update in real - time!")
     print()
 
     return True

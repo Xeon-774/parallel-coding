@@ -1,5 +1,5 @@
 """
-Phase 1: 8-Parallel Validation Test
+Phase 1: 8 - Parallel Validation Test
 
 Execute 8 Claude Code workers in parallel on MicroBlog test project.
 """
@@ -12,7 +12,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-# Configure UTF-8 encoding BEFORE any output
+# Configure UTF - 8 encoding BEFORE any output
 from orchestrator.utils.encoding_config import configure_console_encoding, safe_print
 
 configure_console_encoding()
@@ -24,26 +24,26 @@ from orchestrator.core.worker.worker_manager import WorkerManager
 
 def load_execution_config(config_path: str) -> dict:
     """Load Phase 1 execution configuration"""
-    with open(config_path, "r", encoding="utf-8-sig") as f:
+    with open(config_path, "r", encoding="utf - 8-sig") as f:
         return json.load(f)
 
 
 def test_phase1_parallel_execution():
     """
-    Phase 1: 8-Parallel Validation
+    Phase 1: 8 - Parallel Validation
 
     Spawns 8 Claude Code workers in parallel to develop different modules
     of the MicroBlog platform.
 
     Success Criteria:
     - All 8 workers spawn successfully
-    - ≥75% (6/8) tasks complete successfully
+    - ≥75% (6 / 8) tasks complete successfully
     - <20% git conflict rate
     - No system crashes or deadlocks
     """
 
     safe_print("=" * 80)
-    safe_print("Phase 1: 8-Parallel Validation Test")
+    safe_print("Phase 1: 8 - Parallel Validation Test")
     safe_print("=" * 80)
 
     # Load execution configuration
@@ -59,8 +59,8 @@ def test_phase1_parallel_execution():
     config.workspace_root = exec_config["project_path"]
     config.execution_mode = exec_config["execution_mode"]
     config.wsl_distribution = exec_config["wsl_distribution"]
-    config.claude_command = "~/.local/bin/claude"
-    config.nvm_path = "/usr/bin"
+    config.claude_command = "~/.local / bin / claude"
+    config.nvm_path = "/usr / bin"
 
     # Logging
     log_dir = Path(exec_config["logging"]["log_dir"])
@@ -70,7 +70,7 @@ def test_phase1_parallel_execution():
 
     # Worker manager
     worker_manager = WorkerManager(
-        config=config, logger=logger, user_approval_callback=None  # Auto-approval mode
+        config=config, logger=logger, user_approval_callback=None  # Auto - approval mode
     )
 
     safe_print("=" * 80)
@@ -92,13 +92,13 @@ def test_phase1_parallel_execution():
 
             # Read task file
             task_file_path = Path(exec_config["project_path"]) / worker_config["task_file"]
-            with open(task_file_path, "r", encoding="utf-8-sig") as f:
+            with open(task_file_path, "r", encoding="utf - 8-sig") as f:
                 task_content = f.read()
 
             # Create task
             task = {
                 "name": worker_config["module_name"],
-                "prompt": f"""
+                "prompt": """
 You are a WorkerAI developing a module for the MicroBlog platform.
 
 Your task:
@@ -109,7 +109,7 @@ Important:
 - Create all specified files
 - Write unit tests
 - Ensure TypeScript compiles without errors
-- Follow the encoding policy (UTF-8 with BOM)
+- Follow the encoding policy (UTF - 8 with BOM)
 
 Start working on this task now.
 """,
@@ -159,11 +159,11 @@ Start working on this task now.
         conflict_rate = (len(git_conflicts) / total_workers) * 100 if total_workers > 0 else 0
 
         safe_print(
-            f"\nWorkers Spawned: {spawned_count}/{total_workers} ({spawned_count/total_workers*100:.1f}%)"
+            f"\nWorkers Spawned: {spawned_count}/{total_workers} ({spawned_count / total_workers * 100:.1f}%)"
         )
         safe_print(f"Modules Completed: {completed_count}/{total_workers} ({completion_rate:.1f}%)")
         safe_print(
-            f"Modules Failed: {failed_count}/{total_workers} ({failed_count/total_workers*100:.1f}%)"
+            f"Modules Failed: {failed_count}/{total_workers} ({failed_count / total_workers * 100:.1f}%)"
         )
         safe_print(f"Git Conflicts: {len(git_conflicts)} ({conflict_rate:.1f}%)")
 
@@ -189,7 +189,7 @@ Start working on this task now.
         safe_print("\n" + "=" * 80)
         if overall_success:
             safe_print("🎉 PHASE 1 VALIDATION: SUCCESS")
-            safe_print("Parallel AI coding tool is validated for 8-parallel execution!")
+            safe_print("Parallel AI coding tool is validated for 8 - parallel execution!")
         elif completion_rate >= 50:
             safe_print("⚠️ PHASE 1 VALIDATION: PARTIAL SUCCESS")
             safe_print("Some workers completed, but improvements needed.")

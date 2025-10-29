@@ -5,7 +5,7 @@ Tests time estimation logic for Codex document reviews with various
 document sizes and perspective counts.
 
 Author: Claude (Sonnet 4.5)
-Created: 2025-10-28
+Created: 2025 - 10 - 28
 Version: 1.0.0
 Excellence AI Standard: 100% Applied
 """
@@ -79,7 +79,7 @@ class TestEstimateCodexReviewTime:
 
     def test_negative_lines_raises_error(self):
         """Test that negative document_lines raises ValueError."""
-        with pytest.raises(ValueError, match="non-negative"):
+        with pytest.raises(ValueError, match="non - negative"):
             estimate_codex_review_time(-100, 1)
 
     def test_zero_perspectives_raises_error(self):
@@ -133,7 +133,7 @@ class TestCountDocumentLines:
     def test_count_lines_in_existing_file(self, tmp_path):
         """Test counting lines in a file."""
         test_file = tmp_path / "test.txt"
-        test_file.write_text("line1\nline2\nline3\n", encoding="utf-8-sig")
+        test_file.write_text("line1\nline2\nline3\n", encoding="utf - 8-sig")
 
         count = count_document_lines(str(test_file))
         assert count == 3
@@ -141,7 +141,7 @@ class TestCountDocumentLines:
     def test_count_lines_empty_file(self, tmp_path):
         """Test counting lines in empty file."""
         test_file = tmp_path / "empty.txt"
-        test_file.write_text("", encoding="utf-8-sig")
+        test_file.write_text("", encoding="utf - 8-sig")
 
         count = count_document_lines(str(test_file))
         assert count == 0
@@ -149,7 +149,7 @@ class TestCountDocumentLines:
     def test_count_lines_file_not_found(self):
         """Test that missing file raises FileNotFoundError."""
         with pytest.raises(FileNotFoundError):
-            count_document_lines("/nonexistent/file.txt")
+            count_document_lines("/nonexistent / file.txt")
 
 
 class TestEstimateFromFile:
@@ -158,7 +158,7 @@ class TestEstimateFromFile:
     def test_estimate_from_existing_file(self, tmp_path):
         """Test estimation directly from file path."""
         test_file = tmp_path / "test.md"
-        test_file.write_text("\n" * 1000, encoding="utf-8-sig")
+        test_file.write_text("\n" * 1000, encoding="utf - 8-sig")
 
         result = estimate_from_file(str(test_file), perspective_count=2)
 
@@ -168,7 +168,7 @@ class TestEstimateFromFile:
     def test_estimate_from_file_not_found(self):
         """Test that missing file raises FileNotFoundError."""
         with pytest.raises(FileNotFoundError):
-            estimate_from_file("/nonexistent/file.md", 1)
+            estimate_from_file("/nonexistent / file.md", 1)
 
 
 class TestReviewTimeEstimateModel:
@@ -182,7 +182,7 @@ class TestReviewTimeEstimateModel:
             result.estimated_seconds = 999
 
     def test_model_validates_non_negative(self):
-        """Test that model validates non-negative values."""
+        """Test that model validates non - negative values."""
         with pytest.raises(Exception):
             ReviewTimeEstimate(
                 estimated_seconds=-1,
@@ -232,13 +232,13 @@ class TestEmpiricalValidation:
         """
         Test estimation for 3 combined design documents.
 
-        Actual: 3,124 lines, 6 perspectives, ~15-20 minutes
-        Note: Formula estimates ~9 minutes, actual was 15-20 minutes.
+        Actual: 3,124 lines, 6 perspectives, ~15 - 20 minutes
+        Note: Formula estimates ~9 minutes, actual was 15 - 20 minutes.
         This is acceptable - better to underestimate slightly than overestimate.
         """
         result = estimate_codex_review_time(3124, 6)
 
-        # Should estimate 8-20 minutes range (conservative estimate OK)
+        # Should estimate 8 - 20 minutes range (conservative estimate OK)
         assert 8.0 <= result.estimated_minutes <= 20.0
         assert result.strategy == ExecutionStrategy.BACKGROUND_LONG
         assert result.should_split
@@ -248,7 +248,7 @@ class TestSplitSuggestions:
     """Test document splitting suggestions."""
 
     def test_split_suggestion_format(self):
-        """Test that split suggestions are well-formatted."""
+        """Test that split suggestions are well - formatted."""
         result = estimate_codex_review_time(3000, 3)
 
         assert result.should_split
@@ -290,5 +290,5 @@ class TestMessageLocalization:
         for lines, perspectives in test_cases:
             result = estimate_codex_review_time(lines, perspectives)
             assert result.message
-            # Check for Japanese characters (Hiragana/Katakana range)
+            # Check for Japanese characters (Hiragana / Katakana range)
             assert any("\u3040" <= c <= "\u30ff" for c in result.message)

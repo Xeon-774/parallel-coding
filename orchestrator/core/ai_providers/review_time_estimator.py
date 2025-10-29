@@ -13,7 +13,7 @@ Key Features:
 Empirical Data:
     - WEEK2_MVP_SPEC (617 lines, 1 perspective) → ~2 minutes
     - ROADMAP (497 lines, 1 perspective) → ~2 minutes
-    - 3 design docs (3,124 lines, 6 perspectives) → ~15-20 minutes
+    - 3 design docs (3,124 lines, 6 perspectives) → ~15 - 20 minutes
 
 Usage:
     >>> from orchestrator.core.ai_providers.review_time_estimator import (
@@ -24,7 +24,7 @@ Usage:
     >>> print(f"Timeout: {result['timeout_minutes']} minutes")
 
 Author: Claude (Sonnet 4.5)
-Created: 2025-10-28
+Created: 2025 - 10 - 28
 Version: 1.0.0
 Excellence AI Standard: 100% Applied
 """
@@ -68,7 +68,7 @@ class ExecutionStrategy(str, Enum):
     """Block and wait for result (short reviews <2 min)."""
 
     BACKGROUND_SHORT = "BACKGROUND_SHORT"
-    """Background execution with periodic checks (2-10 min)."""
+    """Background execution with periodic checks (2 - 10 min)."""
 
     BACKGROUND_LONG = "BACKGROUND_LONG"
     """Background execution, consider splitting (>10 min)."""
@@ -89,7 +89,7 @@ class ReviewTimeEstimate(BaseModel):
         timeout_seconds: Recommended timeout with safety buffer
         timeout_minutes: Timeout in minutes
         strategy: Recommended execution strategy
-        message: Human-readable recommendation message
+        message: Human - readable recommendation message
         should_split: Whether document should be split
         split_suggestion: Suggestion for splitting (if applicable)
     """
@@ -99,7 +99,7 @@ class ReviewTimeEstimate(BaseModel):
     timeout_seconds: int = Field(..., ge=0, description="Timeout with safety buffer")
     timeout_minutes: float = Field(..., ge=0.0, description="Timeout in minutes")
     strategy: ExecutionStrategy = Field(..., description="Recommended execution strategy")
-    message: str = Field(..., description="Human-readable recommendation")
+    message: str = Field(..., description="Human - readable recommendation")
     should_split: bool = Field(..., description="Whether to split document")
     split_suggestion: Optional[str] = Field(None, description="Document splitting suggestion")
 
@@ -153,7 +153,7 @@ def estimate_codex_review_time(
         True
     """
     if document_lines < 0:
-        raise ValueError("document_lines must be non-negative")
+        raise ValueError("document_lines must be non - negative")
     if perspective_count < 1:
         raise ValueError("perspective_count must be at least 1")
 
@@ -211,7 +211,7 @@ def _determine_strategy(timeout_seconds: int) -> ExecutionStrategy:
 
 def _get_strategy_message(strategy: ExecutionStrategy) -> str:
     """
-    Get human-readable message for execution strategy.
+    Get human - readable message for execution strategy.
 
     Args:
         strategy: ExecutionStrategy
@@ -222,7 +222,7 @@ def _get_strategy_message(strategy: ExecutionStrategy) -> str:
     messages = {
         ExecutionStrategy.BLOCKING: ("短時間レビュー (2分以内) - ブロッキング実行推奨"),
         ExecutionStrategy.BACKGROUND_SHORT: (
-            "中時間レビュー (2-10分) - バックグラウンド実行 + 定期確認"
+            "中時間レビュー (2 - 10分) - バックグラウンド実行 + 定期確認"
         ),
         ExecutionStrategy.BACKGROUND_LONG: (
             "長時間レビュー (10分以上) - バックグラウンド実行 + 分割推奨"
@@ -251,10 +251,10 @@ def count_document_lines(file_path: str) -> int:
         OSError: If file cannot be read
 
     Examples:
-        >>> count_document_lines("docs/ROADMAP.md")
+        >>> count_document_lines("docs / ROADMAP.md")
         497
     """
-    with open(file_path, "r", encoding="utf-8-sig") as f:
+    with open(file_path, "r", encoding="utf - 8-sig") as f:
         return sum(1 for _ in f)
 
 
@@ -279,7 +279,7 @@ def estimate_from_file(
         ValueError: If invalid parameters
 
     Examples:
-        >>> result = estimate_from_file("docs/ROADMAP.md", perspective_count=2)
+        >>> result = estimate_from_file("docs / ROADMAP.md", perspective_count=2)
         >>> print(f"Estimated: {result.estimated_minutes} minutes")
     """
     lines = count_document_lines(file_path)

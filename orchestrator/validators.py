@@ -124,7 +124,7 @@ def validate_worker_output(output_file: str, min_size: int = 10) -> Tuple[bool, 
         (検証成功, エラーメッセージ)
 
     Examples:
-        >>> is_valid, error = validate_worker_output("/path/to/output.txt")
+        >>> is_valid, error = validate_worker_output("/path / to / output.txt")
         >>> if not is_valid:
         ...     print(f"Error: {error}")
     """
@@ -139,7 +139,7 @@ def validate_worker_output(output_file: str, min_size: int = 10) -> Tuple[bool, 
             return (False, f"Output file too small ({size} bytes, min {min_size})")
 
         # ファイルを読み込んで内容を確認
-        with open(output_file, "r", encoding="utf-8") as f:
+        with open(output_file, "r", encoding="utf - 8") as f:
             content = f.read()
 
         # 空白のみでないか確認
@@ -167,10 +167,10 @@ def validate_worker_output(output_file: str, min_size: int = 10) -> Tuple[bool, 
 
 def validate_git_bash_path(path: Optional[str]) -> Tuple[bool, Optional[str]]:
     """
-    git-bashのパスを検証
+    git - bashのパスを検証
 
     Args:
-        path: git-bashのパス
+        path: git - bashのパス
 
     Returns:
         (検証成功, エラーメッセージ)
@@ -179,11 +179,11 @@ def validate_git_bash_path(path: Optional[str]) -> Tuple[bool, Optional[str]]:
         >>> is_valid, error = validate_git_bash_path("C:\\Program Files\\Git\\bin\\bash.exe")
     """
     if not path:
-        return (False, "git-bash path is not set")
+        return (False, "git - bash path is not set")
 
     # ファイルの存在確認
     if not os.path.exists(path):
-        return (False, f"git-bash not found at: {path}")
+        return (False, f"git - bash not found at: {path}")
 
     # 実行可能ファイルか確認
     if not os.path.isfile(path):
@@ -211,7 +211,7 @@ def validate_workspace(workspace_root: str) -> Tuple[bool, List[str]]:
         (検証成功, エラーメッセージのリスト)
 
     Examples:
-        >>> is_valid, errors = validate_workspace("/path/to/workspace")
+        >>> is_valid, errors = validate_workspace("/path / to / workspace")
     """
     errors = []
 

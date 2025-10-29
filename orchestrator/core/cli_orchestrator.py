@@ -1,5 +1,5 @@
 """
-CLI-based Orchestrator AI (Subscription Only - No API)
+CLI - based Orchestrator AI (Subscription Only - No API)
 
 Uses Claude CLI with subscription for orchestrator AI decisions.
 """
@@ -25,14 +25,14 @@ class Decision:
 
 class CLIOrchestratorAI:
     """
-    Claude CLI-based Orchestrator AI
+    Claude CLI - based Orchestrator AI
 
     Uses Claude Pro subscription (no API calls).
     Each question spawns a new Claude CLI process.
     """
 
     def __init__(
-        self, workspace: str, wsl_distribution: str = "Ubuntu-24.04", verbose: bool = True
+        self, workspace: str, wsl_distribution: str = "Ubuntu - 24.04", verbose: bool = True
     ):
         """
         Initialize CLI Orchestrator
@@ -59,9 +59,9 @@ Your role:
 
 CRITICAL RESPONSE FORMAT:
 You MUST respond with exactly one of these formats:
-"APPROVED: [brief reason in 1-2 sentences]"
+"APPROVED: [brief reason in 1 - 2 sentences]"
 or
-"DENIED: [brief reason in 1-2 sentences]"
+"DENIED: [brief reason in 1 - 2 sentences]"
 
 Examples of good responses:
 - APPROVED: Creating schema.sql in database/ is appropriate for database setup.
@@ -76,7 +76,7 @@ Keep your reasoning concise and clear.
         Ask the Orchestrator AI for a decision
 
         Args:
-            question: The question/request to evaluate
+            question: The question / request to evaluate
             context: Additional context (worker_id, task_name, etc.)
 
         Returns:
@@ -89,7 +89,7 @@ Keep your reasoning concise and clear.
             context = {}
 
         context.setdefault("project_name", "AI_Investor")
-        context.setdefault("project_goal", "Build AI-powered investment platform MVP")
+        context.setdefault("project_goal", "Build AI - powered investment platform MVP")
         context.setdefault("worker_id", "unknown")
         context.setdefault("task_name", "unknown")
 
@@ -114,7 +114,7 @@ Keep your reasoning concise and clear.
             )
 
             if self.verbose:
-                print(f"\n[Orchestrator AI] Response:")
+                print("\n[Orchestrator AI] Response:")
                 print(f"{response[:200]}...")
                 print(f"{'='*60}\n")
 
@@ -154,7 +154,7 @@ Keep your reasoning concise and clear.
 
     def _build_full_question(self, question: str, context: Dict[str, Any]) -> str:
         """Build full question with context"""
-        return f"""=== Context ===
+        return """=== Context ===
 Worker: {context['worker_id']}
 Task: {context['task_name']}
 
@@ -195,11 +195,11 @@ Respond with APPROVED: or DENIED:"""
 
         try:
             # Write system prompt to file
-            with open(system_prompt_file, "w", encoding="utf-8") as f:
+            with open(system_prompt_file, "w", encoding="utf - 8") as f:
                 f.write(system_prompt)
 
             # Write question to file
-            with open(question_file, "w", encoding="utf-8") as f:
+            with open(question_file, "w", encoding="utf - 8") as f:
                 f.write(question)
 
             # Convert to WSL paths
@@ -210,14 +210,14 @@ Respond with APPROVED: or DENIED:"""
             cmd = (
                 f'wsl -d {self.wsl_distribution} -- bash -l -c "'
                 f"cd {wsl_workspace} && "
-                f"claude --print "
-                f'--system-prompt \\"$(cat {wsl_system_prompt})\\" '
+                "claude --print "
+                f'--system - prompt \\"$(cat {wsl_system_prompt})\\" '
                 f"< {wsl_question}"
-                f'"'
+                '"'
             )
 
             if self.verbose:
-                print(f"\n[DEBUG] Executing Claude CLI...")
+                print("\n[DEBUG] Executing Claude CLI...")
 
             # Run command
             result = subprocess.run(
@@ -298,15 +298,15 @@ Respond with APPROVED: or DENIED:"""
         """
         Convert Windows path to WSL path
 
-        Example: D:\\user\\file.txt -> /mnt/d/user/file.txt
+        Example: D:\\user\\file.txt -> /mnt / d/user / file.txt
         """
         # Replace backslashes with forward slashes
         path = windows_path.replace("\\", "/")
 
-        # Convert drive letter (D:/ -> /mnt/d/)
+        # Convert drive letter (D:/ -> /mnt / d/)
         import re
 
-        path = re.sub(r"^([A-Za-z]):", lambda m: f"/mnt/{m.group(1).lower()}", path)
+        path = re.sub(r"^([A - Za - z]):", lambda m: f"/mnt/{m.group(1).lower()}", path)
 
         return path
 
@@ -337,7 +337,7 @@ if __name__ == "__main__":
     async def test():
         """Simple test"""
         orchestrator = CLIOrchestratorAI(
-            workspace=r"D:\user\ai_coding\AI_Investor\tools\parallel-coding\workspace"
+            workspace=r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\workspace"
         )
 
         # Test question
@@ -352,7 +352,7 @@ if __name__ == "__main__":
         )
 
         print(f"\n{'='*60}")
-        print(f"RESULT:")
+        print("RESULT:")
         print(f"  Action: {decision.action}")
         print(f"  Reasoning: {decision.reasoning}")
         print(f"  Latency: {decision.latency_ms:.0f}ms")

@@ -10,10 +10,10 @@ Usage:
        python start_api_server.py
 
     2. Run this test in another terminal:
-       python tests/manual_api_test.py
+       python tests / manual_api_test.py
 
     Or use the automated version (requires no separate terminal):
-       python tests/manual_api_test.py --auto
+       python tests / manual_api_test.py --auto
 """
 
 import argparse
@@ -79,7 +79,7 @@ def test_server_connectivity(api_url):
         response = requests.get(f"{api_url}/", timeout=5)
         if response.status_code == 200:
             data = response.json()
-            print_success(f"Server is reachable")
+            print_success("Server is reachable")
             print_info(f"Service: {data.get('service')}")
             print_info(f"Version: {data.get('version')}")
             return True
@@ -137,7 +137,9 @@ def test_authentication(api_url):
     # Test without API key
     print_info("Testing request without API key...")
     try:
-        response = requests.post(f"{api_url}/api/v1/orchestrate", json={"request": "Test request"})
+        response = requests.post(
+            f"{api_url}/api / v1 / orchestrate", json={"request": "Test request"}
+        )
         if response.status_code == 401:
             print_success("Correctly rejected request without API key")
         else:
@@ -150,9 +152,9 @@ def test_authentication(api_url):
     print_info("Testing request with invalid API key...")
     try:
         response = requests.post(
-            f"{api_url}/api/v1/orchestrate",
+            f"{api_url}/api / v1 / orchestrate",
             json={"request": "Test request"},
-            headers={"X-API-Key": "invalid-key-12345"},
+            headers={"X - API - Key": "invalid - key - 12345"},
         )
         if response.status_code == 401:
             print_success("Correctly rejected request with invalid API key")
@@ -257,7 +259,7 @@ def run_all_tests(api_url, api_key, skip_execution=False):
     if not skip_execution:
         results.append(("Mock Orchestration", test_mock_orchestration(client)))
     else:
-        print_warning("\nSkipping orchestration test (--skip-execution)")
+        print_warning("\nSkipping orchestration test (--skip - execution)")
 
     # Summary
     print_header("Test Summary")
@@ -288,17 +290,17 @@ def main():
     )
 
     parser.add_argument(
-        "--api-url",
+        "--api - url",
         default="http://localhost:8000",
         help="API server URL (default: http://localhost:8000)",
     )
 
     parser.add_argument(
-        "--api-key", default="sk-orch-dev-key-12345", help="API key for authentication"
+        "--api - key", default="sk - orch - dev - key - 12345", help="API key for authentication"
     )
 
     parser.add_argument(
-        "--skip-execution", action="store_true", help="Skip actual orchestration execution test"
+        "--skip - execution", action="store_true", help="Skip actual orchestration execution test"
     )
 
     parser.add_argument(
@@ -311,7 +313,7 @@ def main():
 
     if args.auto:
         print_info("Starting API server automatically...")
-        print_warning("This is experimental. Press Ctrl+C to stop.")
+        print_warning("This is experimental. Press Ctrl + C to stop.")
         print()
 
         # Start server in background

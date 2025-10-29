@@ -68,7 +68,7 @@ class WorktreeManager:
             )
 
             subprocess.run(
-                ["git", "commit", "-m", "Initial commit for parallel AI coding", "--allow-empty"],
+                ["git", "commit", "-m", "Initial commit for parallel AI coding", "--allow - empty"],
                 cwd=self.project_root,
                 check=True,
                 capture_output=True,
@@ -125,7 +125,7 @@ class WorktreeManager:
 
         except subprocess.CalledProcessError as e:
             print(f"[ERROR] Worktree作成に失敗: {e}")
-            print(f"  stderr: {e.stderr if hasattr(e, 'stderr') else 'N/A'}")
+            print(f"  stderr: {e.stderr if hasattr(e, 'stderr') else 'N / A'}")
             return None
 
     def remove_worktree(self, worker_id: str) -> bool:
@@ -194,7 +194,7 @@ class WorktreeManager:
             )
 
             subprocess.run(
-                ["git", "commit", "-m", f"Worker {worker_id} completed task", "--allow-empty"],
+                ["git", "commit", "-m", f"Worker {worker_id} completed task", "--allow - empty"],
                 cwd=worktree_info.path,
                 check=True,
                 capture_output=True,
@@ -211,7 +211,7 @@ class WorktreeManager:
                     "git",
                     "merge",
                     worktree_info.branch_name,
-                    "--no-ff",
+                    "--no - f",
                     "-m",
                     f"Merge worker {worker_id} changes",
                 ],
@@ -243,7 +243,7 @@ class WorktreeManager:
         """競合しているファイルのリストを取得"""
         try:
             result = subprocess.run(
-                ["git", "diff", "--name-only", "--diff-filter=U"],
+                ["git", "dif", "--name - only", "--diff - filter=U"],
                 cwd=self.project_root,
                 check=True,
                 capture_output=True,
@@ -288,7 +288,7 @@ class WorktreeManager:
         # コミット
         try:
             subprocess.run(
-                ["git", "commit", "-m", "Auto-resolved conflicts"],
+                ["git", "commit", "-m", "Auto - resolved conflicts"],
                 cwd=self.project_root,
                 check=True,
                 capture_output=True,

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 オーケストレーターによるリアルタイム監視テスト
 
@@ -15,12 +15,12 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-# UTF-8出力設定
+# UTF - 8出力設定
 if sys.platform == "win32":
     import codecs
 
-    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
-    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
+    sys.stdout = codecs.getwriter("utf - 8")(sys.stdout.buffer, "replace")
+    sys.stderr = codecs.getwriter("utf - 8")(sys.stderr.buffer, "replace")
 
 from orchestrator import OrchestratorConfig, RefactoredOrchestrator
 
@@ -51,7 +51,7 @@ def test_orchestrator_realtime_monitoring():
     print("[設定]")
     print(f"  実行モード: {os.environ['ORCHESTRATOR_MODE']}")
     print(f"  Git Bash: {os.environ['CLAUDE_CODE_GIT_BASH_PATH']}")
-    print(f"  リアルタイム監視: 有効")
+    print("  リアルタイム監視: 有効")
     print()
 
     # 高負荷タスク：素数探索、フィボナッチ、ソート
@@ -131,7 +131,7 @@ def test_orchestrator_realtime_monitoring():
                 if output_file.exists():
                     print(f"[Worker {worker_id} 出力]")
                     print("-" * 40)
-                    with open(output_file, "r", encoding="utf-8") as f:
+                    with open(output_file, "r", encoding="utf - 8") as f:
                         output = f.read()
                         # 最初の1000文字を表示
                         if len(output) > 1000:

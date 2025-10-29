@@ -61,7 +61,7 @@ class TestHealthEndpoint:
 
     def test_health_endpoint_returns_healthy(self, client):
         """Test health endpoint returns healthy status."""
-        response = client.get("/api/v1/status/health")
+        response = client.get("/api / v1 / status / health")
 
         assert response.status_code == 200
         data = response.json()
@@ -73,7 +73,7 @@ class TestHealthEndpoint:
 
     def test_health_endpoint_includes_workspace(self, client):
         """Test health endpoint includes workspace info."""
-        response = client.get("/api/v1/status/health")
+        response = client.get("/api / v1 / status / health")
         data = response.json()
 
         assert "workspace_root" in data
@@ -85,7 +85,7 @@ class TestWorkersListEndpoint:
 
     def test_list_workers_empty(self, client):
         """Test listing workers when none are registered."""
-        response = client.get("/api/v1/status/workers")
+        response = client.get("/api / v1 / status / workers")
 
         assert response.status_code == 200
         data = response.json()
@@ -100,7 +100,7 @@ class TestWorkersListEndpoint:
         monitor.register_worker("worker_002", "Task 2")
         monitor.register_worker("worker_003", "Task 3")
 
-        response = client.get("/api/v1/status/workers")
+        response = client.get("/api / v1 / status / workers")
 
         assert response.status_code == 200
         data = response.json()
@@ -117,7 +117,7 @@ class TestWorkersListEndpoint:
         monitor.update_worker_state("worker_001", WorkerState.RUNNING)
         monitor.update_output_metrics("worker_001", output_lines=25)
 
-        response = client.get("/api/v1/status/workers")
+        response = client.get("/api / v1 / status / workers")
         data = response.json()
 
         worker = data["workers"][0]
@@ -139,7 +139,7 @@ class TestWorkersListEndpoint:
         monitor.register_worker("worker_003", "Task 3", WorkerState.COMPLETED)
         monitor.register_worker("worker_004", "Task 4", WorkerState.ERROR)
 
-        response = client.get("/api/v1/status/workers")
+        response = client.get("/api / v1 / status / workers")
         data = response.json()
 
         assert data["count"] == 4
@@ -161,7 +161,7 @@ class TestWorkerDetailEndpoint:
         monitor.update_output_metrics("worker_001", output_lines=42)
         monitor.update_confirmation_count("worker_001", confirmation_count=3)
 
-        response = client.get("/api/v1/status/workers/worker_001")
+        response = client.get("/api / v1 / status / workers / worker_001")
 
         assert response.status_code == 200
         data = response.json()
@@ -175,7 +175,7 @@ class TestWorkerDetailEndpoint:
 
     def test_get_nonexistent_worker(self, client):
         """Test getting details for a worker that doesn't exist."""
-        response = client.get("/api/v1/status/workers/worker_999")
+        response = client.get("/api / v1 / status / workers / worker_999")
 
         assert response.status_code == 404
         data = response.json()
@@ -190,7 +190,7 @@ class TestWorkerDetailEndpoint:
             "worker_001", WorkerState.ERROR, error_message="Connection timeout"
         )
 
-        response = client.get("/api/v1/status/workers/worker_001")
+        response = client.get("/api / v1 / status / workers / worker_001")
         data = response.json()
 
         assert data["state"] == "error"
@@ -201,7 +201,7 @@ class TestWorkerDetailEndpoint:
         monitor.register_worker("worker_001", "Task")
         monitor.update_performance_metrics("worker_001", memory_mb=512.5, cpu_percent=25.3)
 
-        response = client.get("/api/v1/status/workers/worker_001")
+        response = client.get("/api / v1 / status / workers / worker_001")
         data = response.json()
 
         assert data["memory_mb"] == 512.5
@@ -213,7 +213,7 @@ class TestSummaryEndpoint:
 
     def test_summary_empty(self, client):
         """Test summary with no workers."""
-        response = client.get("/api/v1/status/summary")
+        response = client.get("/api / v1 / status / summary")
 
         assert response.status_code == 200
         data = response.json()
@@ -245,7 +245,7 @@ class TestSummaryEndpoint:
         monitor.register_worker("worker_005", "Task 5")
         monitor.update_worker_state("worker_005", WorkerState.WAITING)
 
-        response = client.get("/api/v1/status/summary")
+        response = client.get("/api / v1 / status / summary")
         data = response.json()
 
         assert data["total_workers"] == 5
@@ -265,7 +265,7 @@ class TestSummaryEndpoint:
         monitor.update_worker_state("worker_002", WorkerState.RUNNING)
         monitor.update_output_metrics("worker_002", output_lines=30)
 
-        response = client.get("/api/v1/status/summary")
+        response = client.get("/api / v1 / status / summary")
         data = response.json()
 
         # Both workers should have progress > 0
@@ -284,7 +284,7 @@ class TestWebSocketEndpoint:
         monitor.update_worker_state("worker_001", WorkerState.RUNNING)
 
         # Connect to WebSocket
-        with client.websocket_connect("/api/v1/status/ws/worker_001") as websocket:
+        with client.websocket_connect("/api / v1 / status / ws / worker_001") as websocket:
             # Receive first status message
             data = websocket.receive_json()
 
@@ -309,7 +309,7 @@ class TestWebSocketEndpoint:
         monitor.register_worker("worker_001", "Task")
         monitor.update_worker_state("worker_001", WorkerState.RUNNING)
 
-        with client.websocket_connect("/api/v1/status/ws/worker_001") as websocket:
+        with client.websocket_connect("/api / v1 / status / ws / worker_001") as websocket:
             # Receive initial status
             data = websocket.receive_json()
             assert data["data"]["state"] == "running"
@@ -326,7 +326,7 @@ class TestWebSocketEndpoint:
 
     def test_websocket_with_nonexistent_worker(self, client):
         """Test WebSocket with worker that doesn't exist."""
-        with client.websocket_connect("/api/v1/status/ws/worker_999") as websocket:
+        with client.websocket_connect("/api / v1 / status / ws / worker_999") as websocket:
             # Should receive error or status updates with None
             data = websocket.receive_json()
 
@@ -342,7 +342,7 @@ class TestWebSocketEndpoint:
         monitor.register_worker("worker_001", "Task")
         monitor.update_worker_state("worker_001", WorkerState.RUNNING)
 
-        with client.websocket_connect("/api/v1/status/ws/worker_001") as websocket:
+        with client.websocket_connect("/api / v1 / status / ws / worker_001") as websocket:
             # Receive first message
             start_time = time.time()
             data1 = websocket.receive_json()
@@ -353,7 +353,7 @@ class TestWebSocketEndpoint:
 
             # Should be approximately 500ms between messages
             # Allow some tolerance for processing time
-            assert 0.4 < elapsed < 0.7  # 400-700ms tolerance
+            assert 0.4 < elapsed < 0.7  # 400 - 700ms tolerance
 
 
 class TestAPIErrorHandling:
@@ -362,7 +362,7 @@ class TestAPIErrorHandling:
     def test_invalid_worker_id_format(self, client):
         """Test handling of invalid worker ID format."""
         # FastAPI should handle this gracefully
-        response = client.get("/api/v1/status/workers/invalid%20id")
+        response = client.get("/api / v1 / status / workers / invalid%20id")
 
         # Should return 404 (not found) or handle the ID
         assert response.status_code in [404, 200]
@@ -379,11 +379,11 @@ class TestAPIErrorHandling:
         results = []
 
         def fetch_workers():
-            response = client.get("/api/v1/status/workers")
+            response = client.get("/api / v1 / status / workers")
             results.append(response.status_code)
 
         def fetch_summary():
-            response = client.get("/api/v1/status/summary")
+            response = client.get("/api / v1 / status / summary")
             results.append(response.status_code)
 
         # Make concurrent requests
@@ -411,7 +411,7 @@ class TestAPIIntegration:
         # 1. Register worker
         monitor.register_worker("worker_001", "Build feature X")
 
-        response = client.get("/api/v1/status/workers/worker_001")
+        response = client.get("/api / v1 / status / workers / worker_001")
         data = response.json()
         assert data["state"] == "spawning"
         # Progress is only calculated when metrics are updated, not during registration
@@ -420,7 +420,7 @@ class TestAPIIntegration:
         # 2. Start running
         monitor.update_worker_state("worker_001", WorkerState.RUNNING)
 
-        response = client.get("/api/v1/status/workers/worker_001")
+        response = client.get("/api / v1 / status / workers / worker_001")
         data = response.json()
         assert data["state"] == "running"
         # Progress is still 0 until metrics are updated
@@ -429,7 +429,7 @@ class TestAPIIntegration:
         # 3. Add output
         monitor.update_output_metrics("worker_001", output_lines=25)
 
-        response = client.get("/api/v1/status/workers/worker_001")
+        response = client.get("/api / v1 / status / workers / worker_001")
         data = response.json()
         assert data["output_lines"] == 25
         assert data["progress"] > 10
@@ -437,7 +437,7 @@ class TestAPIIntegration:
         # 4. Add confirmations
         monitor.update_confirmation_count("worker_001", confirmation_count=2)
 
-        response = client.get("/api/v1/status/workers/worker_001")
+        response = client.get("/api / v1 / status / workers / worker_001")
         data = response.json()
         assert data["confirmation_count"] == 2
         assert data["progress"] > 20
@@ -445,16 +445,16 @@ class TestAPIIntegration:
         # 5. Complete
         monitor.update_worker_state("worker_001", WorkerState.COMPLETED)
 
-        response = client.get("/api/v1/status/workers/worker_001")
+        response = client.get("/api / v1 / status / workers / worker_001")
         data = response.json()
         assert data["state"] == "completed"
         assert data["progress"] == 100
         assert "completed_at" in data
 
     def test_summary_reflects_real_time_changes(self, client, monitor):
-        """Test that summary endpoint reflects real-time changes."""
+        """Test that summary endpoint reflects real - time changes."""
         # Initial state
-        response = client.get("/api/v1/status/summary")
+        response = client.get("/api / v1 / status / summary")
         data = response.json()
         assert data["total_workers"] == 0
 
@@ -462,7 +462,7 @@ class TestAPIIntegration:
         monitor.register_worker("worker_001", "Task")
         monitor.update_worker_state("worker_001", WorkerState.RUNNING)
 
-        response = client.get("/api/v1/status/summary")
+        response = client.get("/api / v1 / status / summary")
         data = response.json()
         assert data["total_workers"] == 1
         assert data["active_workers"] == 1
@@ -470,7 +470,7 @@ class TestAPIIntegration:
         # Complete worker
         monitor.update_worker_state("worker_001", WorkerState.COMPLETED)
 
-        response = client.get("/api/v1/status/summary")
+        response = client.get("/api / v1 / status / summary")
         data = response.json()
         assert data["total_workers"] == 1
         assert data["active_workers"] == 0

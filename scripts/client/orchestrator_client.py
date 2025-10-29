@@ -9,7 +9,7 @@ Example usage:
 
     client = OrchestratorClient(
         api_url="http://localhost:8000",
-        api_key="sk-orch-your-key"
+        api_key="sk - orch - your - key"
     )
 
     # Synchronous execution
@@ -91,7 +91,7 @@ class Job:
             OrchestratorError: On API errors
         """
         if refresh or self._status_cache is None:
-            response = self.client._request("GET", f"/api/v1/jobs/{self.job_id}/status")
+            response = self.client._request("GET", f"/api / v1 / jobs/{self.job_id}/status")
             self._status_cache = response
         return self._status_cache
 
@@ -110,7 +110,7 @@ class Job:
             OrchestratorError: If job not complete or on API errors
         """
         if refresh or self._results_cache is None:
-            response = self.client._request("GET", f"/api/v1/jobs/{self.job_id}/results")
+            response = self.client._request("GET", f"/api / v1 / jobs/{self.job_id}/results")
             self._results_cache = response
         return self._results_cache
 
@@ -167,7 +167,7 @@ class Job:
             OrchestratorError: On API errors
         """
         try:
-            self.client._request("DELETE", f"/api/v1/jobs/{self.job_id}")
+            self.client._request("DELETE", f"/api / v1 / jobs/{self.job_id}")
             self._status_cache = None  # Invalidate cache
             return True
         except JobNotFoundError:
@@ -219,9 +219,9 @@ class OrchestratorClient:
         self.session = requests.Session()
         self.session.headers.update(
             {
-                "X-API-Key": api_key,
-                "Content-Type": "application/json",
-                "User-Agent": "orchestrator-client-python/7.0.0",
+                "X - API - Key": api_key,
+                "Content - Type": "application / json",
+                "User - Agent": "orchestrator - client - python / 7.0.0",
             }
         )
 
@@ -240,7 +240,7 @@ class OrchestratorClient:
             elif response.status_code == 404:
                 raise JobNotFoundError(response.json().get("error", "Resource not found"))
             elif response.status_code == 429:
-                retry_after = int(response.headers.get("Retry-After", 60))
+                retry_after = int(response.headers.get("Retry - After", 60))
                 raise RateLimitError("Rate limit exceeded", retry_after)
             elif response.status_code >= 400:
                 error_data = response.json() if response.content else {}
@@ -270,16 +270,16 @@ class OrchestratorClient:
         Args:
             request: Task description (supports markdown)
             config: Optional configuration dictionary with keys:
-                    - max_workers (int): Maximum parallel workers (1-10)
+                    - max_workers (int): Maximum parallel workers (1 - 10)
                     - default_timeout (int): Timeout per worker in seconds
-                    - max_retries (int): Retry attempts (0-5)
+                    - max_retries (int): Retry attempts (0 - 5)
                     - enable_ai_analysis (bool): Use AI task decomposition
                     - task_complexity (str): "low", "medium", or "high"
                     - execution_mode (str): "wsl" or "windows"
                     - enable_worktree (bool): Use Git worktree isolation
                     - enable_visible_workers (bool): Show worker windows
                     - enable_realtime_monitoring (bool): Enable monitoring
-            priority: Job priority 1-10 (default 5)
+            priority: Job priority 1 - 10 (default 5)
             tags: Optional list of tags for categorization
             wait: Block until completion (default False)
             poll_interval: Seconds between checks when waiting (default 5)
@@ -304,7 +304,7 @@ class OrchestratorClient:
             payload["tags"] = tags
 
         # Submit job
-        response = self._request("POST", "/api/v1/orchestrate", json=payload)
+        response = self._request("POST", "/api / v1 / orchestrate", json=payload)
 
         job_id = response.get("job_id")
         job = Job(client=self, job_id=job_id)
@@ -352,7 +352,7 @@ class OrchestratorClient:
         Raises:
             OrchestratorError: On API errors
         """
-        return self._request("GET", "/api/v1/status")
+        return self._request("GET", "/api / v1 / status")
 
     def health_check(self) -> bool:
         """
@@ -362,7 +362,7 @@ class OrchestratorClient:
             True if healthy, False otherwise
         """
         try:
-            response = self._request("GET", "/api/v1/health")
+            response = self._request("GET", "/api / v1 / health")
             return response.get("status") == "healthy"
         except:
             return False
@@ -395,7 +395,7 @@ def orchestrate(
     import os
 
     if api_key is None:
-        api_key = os.getenv("ORCHESTRATOR_API_KEY", "sk-orch-dev-key-12345")
+        api_key = os.getenv("ORCHESTRATOR_API_KEY", "sk - orch - dev - key - 12345")
 
     client = OrchestratorClient(api_url=api_url, api_key=api_key)
     return client.orchestrate(request=request, wait=True, **kwargs)

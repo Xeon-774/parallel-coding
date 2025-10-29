@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 Normal API Test Suite for Web UI
 Tests正常な動作を確認
@@ -11,13 +11,13 @@ BASE_URL = "http://127.0.0.1:8000"
 
 
 def test_get_status():
-    """Test 1: GET /api/status"""
+    """Test 1: GET /api / status"""
     print("\n" + "=" * 70)
-    print("TEST 1: GET /api/status")
+    print("TEST 1: GET /api / status")
     print("=" * 70)
 
     try:
-        response = requests.get(f"{BASE_URL}/api/status")
+        response = requests.get(f"{BASE_URL}/api / status")
         print(f"  Status: {response.status_code}")
 
         if response.status_code == 200:
@@ -34,13 +34,13 @@ def test_get_status():
 
 
 def test_get_worker_output():
-    """Test 2: GET /api/worker/{worker_id}/output"""
+    """Test 2: GET /api / worker/{worker_id}/output"""
     print("\n" + "=" * 70)
-    print("TEST 2: GET /api/worker/worker_1/output")
+    print("TEST 2: GET /api / worker / worker_1 / output")
     print("=" * 70)
 
     try:
-        response = requests.get(f"{BASE_URL}/api/worker/worker_1/output")
+        response = requests.get(f"{BASE_URL}/api / worker / worker_1 / output")
         print(f"  Status: {response.status_code}")
 
         if response.status_code == 200:
@@ -57,13 +57,13 @@ def test_get_worker_output():
 
 
 def test_get_logs():
-    """Test 3: GET /api/logs/{log_file}"""
+    """Test 3: GET /api / logs/{log_file}"""
     print("\n" + "=" * 70)
-    print("TEST 3: GET /api/logs/orchestrator_20251021.jsonl")
+    print("TEST 3: GET /api / logs / orchestrator_20251021.jsonl")
     print("=" * 70)
 
     try:
-        response = requests.get(f"{BASE_URL}/api/logs/orchestrator_20251021.jsonl")
+        response = requests.get(f"{BASE_URL}/api / logs / orchestrator_20251021.jsonl")
         print(f"  Status: {response.status_code}")
 
         if response.status_code == 200:
@@ -88,10 +88,10 @@ def test_get_index():
     try:
         response = requests.get(f"{BASE_URL}/")
         print(f"  Status: {response.status_code}")
-        print(f"  Content-Type: {response.headers.get('content-type')}")
+        print(f"  Content - Type: {response.headers.get('content - type')}")
         print(f"  Content Length: {len(response.text)} bytes")
 
-        if response.status_code == 200 and "html" in response.headers.get("content-type", ""):
+        if response.status_code == 200 and "html" in response.headers.get("content - type", ""):
             if "Claude Orchestrator Dashboard" in response.text:
                 print("  Dashboard Title: Found")
                 print("  Version: v10.0" if "v10.0" in response.text else "  Version: Not found")
@@ -99,7 +99,7 @@ def test_get_index():
             else:
                 print("  [FAIL] Dashboard title not found")
         else:
-            print(f"  [FAIL] Unexpected response")
+            print("  [FAIL] Unexpected response")
     except Exception as e:
         print(f"  [ERROR] {e}")
 

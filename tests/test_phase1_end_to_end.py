@@ -1,8 +1,8 @@
 """
-Phase 1 End-to-End Validation Test
+Phase 1 End - to - End Validation Test
 
-Tests the complete Phase 1 system with 3-4 parallel workers:
-- Worker Status Dashboard real-time updates (<2s)
+Tests the complete Phase 1 system with 3 - 4 parallel workers:
+- Worker Status Dashboard real - time updates (<2s)
 - Dialogue View integration
 - Terminal View integration
 - Metrics Dashboard integration
@@ -10,7 +10,7 @@ Tests the complete Phase 1 system with 3-4 parallel workers:
 - All 4 view modes operational
 
 Success Criteria:
-- 3-4 workers execute in parallel successfully
+- 3 - 4 workers execute in parallel successfully
 - Worker Status Dashboard updates <2 seconds
 - All dashboard views display correctly
 - No data loss or corruption
@@ -30,7 +30,7 @@ import pytest
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-# Configure UTF-8 encoding
+# Configure UTF - 8 encoding
 from orchestrator.utils.encoding_config import configure_console_encoding, safe_print
 
 configure_console_encoding()
@@ -43,14 +43,14 @@ from orchestrator.core.worker_status_monitor import WorkerStatusMonitor
 
 
 class Phase1E2EValidator:
-    """Phase 1 End-to-End Validation Manager"""
+    """Phase 1 End - to - End Validation Manager"""
 
     def __init__(self, num_workers: int = 4):
         """
         Initialize E2E validator.
 
         Args:
-            num_workers: Number of parallel workers to spawn (3-4)
+            num_workers: Number of parallel workers to spawn (3 - 4)
         """
         self.num_workers = max(3, min(4, num_workers))
         self.config = self._create_config()
@@ -82,8 +82,8 @@ class Phase1E2EValidator:
         config = OrchestratorConfig()
         config.workspace_root = str(project_root / "workspace" / "e2e_test")
         config.execution_mode = "windows"
-        # config.wsl_distribution = "Ubuntu-24.04"  # Not needed for Windows mode
-        config.claude_command = "claude"  # Use PATH-resolved claude command
+        # config.wsl_distribution = "Ubuntu - 24.04"  # Not needed for Windows mode
+        config.claude_command = "claude"  # Use PATH - resolved claude command
         config.windows_claude_path = "claude"  # Windows mode requires this
         config.nvm_path = ""  # Not needed for Windows mode
         return config
@@ -112,7 +112,7 @@ Requirements:
 2. Add a main function
 3. Print the greeting message
 4. Add a docstring
-5. Ensure UTF-8 encoding
+5. Ensure UTF - 8 encoding
 
 Complete this task and confirm when done.""",
             },
@@ -125,7 +125,7 @@ Requirements:
 2. Implement add, subtract, multiply, divide functions
 3. Add docstrings to all functions
 4. Add basic error handling (division by zero)
-5. Ensure UTF-8 encoding
+5. Ensure UTF - 8 encoding
 
 Complete this task and confirm when done.""",
             },
@@ -138,7 +138,7 @@ Requirements:
 2. Implement reverse_string, capitalize_words, count_words functions
 3. Add docstrings to all functions
 4. Add type hints
-5. Ensure UTF-8 encoding
+5. Ensure UTF - 8 encoding
 
 Complete this task and confirm when done.""",
             },
@@ -151,7 +151,7 @@ Requirements:
 2. Implement read_file, count_lines, count_characters functions
 3. Add proper error handling for file operations
 4. Add docstrings to all functions
-5. Ensure UTF-8 encoding
+5. Ensure UTF - 8 encoding
 
 Complete this task and confirm when done.""",
             },
@@ -163,7 +163,7 @@ Complete this task and confirm when done.""",
         self, worker_ids: List[str], timeout: float = 120.0
     ) -> bool:
         """
-        Validate Worker Status Dashboard real-time updates.
+        Validate Worker Status Dashboard real - time updates.
 
         Args:
             worker_ids: List of worker IDs to monitor
@@ -221,10 +221,10 @@ Complete this task and confirm when done.""",
             # Validation: max latency must be <2 seconds
             passed = max_latency < 2.0
 
-            safe_print(f"[E2E] Status Update Performance:")
+            safe_print("[E2E] Status Update Performance:")
             safe_print(f"      Average Latency: {avg_latency:.3f}s")
             safe_print(f"      Maximum Latency: {max_latency:.3f}s")
-            safe_print(f"      Target: <2.0s")
+            safe_print("      Target: <2.0s")
             safe_print(f"      Result: {'✅ PASS' if passed else '❌ FAIL'}")
 
             return passed
@@ -263,7 +263,7 @@ Complete this task and confirm when done.""",
         # Count dialogue messages
         message_count = 0
         for dialogue_file in dialogue_files:
-            with open(dialogue_file, "r", encoding="utf-8") as f:
+            with open(dialogue_file, "r", encoding="utf - 8") as f:
                 lines = f.readlines()
                 message_count += len(lines)
                 self.results["dialogue_messages"].extend(lines)
@@ -306,7 +306,7 @@ Complete this task and confirm when done.""",
         # Count output lines
         total_lines = 0
         for output_file in output_files:
-            with open(output_file, "r", encoding="utf-8", errors="replace") as f:
+            with open(output_file, "r", encoding="utf - 8", errors="replace") as f:
                 lines = f.readlines()
                 total_lines += len(lines)
                 self.results["terminal_outputs"].append(
@@ -362,7 +362,7 @@ Complete this task and confirm when done.""",
             True if all validation passes
         """
         safe_print("=" * 80)
-        safe_print("Phase 1 End-to-End Validation Test")
+        safe_print("Phase 1 End - to - End Validation Test")
         safe_print("=" * 80)
         safe_print(f"Workers: {self.num_workers}")
         safe_print(f"Workspace: {self.config.workspace_root}")
@@ -375,7 +375,9 @@ Complete this task and confirm when done.""",
 
             # Initialize worker manager
             self.worker_manager = WorkerManager(
-                config=self.config, logger=self.logger, user_approval_callback=None  # Auto-approval
+                config=self.config,
+                logger=self.logger,
+                user_approval_callback=None,  # Auto - approval
             )
 
             # Create test tasks
@@ -386,7 +388,7 @@ Complete this task and confirm when done.""",
             worker_ids = []
 
             for i, task in enumerate(tasks):
-                worker_id = f"e2e_worker_{i+1:02d}"
+                worker_id = f"e2e_worker_{i + 1:02d}"
 
                 safe_print(f"[E2E] Spawning: {worker_id} - {task['name']}")
 

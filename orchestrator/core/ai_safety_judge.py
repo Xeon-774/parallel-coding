@@ -1,7 +1,7 @@
 """AI Safety Judge stub.
 
-A minimal, production-safe judge used to decide whether a confirmation
-prompt can be auto-approved. Worker 2 may extend or replace strategies.
+A minimal, production - safe judge used to decide whether a confirmation
+prompt can be auto - approved. Worker 2 may extend or replace strategies.
 """
 
 from __future__ import annotations
@@ -46,8 +46,8 @@ class AISafetyJudge:
         """
 
         normalized = prompt.strip().lower()
-        if any(k in normalized for k in ("yes/no", "confirm", "proceed?")):
+        if any(k in normalized for k in ("yes / no", "confirm", "proceed?")):
             return Judgment(Decision.ESCALATE, "Requires explicit user confirmation")
         if "print" in normalized and "view" in normalized:
-            return Judgment(Decision.APPROVE, "Read-only action deemed safe")
+            return Judgment(Decision.APPROVE, "Read - only action deemed safe")
         return Judgment(Decision.DENY, "Unrecognized or potentially unsafe request")

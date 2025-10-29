@@ -1,7 +1,7 @@
 """
 Task analysis and splitting service
 
-Provides task decomposition using both AI-driven and basic strategies.
+Provides task decomposition using both AI - driven and basic strategies.
 """
 
 from typing import Any, Dict, List, Optional, Tuple
@@ -15,7 +15,7 @@ class TaskAnalyzerService:
     Task analysis and splitting service
 
     Analyzes user requests and splits them into executable subtasks
-    using either advanced AI-driven analysis or basic pattern matching.
+    using either advanced AI - driven analysis or basic pattern matching.
     """
 
     def __init__(
@@ -90,7 +90,7 @@ class TaskAnalyzerService:
         """
         tasks = []
 
-        # Simple keyword-based splitting
+        # Simple keyword - based splitting
         request_lower = request.lower()
 
         if "電卓" in request or "calculator" in request_lower:
@@ -143,9 +143,9 @@ class TaskAnalyzerService:
                 return False, f"Missing required field: {field}"
 
         if not isinstance(task["name"], str) or not task["name"].strip():
-            return False, "Task name must be a non-empty string"
+            return False, "Task name must be a non - empty string"
 
         if not isinstance(task["prompt"], str) or not task["prompt"].strip():
-            return False, "Task prompt must be a non-empty string"
+            return False, "Task prompt must be a non - empty string"
 
         return True, None

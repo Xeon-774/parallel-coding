@@ -1,7 +1,7 @@
 """
 Hybrid Decision Engine
 
-Combines rule-based safety engine with AI judgment for optimal performance.
+Combines rule - based safety engine with AI judgment for optimal performance.
 Simple cases are handled by fast rules, complex cases go to AI.
 """
 
@@ -46,7 +46,7 @@ class ConfirmationRequest:
 
 @dataclass
 class RuleResult:
-    """Result from rule-based evaluation"""
+    """Result from rule - based evaluation"""
 
     is_definitive: bool  # True if rules give clear answer
     action: Optional[str] = None  # "approve" or "deny" if definitive
@@ -121,9 +121,9 @@ class ErrorTemplates:
 
 class SafetyRulesEngine:
     """
-    Rule-based safety evaluation engine
+    Rule - based safety evaluation engine
 
-    Fast pattern-matching for common cases.
+    Fast pattern - matching for common cases.
     Returns definitive answer for clear cases, defers to AI for ambiguous ones.
     """
 
@@ -141,13 +141,13 @@ class SafetyRulesEngine:
 
         start = time.time()
 
-        # Check safe patterns first (auto-approve)
+        # Check safe patterns first (auto - approve)
         safe_result = self._check_safe_patterns(request)
         if safe_result:
             safe_result.duration_ms = (time.time() - start) * 1000
             return safe_result
 
-        # Check dangerous patterns (auto-deny)
+        # Check dangerous patterns (auto - deny)
         dangerous_result = self._check_dangerous_patterns(request)
         if dangerous_result:
             dangerous_result.duration_ms = (time.time() - start) * 1000
@@ -234,7 +234,7 @@ class SafetyRulesEngine:
             return False
 
         try:
-            with open(requirements_file, "r", encoding="utf-8") as f:
+            with open(requirements_file, "r", encoding="utf - 8") as f:
                 packages = [
                     line.split("==")[0].split(">=")[0].split("<=")[0].strip()
                     for line in f
@@ -260,7 +260,7 @@ class SafetyRulesEngine:
 
     def _is_dangerous_command(self, command: str) -> bool:
         """Check if command is dangerous"""
-        dangerous_commands = ["rm -rf", "del /f /s /q", "format", "dd if=", "mkfs", "> /dev/sda"]
+        dangerous_commands = ["rm -r", "del /f /s /q", "format", "dd if=", "mkfs", "> /dev / sda"]
         command_lower = command.lower()
         return any(dangerous in command_lower for dangerous in dangerous_commands)
 
@@ -269,7 +269,7 @@ class HybridDecisionEngine:
     """
     Hybrid Decision Engine
 
-    Combines rule-based safety engine with AI judgment for optimal performance.
+    Combines rule - based safety engine with AI judgment for optimal performance.
 
     Decision Flow:
     1. Rules Engine (fast, ~1ms) - handles clear cases
@@ -283,7 +283,7 @@ class HybridDecisionEngine:
     """
 
     def __init__(
-        self, workspace_root: Path, wsl_distribution: str = "Ubuntu-24.04", verbose: bool = False
+        self, workspace_root: Path, wsl_distribution: str = "Ubuntu - 24.04", verbose: bool = False
     ):
         """
         Initialize hybrid engine
@@ -336,7 +336,7 @@ class HybridDecisionEngine:
             print(f"  Type: {request.confirmation_type.value}")
             print(f"  Message: {request.message[:100]}...")
 
-        # Step 1: Try rule-based evaluation (fast)
+        # Step 1: Try rule - based evaluation (fast)
         rule_result = self.rules.evaluate(request)
 
         if rule_result.is_definitive:
@@ -361,7 +361,7 @@ class HybridDecisionEngine:
 
         # Step 2: Rules inconclusive - ask AI
         if self.verbose:
-            print(f"  → Rules inconclusive, consulting AI...")
+            print("  → Rules inconclusive, consulting AI...")
 
         try:
             # Build question for AI
@@ -373,7 +373,7 @@ class HybridDecisionEngine:
             context.setdefault("worker_id", worker_id)
             context.setdefault("task_name", "unknown")
             context.setdefault("project_name", "AI_Investor")
-            context.setdefault("project_goal", "Build AI-powered investment platform MVP")
+            context.setdefault("project_goal", "Build AI - powered investment platform MVP")
 
             # Ask orchestrator AI
             ai_result = await self.orchestrator_ai.ask(question=question, context=context)
@@ -402,7 +402,7 @@ class HybridDecisionEngine:
 
             if self.verbose:
                 print(f"  ⚠ AI error: {str(e)[:100]}")
-                print(f"  → Using template fallback")
+                print("  → Using template fallback")
 
             # Check if this is a complete failure
             if "completely unresponsive" in str(e).lower():
@@ -436,7 +436,7 @@ class HybridDecisionEngine:
         # Format details nicely
         details_str = "\n".join([f"  - {k}: {v}" for k, v in request.details.items()])
 
-        question = f"""Request Type: {request.confirmation_type.value}
+        question = """Request Type: {request.confirmation_type.value}
 
 Message: {request.message}
 
@@ -482,7 +482,7 @@ if __name__ == "__main__":
 
         # Create engine
         engine = HybridDecisionEngine(
-            workspace_root=Path(r"D:\user\ai_coding\AI_Investor\tools\parallel-coding\workspace"),
+            workspace_root=Path(r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\workspace"),
             verbose=True,
         )
 
@@ -495,8 +495,8 @@ if __name__ == "__main__":
         print("-" * 70)
         request1 = ConfirmationRequest(
             confirmation_type=ConfirmationType.FILE_WRITE,
-            message="I want to create a file 'models/user.py' with database model code.",
-            details={"file": "workspace/models/user.py"},
+            message="I want to create a file 'models / user.py' with database model code.",
+            details={"file": "workspace / models / user.py"},
         )
         decision1 = await engine.decide("worker_001", request1)
         print(f"\nResult: {decision1.action.upper()}")

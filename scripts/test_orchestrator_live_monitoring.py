@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 オーケストレーターによるライブ監視と逐次報告
 
@@ -17,12 +17,12 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-# UTF-8出力設定
+# UTF - 8出力設定
 if sys.platform == "win32":
     import codecs
 
-    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
-    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
+    sys.stdout = codecs.getwriter("utf - 8")(sys.stdout.buffer, "replace")
+    sys.stderr = codecs.getwriter("utf - 8")(sys.stderr.buffer, "replace")
 
 from orchestrator import OrchestratorConfig, RefactoredOrchestrator
 
@@ -98,8 +98,8 @@ def test_live_monitoring():
     print()
     report("以下のタスクを準備しました:", "INFO")
     print()
-    print("  📋 タスク1: 素数探索 (100-300) - 軽量、早く終わる")
-    print("  📋 タスク2: フィボナッチ (1-35) - 中程度")
+    print("  📋 タスク1: 素数探索 (100 - 300) - 軽量、早く終わる")
+    print("  📋 タスク2: フィボナッチ (1 - 35) - 中程度")
     print("  📋 タスク3: バブルソート (500個) - 重量級、時間がかかる")
     print()
     report("各タスクの終了時間は予測できません（不定）", "WARNING")
@@ -174,7 +174,7 @@ def test_live_monitoring():
                 if output_file.exists():
                     report(f"Worker {worker_id} の結果を取得しました", "SUCCESS")
 
-                    with open(output_file, "r", encoding="utf-8") as f:
+                    with open(output_file, "r", encoding="utf - 8") as f:
                         output = f.read()
 
                     print()
@@ -209,7 +209,7 @@ def test_live_monitoring():
             print("  ✓ 結果の統合")
             print()
 
-            report(f"システムは完全に自律的に動作しました", "SUCCESS")
+            report("システムは完全に自律的に動作しました", "SUCCESS")
             print()
 
             # 統合結果の一部を表示

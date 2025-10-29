@@ -22,7 +22,7 @@ class OrchestratorException(Exception):
         Initialize orchestrator exception
 
         Args:
-            message: Human-readable error message
+            message: Human - readable error message
             context: Additional context information
             cause: Original exception that caused this error
         """
@@ -75,7 +75,7 @@ class MissingDependencyError(ConfigurationError):
 
 
 class WorkerError(OrchestratorException):
-    """Base exception for worker-related errors"""
+    """Base exception for worker - related errors"""
 
     pass
 
@@ -134,7 +134,7 @@ class InteractiveError(OrchestratorException):
 
 
 class PseudoTerminalError(InteractiveError):
-    """Failed to create or control pseudo-terminal"""
+    """Failed to create or control pseudo - terminal"""
 
     def __init__(self, message: str, platform: str, context: Optional[Dict[str, Any]] = None):
         context = context or {}
@@ -172,7 +172,7 @@ class ConfirmationParseError(InteractiveError):
 
 
 class SafetyError(OrchestratorException):
-    """Base exception for safety-related errors"""
+    """Base exception for safety - related errors"""
 
     pass
 
@@ -210,7 +210,7 @@ class UserDeniedError(SafetyError):
 
 
 class APIError(OrchestratorException):
-    """Base exception for API-related errors"""
+    """Base exception for API - related errors"""
 
     pass
 
@@ -254,7 +254,7 @@ class JobNotFoundError(APIError):
 
 
 class TaskError(OrchestratorException):
-    """Base exception for task-related errors"""
+    """Base exception for task - related errors"""
 
     pass
 
@@ -294,7 +294,7 @@ class TaskExecutionError(TaskError):
 
 
 class ResourceError(OrchestratorException):
-    """Base exception for resource-related errors"""
+    """Base exception for resource - related errors"""
 
     pass
 
@@ -504,7 +504,7 @@ if __name__ == "__main__":
         raise DangerousOperationError(
             "Operation blocked by safety judge",
             operation_type="FILE_DELETE",
-            details={"file": "/etc/passwd"},
+            details={"file": "/etc / passwd"},
             context={"worker_id": "worker_2"},
         )
     except DangerousOperationError as e:

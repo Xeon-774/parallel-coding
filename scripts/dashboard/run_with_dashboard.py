@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr / bin / env python
 """
 Claude Orchestrator integrated launcher script
 
@@ -54,7 +54,7 @@ class IntegratedLauncher:
             user_request: Task description from user
 
         Returns:
-            Exit code (0 for success, non-zero for failure)
+            Exit code (0 for success, non - zero for failure)
         """
         # Step 1: Check and install dependencies
         if not self.dependency_manager.check_and_install(
@@ -98,7 +98,7 @@ class IntegratedLauncher:
 def main() -> int:
     """Main entry point"""
     parser = argparse.ArgumentParser(
-        description="Claude Orchestrator with Web Dashboard - All-in-One Launcher",
+        description="Claude Orchestrator with Web Dashboard - All - in - One Launcher",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=HelpText.EPILOG,
     )
@@ -110,11 +110,11 @@ def main() -> int:
     parser.add_argument("--port", type=int, default=8000, help="Dashboard port (default: 8000)")
 
     parser.add_argument(
-        "--no-browser", action="store_true", help="Do not automatically open browser"
+        "--no - browser", action="store_true", help="Do not automatically open browser"
     )
 
     parser.add_argument(
-        "--no-auto-install",
+        "--no - auto - install",
         action="store_true",
         help="Do not automatically install missing dependencies",
     )

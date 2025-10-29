@@ -1,7 +1,7 @@
 """
 Window management strategies
 
-This package contains platform-specific implementations of window management
+This package contains platform - specific implementations of window management
 following the Strategy design pattern.
 """
 

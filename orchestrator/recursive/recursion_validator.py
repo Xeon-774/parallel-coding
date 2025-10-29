@@ -52,7 +52,7 @@ class RecursionValidator:
         """Validate if recursion is allowed at current depth.
 
         Args:
-            current_depth: Current recursion depth (0-based).
+            current_depth: Current recursion depth (0 - based).
             max_depth: Maximum allowed depth (inclusive bound for last level).
             workers_by_depth: Worker limits per depth level.
 
@@ -64,8 +64,8 @@ class RecursionValidator:
             True
 
         Notes:
-            A call from depth D creates the next level at D+1. This function
-            validates whether that step is allowed and returns limits for D+1.
+            A call from depth D creates the next level at D + 1. This function
+            validates whether that step is allowed and returns limits for D + 1.
         """
         if current_depth < 0:
             return RecursionValidationResult(

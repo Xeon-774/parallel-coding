@@ -60,9 +60,9 @@ class TestAISafetyJudgeEscalation:
     """Test AISafetyJudge ESCALATE decisions."""
 
     def test_assess_yes_no_prompt_escalates(self):
-        """Test that yes/no prompts are escalated."""
+        """Test that yes / no prompts are escalated."""
         judge = AISafetyJudge()
-        judgment = judge.assess("Do you want to continue? yes/no")
+        judgment = judge.assess("Do you want to continue? yes / no")
 
         assert judgment.decision == Decision.ESCALATE
         assert "Requires explicit user confirmation" in judgment.reason
@@ -84,9 +84,9 @@ class TestAISafetyJudgeEscalation:
         assert "Requires explicit user confirmation" in judgment.reason
 
     def test_assess_case_insensitive_yes_no(self):
-        """Test case insensitivity for yes/no detection."""
+        """Test case insensitivity for yes / no detection."""
         judge = AISafetyJudge()
-        judgment = judge.assess("Continue? YES/NO")
+        judgment = judge.assess("Continue? YES / NO")
 
         assert judgment.decision == Decision.ESCALATE
 
@@ -107,7 +107,7 @@ class TestAISafetyJudgeApproval:
         judgment = judge.assess("print this file and view the results")
 
         assert judgment.decision == Decision.APPROVE
-        assert "Read-only action deemed safe" in judgment.reason
+        assert "Read - only action deemed safe" in judgment.reason
 
     def test_assess_view_print_order_approved(self):
         """Test that view and print in different order is approved."""
@@ -115,10 +115,10 @@ class TestAISafetyJudgeApproval:
         judgment = judge.assess("view the output and print it")
 
         assert judgment.decision == Decision.APPROVE
-        assert "Read-only action deemed safe" in judgment.reason
+        assert "Read - only action deemed safe" in judgment.reason
 
     def test_assess_case_insensitive_print_view(self):
-        """Test case insensitivity for print/view detection."""
+        """Test case insensitivity for print / view detection."""
         judge = AISafetyJudge()
         judgment = judge.assess("PRINT and VIEW this")
 
@@ -144,7 +144,7 @@ class TestAISafetyJudgeDenial:
         assert judgment.decision == Decision.DENY
 
     def test_assess_whitespace_only_denied(self):
-        """Test that whitespace-only prompts are denied."""
+        """Test that whitespace - only prompts are denied."""
         judge = AISafetyJudge()
         judgment = judge.assess("   ")
 
@@ -213,7 +213,7 @@ class TestAISafetyJudgeEdgeCases:
         """Test prompt with multiple matching keywords."""
         judge = AISafetyJudge()
 
-        # Both "print/view" (approve) and "confirm" (escalate)
+        # Both "print / view" (approve) and "confirm" (escalate)
         # Escalate wins because it's checked first
         judgment = judge.assess("confirm to print and view")
         assert judgment.decision == Decision.ESCALATE
@@ -238,5 +238,5 @@ class TestAISafetyJudgeEdgeCases:
         judge = AISafetyJudge()
         judgment = judge.assess("\n\tprint\nand\tview\n")
 
-        # Should match print and view after strip/lower
+        # Should match print and view after strip / lower
         assert judgment.decision == Decision.APPROVE

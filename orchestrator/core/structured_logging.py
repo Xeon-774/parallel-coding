@@ -1,7 +1,7 @@
 """
 Professional Structured Logging System (v9.0)
 
-World-class logging infrastructure with:
+World - class logging infrastructure with:
 - Structured JSON logging
 - Multiple output handlers
 - Log correlation and tracing
@@ -231,7 +231,7 @@ class StructuredLogger:
             log_dir.mkdir(parents=True, exist_ok=True)
 
             log_file = log_dir / f"{name}_{datetime.now().strftime('%Y%m%d')}.jsonl"
-            file_handler = logging.FileHandler(log_file, encoding="utf-8")
+            file_handler = logging.FileHandler(log_file, encoding="utf - 8")
             file_handler.setFormatter(formatter)
             self.logger.addHandler(file_handler)
 
@@ -291,7 +291,7 @@ class StructuredLogger:
             "success": success,
         }
 
-        message = f"Performance: {operation} {'succeeded' if success else 'failed'} in {duration*1000:.2f}ms"
+        message = f"Performance: {operation} {'succeeded' if success else 'failed'} in {duration * 1000:.2f}ms"
 
         self._log(
             LogLevel.INFO, message, category=LogCategory.PERFORMANCE, extra=performance, **kwargs
@@ -502,7 +502,7 @@ if __name__ == "__main__":
         level=LogLevel.DEBUG,
         category=LogCategory.SYSTEM,
         log_dir=Path("./logs"),
-        context=LogContext(session_id="test-session-123"),
+        context=LogContext(session_id="test - session - 123"),
     )
 
     print("Testing Structured Logger\n")
@@ -514,13 +514,13 @@ if __name__ == "__main__":
     logger.warning("Potential issue detected", issue_type="memory_high")
 
     # Test worker logging
-    logger.log_worker_spawn("worker_1", "Create API", workspace="/workspace/worker_1")
+    logger.log_worker_spawn("worker_1", "Create API", workspace="/workspace / worker_1")
 
     # Test performance logging
     logger.log_performance("database_query", 0.125, True, query="SELECT * FROM users")
 
     # Test API logging
-    logger.log_api_request("POST", "/api/v1/jobs", 201, 0.035, user_id="user123")
+    logger.log_api_request("POST", "/api / v1 / jobs", 201, 0.035, user_id="user123")
 
     # Test security logging
     logger.log_security_event(

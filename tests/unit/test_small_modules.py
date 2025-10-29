@@ -1,6 +1,6 @@
 """Unit tests for small utility modules.
 
-Tests common/models.py, ansi_utils.py, and window_manager.py.
+Tests common / models.py, ansi_utils.py, and window_manager.py.
 """
 
 import time
@@ -41,13 +41,13 @@ class TestConfirmationRequest:
             worker_id="w123",
             confirmation_type=ConfirmationType.FILE_WRITE,
             message="Write to file",
-            details={"path": "/tmp/test.txt"},
+            details={"path": "/tmp / test.txt"},
         )
 
         assert req.worker_id == "w123"
         assert req.confirmation_type == ConfirmationType.FILE_WRITE
         assert req.message == "Write to file"
-        assert req.details == {"path": "/tmp/test.txt"}
+        assert req.details == {"path": "/tmp / test.txt"}
         assert req.timestamp > 0
 
     def test_is_dangerous_file_delete(self):
@@ -95,7 +95,7 @@ class TestConfirmationRequest:
         assert req.is_dangerous() is False
 
     def test_timestamp_auto_generated(self):
-        """Test that timestamp is auto-generated."""
+        """Test that timestamp is auto - generated."""
         before = time.time()
         req = ConfirmationRequest(
             worker_id="w123",

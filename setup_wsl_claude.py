@@ -1,9 +1,9 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 WSL Claude CLI 完全自動セットアップ
 
 このスクリプトを実行するだけで、以下を自動的に行います:
-1. WSL (Ubuntu-24.04) に Claude CLI をインストール
+1. WSL (Ubuntu - 24.04) に Claude CLI をインストール
 2. トークン入力（GUIダイアログで入力）
 3. 認証確認
 4. 動作テスト
@@ -12,7 +12,7 @@ WSL Claude CLI 完全自動セットアップ
     python setup_wsl_claude.py
 
 または、別のWSLディストリビューションを指定:
-    python setup_wsl_claude.py Ubuntu-22.04
+    python setup_wsl_claude.py Ubuntu - 22.04
 """
 
 import sys
@@ -36,7 +36,7 @@ def main():
     if len(sys.argv) > 1:
         distribution = sys.argv[1]
     else:
-        distribution = "Ubuntu-24.04"
+        distribution = "Ubuntu - 24.04"
 
     print(f"WSL Distribution: {distribution}")
     print()
@@ -51,7 +51,7 @@ def main():
             print()
             print("次のコマンドでテストを実行:")
             print()
-            print("  python tests/test_simple_worker_wsl.py")
+            print("  python tests / test_simple_worker_wsl.py")
             print()
 
         return 0 if success else 1

@@ -5,7 +5,7 @@ This script reviews the Week 2 MVP specification document to validate
 feasibility, architecture decisions, and implementation estimates.
 
 Usage:
-    python scripts/review_week2_mvp.py
+    python scripts / review_week2_mvp.py
 """
 
 import asyncio
@@ -61,7 +61,7 @@ async def review_document(
         },
     )
 
-    print("Executing review (this may take 1-5 minutes)...")
+    print("Executing review (this may take 1 - 5 minutes)...")
     print("Codex is analyzing the document...")
     print()
 

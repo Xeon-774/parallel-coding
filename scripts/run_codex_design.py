@@ -1,5 +1,5 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+#!/usr / bin / env python3
+# -*- coding: utf - 8 -*-
 """
 Script to run Codex for design document creation.
 Handles TTY requirements and captures output properly.
@@ -10,20 +10,20 @@ import subprocess
 import sys
 from pathlib import Path
 
-# Force UTF-8 output on Windows
+# Force UTF - 8 output on Windows
 if sys.platform == "win32":
     import io
 
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
-    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8")
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf - 8")
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf - 8")
 
 
 def run_codex_with_pseudo_tty(prompt: str, output_file: Path) -> int:
-    """Run codex with pseudo-TTY to avoid 'stdout is not a terminal' error"""
+    """Run codex with pseudo - TTY to avoid 'stdout is not a terminal' error"""
 
     # Codex paths (different for Windows vs WSL)
-    CODEX_PATH_WSL = "/mnt/c/Users/chemi/AppData/Roaming/npm/codex"
-    CODEX_PATH_WINDOWS = "/c/Users/chemi/AppData/Roaming/npm/codex"
+    CODEX_PATH_WSL = "/mnt / c/Users / chemi / AppData / Roaming / npm / codex"
+    CODEX_PATH_WINDOWS = "/c / Users / chemi / AppData / Roaming / npm / codex"
 
     # Method 1: Try WSL bash with full codex path
     if sys.platform == "win32":
@@ -32,16 +32,23 @@ def run_codex_with_pseudo_tty(prompt: str, output_file: Path) -> int:
             escaped_prompt = prompt.replace("'", "'\\''")
 
             result = subprocess.run(
-                ["wsl", "-d", "Ubuntu-24.04", "bash", "-c", f"{CODEX_PATH_WSL} '{escaped_prompt}'"],
+                [
+                    "wsl",
+                    "-d",
+                    "Ubuntu - 24.04",
+                    "bash",
+                    "-c",
+                    f"{CODEX_PATH_WSL} '{escaped_prompt}'",
+                ],
                 capture_output=True,
                 text=True,
-                encoding="utf-8",
+                encoding="utf - 8",
                 errors="replace",  # Handle encoding errors gracefully
                 timeout=300,  # 5 minutes timeout
             )
 
             if result.returncode == 0 and result.stdout:
-                output_file.write_text(result.stdout, encoding="utf-8")
+                output_file.write_text(result.stdout, encoding="utf - 8")
                 print(f"Success! Output written to {output_file}")
                 return 0
             else:
@@ -55,19 +62,19 @@ def run_codex_with_pseudo_tty(prompt: str, output_file: Path) -> int:
         except Exception as e:
             print(f"[INFO] WSL method error: {e}")
 
-    # Method 2: Try using script command (Unix/WSL)
+    # Method 2: Try using script command (Unix / WSL)
     try:
         result = subprocess.run(
-            ["script", "-q", "-c", f"{CODEX_PATH_WSL} '{prompt}'", "/dev/null"],
+            ["script", "-q", "-c", f"{CODEX_PATH_WSL} '{prompt}'", "/dev / null"],
             capture_output=True,
             text=True,
-            encoding="utf-8",
+            encoding="utf - 8",
             errors="replace",
             timeout=300,
         )
 
         if result.returncode == 0:
-            output_file.write_text(result.stdout, encoding="utf-8")
+            output_file.write_text(result.stdout, encoding="utf - 8")
             print(f"Success! Output written to {output_file}")
             return 0
         else:
@@ -85,13 +92,13 @@ def run_codex_with_pseudo_tty(prompt: str, output_file: Path) -> int:
             ["winpty", CODEX_PATH_WINDOWS, prompt],
             capture_output=True,
             text=True,
-            encoding="utf-8",
+            encoding="utf - 8",
             errors="replace",
             timeout=300,
         )
 
         if result.returncode == 0:
-            output_file.write_text(result.stdout, encoding="utf-8")
+            output_file.write_text(result.stdout, encoding="utf - 8")
             print(f"Success! Output written to {output_file}")
             return 0
         else:
@@ -116,7 +123,7 @@ def run_codex_with_pseudo_tty(prompt: str, output_file: Path) -> int:
         output = ""
         try:
             while True:
-                data = os.read(master, 1024).decode("utf-8", errors="replace")
+                data = os.read(master, 1024).decode("utf - 8", errors="replace")
                 if not data:
                     break
                 output += data
@@ -127,7 +134,7 @@ def run_codex_with_pseudo_tty(prompt: str, output_file: Path) -> int:
         process.wait(timeout=300)
 
         if output:
-            output_file.write_text(output, encoding="utf-8")
+            output_file.write_text(output, encoding="utf - 8")
             print(f"Success! Output written to {output_file}")
             return 0
 
@@ -141,7 +148,7 @@ def run_codex_with_pseudo_tty(prompt: str, output_file: Path) -> int:
             input="",  # Empty stdin
             capture_output=True,
             text=True,
-            encoding="utf-8",
+            encoding="utf - 8",
             errors="replace",
             timeout=300,
             env={**subprocess.os.environ, "TERM": "dumb"},  # Disable TTY features
@@ -151,12 +158,12 @@ def run_codex_with_pseudo_tty(prompt: str, output_file: Path) -> int:
         if "stdout is not a terminal" in result.stdout or result.returncode != 0:
             stdout_msg = result.stdout[:200] if result.stdout else "No output"
             stderr_msg = result.stderr[:200] if result.stderr else "No error output"
-            print(f"[INFO] Direct method failed")
+            print("[INFO] Direct method failed")
             print(f"stdout: {stdout_msg}")
             print(f"stderr: {stderr_msg}")
             return 1
 
-        output_file.write_text(result.stdout, encoding="utf-8")
+        output_file.write_text(result.stdout, encoding="utf - 8")
         print(f"Success! Output written to {output_file}")
         return 0
 
@@ -176,7 +183,7 @@ def main():
 
     if not task_file.exists():
         # Create inline prompt if file doesn't exist
-        prompt = """Design a fully autonomous AI development system with Supervisor/Orchestrator/Worker architecture.
+        prompt = """Design a fully autonomous AI development system with Supervisor / Orchestrator / Worker architecture.
 
 Include the following sections:
 
@@ -208,9 +215,9 @@ Include the following sections:
    - Quality benchmarks
    - Business value
 
-Be comprehensive, innovative, and world-class professional. Output in detailed Markdown format."""
+Be comprehensive, innovative, and world - class professional. Output in detailed Markdown format."""
     else:
-        prompt = task_file.read_text(encoding="utf-8")
+        prompt = task_file.read_text(encoding="utf - 8")
 
     # Output file
     output_file = (
@@ -218,7 +225,7 @@ Be comprehensive, innovative, and world-class professional. Output in detailed M
     )
     output_file.parent.mkdir(parents=True, exist_ok=True)
 
-    print(f"Running Codex design task...")
+    print("Running Codex design task...")
     print(f"Output will be saved to: {output_file}")
     print(f"Prompt length: {len(prompt)} characters")
     print("-" * 60)

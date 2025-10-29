@@ -1,15 +1,15 @@
 """
 Worker Manager (v10.0 - Unified Implementation)
 
-Production-grade worker management with full interactive capabilities.
-Uses pexpect/wexpect for robust pseudo-terminal control.
+Production - grade worker management with full interactive capabilities.
+Uses pexpect / wexpect for robust pseudo - terminal control.
 
 Features:
-- Cross-platform support (Windows/Linux/WSL)
+- Cross - platform support (Windows / Linux / WSL)
 - Robust bidirectional communication with Claude CLI workers
-- Pattern-based confirmation detection
-- AI-powered safety judgment
-- Pseudo-terminal control for real terminal environment
+- Pattern - based confirmation detection
+- AI - powered safety judgment
+- Pseudo - terminal control for real terminal environment
 - Integrated with recursive orchestration capabilities
 
 This is the unified worker manager consolidating all previous implementations.
@@ -24,7 +24,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-# Cross-platform pexpect import
+# Cross - platform pexpect import
 if sys.platform == "win32":
     import wexpect as expect_module
 
@@ -46,7 +46,7 @@ from orchestrator.interfaces import ILogger
 from orchestrator.utils.ansi_utils import strip_ansi_codes
 
 
-# Supervisor-related models for Worker 2 Manager AI Integration
+# Supervisor - related models for Worker 2 Manager AI Integration
 class SupervisorStatus(Enum):
     """Supervisor process status states."""
 
@@ -92,7 +92,7 @@ class SupervisedWorkerResult:
 
 class OrchestratorTerminalCapture:
     """
-    Captures orchestrator decision-making output to orchestrator_terminal.log
+    Captures orchestrator decision - making output to orchestrator_terminal.log
 
     This provides visibility into the orchestrator's reasoning process,
     including worker output analysis, confirmation handling, and responses.
@@ -112,8 +112,8 @@ class OrchestratorTerminalCapture:
 
     def _init_log_file(self) -> None:
         """Initialize log file with header"""
-        with open(self.terminal_file, "w", encoding="utf-8") as f:
-            f.write(f"=== Orchestrator Terminal Output ===\n")
+        with open(self.terminal_file, "w", encoding="utf - 8") as f:
+            f.write("=== Orchestrator Terminal Output ===\n")
             f.write(f"=== Worker: {self.worker_id} ===\n")
             f.write(f"=== Started: {time.strftime('%Y-%m-%d %H:%M:%S')} ===\n\n")
             f.flush()
@@ -134,9 +134,9 @@ class OrchestratorTerminalCapture:
 
         # Write to file
         try:
-            with open(self.terminal_file, "a", encoding="utf-8") as f:
+            with open(self.terminal_file, "a", encoding="utf - 8") as f:
                 f.write(formatted)
-                f.flush()  # Force immediate write for real-time streaming
+                f.flush()  # Force immediate write for real - time streaming
         except Exception as e:
             # Fallback to print if file write fails
             print(f"[ERROR] Failed to write to orchestrator log: {e}")
@@ -155,7 +155,7 @@ class WorkerSession:
 
     worker_id: str
     task_name: str
-    child_process: Any  # pexpect/wexpect spawn object
+    child_process: Any  # pexpect / wexpect spawn object
     started_at: float
     output_lines: List[str] = field(default_factory=list)
     dialogue_transcript: List[Dict[str, Any]] = field(
@@ -172,18 +172,18 @@ class WorkerSession:
 
 class WorkerManager:
     """
-    Unified production-grade worker manager (v10.0).
+    Unified production - grade worker manager (v10.0).
 
     This is the consolidated implementation combining all previous worker managers:
     - Basic WorkerManager (process spawning)
     - InteractiveWorkerManager (bidirectional communication)
-    - WorkerManager (cross-platform + safety)
+    - WorkerManager (cross - platform + safety)
 
     Features:
-    - Cross-platform support (Windows/Linux/WSL)
-    - Pseudo-terminal control via pexpect/wexpect
-    - Pattern-based confirmation detection
-    - AI-powered safety judgment
+    - Cross - platform support (Windows / Linux / WSL)
+    - Pseudo - terminal control via pexpect / wexpect
+    - Pattern - based confirmation detection
+    - AI - powered safety judgment
     - User escalation for dangerous operations
     - Recursive orchestration support
     """
@@ -211,7 +211,7 @@ class WorkerManager:
         # Initialize metrics collector (Phase 2.2)
         self.metrics = MetricsCollector(workspace_root=Path(config.workspace_root))
 
-        # Initialize Codex executor (subprocess-based, NOT pexpect)
+        # Initialize Codex executor (subprocess - based, NOT pexpect)
         self.codex_executor = create_codex_executor_from_config(config)
 
         # Confirmation patterns - will be tuned based on actual Claude CLI output
@@ -238,15 +238,15 @@ class WorkerManager:
             ),
             # Generic permission
             (
-                r"(?i)(?:do\s+you\s+want\s+to\s+)?(?:proceed|continue).*\?",
+                r"(?i)(?:do\s + you\s + want\s + to\s+)?(?:proceed|continue).*\?",
                 ConfirmationType.PERMISSION_REQUEST,
             ),
-            (r"(?i)allow.*\(y/n\)", ConfirmationType.PERMISSION_REQUEST),
+            (r"(?i)allow.*\(y / n\)", ConfirmationType.PERMISSION_REQUEST),
             (r"(?i)approve.*\?", ConfirmationType.PERMISSION_REQUEST),
         ]
 
         self.logger.info(
-            f"Enhanced Interactive Worker Manager initialized",
+            "Enhanced Interactive Worker Manager initialized",
             platform=self.platform,
             expect_module=expect_module.__name__,
         )
@@ -255,7 +255,7 @@ class WorkerManager:
         self, worker_id: str, task: Dict[str, Any], timeout: int = 300, worker_type: str = "claude"
     ) -> Optional[WorkerSession]:
         """
-        Spawn worker in interactive mode with pseudo-terminal
+        Spawn worker in interactive mode with pseudo - terminal
 
         Args:
             worker_id: Unique worker identifier
@@ -272,35 +272,35 @@ class WorkerManager:
 
         # Create task file
         task_file = worker_dir / "task.txt"
-        with open(task_file, "w", encoding="utf-8") as f:
+        with open(task_file, "w", encoding="utf - 8") as f:
             f.write(task["prompt"])
 
         # NEW: Create raw terminal output file
         raw_terminal_file = worker_dir / "raw_terminal.log"
         # Clear existing file if any
-        with open(raw_terminal_file, "w", encoding="utf-8") as f:
+        with open(raw_terminal_file, "w", encoding="utf - 8") as f:
             f.write(f"=== Worker Terminal Output: {worker_name} ===\n")
             f.write(f"=== Task: {task['name']} ===\n")
             f.write(f"=== Started: {time.strftime('%Y-%m-%d %H:%M:%S')} ===\n\n")
 
-        print(f"\n[SPAWN-ENHANCED] {worker_name}: {task['name']}")
+        print(f"\n[SPAWN - ENHANCED] {worker_name}: {task['name']}")
         print(f"  Platform: {self.platform}")
         print(f"  Workspace: {worker_dir}")
 
         self.logger.log_worker_spawn(worker_name, task["name"])
 
-        # Build command (WITHOUT --dangerously-skip-permissions for Claude, WITH for Codex)
+        # Build command (WITHOUT --dangerously - skip - permissions for Claude, WITH for Codex)
         cmd = self._build_command(str(task_file), worker_type=worker_type)
 
         print(f"  Worker Type: {worker_type}")
         print(f"  Command: {cmd}")
 
         try:
-            # Spawn with pexpect/wexpect
+            # Spawn with pexpect / wexpect
             if self.platform == "windows":
-                child = expect_module.spawn(cmd, encoding="utf-8", timeout=timeout)
+                child = expect_module.spawn(cmd, encoding="utf - 8", timeout=timeout)
             else:
-                child = expect_module.spawn(cmd, encoding="utf-8", timeout=timeout)
+                child = expect_module.spawn(cmd, encoding="utf - 8", timeout=timeout)
 
             # Create orchestrator terminal capture
             orchestrator_capture = OrchestratorTerminalCapture(
@@ -351,11 +351,11 @@ class WorkerManager:
         # Also write to raw terminal log file
         if session.raw_terminal_file:
             try:
-                with open(session.raw_terminal_file, "a", encoding="utf-8") as f:
+                with open(session.raw_terminal_file, "a", encoding="utf - 8") as f:
                     f.write(clean_text)
                     if not clean_text.endswith("\n"):
                         f.write("\n")
-                    f.flush()  # Force immediate write to disk for real-time streaming
+                    f.flush()  # Force immediate write to disk for real - time streaming
             except Exception as e:
                 self.logger.error(f"Failed to write to raw terminal log: {e}")
 
@@ -363,7 +363,7 @@ class WorkerManager:
         """
         Poll for any pending output from worker process (Phase 2.2 - Continuous Polling).
 
-        This method uses non-blocking reads to capture output that might be generated
+        This method uses non - blocking reads to capture output that might be generated
         between confirmation requests, eliminating capture gaps.
 
         Args:
@@ -373,7 +373,7 @@ class WorkerManager:
             True if output was captured, False otherwise
         """
         try:
-            # Try non-blocking read
+            # Try non - blocking read
             # Note: wexpect doesn't support 'timeout' parameter, use size only
             pending = session.child_process.read_nonblocking(size=8192)  # Read up to 8KB at once
 
@@ -398,14 +398,14 @@ class WorkerManager:
         """
         Convert Windows path to WSL path
 
-        Example: D:\\user\\file.txt -> /mnt/d/user/file.txt
+        Example: D:\\user\\file.txt -> /mnt / d/user / file.txt
         """
         import re
 
         # Replace backslashes with forward slashes
         path = windows_path.replace("\\", "/")
-        # Convert drive letter (D:/ -> /mnt/d/)
-        path = re.sub(r"^([A-Za-z]):", lambda m: f"/mnt/{m.group(1).lower()}", path)
+        # Convert drive letter (D:/ -> /mnt / d/)
+        path = re.sub(r"^([A - Za - z]):", lambda m: f"/mnt/{m.group(1).lower()}", path)
         return path
 
     def _build_command(self, task_file: str, worker_type: str = "claude") -> str:
@@ -417,19 +417,21 @@ class WorkerManager:
             worker_type: Type of worker ("claude" or "codex")
 
         Returns:
-            Command string for pexpect/wexpect
+            Command string for pexpect / wexpect
         """
         if worker_type == "codex":
-            # Codex: Full auto mode with workspace-write sandbox
-            # IMPORTANT: --json flag is required for proper non-interactive execution
-            codex_flags = "--json --dangerously-bypass-approvals-and-sandbox --model gpt-5"
+            # Codex: Full auto mode with workspace - write sandbox
+            # IMPORTANT: --json flag is required for proper non - interactive execution
+            codex_flags = (
+                "--json --dangerously - bypass - approvals - and - sandbox --model gpt - 5"
+            )
 
             if self.config.execution_mode == "wsl":
                 # WSL mode - convert Windows path to WSL path
                 wsl_task_file = self._convert_to_wsl_path(task_file)
                 return (
                     f"wsl -d {self.config.wsl_distribution} bash -c "
-                    f"\"export PATH='{self.config.nvm_path}:$PATH' && "
+                    "\"export PATH='{self.config.nvm_path}:$PATH' && "
                     f"{self.config.codex_command} exec {codex_flags} < '{wsl_task_file}'\""
                 )
             elif self.config.execution_mode == "windows":
@@ -438,18 +440,18 @@ class WorkerManager:
                     # Use Git Bash on Windows
                     return (
                         f'"{self.config.git_bash_path}" -c '
-                        f"\"{self.config.windows_codex_path} exec {codex_flags} < '{task_file}'\""
+                        "\"{self.config.windows_codex_path} exec {codex_flags} < '{task_file}'\""
                     )
                 else:
                     # Direct Windows command
                     return f'cmd /c "{self.config.windows_codex_path} exec {codex_flags} < "{task_file}""'
             else:
-                # Native Linux/Unix
+                # Native Linux / Unix
                 return f"{self.config.codex_command} exec {codex_flags} < {task_file}"
 
         else:
             # Claude: Interactive mode with confirmation support
-            # Basic flags only - NO --dangerously-skip-permissions
+            # Basic flags only - NO --dangerously - skip - permissions
             flags = ["--print"]
             flags_str = " ".join(flags)
 
@@ -459,7 +461,7 @@ class WorkerManager:
                 wsl_task_file = self._convert_to_wsl_path(task_file)
                 return (
                     f"wsl -d {self.config.wsl_distribution} bash -c "
-                    f"\"export PATH='{self.config.nvm_path}:$PATH' && "
+                    "\"export PATH='{self.config.nvm_path}:$PATH' && "
                     f"{self.config.claude_command} {flags_str} < '{wsl_task_file}'\""
                 )
             elif self.config.execution_mode == "windows":
@@ -468,14 +470,14 @@ class WorkerManager:
                     # Use Git Bash on Windows
                     return (
                         f'"{self.config.git_bash_path}" -c '
-                        f"\"export CLAUDE_CODE_GIT_BASH_PATH='{self.config.git_bash_path}' && "
+                        "\"export CLAUDE_CODE_GIT_BASH_PATH='{self.config.git_bash_path}' && "
                         f"{self.config.windows_claude_path} {flags_str} < '{task_file}'\""
                     )
                 else:
                     # Direct Windows command
                     return f'cmd /c "{self.config.windows_claude_path} {flags_str} < "{task_file}""'
             else:
-                # Native Linux/Unix
+                # Native Linux / Unix
                 return f"{self.config.claude_command} {flags_str} < {task_file}"
 
     def run_interactive_session(self, worker_id: str, max_iterations: int = 100) -> TaskResult:
@@ -499,9 +501,9 @@ class WorkerManager:
                 error_message="Worker session not found",
             )
 
-        print(f"\n[INTERACTIVE-SESSION] {worker_id}")
+        print(f"\n[INTERACTIVE - SESSION] {worker_id}")
         print(f"  Max iterations: {max_iterations}")
-        print(f"  Monitoring for confirmations...\n")
+        print("  Monitoring for confirmations...\n")
 
         iteration = 0
 
@@ -616,7 +618,7 @@ class WorkerManager:
                 if remaining:
                     self._append_raw_output(session, remaining)  # NEW: Use helper method
                     if session.orchestrator_capture:
-                        session.orchestrator_capture.log(remaining.strip(), "FINAL-OUTPUT")
+                        session.orchestrator_capture.log(remaining.strip(), "FINAL - OUTPUT")
             except:
                 pass
 
@@ -693,7 +695,7 @@ class WorkerManager:
         Args:
             worker_id: Worker identifier
             pattern_index: Index of matched pattern
-            child_process: pexpect/wexpect child process
+            child_process: pexpect / wexpect child process
 
         Returns:
             ConfirmationRequest if parsed successfully
@@ -732,7 +734,7 @@ class WorkerManager:
             details=details,
         )
 
-        print(f"\n  [CONFIRMATION-DETECTED]")
+        print("\n  [CONFIRMATION - DETECTED]")
         print(f"    Type: {conf_type}")
         print(f"    Message: {confirmation.message}")
         print(f"    Details: {details}")
@@ -749,7 +751,7 @@ class WorkerManager:
         Returns:
             Response string ("yes" or "no") or None
         """
-        print(f"  [HANDLING-CONFIRMATION]")
+        print("  [HANDLING - CONFIRMATION]")
 
         # Import hybrid engine adapter
         from orchestrator.core.hybrid_integration import AISafetyJudge
@@ -757,7 +759,7 @@ class WorkerManager:
         # Create safety judge (now using hybrid engine)
         judge = AISafetyJudge(
             workspace_root=str(self.config.workspace_root),
-            wsl_distribution="Ubuntu-24.04",
+            wsl_distribution="Ubuntu - 24.04",
             verbose=False,  # Set to True for debugging
         )
 
@@ -769,17 +771,17 @@ class WorkerManager:
         print(f"    Should Escalate: {judgment.should_escalate}")
         print(f"    Reasoning: {judgment.reasoning}")
 
-        # Auto-approve safe operations
+        # Auto - approve safe operations
         if judgment.should_approve and not judgment.should_escalate:
             # Enhanced logging with safety level detail
             if judgment.level == SafetyLevel.SAFE:
-                print(f"    Decision: AUTO-APPROVE:SAFE")
+                print("    Decision: AUTO - APPROVE:SAFE")
                 print(f"    Details: {judgment.reasoning}")
             else:
-                print(f"    Decision: AUTO-APPROVE:{judgment.level.value.upper()}")
+                print(f"    Decision: AUTO - APPROVE:{judgment.level.value.upper()}")
 
             self.logger.info(
-                "Auto-approved safe operation",
+                "Auto - approved safe operation",
                 worker_id=confirmation.worker_id,
                 type=confirmation.confirmation_type,
                 level=judgment.level,
@@ -790,10 +792,10 @@ class WorkerManager:
         if judgment.should_escalate:
             # Enhanced logging with safety level detail
             if judgment.level == SafetyLevel.CAUTION:
-                print(f"    Decision: ESCALATE:CAUTION")
+                print("    Decision: ESCALATE:CAUTION")
                 print(f"    Details: {judgment.reasoning}")
             elif judgment.level == SafetyLevel.DANGEROUS:
-                print(f"    Decision: ESCALATE:DANGEROUS")
+                print("    Decision: ESCALATE:DANGEROUS")
                 print(f"    Details: {judgment.reasoning}")
                 if judgment.suggested_modifications:
                     print(f"    Suggestion: {judgment.suggested_modifications}")
@@ -817,7 +819,7 @@ class WorkerManager:
                 return response
             else:
                 # No callback - deny for safety
-                print(f"    Decision: DENY (no user callback)")
+                print("    Decision: DENY (no user callback)")
 
                 self.logger.warning(
                     "Denied operation - no user callback available",
@@ -830,7 +832,7 @@ class WorkerManager:
 
         # Prohibited operations
         if judgment.level == SafetyLevel.PROHIBITED:
-            print(f"    Decision: DENY:PROHIBITED")
+            print("    Decision: DENY:PROHIBITED")
             print(f"    Details: {judgment.reasoning}")
 
             self.logger.warning(
@@ -843,7 +845,7 @@ class WorkerManager:
             return "no"
 
         # Default: deny if unsure
-        print(f"    Decision: DENY (default)")
+        print("    Decision: DENY (default)")
 
         self.logger.warning(
             "Denied uncertain operation",
@@ -867,15 +869,15 @@ class WorkerManager:
         from datetime import datetime
 
         try:
-            # Save as JSONL (machine-readable)
+            # Save as JSONL (machine - readable)
             jsonl_file = session.workspace_dir / "dialogue_transcript.jsonl"
-            with open(jsonl_file, "w", encoding="utf-8") as f:
+            with open(jsonl_file, "w", encoding="utf - 8") as f:
                 for entry in session.dialogue_transcript:
                     f.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
-            # Save as TXT (human-readable)
+            # Save as TXT (human - readable)
             txt_file = session.workspace_dir / "dialogue_transcript.txt"
-            with open(txt_file, "w", encoding="utf-8") as f:
+            with open(txt_file, "w", encoding="utf - 8") as f:
                 f.write("=" * 80 + "\n")
                 f.write(f"DIALOGUE TRANSCRIPT: {session.worker_id}\n")
                 f.write(f"Task: {session.task_name}\n")
@@ -886,7 +888,7 @@ class WorkerManager:
 
                 for entry in session.dialogue_transcript:
                     timestamp_str = datetime.fromtimestamp(entry["timestamp"]).strftime(
-                        "%H:%M:%S.%f"
+                        "%H:%M:%S.%"
                     )[:-3]
                     direction = entry["direction"]
                     content = entry["content"]
@@ -898,14 +900,14 @@ class WorkerManager:
                     if "confirmation_type" in entry:
                         f.write(f"  Confirmation Type: {entry['confirmation_type']}\n")
                         f.write(
-                            f"  Confirmation Message: {entry.get('confirmation_message', 'N/A')}\n"
+                            f"  Confirmation Message: {entry.get('confirmation_message', 'N / A')}\n"
                         )
 
                     f.write(f"{'-' * 80}\n")
                     f.write(f"{content}\n")
                     f.write(f"{'=' * 80}\n\n")
 
-            print(f"  [TRANSCRIPT-SAVED] {jsonl_file.name}, {txt_file.name}")
+            print(f"  [TRANSCRIPT - SAVED] {jsonl_file.name}, {txt_file.name}")
 
         except Exception as e:
             self.logger.error(
@@ -917,7 +919,7 @@ class WorkerManager:
         self, worker_id: str, task: Dict[str, Any], timeout: int = 300
     ) -> Optional[Path]:
         """
-        Spawn Codex worker (non-interactive, subprocess-based).
+        Spawn Codex worker (non - interactive, subprocess - based).
 
         Unlike spawn_worker(), this does NOT use pexpect. It prepares the workspace
         and task file, but execution happens via run_codex_session().
@@ -937,10 +939,10 @@ class WorkerManager:
         # Create task file
         task_file = worker_dir / "task.txt"
         try:
-            with open(task_file, "w", encoding="utf-8") as f:
+            with open(task_file, "w", encoding="utf - 8") as f:
                 f.write(task["prompt"])
 
-            print(f"\n[SPAWN-CODEX] {worker_name}: {task['name']}")
+            print(f"\n[SPAWN - CODEX] {worker_name}: {task['name']}")
             print(f"  Workspace: {worker_dir}")
             print(f"  Task file: {task_file}")
 
@@ -966,10 +968,10 @@ class WorkerManager:
             return None
 
     def run_codex_session(
-        self, worker_id: str, timeout: int = 300, model: str = "gpt-5"
+        self, worker_id: str, timeout: int = 300, model: str = "gpt - 5"
     ) -> TaskResult:
         """
-        Run Codex worker session using subprocess-based executor.
+        Run Codex worker session using subprocess - based executor.
 
         This method:
         1. Retrieves worker session info
@@ -981,7 +983,7 @@ class WorkerManager:
         Args:
             worker_id: Worker identifier (must be spawned first via spawn_codex_worker)
             timeout: Execution timeout in seconds (default: 300)
-            model: Model to use (default: gpt-5)
+            model: Model to use (default: gpt - 5)
 
         Returns:
             TaskResult with output, file changes, and status
@@ -996,7 +998,7 @@ class WorkerManager:
                 error_message="Codex worker session not found",
             )
 
-        print(f"\n[CODEX-SESSION] {worker_id}")
+        print(f"\n[CODEX - SESSION] {worker_id}")
         print(f"  Task: {session.task_name}")
         print(f"  Timeout: {timeout}s")
         print(f"  Model: {model}\n")
@@ -1034,7 +1036,7 @@ class WorkerManager:
                 self.metrics.record_worker_failed(worker_id)
 
             # Print summary
-            print(f"\n[CODEX-RESULT] {worker_id}")
+            print(f"\n[CODEX - RESULT] {worker_id}")
             print(f"  Success: {task_result.success}")
             print(f"  Duration: {task_result.duration:.1f}s")
             print(f"  Created files: {exec_result.created_files}")
@@ -1079,13 +1081,13 @@ class WorkerManager:
 
             # Save JSONL events
             events_file = session.workspace_dir / "codex_events.jsonl"
-            with open(events_file, "w", encoding="utf-8") as f:
+            with open(events_file, "w", encoding="utf - 8") as f:
                 for event in exec_result.events:
                     f.write(json.dumps(event.model_dump(), ensure_ascii=False) + "\n")
 
             # Save execution summary
             summary_file = session.workspace_dir / "codex_summary.txt"
-            with open(summary_file, "w", encoding="utf-8") as f:
+            with open(summary_file, "w", encoding="utf - 8") as f:
                 f.write("=" * 80 + "\n")
                 f.write(f"CODEX EXECUTION SUMMARY: {session.worker_id}\n")
                 f.write(f"Task: {session.task_name}\n")
@@ -1101,22 +1103,22 @@ class WorkerManager:
                 f.write(f"File Changes: {len(exec_result.file_changes)}\n")
 
                 if exec_result.usage:
-                    f.write(f"\nToken Usage:\n")
+                    f.write("\nToken Usage:\n")
                     f.write(f"  Input: {exec_result.usage.input_tokens}\n")
                     f.write(f"  Output: {exec_result.usage.output_tokens}\n")
 
                 if exec_result.created_files:
-                    f.write(f"\nCreated Files:\n")
+                    f.write("\nCreated Files:\n")
                     for file_path in exec_result.created_files:
                         f.write(f"  - {file_path}\n")
 
                 if exec_result.modified_files:
-                    f.write(f"\nModified Files:\n")
+                    f.write("\nModified Files:\n")
                     for file_path in exec_result.modified_files:
                         f.write(f"  - {file_path}\n")
 
                 if exec_result.error_message:
-                    f.write(f"\nError Message:\n")
+                    f.write("\nError Message:\n")
                     f.write(f"  {exec_result.error_message}\n")
 
                 f.write("\n" + "=" * 80 + "\n")
@@ -1130,7 +1132,7 @@ class WorkerManager:
                     f.write("=" * 80 + "\n")
                     f.write(exec_result.stderr)
 
-            print(f"  [LOGS-SAVED] {events_file.name}, {summary_file.name}")
+            print(f"  [LOGS - SAVED] {events_file.name}, {summary_file.name}")
 
         except Exception as e:
             self.logger.error(f"Failed to save Codex logs for {session.worker_id}: {str(e)}")
@@ -1186,7 +1188,7 @@ class WorkerManager:
             max_workers = len(worker_ids)
 
         self.logger.info(
-            f"Starting parallel execution",
+            "Starting parallel execution",
             worker_count=len(worker_ids),
             max_workers=max_workers,
             timeout=timeout,
@@ -1231,7 +1233,7 @@ class WorkerManager:
                     print(f"  Elapsed: {elapsed:.1f}s\n")
 
                     self.logger.info(
-                        f"Worker completed",
+                        "Worker completed",
                         worker_id=result_worker_id,
                         success=result.success,
                         duration=result.duration,
@@ -1255,7 +1257,7 @@ class WorkerManager:
                     print(f"\n[ERROR] Worker {worker_id} failed: {str(e)}\n")
 
                     self.logger.error(
-                        f"Worker failed",
+                        "Worker failed",
                         worker_id=worker_id,
                         error=str(e),
                         progress=f"{completed_count}/{total_count}",
@@ -1264,7 +1266,7 @@ class WorkerManager:
         total_elapsed = time.time() - start_time
 
         print(f"\n{'='*80}")
-        print(f"PARALLEL EXECUTION COMPLETE")
+        print("PARALLEL EXECUTION COMPLETE")
         print(f"{'='*80}")
         print(f"Total workers: {total_count}")
         print(f"Completed: {completed_count}")
@@ -1272,7 +1274,7 @@ class WorkerManager:
         print(f"{'='*80}\n")
 
         self.logger.info(
-            f"Parallel execution complete",
+            "Parallel execution complete",
             total_workers=total_count,
             completed=completed_count,
             total_time=total_elapsed,
@@ -1293,7 +1295,7 @@ class WorkerManager:
         """Spawn supervised Claude Code worker.
 
         Creates a new supervised worker process that executes a task file
-        within a workspace, with real-time monitoring and control.
+        within a workspace, with real - time monitoring and control.
 
         Args:
             task_file: Path to task markdown file
@@ -1309,8 +1311,8 @@ class WorkerManager:
 
         Examples:
             >>> result = await manager.spawn_supervised_worker(
-            ...     task_file="tasks/WORKER_2.md",
-            ...     workspace_root="workspace/worker_2",
+            ...     task_file="tasks / WORKER_2.md",
+            ...     workspace_root="workspace / worker_2",
             ...     timeout=600
             ... )
             >>> assert result.status == SupervisorStatus.SPAWNING
@@ -1383,7 +1385,7 @@ class WorkerManager:
     ) -> bool:
         """Record a confirmation response for a supervisor.
 
-        Records user decision (APPROVE/DENY/ESCALATE) for a confirmation prompt.
+        Records user decision (APPROVE / DENY / ESCALATE) for a confirmation prompt.
 
         Args:
             worker_id: Supervisor identifier
@@ -1465,14 +1467,14 @@ if __name__ == "__main__":
     def user_approval(confirmation: ConfirmationRequest) -> bool:
         """User approval callback"""
         print(f"\n{'='*60}")
-        print(f"USER APPROVAL NEEDED")
+        print("USER APPROVAL NEEDED")
         print(f"{'='*60}")
         print(f"Worker: {confirmation.worker_id}")
         print(f"Type: {confirmation.confirmation_type}")
         print(f"Message: {confirmation.message}")
         print(f"Details: {confirmation.details}")
 
-        response = input("\nApprove? (y/n): ").strip().lower()
+        response = input("\nApprove? (y / n): ").strip().lower()
         return response == "y"
 
     # Test
@@ -1492,7 +1494,7 @@ if __name__ == "__main__":
         result = manager.run_interactive_session(session.worker_id)
 
         print(f"\n{'='*60}")
-        print(f"FINAL RESULT")
+        print("FINAL RESULT")
         print(f"{'='*60}")
         print(f"Success: {result.success}")
         print(f"Duration: {result.duration:.1f}s")

@@ -44,9 +44,9 @@ class ClaudeAuthDialog:
 Claude CLIを使用するには、認証トークンが必要です。
 
 手順:
-1. https://console.anthropic.com/settings/keys にアクセス
+1. https://console.anthropic.com / settings / keys にアクセス
 2. "Create Key" をクリック
-3. 生成されたトークンをコピー (sk-ant-で始まる)
+3. 生成されたトークンをコピー (sk - ant - で始まる)
 4. 下のテキストボックスに貼り付け
 5. "保存" ボタンをクリック
         """
@@ -125,7 +125,7 @@ Claude CLIを使用するには、認証トークンが必要です。
 
 
 def setup_claude_token_wsl(
-    wsl_distribution: str = "Ubuntu-24.04", token: Optional[str] = None, use_gui: bool = False
+    wsl_distribution: str = "Ubuntu - 24.04", token: Optional[str] = None, use_gui: bool = False
 ) -> bool:
     """
     WSL内のClaude CLIにトークンを設定
@@ -152,11 +152,11 @@ def setup_claude_token_wsl(
             # CLI - エラーを表示
             print("[ERROR] トークンが指定されていません。")
             print("  環境変数 CLAUDE_API_TOKEN を設定するか、")
-            print("  .env ファイルに CLAUDE_API_TOKEN=sk-ant-... を追加してください。")
+            print("  .env ファイルに CLAUDE_API_TOKEN=sk - ant-... を追加してください。")
             return False
 
     # WSL内の設定ディレクトリを作成
-    config_dir = "~/.config/claude"
+    config_dir = "~/.config / claude"
 
     cmd_create_dir = f'wsl -d {wsl_distribution} bash -c "mkdir -p {config_dir}"'
     subprocess.run(cmd_create_dir, shell=True, check=True)
@@ -166,7 +166,7 @@ def setup_claude_token_wsl(
     escaped_token = token.replace("'", "'\\''")
 
     cmd_write_token = (
-        f"wsl -d {wsl_distribution} bash -c " f"\"echo '{escaped_token}' > {config_dir}/token.txt\""
+        f"wsl -d {wsl_distribution} bash -c " "\"echo '{escaped_token}' > {config_dir}/token.txt\""
     )
 
     try:
@@ -203,7 +203,7 @@ def setup_claude_token_windows(token: Optional[str] = None, use_gui: bool = Fals
             # CLI - エラーを表示
             print("[ERROR] トークンが指定されていません。")
             print("  環境変数 CLAUDE_API_TOKEN を設定するか、")
-            print("  .env ファイルに CLAUDE_API_TOKEN=sk-ant-... を追加してください。")
+            print("  .env ファイルに CLAUDE_API_TOKEN=sk - ant-... を追加してください。")
             return False
 
     # Windows設定ディレクトリ
@@ -214,7 +214,7 @@ def setup_claude_token_windows(token: Optional[str] = None, use_gui: bool = Fals
     token_file = config_dir / "token.txt"
 
     try:
-        with open(token_file, "w", encoding="utf-8") as f:
+        with open(token_file, "w", encoding="utf - 8") as f:
             f.write(token)
         print(f"✅ トークンを保存しました: {token_file}")
         return True
@@ -240,14 +240,14 @@ def get_token_from_env_or_file() -> Optional[str]:
     # 1. 環境変数から取得
     token = os.getenv("CLAUDE_API_TOKEN")
     if token:
-        print(f"✓ 環境変数 CLAUDE_API_TOKEN からトークンを取得しました")
+        print("✓ 環境変数 CLAUDE_API_TOKEN からトークンを取得しました")
         return token.strip()
 
     # 2. カレントディレクトリの .claude_token
     token_file = Path(".claude_token")
     if token_file.exists():
         try:
-            token = token_file.read_text(encoding="utf-8").strip()
+            token = token_file.read_text(encoding="utf - 8").strip()
             if token:
                 print(f"✓ {token_file} からトークンを取得しました")
                 return token
@@ -258,7 +258,7 @@ def get_token_from_env_or_file() -> Optional[str]:
     token_file = Path.home() / ".claude_token"
     if token_file.exists():
         try:
-            token = token_file.read_text(encoding="utf-8").strip()
+            token = token_file.read_text(encoding="utf - 8").strip()
             if token:
                 print(f"✓ {token_file} からトークンを取得しました")
                 return token
@@ -270,7 +270,7 @@ def get_token_from_env_or_file() -> Optional[str]:
 
 def setup_claude_token(
     execution_mode: str = "wsl",
-    wsl_distribution: str = "Ubuntu-24.04",
+    wsl_distribution: str = "Ubuntu - 24.04",
     token: Optional[str] = None,
     use_gui: bool = False,
 ) -> bool:
@@ -286,7 +286,7 @@ def setup_claude_token(
     Returns:
         成功した場合True
     """
-    # トークンが指定されていない場合、環境変数/ファイルから取得を試みる
+    # トークンが指定されていない場合、環境変数 / ファイルから取得を試みる
     if token is None:
         token = get_token_from_env_or_file()
 
@@ -307,10 +307,10 @@ if __name__ == "__main__":
     print("=== Claude CLI 認証トークン設定 ===\n")
 
     # 実行モードを選択
-    mode = input("実行モード (wsl/windows) [wsl]: ").strip().lower() or "wsl"
+    mode = input("実行モード (wsl / windows) [wsl]: ").strip().lower() or "wsl"
 
     if mode == "wsl":
-        dist = input("WSLディストリビューション名 [Ubuntu-24.04]: ").strip() or "Ubuntu-24.04"
+        dist = input("WSLディストリビューション名 [Ubuntu - 24.04]: ").strip() or "Ubuntu - 24.04"
         success = setup_claude_token(execution_mode="wsl", wsl_distribution=dist)
     else:
         success = setup_claude_token(execution_mode="windows")

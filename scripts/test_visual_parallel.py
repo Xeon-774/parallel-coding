@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 視覚的な並列実行テスト
 
@@ -16,12 +16,12 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-# UTF-8出力設定
+# UTF - 8出力設定
 if sys.platform == "win32":
     import codecs
 
-    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
-    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
+    sys.stdout = codecs.getwriter("utf - 8")(sys.stdout.buffer, "replace")
+    sys.stderr = codecs.getwriter("utf - 8")(sys.stderr.buffer, "replace")
 
 
 def create_worker_batch_file(
@@ -42,13 +42,13 @@ def create_worker_batch_file(
 
     # タスクファイル作成
     task_file = worker_dir / "task.txt"
-    with open(task_file, "w", encoding="utf-8") as f:
+    with open(task_file, "w", encoding="utf - 8") as f:
         f.write(task_prompt)
 
     # バッチファイル作成
     batch_file = worker_dir / f"run_worker_{worker_id}.bat"
 
-    batch_content = f"""@echo off
+    batch_content = """@echo off
 chcp 65001 >nul
 title Worker {worker_id}: {task_name}
 color 0{worker_id % 6 + 1}
@@ -63,7 +63,7 @@ echo.
 echo --------------------------------------------------------------------------------
 
 REM Git Bash経由でClaude CLIを実行
-"{git_bash_path}" -c "export CLAUDE_CODE_GIT_BASH_PATH='{git_bash_path}' && claude --print --dangerously-skip-permissions < '{str(task_file).replace(chr(92), '/')}'"
+"{git_bash_path}" -c "export CLAUDE_CODE_GIT_BASH_PATH='{git_bash_path}' && claude --print --dangerously - skip - permissions < '{str(task_file).replace(chr(92), '/')}'"
 
 echo.
 echo --------------------------------------------------------------------------------
@@ -76,7 +76,7 @@ echo.
 pause
 """
 
-    with open(batch_file, "w", encoding="utf-8") as f:
+    with open(batch_file, "w", encoding="utf - 8") as f:
         f.write(batch_content)
 
     return batch_file
@@ -87,7 +87,7 @@ def test_visual_parallel(num_workers: int = 3):
     視覚的な並列実行テスト
 
     Args:
-        num_workers: ワーカー数（1-5）
+        num_workers: ワーカー数（1 - 5）
     """
     print("=" * 80)
     print("視覚的な並列実行テスト")
@@ -193,7 +193,7 @@ def test_visual_parallel(num_workers: int = 3):
     print("各ウィンドウの色:")
     colors = ["青", "緑", "水色", "赤", "紫", "黄"]
     for i in range(num_workers):
-        print(f"  Worker {i+1}: {colors[i % 6]}背景")
+        print(f"  Worker {i + 1}: {colors[i % 6]}背景")
     print()
     print("=" * 80)
     print("[NOTE] 各ウィンドウは独立して動作しています")
@@ -210,12 +210,12 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="視覚的な並列実行テスト")
     parser.add_argument(
-        "-w", "--workers", type=int, default=3, help="ワーカー数（1-5、デフォルト: 3）"
+        "-w", "--workers", type=int, default=3, help="ワーカー数（1 - 5、デフォルト: 3）"
     )
 
     args = parser.parse_args()
 
-    # ワーカー数を1-5に制限
+    # ワーカー数を1 - 5に制限
     num_workers = max(1, min(5, args.workers))
 
     test_visual_parallel(num_workers=num_workers)

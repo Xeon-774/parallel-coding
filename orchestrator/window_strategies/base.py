@@ -47,7 +47,7 @@ class WindowManagerBase(ABC):
 
         Args:
             workspace_root: Root directory for workspace
-            auto_close: Auto-close windows on completion
+            auto_close: Auto - close windows on completion
             close_delay: Delay before closing (seconds)
             enable_screenshots: Enable screenshot capture
         """

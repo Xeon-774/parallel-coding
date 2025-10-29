@@ -1,7 +1,7 @@
 """Orchestrator configuration models with recursion support.
 
 This module defines Pydantic models used to configure the orchestrator.
-It extends the base configuration to include recursion-related fields
+It extends the base configuration to include recursion - related fields
 required for hierarchical orchestration.
 
 All fields include validation and sensible defaults to maintain backward
@@ -110,7 +110,7 @@ class OrchestratorConfigRecursion(BaseModel):
 
 
 class OrchestratorConfig(BaseModel):
-    """Top-level orchestrator configuration.
+    """Top - level orchestrator configuration.
 
     Notes:
         This class is provided to keep compatibility with existing imports.

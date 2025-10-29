@@ -31,7 +31,7 @@ class ApprovalStrategy:
 
 
 class SafeApprovalStrategy(ApprovalStrategy):
-    """Auto-approve only highly confident prompts."""
+    """Auto - approve only highly confident prompts."""
 
     def __init__(self, threshold: float = 0.8) -> None:
         self._threshold = threshold
@@ -85,7 +85,7 @@ class SupervisorManager(BaseAIManager):
         )
 
     async def start(self) -> None:
-        # No-op here; spawning is controlled explicitly via `spawn`.
+        # No - op here; spawning is controlled explicitly via `spawn`.
         return None
 
     async def stop(self) -> None:
@@ -134,7 +134,7 @@ class SupervisorManager(BaseAIManager):
         lowered = text.lower()
         return any(tag in lowered for tag in ("error:", "traceback", "exception"))
 
-    async def retry_with_backoff(self, fn, *args, **kwargs) -> object:  # type: ignore[no-untyped-def]
+    async def retry_with_backoff(self, fn, *args, **kwargs) -> object:  # type: ignore[no - untyped - def]
         for attempt in range(self._retry.max_retries + 1):
             try:
                 return await fn(*args, **kwargs)

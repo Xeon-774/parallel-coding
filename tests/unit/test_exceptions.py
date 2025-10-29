@@ -91,7 +91,7 @@ class TestOrchestratorException:
 
 
 class TestConfigurationErrors:
-    """Test configuration-related exception classes."""
+    """Test configuration - related exception classes."""
 
     def test_configuration_error(self):
         """Test ConfigurationError creation."""
@@ -101,10 +101,10 @@ class TestConfigurationErrors:
 
     def test_invalid_workspace_error(self):
         """Test InvalidWorkspaceError creation."""
-        exc = InvalidWorkspaceError("Workspace not found", context={"path": "/invalid/path"})
+        exc = InvalidWorkspaceError("Workspace not found", context={"path": "/invalid / path"})
         assert exc.message == "Workspace not found"
         assert isinstance(exc, ConfigurationError)
-        assert "path=/invalid/path" in str(exc)
+        assert "path=/invalid / path" in str(exc)
 
     def test_missing_dependency_error(self):
         """Test MissingDependencyError creation."""
@@ -117,7 +117,7 @@ class TestConfigurationErrors:
 
 
 class TestWorkerErrors:
-    """Test worker-related exception classes."""
+    """Test worker - related exception classes."""
 
     def test_worker_error(self):
         """Test WorkerError base class."""
@@ -228,7 +228,7 @@ class TestInteractiveErrors:
 
 
 class TestSafetyErrors:
-    """Test safety-related exception classes."""
+    """Test safety - related exception classes."""
 
     def test_safety_error(self):
         """Test SafetyError base class."""
@@ -239,11 +239,11 @@ class TestSafetyErrors:
     def test_dangerous_operation_error(self):
         """Test DangerousOperationError with operation type and details."""
         exc = DangerousOperationError(
-            "Operation blocked", operation_type="FILE_DELETE", details={"file": "/etc/passwd"}
+            "Operation blocked", operation_type="FILE_DELETE", details={"file": "/etc / passwd"}
         )
         assert exc.message == "Operation blocked"
         assert exc.operation_type == "FILE_DELETE"
-        assert exc.details == {"file": "/etc/passwd"}
+        assert exc.details == {"file": "/etc / passwd"}
         assert "operation_type=FILE_DELETE" in str(exc)
 
     def test_dangerous_operation_error_with_context(self):
@@ -269,7 +269,7 @@ class TestSafetyErrors:
 
 
 class TestAPIErrors:
-    """Test API-related exception classes."""
+    """Test API - related exception classes."""
 
     def test_api_error(self):
         """Test APIError base class."""
@@ -309,7 +309,7 @@ class TestAPIErrors:
 
 
 class TestTaskErrors:
-    """Test task-related exception classes."""
+    """Test task - related exception classes."""
 
     def test_task_error(self):
         """Test TaskError base class."""
@@ -348,7 +348,7 @@ class TestTaskErrors:
 
 
 class TestResourceErrors:
-    """Test resource-related exception classes."""
+    """Test resource - related exception classes."""
 
     def test_resource_error(self):
         """Test ResourceError base class."""
@@ -383,11 +383,11 @@ class TestResourceErrors:
 
     def test_file_system_error(self):
         """Test FileSystemError with path and operation."""
-        exc = FileSystemError("File not found", path="/tmp/test.txt", operation="read")
+        exc = FileSystemError("File not found", path="/tmp / test.txt", operation="read")
         assert exc.message == "File not found"
-        assert exc.path == "/tmp/test.txt"
+        assert exc.path == "/tmp / test.txt"
         assert exc.operation == "read"
-        assert "path=/tmp/test.txt" in str(exc)
+        assert "path=/tmp / test.txt" in str(exc)
         assert "operation=read" in str(exc)
 
 
@@ -490,7 +490,7 @@ class TestFormatExceptionChain:
         assert "Caused by: ValueError: Original" in formatted
 
     def test_format_exception_chain_multiple_levels(self):
-        """Test formatting multi-level exception chain."""
+        """Test formatting multi - level exception chain."""
         level1 = ValueError("Level 1")
         level2 = OrchestratorException("Level 2", cause=level1)
         level3 = ConfigurationError("Level 3", cause=level2)

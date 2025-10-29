@@ -13,7 +13,7 @@ from orchestrator.window_strategies.base import WindowInfo, WindowManagerBase
 
 class WindowsWindowManager(WindowManagerBase):
     """
-    Windows-specific window manager implementation
+    Windows - specific window manager implementation
 
     Uses PowerShell scripts and batch files to create monitoring windows.
     """
@@ -78,55 +78,55 @@ class WindowsWindowManager(WindowManagerBase):
         # Escape special PowerShell characters
         safe_task_name = task_name.replace('"', '`"').replace("$", "`$").replace("`", "``")
 
-        ps_script = f"""
+        ps_script = """
 $host.UI.RawUI.WindowTitle = "{window_title}"
 $outputFile = "{ps_output_file}"
 
-Write-Host "====================================" -ForegroundColor Cyan
-Write-Host "  Worker AI Monitor" -ForegroundColor Cyan
-Write-Host "====================================" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "Worker ID: {worker_id}" -ForegroundColor Yellow
-Write-Host "Task: {safe_task_name}" -ForegroundColor Yellow
-Write-Host ""
-Write-Host "Waiting for worker..." -ForegroundColor Gray
-Write-Host ""
+Write - Host "====================================" -ForegroundColor Cyan
+Write - Host "  Worker AI Monitor" -ForegroundColor Cyan
+Write - Host "====================================" -ForegroundColor Cyan
+Write - Host ""
+Write - Host "Worker ID: {worker_id}" -ForegroundColor Yellow
+Write - Host "Task: {safe_task_name}" -ForegroundColor Yellow
+Write - Host ""
+Write - Host "Waiting for worker..." -ForegroundColor Gray
+Write - Host ""
 
 # Wait for output file (max 30 seconds)
 $timeout = 30
 $elapsed = 0
-while (-not (Test-Path $outputFile) -and $elapsed -lt $timeout) {{
-    Start-Sleep -Milliseconds 500
+while (-not (Test - Path $outputFile) -and $elapsed -lt $timeout) {{
+    Start - Sleep -Milliseconds 500
     $elapsed += 0.5
 }}
 
-if (Test-Path $outputFile) {{
-    Write-Host "Worker started!" -ForegroundColor Green
-    Write-Host "====================================" -ForegroundColor Cyan
-    Write-Host ""
-    Get-Content $outputFile -Wait -Tail 0
+if (Test - Path $outputFile) {{
+    Write - Host "Worker started!" -ForegroundColor Green
+    Write - Host "====================================" -ForegroundColor Cyan
+    Write - Host ""
+    Get - Content $outputFile -Wait -Tail 0
 }} else {{
-    Write-Host "Timeout: Worker did not start" -ForegroundColor Red
+    Write - Host "Timeout: Worker did not start" -ForegroundColor Red
 }}
 
-Write-Host ""
-Write-Host "====================================" -ForegroundColor Cyan
-Write-Host "  Worker Completed" -ForegroundColor Green
-Write-Host "====================================" -ForegroundColor Cyan
+Write - Host ""
+Write - Host "====================================" -ForegroundColor Cyan
+Write - Host "  Worker Completed" -ForegroundColor Green
+Write - Host "====================================" -ForegroundColor Cyan
 """
 
         if self.auto_close:
-            ps_script += f"""
-Write-Host "Closing in {self.close_delay} seconds..." -ForegroundColor Yellow
-Start-Sleep -Seconds {self.close_delay}
+            ps_script += """
+Write - Host "Closing in {self.close_delay} seconds..." -ForegroundColor Yellow
+Start - Sleep -Seconds {self.close_delay}
 """
         else:
             ps_script += """
-Write-Host "Press any key to close..." -ForegroundColor Yellow
+Write - Host "Press any key to close..." -ForegroundColor Yellow
 $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 """
 
-        with open(script_path, "w", encoding="utf-8") as f:
+        with open(script_path, "w", encoding="utf - 8") as f:
             f.write(ps_script)
 
         return script_path
@@ -139,12 +139,12 @@ $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
         batch_file = worker_dir / "launch_monitor.bat"
         safe_title = window_title.replace("\n", " ").replace("\r", " ")
 
-        batch_content = f"""@echo off
+        batch_content = """@echo off
 title {safe_title}
 powershell.exe -ExecutionPolicy Bypass -NoProfile -File "{monitor_script}"
 """
 
-        with open(batch_file, "w", encoding="utf-8") as f:
+        with open(batch_file, "w", encoding="utf - 8") as f:
             f.write(batch_content)
 
         return batch_file

@@ -1,8 +1,8 @@
 """Supervisor API for worker monitoring and control.
 
-Implements six endpoints under `/api/supervisor` for listing workers,
-retrieving details, pausing/resuming/terminating workers, and aggregate
-metrics. Secured via bearer tokens with scope-based authorization.
+Implements six endpoints under `/api / supervisor` for listing workers,
+retrieving details, pausing / resuming / terminating workers, and aggregate
+metrics. Secured via bearer tokens with scope - based authorization.
 """
 
 from __future__ import annotations
@@ -20,7 +20,7 @@ from orchestrator.core.auth import TokenData
 from orchestrator.core.db_models import Worker, WorkerStatus
 from orchestrator.core.state_machine import WorkerStateMachine
 
-router = APIRouter(prefix="/api/supervisor", tags=["supervisor"])
+router = APIRouter(prefix="/api / supervisor", tags=["supervisor"])
 
 
 class WorkerResponse(BaseModel):
@@ -60,7 +60,7 @@ class MetricsResponse(BaseModel):
     - `status`: Filter by worker status (IDLE, RUNNING, PAUSED, COMPLETED, FAILED, TERMINATED)
 
     **Pagination:**
-    - `limit`: Maximum number of results (1-100, default: 50)
+    - `limit`: Maximum number of results (1 - 100, default: 50)
     - `offset`: Number of results to skip (default: 0)
 
     **Required Scope:** `supervisor:read`
@@ -70,11 +70,11 @@ class MetricsResponse(BaseModel):
     {
       "workers": [
         {
-          "id": "worker-123",
-          "workspace_id": "ws-001",
+          "id": "worker - 123",
+          "workspace_id": "ws - 001",
           "status": "RUNNING",
-          "created_at": "2025-10-28T10:00:00Z",
-          "updated_at": "2025-10-28T10:05:00Z"
+          "created_at": "2025 - 10 - 28T10:00:00Z",
+          "updated_at": "2025 - 10 - 28T10:05:00Z"
         }
       ],
       "total": 1,

@@ -2,14 +2,14 @@
 Codex CLI Provider - OpenAI ChatGPT Code Interpreter Integration
 
 This module provides integration with OpenAI's Codex CLI (ChatGPT Code Interpreter)
-for executing AI-powered coding tasks with unlimited token usage via ChatGPT Plus.
+for executing AI - powered coding tasks with unlimited token usage via ChatGPT Plus.
 
 Key Features:
     - Unlimited API calls with ChatGPT Plus subscription
-    - Cost-effective worker AI for debugging/refactoring tasks
-    - Async/sync execution modes
+    - Cost - effective worker AI for debugging / refactoring tasks
+    - Async / sync execution modes
     - Comprehensive error handling
-    - Type-safe configuration with Pydantic
+    - Type - safe configuration with Pydantic
     - 90%+ test coverage compliance
 
 Architecture:
@@ -25,7 +25,7 @@ Security:
     - Timeout enforcement
 
 Author: Claude (Sonnet 4.5)
-Created: 2025-10-27
+Created: 2025 - 10 - 27
 Version: 1.0.0
 Excellence AI Standard: 100% Applied
 """
@@ -102,11 +102,11 @@ class CodexProviderConfig(BaseModel):
     """
     Configuration for Codex CLI Provider.
 
-    This model provides type-safe configuration with comprehensive validation.
+    This model provides type - safe configuration with comprehensive validation.
 
     Attributes:
-        timeout_seconds: Maximum execution time (10-3600 seconds)
-        max_retries: Maximum retry attempts (0-5)
+        timeout_seconds: Maximum execution time (10 - 3600 seconds)
+        max_retries: Maximum retry attempts (0 - 5)
         workspace_root: Root directory for file operations
         enable_logging: Whether to enable detailed logging
 
@@ -214,13 +214,13 @@ class CodexCLIProvider:
     Provider for OpenAI Codex CLI (ChatGPT Code Interpreter).
 
     This provider enables integration with ChatGPT Code Interpreter for
-    AI-powered coding tasks with unlimited usage via ChatGPT Plus.
+    AI - powered coding tasks with unlimited usage via ChatGPT Plus.
 
     Features:
         - Async and sync execution modes
         - Automatic retry with exponential backoff
         - Comprehensive error handling
-        - Type-safe configuration
+        - Type - safe configuration
         - CLI installation validation
 
     Usage:
@@ -273,7 +273,7 @@ class CodexCLIProvider:
 
         except FileNotFoundError:
             raise CodexCLINotFoundError(
-                "Codex CLI not found. Install: npm install -g @openai/codex"
+                "Codex CLI not found. Install: npm install -g @openai / codex"
             )
         except subprocess.TimeoutExpired:
             raise CodexCLINotFoundError("Codex CLI validation timed out")
@@ -299,7 +299,7 @@ class CodexCLIProvider:
         Execute Codex CLI command asynchronously.
 
         Args:
-            prompt: Task description for Codex (10-50000 characters)
+            prompt: Task description for Codex (10 - 50000 characters)
             context: Optional context information (file paths, etc.)
 
         Returns:
@@ -308,7 +308,7 @@ class CodexCLIProvider:
         Raises:
             ValueError: If prompt is invalid
             CodexTimeoutError: If execution times out after max retries
-            CodexExecutionError: If execution fails with non-retryable error
+            CodexExecutionError: If execution fails with non - retryable error
 
         Example:
             >>> result = await provider.execute_async(
@@ -354,7 +354,7 @@ class CodexCLIProvider:
                 await asyncio.sleep(backoff_seconds)
 
             except CodexExecutionError as e:
-                # Non-retryable errors - fail immediately
+                # Non - retryable errors - fail immediately
                 return CodexExecutionResult(
                     status=CodexStatus.FAILED,
                     output="",
@@ -412,7 +412,7 @@ class CodexCLIProvider:
             CodexExecutionError: If execution fails
         """
         try:
-            # Build command (use exec subcommand for non-interactive execution)
+            # Build command (use exec subcommand for non - interactive execution)
             cmd = ["codex", "exec", prompt]
 
             # Execute with timeout (shell=True required on Windows)
@@ -433,8 +433,8 @@ class CodexCLIProvider:
                 raise CodexTimeoutError(f"Execution timed out after {self.config.timeout_seconds}s")
 
             # Process results
-            output = stdout.decode("utf-8", errors="replace")
-            error_output = stderr.decode("utf-8", errors="replace")
+            output = stdout.decode("utf - 8", errors="replace")
+            error_output = stderr.decode("utf - 8", errors="replace")
 
             if process.returncode == 0:
                 return CodexExecutionResult(status=CodexStatus.SUCCESS, output=output, error=None)
@@ -442,7 +442,7 @@ class CodexCLIProvider:
                 raise CodexExecutionError(f"Codex execution failed: {error_output}")
 
         except (CodexTimeoutError, CodexExecutionError):
-            # Re-raise our custom errors without wrapping
+            # Re - raise our custom errors without wrapping
             raise
 
         except FileNotFoundError:

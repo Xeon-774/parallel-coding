@@ -44,7 +44,7 @@ from orchestrator.core.ai_providers.base_review_provider import (
 def temp_document(tmp_path: Path) -> Path:
     """Create a temporary test document"""
     doc = tmp_path / "test_doc.md"
-    doc.write_text("# Test Document\n\nThis is a test document.", encoding="utf-8")
+    doc.write_text("# Test Document\n\nThis is a test document.", encoding="utf - 8")
     return doc
 
 
@@ -64,8 +64,8 @@ def sample_feedback() -> ReviewFeedback:
 def sample_result() -> ReviewResult:
     """Create sample review result"""
     return ReviewResult(
-        job_id="test-job-123",
-        document_path="docs/test.md",
+        job_id="test - job - 123",
+        document_path="docs / test.md",
         review_type=ReviewType.DESIGN,
         perspective=ReviewPerspective.ARCHITECTURE,
         status=ReviewStatus.SUCCESS,
@@ -121,7 +121,7 @@ def test_review_request_path_traversal_rejected() -> None:
     """Test path traversal is rejected"""
     with pytest.raises(ValueError, match="Path traversal not allowed"):
         ReviewRequest(
-            document_path="../../../etc/passwd",
+            document_path="../../../etc / passwd",
             review_type=ReviewType.CODE,
             perspective=ReviewPerspective.SECURITY,
         )
@@ -142,7 +142,7 @@ def test_review_request_large_file_rejected(tmp_path: Path) -> None:
     large_doc = tmp_path / "large.md"
     # Create file larger than MAX_DOCUMENT_SIZE_MB
     large_content = "x" * ((MAX_DOCUMENT_SIZE_MB + 1) * 1024 * 1024)
-    large_doc.write_text(large_content, encoding="utf-8")
+    large_doc.write_text(large_content, encoding="utf - 8")
 
     with pytest.raises(ValueError, match="Document too large"):
         ReviewRequest(
@@ -219,7 +219,7 @@ def test_review_feedback_with_section() -> None:
 
 def test_review_result_creation(sample_result: ReviewResult) -> None:
     """Test result creation"""
-    assert sample_result.job_id == "test-job-123"
+    assert sample_result.job_id == "test - job - 123"
     assert sample_result.status == ReviewStatus.SUCCESS
     assert sample_result.overall_score == 85.0
     assert len(sample_result.feedbacks) == 1
@@ -230,7 +230,7 @@ def test_review_result_is_success(sample_result: ReviewResult) -> None:
     assert sample_result.is_success is True
 
     failed_result = ReviewResult(
-        job_id="failed-job",
+        job_id="failed - job",
         document_path="test.md",
         review_type=ReviewType.CODE,
         perspective=ReviewPerspective.SECURITY,
@@ -470,7 +470,7 @@ class MockReviewProvider(BaseReviewProvider):
 
     async def review_document(self, request: ReviewRequest) -> ReviewResult:
         return ReviewResult(
-            job_id="mock-job",
+            job_id="mock - job",
             document_path=request.document_path,
             review_type=request.review_type,
             perspective=request.perspective,

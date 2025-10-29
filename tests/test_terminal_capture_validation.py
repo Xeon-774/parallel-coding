@@ -15,7 +15,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-# Configure UTF-8 encoding
+# Configure UTF - 8 encoding
 from orchestrator.utils.encoding_config import configure_console_encoding, safe_print
 
 configure_console_encoding()
@@ -38,9 +38,9 @@ def test_terminal_capture():
     workspace = project_root / "workspace" / "test_terminal_capture"
     config.workspace_root = str(workspace)
     config.execution_mode = "wsl"
-    config.wsl_distribution = "Ubuntu-24.04"
-    config.claude_command = "~/.local/bin/claude"
-    config.nvm_path = "/usr/bin"
+    config.wsl_distribution = "Ubuntu - 24.04"
+    config.claude_command = "~/.local / bin / claude"
+    config.nvm_path = "/usr / bin"
 
     # Prepare workspace
     workspace.mkdir(parents=True, exist_ok=True)
@@ -54,7 +54,7 @@ def test_terminal_capture():
 
     # Initialize WorkerManager
     worker_manager = WorkerManager(
-        config=config, logger=logger, user_approval_callback=None  # Auto-approve mode
+        config=config, logger=logger, user_approval_callback=None  # Auto - approve mode
     )
 
     # Simple test task
@@ -100,7 +100,7 @@ Start now.
         print()
 
         # Read initial content
-        initial_content = session.raw_terminal_file.read_text(encoding="utf-8")
+        initial_content = session.raw_terminal_file.read_text(encoding="utf - 8")
         print("[Test] Initial content:")
         print("-" * 80)
         safe_print(initial_content[:500])  # First 500 chars
@@ -126,7 +126,7 @@ Start now.
             print(f"✓ File size: {file_size} bytes")
 
             # Check 3: Read final content
-            final_content = session.raw_terminal_file.read_text(encoding="utf-8")
+            final_content = session.raw_terminal_file.read_text(encoding="utf - 8")
             print(f"✓ Content length: {len(final_content)} characters")
 
             # Check 4: Content increased from initial

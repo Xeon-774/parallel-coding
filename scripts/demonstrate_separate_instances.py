@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 オーケストレーターAIとワーカーAIが別インスタンスであることの実証
 
@@ -12,12 +12,12 @@ import sys
 import time
 from pathlib import Path
 
-# UTF-8出力設定
+# UTF - 8出力設定
 if sys.platform == "win32":
     import codecs
 
-    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
-    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
+    sys.stdout = codecs.getwriter("utf - 8")(sys.stdout.buffer, "replace")
+    sys.stderr = codecs.getwriter("utf - 8")(sys.stderr.buffer, "replace")
 
 
 def demonstrate_separation():
@@ -37,20 +37,20 @@ def demonstrate_separation():
 
     # 1. オーケストレーターAIのプロセスID
     orchestrator_pid = os.getpid()
-    print(f"[オーケストレーターAI]")
+    print("[オーケストレーターAI]")
     print(f"  プロセスID (PID): {orchestrator_pid}")
-    print(f"  実行中: このPythonスクリプト")
-    print(f"  役割: システム管理、タスク分析、結果統合")
+    print("  実行中: このPythonスクリプト")
+    print("  役割: システム管理、タスク分析、結果統合")
     print()
 
     # 2. ワーカーAI用のタスクファイルを作成
-    workspace = Path("workspace/demo")
+    workspace = Path("workspace / demo")
     workspace.mkdir(parents=True, exist_ok=True)
 
     task_file = workspace / "task.txt"
     output_file = workspace / "output.txt"
 
-    with open(task_file, "w", encoding="utf-8") as f:
+    with open(task_file, "w", encoding="utf - 8") as f:
         f.write(
             """あなたは誰ですか？あなたのプロセスIDは何ですか？
 あなたはオーケストレーターAIとは別のインスタンスであることを説明してください。
@@ -68,8 +68,8 @@ def demonstrate_separation():
 
     cmd = (
         f'"{git_bash_path}" -c '
-        f"\"export CLAUDE_CODE_GIT_BASH_PATH='{git_bash_path}' && "
-        f"claude --print --dangerously-skip-permissions < '{task_file}' > '{output_file}' 2>&1\""
+        "\"export CLAUDE_CODE_GIT_BASH_PATH='{git_bash_path}' && "
+        f"claude --print --dangerously - skip - permissions < '{task_file}' > '{output_file}' 2>&1\""
     )
 
     print("[ワーカーAI起動コマンド]")
@@ -85,10 +85,10 @@ def demonstrate_separation():
     # ワーカーAIのプロセスID
     worker_pid = process.pid
 
-    print(f"[ワーカーAI]")
+    print("[ワーカーAI]")
     print(f"  プロセスID (PID): {worker_pid}")
-    print(f"  実行中: Claude CLI（別のClaude AIセッション）")
-    print(f"  役割: タスクの実行、コード生成")
+    print("  実行中: Claude CLI（別のClaude AIセッション）")
+    print("  役割: タスクの実行、コード生成")
     print()
 
     # プロセス終了を待機
@@ -99,7 +99,7 @@ def demonstrate_separation():
 
     # 結果を確認
     if output_file.exists():
-        with open(output_file, "r", encoding="utf-8", errors="replace") as f:
+        with open(output_file, "r", encoding="utf - 8", errors="replace") as f:
             worker_output = f.read()
 
         print("=" * 80)

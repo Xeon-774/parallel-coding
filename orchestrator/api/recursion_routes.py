@@ -17,7 +17,7 @@ from orchestrator.core.hierarchical import (
     HierarchicalResourceManager,
 )
 
-router = APIRouter(prefix="/api/v1/recursion", tags=["recursion"])
+router = APIRouter(prefix="/api / v1 / recursion", tags=["recursion"])
 
 
 class RecursionConfig(BaseModel):
@@ -35,7 +35,7 @@ class RecursionConfig(BaseModel):
 
     @validator("orchestrator_api_key")
     def _validate_api_key(cls, v: str) -> str:
-        if not v.startswith("sk-orch-"):
+        if not v.startswith("sk - orch-"):
             raise ValueError("Invalid API key format")
         return v
 
@@ -138,7 +138,7 @@ async def get_hierarchy(
     usage = await rm.get_hierarchy_usage()
     # Convert pydantic models to dict for response model typing
     usage_dict = {d: u.model_dump() for d, u in usage.items()}
-    active_jobs = len([1 for _, t in orch._tasks.items() if not t.done()])  # type: ignore[attr-defined]
+    active_jobs = len([1 for _, t in orch._tasks.items() if not t.done()])  # type: ignore[attr - defined]
     return HierarchyResponse(usage=usage_dict, active_jobs=active_jobs)
 
 

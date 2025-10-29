@@ -19,7 +19,7 @@ Excellence AI Standard: 100% Applied
     - NO skipped tests
 
 Author: Claude (Sonnet 4.5)
-Created: 2025-10-27
+Created: 2025 - 10 - 27
 Version: 1.0.0
 """
 
@@ -146,7 +146,7 @@ class TestCodexProviderConfig:
     def test_workspace_root_path_traversal_invalid(self):
         """Should reject path traversal in workspace_root (SECURITY)"""
         with pytest.raises(ValueError) as exc_info:
-            CodexProviderConfig(workspace_root="../../../etc/passwd")
+            CodexProviderConfig(workspace_root="../../../etc / passwd")
 
         assert "path traversal" in str(exc_info.value).lower()
 
@@ -561,7 +561,7 @@ class TestCodexCLIProviderSecurity:
     def test_config_path_traversal_blocked(self):
         """Should block path traversal in configuration (SECURITY)"""
         with pytest.raises(ValueError) as exc_info:
-            CodexProviderConfig(workspace_root="../../etc/passwd")
+            CodexProviderConfig(workspace_root="../../etc / passwd")
 
         assert "path traversal" in str(exc_info.value).lower()
 

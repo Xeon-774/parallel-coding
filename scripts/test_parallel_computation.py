@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr / bin / env python3
 """
 並列計算テスト - ブロックチェーン風のProof of Work
 
@@ -76,7 +76,7 @@ def create_pow_task(block_data: str, difficulty: int, worker_range: tuple) -> st
         difficulty: 難易度
         worker_range: ワーカーが探索するnonce範囲 (start, end)
     """
-    return f"""あなたは分散計算ネットワークのワーカーノードです。
+    return """あなたは分散計算ネットワークのワーカーノードです。
 
 **タスク**: Proof of Work計算
 
@@ -129,7 +129,7 @@ def run_parallel_pow_test(num_workers: int = 5, difficulty: int = 4):
 
     print("探索範囲の分割:")
     for i, (start, end) in enumerate(ranges):
-        print(f"  Worker {i+1}: {start:,} - {end:,}")
+        print(f"  Worker {i + 1}: {start:,} - {end:,}")
     print()
 
     # タスクリストを作成
@@ -168,13 +168,13 @@ def run_parallel_pow_test(num_workers: int = 5, difficulty: int = 4):
             return
 
         # 統合結果から個別のワーカー結果を取得
-        # workspace/results.jsonを読み取る
+        # workspace / results.jsonを読み取る
         results_json_path = Path(config.workspace_dir) / "results.json"
         if not results_json_path.exists():
             print("[ERROR] results.jsonが見つかりません")
             return
 
-        with open(results_json_path, "r", encoding="utf-8") as f:
+        with open(results_json_path, "r", encoding="utf - 8") as f:
             results_data = json.load(f)
 
         # 各ワーカーの出力ファイルを読み取る
@@ -187,13 +187,13 @@ def run_parallel_pow_test(num_workers: int = 5, difficulty: int = 4):
 
             if output_file.exists():
                 print(f"\n[Worker {i}]")
-                with open(output_file, "r", encoding="utf-8") as f:
+                with open(output_file, "r", encoding="utf - 8") as f:
                     output = f.read()
 
                 verification = verify_proof_of_work(output, difficulty)
 
                 if verification["valid"]:
-                    print(f"  [VALID] 有効な解を発見！")
+                    print("  [VALID] 有効な解を発見！")
                     print(f"  Nonce: {verification['nonce']}")
                     print(f"  Hash: {verification['hash']}")
                     valid_solutions.append(
@@ -204,7 +204,7 @@ def run_parallel_pow_test(num_workers: int = 5, difficulty: int = 4):
                         }
                     )
                 else:
-                    print(f"  [NO SOLUTION] 解が見つからなかった")
+                    print("  [NO SOLUTION] 解が見つからなかった")
                     if "error" in verification:
                         print(f"  理由: {verification['error']}")
 
@@ -229,10 +229,10 @@ def run_parallel_pow_test(num_workers: int = 5, difficulty: int = 4):
             print("独立検証:")
             reconstructed_hash = calculate_hash(block_data + winner["nonce"])
             if reconstructed_hash == winner["hash"]:
-                print(f"  [VERIFIED] ハッシュ検証成功")
+                print("  [VERIFIED] ハッシュ検証成功")
                 print(f"  再計算ハッシュ: {reconstructed_hash}")
             else:
-                print(f"  [FAILED] ハッシュ検証失敗")
+                print("  [FAILED] ハッシュ検証失敗")
                 print(f"  期待: {winner['hash']}")
                 print(f"  実際: {reconstructed_hash}")
         else:

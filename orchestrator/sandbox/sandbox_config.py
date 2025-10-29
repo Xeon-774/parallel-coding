@@ -35,15 +35,15 @@ class SandboxConfig:
     Hermetic sandbox configuration
 
     Security features:
-    - Non-root user (UID 1000)
-    - Read-only root filesystem
+    - Non - root user (UID 1000)
+    - Read - only root filesystem
     - No network by default
     - Resource quotas enforced
     - Secrets injection via environment
     """
 
     # Container settings
-    image: str = "parallel-coding-worker:latest"
+    image: str = "parallel - coding - worker:latest"
     user_id: int = 1000
     group_id: int = 1000
 
@@ -73,7 +73,7 @@ class SandboxConfig:
     # Environment variables (for secrets injection)
     env_vars: Dict[str, str] = field(default_factory=dict)
 
-    # Bind mounts (read-only by default)
+    # Bind mounts (read - only by default)
     bind_mounts: Dict[Path, Path] = field(default_factory=dict)
 
     def to_docker_params(self) -> Dict:
@@ -85,18 +85,18 @@ class SandboxConfig:
             "environment": self.env_vars,
             "network_disabled": not self.network.enabled,
             "read_only": self.read_only_root,
-            "security_opt": ["no-new-privileges:true"] if self.no_new_privileges else [],
+            "security_opt": ["no - new - privileges:true"] if self.no_new_privileges else [],
             "cap_drop": self.drop_capabilities,
             "mem_limit": self.resources.memory_limit,
             "memswap_limit": self.resources.memory_swap,
             "nano_cpus": int(self.resources.cpu_quota * 1e9),
             "pids_limit": self.resources.pids_limit,
             "volumes": {
-                str(host): {"bind": str(container), "mode": "ro"}  # Read-only by default
+                str(host): {"bind": str(container), "mode": "ro"}  # Read - only by default
                 for host, container in self.bind_mounts.items()
             },
             "detach": True,
-            "remove": True,  # Auto-remove after exit
+            "remove": True,  # Auto - remove after exit
         }
 
 

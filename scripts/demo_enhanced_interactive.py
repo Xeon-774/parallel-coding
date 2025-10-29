@@ -1,7 +1,7 @@
 """
 Simple Demo of EnhancedInteractiveWorkerManager
 
-Demonstrates the pexpect/wexpect-based interactive mode with a simple example.
+Demonstrates the pexpect / wexpect - based interactive mode with a simple example.
 """
 
 import sys
@@ -35,28 +35,28 @@ class DemoLogger:
 
 
 def demo_approval_callback(confirmation: ConfirmationRequest) -> bool:
-    """Demo approval callback - auto-approves safe operations"""
+    """Demo approval callback - auto - approves safe operations"""
     print(f"\n{'='*60}")
-    print(f"CONFIRMATION REQUEST")
+    print("CONFIRMATION REQUEST")
     print(f"{'='*60}")
     print(f"Type: {confirmation.confirmation_type}")
     print(f"Message: {confirmation.message}")
     print(f"Details: {confirmation.details}")
 
-    # Auto-approve file writes
+    # Auto - approve file writes
     if confirmation.confirmation_type.value == "file_write":
-        print("[AUTO-APPROVE] Safe file write operation")
+        print("[AUTO - APPROVE] Safe file write operation")
         print(f"{'='*60}\n")
         return True
 
-    # Auto-approve file reads
+    # Auto - approve file reads
     if confirmation.confirmation_type.value == "file_read":
-        print("[AUTO-APPROVE] Safe file read operation")
+        print("[AUTO - APPROVE] Safe file read operation")
         print(f"{'='*60}\n")
         return True
 
     # Deny everything else for safety
-    print("[AUTO-DENY] Operation not pre-approved")
+    print("[AUTO - DENY] Operation not pre - approved")
     print(f"{'='*60}\n")
     return False
 
@@ -66,7 +66,7 @@ def main():
     print("\n" + "=" * 70)
     print(" EnhancedInteractiveWorkerManager Demo")
     print("=" * 70)
-    print("\nThis demo shows the pexpect/wexpect-based interactive mode")
+    print("\nThis demo shows the pexpect / wexpect - based interactive mode")
     print("with a simple Python script execution.\n")
 
     # Setup
@@ -79,7 +79,7 @@ def main():
     if sys.platform == "win32":
         print("Using: wexpect (Windows)")
     else:
-        print("Using: pexpect (Unix/Linux)")
+        print("Using: pexpect (Unix / Linux)")
 
     print("\n" + "-" * 70)
     print("Creating manager...")
@@ -122,7 +122,7 @@ Just create a basic script and save it.
             print(" RESULT")
             print("=" * 70)
             print(f"Success: {result.success}")
-            print(f"Duration: {result.duration:.2f}s" if result.duration else "Duration: N/A")
+            print(f"Duration: {result.duration:.2f}s" if result.duration else "Duration: N / A")
 
             if result.error_message:
                 print(f"Error: {result.error_message}")
@@ -152,7 +152,7 @@ Just create a basic script and save it.
         print("  2. Configure paths in OrchestratorConfig")
         print("  3. Run this demo again")
         print("\nFor now, the architecture has been validated with:")
-        print("  - Basic pexpect/wexpect functionality tests")
+        print("  - Basic pexpect / wexpect functionality tests")
         print("  - Mock CLI integration tests")
 
     print("\n" + "=" * 70)

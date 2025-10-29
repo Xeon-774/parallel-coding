@@ -72,7 +72,7 @@ class TestStateUpdates:
         monitor.update_worker_state("worker_001", WorkerState.COMPLETED)
         status = monitor.get_worker_status("worker_001")
         assert status.state == WorkerState.COMPLETED
-        assert status.progress == 100  # Auto-set to 100% on completion
+        assert status.progress == 100  # Auto - set to 100% on completion
 
     def test_update_state_with_task(self, monitor):
         """Test updating state with new task description."""
@@ -339,7 +339,7 @@ class TestWorkerRemoval:
 
 
 class TestThreadSafety:
-    """Test thread-safe operations."""
+    """Test thread - safe operations."""
 
     def test_concurrent_updates(self, monitor):
         """Test concurrent updates don't cause issues (basic check)."""
@@ -392,7 +392,7 @@ class TestStatusProperties:
         """Test is_terminal property for different states."""
         monitor.register_worker("worker_001", "Task")
 
-        # Non-terminal states
+        # Non - terminal states
         for state in [WorkerState.SPAWNING, WorkerState.RUNNING, WorkerState.WAITING]:
             monitor.update_worker_state("worker_001", state)
             status = monitor.get_worker_status("worker_001")

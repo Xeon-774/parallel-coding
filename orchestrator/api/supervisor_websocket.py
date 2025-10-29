@@ -1,6 +1,6 @@
 """Supervisor WebSocket endpoint and event hub.
 
-Provides real-time streaming of supervisor output, status changes, and
+Provides real - time streaming of supervisor output, status changes, and
 confirmation prompts to connected dashboard clients.
 """
 
@@ -15,7 +15,7 @@ from typing import Dict, Final, List, Literal, Optional, Tuple
 from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect
 
 AUTH_TOKEN_ENV: Final[str] = "API_TOKEN"
-DEFAULT_TOKEN: Final[str] = "dev-token"
+DEFAULT_TOKEN: Final[str] = "dev - token"
 MAX_MSGS_PER_SEC: Final[int] = 10
 IDLE_TIMEOUT_SECS: Final[float] = 30.0
 HEARTBEAT_INTERVAL_SECS: Final[float] = 10.0
@@ -106,9 +106,9 @@ hub = SupervisorHub()
 router = APIRouter()
 
 
-@router.websocket("/ws/supervisor")
+@router.websocket("/ws / supervisor")
 async def supervisor_ws(websocket: WebSocket) -> None:
-    """WebSocket for real-time supervisor events.
+    """WebSocket for real - time supervisor events.
 
     Auth via query param `token` or `Authorization: Bearer <token>` header.
     Requires `supervisorId` query string to scope subscription.
@@ -150,7 +150,7 @@ async def supervisor_ws(websocket: WebSocket) -> None:
                 break
 
             try:
-                # Non-blocking receive to detect client pings/messages
+                # Non - blocking receive to detect client pings / messages
                 recv_task = asyncio.create_task(websocket.receive_text())
                 get_task = asyncio.create_task(queue.get())
                 done, pending = await asyncio.wait(

@@ -9,7 +9,7 @@ Tests the abstract base class functionality including:
 - Status management
 
 Author: Claude (Sonnet 4.5)
-Created: 2025-10-24
+Created: 2025 - 10 - 24
 """
 
 import time
@@ -93,7 +93,7 @@ class ConcreteTestManager(BaseAIManager):
         )
 
     def _handle_confirmation_impl(self, confirmation: ConfirmationRequest) -> Optional[str]:
-        # Auto-approve file writes, deny deletes
+        # Auto - approve file writes, deny deletes
         if confirmation.confirmation_type == ConfirmationType.FILE_WRITE:
             return "yes"
         elif confirmation.confirmation_type == ConfirmationType.FILE_DELETE:
@@ -448,7 +448,7 @@ def test_write_terminal_output(manager, tmp_path):
     assert result is True
     assert log_file.exists()
 
-    content = log_file.read_text(encoding="utf-8")
+    content = log_file.read_text(encoding="utf - 8")
     assert "Test output line 1" in content
     assert "Test output line 2" in content
 
@@ -468,17 +468,17 @@ def test_write_terminal_output_strips_ansi(manager, tmp_path):
 
     assert result is True
 
-    content = log_file.read_text(encoding="utf-8")
+    content = log_file.read_text(encoding="utf - 8")
     assert "\x1b" not in content  # ANSI codes removed
     assert "Green text" in content
     assert "Normal text" in content
 
 
-@pytest.mark.skip(reason="Environment-dependent test")
+@pytest.mark.skip(reason="Environment - dependent test")
 def test_write_terminal_output_handles_errors(manager, tmp_path):
     """Test terminal output handles write errors"""
     # Try to write to invalid path
-    log_file = Path("/invalid/path/test.log")
+    log_file = Path("/invalid / path / test.log")
 
     result = manager.write_terminal_output(
         output_text="Test",
@@ -557,7 +557,7 @@ def test_derived_class_must_implement_start():
 
     # Should raise TypeError when trying to instantiate
     with pytest.raises(TypeError):
-        config = OrchestratorConfig(workspace_root="/tmp/test", default_timeout=300)
+        config = OrchestratorConfig(workspace_root="/tmp / test", default_timeout=300)
         logger = MockLogger()
         IncompleteManager(config, logger, "test", ManagerType.WORKER)
 

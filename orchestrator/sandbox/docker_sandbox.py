@@ -1,5 +1,5 @@
 """
-Docker-based Hermetic Sandbox
+Docker - based Hermetic Sandbox
 
 Phase 0 Week 2 - MVP Implementation
 
@@ -7,8 +7,8 @@ Features:
 - Isolated execution environment
 - Resource quotas enforced
 - No network by default
-- Read-only root filesystem
-- Non-root user execution
+- Read - only root filesystem
+- Non - root user execution
 """
 
 import asyncio
@@ -39,15 +39,15 @@ class SandboxTimeoutError(SandboxExecutionError):
 
 class DockerSandbox:
     """
-    Hermetic Docker-based execution sandbox
+    Hermetic Docker - based execution sandbox
 
     Security features:
-    - Non-root user (UID 1000)
-    - Read-only root filesystem
+    - Non - root user (UID 1000)
+    - Read - only root filesystem
     - No network by default
-    - CPU/memory quotas
+    - CPU / memory quotas
     - Process limits
-    - Auto-cleanup on exit
+    - Auto - cleanup on exit
     """
 
     def __init__(self, config: Optional[SandboxConfig] = None):
@@ -80,7 +80,7 @@ class DockerSandbox:
 
         Args:
             command: Command to execute
-            workspace_dir: Workspace directory (mounted read-write)
+            workspace_dir: Workspace directory (mounted read - write)
             env_vars: Additional environment variables
 
         Returns:
@@ -104,13 +104,13 @@ class DockerSandbox:
 
         # Prepare Docker parameters
         docker_params = self.config.to_docker_params()
-        docker_params["command"] = ["/bin/bash", "-c", command]
+        docker_params["command"] = ["/bin / bash", "-c", command]
         docker_params["environment"] = merged_env
 
-        # Mount workspace (read-write)
+        # Mount workspace (read - write)
         docker_params["volumes"][str(workspace_dir)] = {
             "bind": str(self.config.workspace_path),
-            "mode": "rw",  # Read-write for workspace
+            "mode": "rw",  # Read - write for workspace
         }
 
         logger.info(f"Starting sandbox container: {self.config.image}")
@@ -166,8 +166,8 @@ class DockerSandbox:
         exit_code = result["StatusCode"]
 
         # Collect logs
-        stdout = self.container.logs(stdout=True, stderr=False).decode("utf-8")
-        stderr = self.container.logs(stdout=False, stderr=True).decode("utf-8")
+        stdout = self.container.logs(stdout=True, stderr=False).decode("utf - 8")
+        stderr = self.container.logs(stdout=False, stderr=True).decode("utf - 8")
 
         logger.info(f"Container exited with code: {exit_code}")
 
@@ -212,7 +212,7 @@ async def execute_in_sandbox(
     Example:
         result = await execute_in_sandbox(
             command="pytest tests/",
-            workspace_dir=Path("/path/to/repo"),
+            workspace_dir=Path("/path / to / repo"),
             config=DEFAULT_HIGH_RISK
         )
 

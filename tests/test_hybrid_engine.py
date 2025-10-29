@@ -1,7 +1,7 @@
 """
 Test Hybrid Decision Engine
 
-Tests the combination of rule-based safety engine + AI judgment + template fallback.
+Tests the combination of rule - based safety engine + AI judgment + template fallback.
 """
 
 import asyncio
@@ -22,26 +22,26 @@ from orchestrator.core.hybrid_engine import (
 
 @pytest.mark.asyncio
 async def test_rule_based_approval():
-    """Test rule-based approval for safe operations"""
+    """Test rule - based approval for safe operations"""
     print("\n" + "=" * 70)
-    print("TEST 1: Rule-based Approval - Safe File Creation")
+    print("TEST 1: Rule - based Approval - Safe File Creation")
     print("=" * 70)
 
     engine = HybridDecisionEngine(
-        workspace_root=Path(r"D:\user\ai_coding\AI_Investor\tools\parallel-coding\workspace"),
+        workspace_root=Path(r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\workspace"),
         verbose=True,
     )
 
     request = ConfirmationRequest(
         confirmation_type=ConfirmationType.FILE_WRITE,
-        message="I want to create a file 'models/user.py' with database model code.",
-        details={"file": "workspace/models/user.py"},
+        message="I want to create a file 'models / user.py' with database model code.",
+        details={"file": "workspace / models / user.py"},
     )
 
     decision = await engine.decide("worker_001", request)
 
     print(f"\n{'='*70}")
-    print(f"RESULT:")
+    print("RESULT:")
     print(f"  Action: {decision.action}")
     print(f"  Decided by: {decision.decided_by}")
     print(f"  Reasoning: {decision.reasoning}")
@@ -61,13 +61,13 @@ async def test_rule_based_approval():
 
 @pytest.mark.asyncio
 async def test_rule_based_denial():
-    """Test rule-based denial for dangerous operations"""
+    """Test rule - based denial for dangerous operations"""
     print("\n" + "=" * 70)
-    print("TEST 2: Rule-based Denial - Important File Deletion")
+    print("TEST 2: Rule - based Denial - Important File Deletion")
     print("=" * 70)
 
     engine = HybridDecisionEngine(
-        workspace_root=Path(r"D:\user\ai_coding\AI_Investor\tools\parallel-coding\workspace"),
+        workspace_root=Path(r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\workspace"),
         verbose=True,
     )
 
@@ -80,7 +80,7 @@ async def test_rule_based_denial():
     decision = await engine.decide("worker_002", request)
 
     print(f"\n{'='*70}")
-    print(f"RESULT:")
+    print("RESULT:")
     print(f"  Action: {decision.action}")
     print(f"  Decided by: {decision.decided_by}")
     print(f"  Reasoning: {decision.reasoning}")
@@ -100,13 +100,13 @@ async def test_rule_based_denial():
 
 @pytest.mark.asyncio
 async def test_dangerous_command_denial():
-    """Test rule-based denial for dangerous commands"""
+    """Test rule - based denial for dangerous commands"""
     print("\n" + "=" * 70)
-    print("TEST 3: Rule-based Denial - Dangerous Command")
+    print("TEST 3: Rule - based Denial - Dangerous Command")
     print("=" * 70)
 
     engine = HybridDecisionEngine(
-        workspace_root=Path(r"D:\user\ai_coding\AI_Investor\tools\parallel-coding\workspace"),
+        workspace_root=Path(r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\workspace"),
         verbose=True,
     )
 
@@ -119,7 +119,7 @@ async def test_dangerous_command_denial():
     decision = await engine.decide("worker_003", request)
 
     print(f"\n{'='*70}")
-    print(f"RESULT:")
+    print("RESULT:")
     print(f"  Action: {decision.action}")
     print(f"  Decided by: {decision.decided_by}")
     print(f"  Reasoning: {decision.reasoning}")
@@ -144,7 +144,7 @@ async def test_ai_judgment():
     print("=" * 70)
 
     engine = HybridDecisionEngine(
-        workspace_root=Path(r"D:\user\ai_coding\AI_Investor\tools\parallel-coding\workspace"),
+        workspace_root=Path(r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\workspace"),
         verbose=True,
     )
 
@@ -157,7 +157,7 @@ async def test_ai_judgment():
     decision = await engine.decide("worker_004", request)
 
     print(f"\n{'='*70}")
-    print(f"RESULT:")
+    print("RESULT:")
     print(f"  Action: {decision.action}")
     print(f"  Decided by: {decision.decided_by}")
     print(f"  Reasoning: {decision.reasoning[:200]}...")
@@ -187,7 +187,7 @@ async def test_package_install_from_requirements():
     print("=" * 70)
 
     engine = HybridDecisionEngine(
-        workspace_root=Path(r"D:\user\ai_coding\AI_Investor\tools\parallel-coding"), verbose=True
+        workspace_root=Path(r"D:\user\ai_coding\AI_Investor\tools\parallel - coding"), verbose=True
     )
 
     # This package is in requirements.txt
@@ -200,7 +200,7 @@ async def test_package_install_from_requirements():
     decision = await engine.decide("worker_005", request)
 
     print(f"\n{'='*70}")
-    print(f"RESULT:")
+    print("RESULT:")
     print(f"  Action: {decision.action}")
     print(f"  Decided by: {decision.decided_by}")
     print(f"  Reasoning: {decision.reasoning}")
@@ -225,24 +225,24 @@ async def test_statistics():
     print("=" * 70)
 
     engine = HybridDecisionEngine(
-        workspace_root=Path(r"D:\user\ai_coding\AI_Investor\tools\parallel-coding\workspace"),
+        workspace_root=Path(r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\workspace"),
         verbose=False,  # Disable verbose for cleaner output
     )
 
     # Run multiple decisions
     requests = [
-        # Rule-based approvals
+        # Rule - based approvals
         ConfirmationRequest(
             confirmation_type=ConfirmationType.FILE_WRITE,
             message="Create file A",
-            details={"file": "workspace/a.py"},
+            details={"file": "workspace / a.py"},
         ),
         ConfirmationRequest(
             confirmation_type=ConfirmationType.FILE_READ,
             message="Read file B",
-            details={"file": "workspace/b.py"},
+            details={"file": "workspace / b.py"},
         ),
-        # Rule-based denials
+        # Rule - based denials
         ConfirmationRequest(
             confirmation_type=ConfirmationType.FILE_DELETE,
             message="Delete config",
@@ -257,13 +257,13 @@ async def test_statistics():
 
     for i, request in enumerate(requests):
         decision = await engine.decide(f"worker_{i:03d}", request)
-        print(f"  Decision {i+1}: {decision.decided_by} -> {decision.action}")
+        print(f"  Decision {i + 1}: {decision.decided_by} -> {decision.action}")
 
     # Get statistics
     stats = engine.get_stats()
 
     print(f"\n{'='*70}")
-    print(f"STATISTICS:")
+    print("STATISTICS:")
     print(f"  Total decisions: {stats['total_decisions']}")
     print(f"  Rules decisions: {stats['rules_decisions']} ({stats['rules_percentage']:.1f}%)")
     print(f"  AI decisions: {stats['ai_decisions']}")
@@ -275,7 +275,7 @@ async def test_statistics():
     assert stats["total_decisions"] == 4, f"Expected 4 decisions, got {stats['total_decisions']}"
     assert (
         stats["rules_decisions"] == 4
-    ), f"All should be rule-based, got {stats['rules_decisions']}"
+    ), f"All should be rule - based, got {stats['rules_decisions']}"
     assert stats["ai_decisions"] == 0, f"No AI decisions expected, got {stats['ai_decisions']}"
     assert (
         stats["template_fallbacks"] == 0

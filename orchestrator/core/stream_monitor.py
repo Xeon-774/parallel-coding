@@ -1,7 +1,7 @@
 """
-Stream monitoring module for real-time worker output
+Stream monitoring module for real - time worker output
 
-Handles real-time reading and monitoring of worker stdout/stderr streams
+Handles real - time reading and monitoring of worker stdout / stderr streams
 with proper encoding handling and concurrent file writing.
 """
 
@@ -14,10 +14,10 @@ from orchestrator.interfaces import ILogger
 
 class StreamMonitor:
     """
-    Real-time stream monitor for worker processes
+    Real - time stream monitor for worker processes
 
-    Monitors stdout/stderr streams in separate threads, writes to files,
-    and optionally displays output in real-time.
+    Monitors stdout / stderr streams in separate threads, writes to files,
+    and optionally displays output in real - time.
     """
 
     def __init__(self, logger: ILogger, enable_realtime_display: bool = True):
@@ -26,7 +26,7 @@ class StreamMonitor:
 
         Args:
             logger: Logger instance for recording events
-            enable_realtime_display: Whether to print output in real-time
+            enable_realtime_display: Whether to print output in real - time
         """
         self.logger = logger
         self.enable_realtime_display = enable_realtime_display
@@ -71,7 +71,7 @@ class StreamMonitor:
         stream_name: str,
     ) -> None:
         """
-        Read stream lines and write to file in real-time
+        Read stream lines and write to file in real - time
 
         This method runs in a separate thread for each stream.
 
@@ -83,7 +83,7 @@ class StreamMonitor:
             stream_name: Stream type ("stdout" or "stderr")
         """
         try:
-            with open(output_file, "w", encoding="utf-8") as f:
+            with open(output_file, "w", encoding="utf - 8") as f:
                 for line in stream:
                     # Append to memory list
                     lines_list.append(line)
@@ -92,7 +92,7 @@ class StreamMonitor:
                     f.write(line)
                     f.flush()  # Force write to disk
 
-                    # Display in real-time if enabled
+                    # Display in real - time if enabled
                     if self.enable_realtime_display:
                         line_stripped = line.rstrip("\n\r")
                         if line_stripped:  # Skip empty lines

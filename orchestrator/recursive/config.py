@@ -57,20 +57,20 @@ class RecursiveOrchestratorConfig:
     workspace_root: str = "workspace"
     """ワークスペースルートディレクトリ"""
 
-    main_ai_workspace: str = "workspace/main_ai"
+    main_ai_workspace: str = "workspace / main_ai"
     """MainAIワークスペース"""
 
-    monitor_ai_workspace: str = "workspace/monitor_ai"
+    monitor_ai_workspace: str = "workspace / monitor_ai"
     """MonitorAIワークスペース"""
 
-    worker_workspace_prefix: str = "workspace/worker"
+    worker_workspace_prefix: str = "workspace / worker"
     """WorkerAIワークスペースプレフィックス（worker_1, worker_2...）"""
 
     # ===== ログ設定 =====
     enable_detailed_logging: bool = True
     """詳細ログを有効化"""
 
-    log_file: Optional[str] = "workspace/recursive_orchestrator.log"
+    log_file: Optional[str] = "workspace / recursive_orchestrator.log"
     """ログファイルパス"""
 
     # ===== デバッグ設定 =====
@@ -118,7 +118,7 @@ class RecursiveOrchestratorConfig:
         指数バックオフによるリトライ待機時間を計算
 
         Args:
-            attempt: 試行回数（0-indexed）
+            attempt: 試行回数（0 - indexed）
 
         Returns:
             待機時間（秒）
@@ -179,4 +179,4 @@ if __name__ == "__main__":
     print()
     print("Retry delays:")
     for i in range(4):
-        print(f"  Attempt {i+1}: {config.get_retry_delay(i):.1f}s")
+        print(f"  Attempt {i + 1}: {config.get_retry_delay(i):.1f}s")

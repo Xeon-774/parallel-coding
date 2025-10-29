@@ -1,5 +1,5 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+#!/usr / bin / env python3
+# -*- coding: utf - 8 -*-
 """
 Environment Setup Script for Claude Orchestrator
 Validates and configures required environment variables
@@ -12,8 +12,8 @@ from typing import Tuple
 
 # Fix Windows console encoding
 if sys.platform == "win32":
-    sys.stdout.reconfigure(encoding="utf-8")
-    sys.stderr.reconfigure(encoding="utf-8")
+    sys.stdout.reconfigure(encoding="utf - 8")
+    sys.stderr.reconfigure(encoding="utf - 8")
 
 
 def find_git_bash() -> str:
@@ -31,7 +31,7 @@ def find_git_bash() -> str:
             return path
 
     print("[ERROR] Git Bash not found in common locations")
-    print("  Please install Git for Windows: https://git-scm.com/download/win")
+    print("  Please install Git for Windows: https://git - scm.com / download / win")
     return ""
 
 
@@ -41,7 +41,7 @@ def validate_api_token(token: str) -> bool:
 
     NOTE: API token authentication is deprecated.
     Use WSL Claude CLI login instead:
-      1. Install WSL (Ubuntu-24.04)
+      1. Install WSL (Ubuntu - 24.04)
       2. Run `claude` command in WSL to login
       3. Orchestrator will use WSL Claude automatically
     """
@@ -66,9 +66,9 @@ def setup_environment() -> Tuple[bool, str]:
     # Check if .env exists
     if not env_file.exists():
         if env_template.exists():
-            print(f"Creating .env from template...")
+            print("Creating .env from template...")
 
-            # Auto-detect Git Bash
+            # Auto - detect Git Bash
             git_bash_path = find_git_bash()
 
             # Read template
@@ -82,7 +82,7 @@ def setup_environment() -> Tuple[bool, str]:
                 )
 
             # Write .env
-            env_file.write_text(template_content, encoding="utf-8")
+            env_file.write_text(template_content, encoding="utf - 8")
             print(f"[OK] Created {env_file}")
             print()
             print("[WARN] IMPORTANT: Edit .env and add your Claude API token!")
@@ -122,7 +122,7 @@ def setup_environment() -> Tuple[bool, str]:
     print("[INFO] API token authentication is deprecated.")
     print("      Please use WSL Claude CLI login instead:")
     print()
-    print("  1. Install WSL (Ubuntu-24.04 or similar)")
+    print("  1. Install WSL (Ubuntu - 24.04 or similar)")
     print("  2. Open WSL terminal")
     print("  3. Run: claude")
     print("  4. Follow login prompts")

@@ -1,10 +1,10 @@
 """
 Dialogue WebSocket API
 
-Provides real-time streaming of worker-orchestrator dialogue via WebSocket.
+Provides real - time streaming of worker - orchestrator dialogue via WebSocket.
 
 This module implements a WebSocket endpoint that streams dialogue entries
-from worker dialogue transcript files to connected clients in real-time.
+from worker dialogue transcript files to connected clients in real - time.
 
 Architecture:
     Client <--WebSocket--> FastAPI <--FileWatch--> dialogue_transcript.jsonl
@@ -120,7 +120,7 @@ class DialogueFileMonitor(FileSystemEventHandler):
                       call_soon_threadsafe to schedule work in the event loop.
         """
         if not event.is_directory and event.src_path == str(self.transcript_file):
-            # Schedule async processing in the event loop (thread-safe)
+            # Schedule async processing in the event loop (thread - safe)
             if self._loop and self._new_entries is not None:
                 asyncio.run_coroutine_threadsafe(self._read_new_entries(), self._loop)
 
@@ -148,7 +148,7 @@ class DialogueFileMonitor(FileSystemEventHandler):
 
                 # File might have been truncated
                 if current_size < self._last_position:
-                    logger.warning(f"File size decreased, resetting position")
+                    logger.warning("File size decreased, resetting position")
                     self._last_position = 0
 
                 # No new content
@@ -156,7 +156,7 @@ class DialogueFileMonitor(FileSystemEventHandler):
                     return
 
                 # Read new content
-                with open(self.transcript_file, "r", encoding="utf-8") as f:
+                with open(self.transcript_file, "r", encoding="utf - 8") as f:
                     f.seek(self._last_position)
                     new_lines = f.readlines()
                     self._last_position = f.tell()
@@ -250,7 +250,7 @@ class DialogueFileMonitor(FileSystemEventHandler):
             return entries
 
         try:
-            with open(self.transcript_file, "r", encoding="utf-8") as f:
+            with open(self.transcript_file, "r", encoding="utf - 8") as f:
                 lines = f.readlines()
 
             # Parse all entries
@@ -371,7 +371,7 @@ async def dialogue_websocket_endpoint(
     WebSocket endpoint for streaming dialogue.
 
     This endpoint accepts WebSocket connections and streams dialogue
-    entries for the specified worker in real-time.
+    entries for the specified worker in real - time.
 
     Args:
         websocket: FastAPI WebSocket connection
@@ -388,7 +388,7 @@ async def dialogue_websocket_endpoint(
 
     Usage:
         # In FastAPI app:
-        @app.websocket("/ws/dialogue/{worker_id}")
+        @app.websocket("/ws / dialogue/{worker_id}")
         async def dialogue_ws(websocket: WebSocket, worker_id: str):
             await dialogue_websocket_endpoint(websocket, worker_id)
     """

@@ -1,8 +1,8 @@
 """
-Claude-Codex Manager - Hybrid AI Orchestration System
+Claude - Codex Manager - Hybrid AI Orchestration System
 
 This module implements a hybrid AI manager that combines Claude (orchestration)
-and Codex (execution) for optimal cost-efficiency and unlimited API usage.
+and Codex (execution) for optimal cost - efficiency and unlimited API usage.
 
 Architecture:
     Claude (Manager):
@@ -13,24 +13,24 @@ Architecture:
 
     Codex (Worker):
         - Code generation
-        - Debugging/refactoring
+        - Debugging / refactoring
         - Implementation tasks
 
 Key Features:
     - Unlimited Codex usage via ChatGPT Plus
     - Excellence AI Standard enforcement (Argon2id, SQL parameterization, etc.)
-    - Real-time WebSocket event streaming
+    - Real - time WebSocket event streaming
     - Comprehensive validation before code integration
-    - Cost-effective task routing
+    - Cost - effective task routing
 
 Security:
     - All outputs validated before integration
-    - No auto-execution of generated code
+    - No auto - execution of generated code
     - Excellence AI Standard compliance verification
     - Input sanitization
 
 Author: Claude (Sonnet 4.5)
-Created: 2025-10-27
+Created: 2025 - 10 - 27
 Version: 1.0.0
 Excellence AI Standard: 100% Applied
 """
@@ -56,13 +56,13 @@ from orchestrator.core.ai_providers.codex_cli_provider import (
 # =============================================================================
 
 EXCELLENCE_AI_STANDARD_RULES: List[str] = [
-    "Use Argon2id for password hashing (NEVER bcrypt/MD5/SHA)",
+    "Use Argon2id for password hashing (NEVER bcrypt / MD5 / SHA)",
     "Use parameterized SQL queries (NEVER string concatenation)",
-    "Use Pydantic/Zod for input validation",
+    "Use Pydantic / Zod for input validation",
     "NO 'any' types (use specific types)",
     "All functions ≤50 lines",
     "Cyclomatic complexity ≤10",
-    "NO TODO/FIXME/HACK comments",
+    "NO TODO / FIXME / HACK comments",
     "Test coverage ≥90%",
     "Comprehensive error handling",
     "Complete docstrings with examples",
@@ -82,7 +82,7 @@ class TaskComplexity(str, Enum):
     """Task complexity level for routing decisions"""
 
     SIMPLE = "simple"  # <50 lines, straightforward
-    MEDIUM = "medium"  # 50-200 lines, moderate logic
+    MEDIUM = "medium"  # 50 - 200 lines, moderate logic
     COMPLEX = "complex"  # >200 lines, intricate architecture
 
 
@@ -164,7 +164,7 @@ class TaskResult:
 
 class ClaudeCodexManagerConfig(BaseModel):
     """
-    Configuration for Claude-Codex Manager.
+    Configuration for Claude - Codex Manager.
 
     Attributes:
         codex_provider_config: Configuration for Codex provider
@@ -216,8 +216,8 @@ class ClaudeCodexManager:
         - Task decomposition into manageable subtasks
         - Excellence AI Standard enforcement
         - Comprehensive output validation
-        - Real-time WebSocket event streaming
-        - Cost-effective unlimited Codex usage
+        - Real - time WebSocket event streaming
+        - Cost - effective unlimited Codex usage
 
     Usage:
         >>> config = ClaudeCodexManagerConfig()
@@ -243,7 +243,7 @@ class ClaudeCodexManager:
 
     def __init__(self, config: ClaudeCodexManagerConfig):
         """
-        Initialize Claude-Codex Manager.
+        Initialize Claude - Codex Manager.
 
         Args:
             config: Manager configuration
@@ -260,7 +260,7 @@ class ClaudeCodexManager:
         self, user_task: str, context: Optional[Dict[str, Any]] = None
     ) -> List[TaskResult]:
         """
-        Execute user task using hybrid Claude-Codex approach.
+        Execute user task using hybrid Claude - Codex approach.
 
         This method:
         1. Validates input
@@ -312,7 +312,7 @@ class ClaudeCodexManager:
         Decompose user task into executable subtasks.
 
         NOTE: In production, this would use Claude API for intelligent
-        decomposition. Currently implements rule-based decomposition as POC.
+        decomposition. Currently implements rule - based decomposition as POC.
 
         Args:
             user_task: User's task description
@@ -526,12 +526,12 @@ class ClaudeCodexManager:
 
         if len(user_task) < MIN_TASK_DESCRIPTION_LENGTH:
             raise ValueError(
-                f"Task description too short " f"(min {MIN_TASK_DESCRIPTION_LENGTH} characters)"
+                "Task description too short " f"(min {MIN_TASK_DESCRIPTION_LENGTH} characters)"
             )
 
         if len(user_task) > MAX_TASK_DESCRIPTION_LENGTH:
             raise ValueError(
-                f"Task description too long " f"(max {MAX_TASK_DESCRIPTION_LENGTH} characters)"
+                "Task description too long " f"(max {MAX_TASK_DESCRIPTION_LENGTH} characters)"
             )
 
     def _emit_task_completed_event(self, result: TaskResult) -> None:
@@ -539,7 +539,7 @@ class ClaudeCodexManager:
         Emit WebSocket event for task completion.
 
         NOTE: This is a placeholder. In production, integrate with
-        WebSocket handler in orchestrator/api/dialogue_ws.py
+        WebSocket handler in orchestrator / api / dialogue_ws.py
 
         Args:
             result: Task result to broadcast
@@ -573,7 +573,7 @@ class ClaudeCodexManager:
 
 def create_default_manager() -> ClaudeCodexManager:
     """
-    Create Claude-Codex Manager with default configuration.
+    Create Claude - Codex Manager with default configuration.
 
     Returns:
         ClaudeCodexManager instance
@@ -594,13 +594,13 @@ if __name__ == "__main__":
     import sys
 
     async def main():
-        """Example usage of Claude-Codex Manager"""
+        """Example usage of Claude - Codex Manager"""
         try:
             # Create manager
             config = ClaudeCodexManagerConfig(enable_validation=True, validation_strict_mode=False)
             manager = ClaudeCodexManager(config)
 
-            print("Claude-Codex Manager initialized successfully")
+            print("Claude - Codex Manager initialized successfully")
             print(f"Statistics: {manager.get_statistics()}")
 
             # Example task execution

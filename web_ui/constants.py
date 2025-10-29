@@ -1,15 +1,15 @@
 """
 Text constants for Web UI Dashboard
 
-Centralizes all user-facing text for easier maintenance and i18n support.
-All strings are ASCII-safe to avoid Unicode encoding issues on Windows cp932.
+Centralizes all user - facing text for easier maintenance and i18n support.
+All strings are ASCII - safe to avoid Unicode encoding issues on Windows cp932.
 """
 
 
 class Messages:
-    """User-facing messages"""
+    """User - facing messages"""
 
-    # Prefixes (ASCII-safe, no emoji)
+    # Prefixes (ASCII - safe, no emoji)
     PREFIX_WEB = "[WEB]"
     PREFIX_AI = "[AI]"
     PREFIX_OK = "[OK]"
@@ -56,7 +56,7 @@ class Messages:
         "You can:\n"
         "  - Review the results in the browser\n"
         "  - Run another task while keeping the dashboard open\n"
-        "  - Press Ctrl+C to stop the dashboard and exit"
+        "  - Press Ctrl + C to stop the dashboard and exit"
     )
     COMPLETION_PROMPT = "Press Enter to stop the dashboard and exit..."
 
@@ -96,8 +96,8 @@ Usage examples:
   # Custom port
   python run_with_dashboard.py --port 3000 "Calculator app"
 
-  # Don't auto-open browser
-  python run_with_dashboard.py --no-browser "Password generator"
+  # Don't auto - open browser
+  python run_with_dashboard.py --no - browser "Password generator"
 """
 
     INTERACTIVE_MODE_HEADER = (

@@ -1,8 +1,8 @@
 """
 Validated Configuration with Pydantic (v9.0)
 
-World-class configuration management:
-- Type-safe configuration with Pydantic
+World - class configuration management:
+- Type - safe configuration with Pydantic
 - Environment variable support
 - Validation rules
 - Configuration inheritance
@@ -132,7 +132,7 @@ class SecurityConfig(BaseModel):
     input_validation_enabled: bool = Field(default=True, description="Enable input validation")
     ai_safety_judge_enabled: bool = Field(default=True, description="Enable AI safety judgment")
     dangerous_operations_auto_approve: bool = Field(
-        default=False, description="Auto-approve dangerous operations (NOT RECOMMENDED)"
+        default=False, description="Auto - approve dangerous operations (NOT RECOMMENDED)"
     )
     max_task_complexity: int = Field(
         default=100, ge=1, le=1000, description="Maximum task complexity score"
@@ -172,7 +172,7 @@ class OrchestratorValidatedConfig(BaseModel):
     """
     Complete orchestrator configuration with validation
 
-    This is the main configuration class that combines all sub-configurations.
+    This is the main configuration class that combines all sub - configurations.
     """
 
     # Basic settings
@@ -183,12 +183,12 @@ class OrchestratorValidatedConfig(BaseModel):
         default=ExecutionMode.WINDOWS, description="Execution mode"
     )
 
-    # Platform-specific paths
+    # Platform - specific paths
     git_bash_path: Optional[Path] = Field(default=None, description="Path to Git Bash (Windows)")
     claude_command: str = Field(default="claude", description="Claude CLI command")
     wsl_distribution: str = Field(default="Ubuntu", description="WSL distribution name")
 
-    # Sub-configurations
+    # Sub - configurations
     worker: WorkerConfig = Field(default_factory=WorkerConfig, description="Worker configuration")
     resilience: ResilienceConfig = Field(
         default_factory=ResilienceConfig, description="Resilience configuration"
@@ -205,7 +205,7 @@ class OrchestratorValidatedConfig(BaseModel):
     )
 
     # Feature flags
-    enable_ai_analysis: bool = Field(default=True, description="Enable AI-driven task analysis")
+    enable_ai_analysis: bool = Field(default=True, description="Enable AI - driven task analysis")
     enable_worktree: bool = Field(default=False, description="Enable Git worktree isolation")
     enable_realtime_monitoring: bool = Field(default=True, description="Enable realtime monitoring")
 
@@ -238,10 +238,10 @@ class OrchestratorValidatedConfig(BaseModel):
         if self.execution_mode == ExecutionMode.WINDOWS:
             # Windows should have git_bash_path
             if not self.git_bash_path:
-                # Try to auto-detect
+                # Try to auto - detect
                 common_paths = [
-                    Path("C:/Program Files/Git/usr/bin/bash.exe"),
-                    Path("C:/opt/Git.Git/usr/bin/bash.exe"),
+                    Path("C:/Program Files / Git / usr / bin / bash.exe"),
+                    Path("C:/opt / Git.Git / usr / bin / bash.exe"),
                 ]
                 for path in common_paths:
                     if path.exists():
@@ -305,7 +305,7 @@ class OrchestratorValidatedConfig(BaseModel):
 
 
 class ConfigurationPreset(str, Enum):
-    """Pre-defined configuration presets"""
+    """Pre - defined configuration presets"""
 
     DEVELOPMENT = "development"
     PRODUCTION = "production"

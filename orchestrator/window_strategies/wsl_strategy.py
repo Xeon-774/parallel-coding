@@ -11,7 +11,7 @@ from orchestrator.window_strategies.base import WindowInfo, WindowManagerBase
 
 class WSLWindowManager(WindowManagerBase):
     """
-    WSL-specific window manager implementation
+    WSL - specific window manager implementation
 
     Uses tmux sessions to create monitoring environments.
     Note: This is a simplified implementation. Full tmux integration
@@ -44,7 +44,7 @@ class WSLWindowManager(WindowManagerBase):
         return window_info
 
     def close_window(self, worker_id: str) -> None:
-        """Close a specific window/session"""
+        """Close a specific window / session"""
         if worker_id in self.windows:
             # WSL cleanup if needed
             del self.windows[worker_id]

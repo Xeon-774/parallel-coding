@@ -53,10 +53,10 @@ def test_codex_worker():
     # Configure orchestrator for test
     config = OrchestratorConfig(
         workspace_root=str(test_workspace),
-        wsl_workspace_root=f"/mnt/d/user/ai_coding/AI_Investor/tools/parallel-coding/test_codex_integration",
+        wsl_workspace_root="/mnt / d/user / ai_coding / AI_Investor / tools / parallel - coding / test_codex_integration",
         execution_mode="wsl",
-        wsl_distribution="Ubuntu-24.04",
-        nvm_path="/home/chemi/.local/bin:/home/chemi/.nvm/versions/node/v22.21.0/bin",
+        wsl_distribution="Ubuntu - 24.04",
+        nvm_path="/home / chemi/.local / bin:/home / chemi/.nvm / versions / node / v22.21.0 / bin",
         codex_command="codex",
     )
 
@@ -81,7 +81,7 @@ Save to calculator.py in the current directory.
     }
 
     print(f"\nTask: {task['name']}")
-    print(f"Worker Type: Codex (GPT-5)")
+    print("Worker Type: Codex (GPT - 5)")
     print(f"Workspace: {test_workspace}")
     print()
 
@@ -122,7 +122,7 @@ Save to calculator.py in the current directory.
             print(f"File size: {calculator_file.stat().st_size} bytes")
 
             # Read and display first few lines
-            with open(calculator_file, "r", encoding="utf-8") as f:
+            with open(calculator_file, "r", encoding="utf - 8") as f:
                 lines = f.readlines()[:10]
                 print("\nFirst 10 lines:")
                 for i, line in enumerate(lines, 1):

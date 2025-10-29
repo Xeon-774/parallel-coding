@@ -19,7 +19,7 @@ class TaskComplexity(Enum):
 
     TRIVIAL = 1  # 数秒
     SIMPLE = 2  # 数分
-    MODERATE = 3  # 10-30分
+    MODERATE = 3  # 10 - 30分
     COMPLEX = 4  # 1時間以上
     VERY_COMPLEX = 5  # 数時間
 
@@ -62,7 +62,7 @@ class AdvancedTaskSplitter:
             "multi_app": [
                 r"(\d+)つの.*アプリ",
                 r"(\d+)つの.*プログラム",  # 「3つのプログラムを作って」に対応
-                r"([^,]+,\s*[^,]+)[のを]\s*\d+\s*つ",  # カンマ区切りパターン
+                r"([^,]+,\s*[^,]+)[のを]\s*\d+\s * つ",  # カンマ区切りパターン
                 r"(todo|calculator|file.*organizer|password.*generator)",
                 r"複数.*アプリ",
                 r"複数.*プログラム",
@@ -147,7 +147,7 @@ class AdvancedTaskSplitter:
         complexity_indicators = {
             TaskComplexity.TRIVIAL: ["簡単", "simple", "シンプル", "basic"],
             TaskComplexity.SIMPLE: ["todo", "calculator", "基本的"],
-            TaskComplexity.MODERATE: ["フル機能", "full-featured", "詳細な"],
+            TaskComplexity.MODERATE: ["フル機能", "full - featured", "詳細な"],
             TaskComplexity.COMPLEX: ["複雑", "complex", "高度な", "advanced"],
             TaskComplexity.VERY_COMPLEX: ["大規模", "enterprise", "完全な", "complete system"],
         }
@@ -210,7 +210,7 @@ class AdvancedTaskSplitter:
 
         # カンマ区切りのパターンを検出
         # 例: "AAA, BBB, CCCの3つのプログラム" → ['AAA', 'BBB', 'CCC']
-        comma_pattern = r"([^,]+(?:,\s*[^,]+)*?)[のを]\s*\d+\s*つ"
+        comma_pattern = r"([^,]+(?:,\s*[^,]+)*?)[のを]\s*\d+\s * つ"
         match = re.search(comma_pattern, request)
         if match:
             items_str = match.group(1)
@@ -226,7 +226,7 @@ class AdvancedTaskSplitter:
         # 1. 分析
         analysis = self.analyze_request(user_request)
 
-        print(f"\n[TASK ANALYSIS]")
+        print("\n[TASK ANALYSIS]")
         print(f"  Type: {analysis['task_type'].value}")
         print(f"  Splittable: {analysis['is_splittable']}")
         print(f"  Complexity: {analysis['estimated_complexity'].name}")
@@ -279,7 +279,7 @@ class AdvancedTaskSplitter:
         app_templates = {
             "todo": {
                 "name": "Todo List App",
-                "desc": "Create a command-line todo list application in Python with add, list, delete, and save features.",
+                "desc": "Create a command - line todo list application in Python with add, list, delete, and save features.",
             },
             "calculator": {
                 "name": "Calculator App",
@@ -291,7 +291,7 @@ class AdvancedTaskSplitter:
             },
             "url shortener": {
                 "name": "URL Shortener",
-                "desc": "Create a simple URL shortener in Python using hash-based approach with storage.",
+                "desc": "Create a simple URL shortener in Python using hash - based approach with storage.",
             },
             "password generator": {
                 "name": "Password Generator",
@@ -313,11 +313,11 @@ class AdvancedTaskSplitter:
                     "desc": f"Create a {app_key} application in Python.",
                 }
 
-            prompt = f"""Create a {template['name']} in Python.
+            prompt = """Create a {template['name']} in Python.
 
 Requirements:
 - {template['desc']}
-- Write complete, well-commented code
+- Write complete, well - commented code
 - Include error handling
 - Add a simple usage example
 - Keep it functional and clean
@@ -354,9 +354,9 @@ Deliver the complete Python code now.
             subtasks.append(
                 SubTask(
                     task_id=f"refactor_task_{i}",
-                    name=f"Refactor Files {start+1}-{end}",
-                    description=f"Refactor files {start+1} to {end}",
-                    prompt=f"Refactor the following files (files {start+1} to {end}): [File list would be inserted here]",
+                    name=f"Refactor Files {start + 1}-{end}",
+                    description=f"Refactor files {start + 1} to {end}",
+                    prompt=f"Refactor the following files (files {start + 1} to {end}): [File list would be inserted here]",
                     task_type=TaskType.REFACTORING,
                     complexity=TaskComplexity.MODERATE,
                     priority=i - 1,

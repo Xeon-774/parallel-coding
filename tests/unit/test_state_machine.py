@@ -30,7 +30,7 @@ from orchestrator.core.state_machine import (
 @pytest.fixture(scope="function")
 def db_session():
     """Create a fresh database session for each test."""
-    # Only drop/create if tables don't exist
+    # Only drop / create if tables don't exist
     try:
         session = SessionLocal()
         # Test if tables exist
@@ -56,8 +56,8 @@ def db_session():
 def sample_worker(db_session):
     """Create a sample worker for testing."""
     worker = Worker(
-        id="test-worker-001",
-        workspace_id="test-workspace",
+        id="test - worker - 001",
+        workspace_id="test - workspace",
         status=WorkerStatus.IDLE,
         created_at=datetime.utcnow(),
         updated_at=datetime.utcnow(),
@@ -72,7 +72,7 @@ def sample_worker(db_session):
 def sample_job(db_session):
     """Create a sample job for testing."""
     job = Job(
-        id="test-job-001",
+        id="test - job - 001",
         task_description="Test task",
         status=JobStatus.PENDING,
         depth=0,
@@ -141,11 +141,11 @@ class TestWorkerStateMachine:
         assert transitions[0].reason == "Test audit"
 
     def test_transition_worker_nonexistent_raises_error(self, db_session):
-        """Test transitioning non-existent worker raises EntityNotFoundError."""
+        """Test transitioning non - existent worker raises EntityNotFoundError."""
         sm = WorkerStateMachine(db_session)
 
         with pytest.raises(EntityNotFoundError, match="Worker not found"):
-            sm.transition_worker(worker_id="nonexistent-worker", to_state=WorkerStatus.RUNNING)
+            sm.transition_worker(worker_id="nonexistent - worker", to_state=WorkerStatus.RUNNING)
 
     def test_transition_worker_invalid_transition_raises_error(self, db_session, sample_worker):
         """Test invalid transition raises StateTransitionError."""
@@ -271,11 +271,11 @@ class TestJobStateMachine:
         assert transitions[0].reason == "Test audit"
 
     def test_transition_job_nonexistent_raises_error(self, db_session):
-        """Test transitioning non-existent job raises EntityNotFoundError."""
+        """Test transitioning non - existent job raises EntityNotFoundError."""
         sm = JobStateMachine(db_session)
 
         with pytest.raises(EntityNotFoundError, match="Job not found"):
-            sm.transition_job(job_id="nonexistent-job", to_state=JobStatus.RUNNING)
+            sm.transition_job(job_id="nonexistent - job", to_state=JobStatus.RUNNING)
 
     def test_transition_job_invalid_transition_raises_error(self, db_session, sample_job):
         """Test invalid job transition raises StateTransitionError."""

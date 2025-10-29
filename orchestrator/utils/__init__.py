@@ -2,7 +2,7 @@
 Utility modules for Claude Orchestrator
 """
 
-# Encoding configuration (UTF-8 with BOM)
+# Encoding configuration (UTF - 8 with BOM)
 from orchestrator.utils.encoding_config import (
     PROJECT_ENCODING,
     configure_console_encoding,
@@ -29,7 +29,7 @@ from orchestrator.utils.helpers import (
 )
 
 # Authentication helpers and WSL setup utilities are imported lazily
-# to avoid tkinter dependency in headless environments (Docker/API server)
+# to avoid tkinter dependency in headless environments (Docker / API server)
 # Import them explicitly when needed:
 #   from orchestrator.utils.auth_helper import setup_claude_token
 #   from orchestrator.utils.wsl_setup import WSLClaudeSetup
@@ -49,7 +49,7 @@ __all__ = [
     "truncate_string",
     "safe_read_file",
     "safe_write_file",
-    # Encoding (UTF-8 with BOM - No JIS/Shift-JIS)
+    # Encoding (UTF - 8 with BOM - No JIS / Shift - JIS)
     "PROJECT_ENCODING",
     "configure_console_encoding",
     "open_file_utf8",

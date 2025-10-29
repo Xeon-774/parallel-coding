@@ -55,7 +55,7 @@ class OrchestratorRunner:
         # Run orchestrator
         try:
             result = subprocess.run(
-                [sys.executable, "orchestrator/main.py", user_request], cwd=str(self.project_root)
+                [sys.executable, "orchestrator / main.py", user_request], cwd=str(self.project_root)
             )
             return result.returncode
 

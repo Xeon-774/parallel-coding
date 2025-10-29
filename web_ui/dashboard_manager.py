@@ -82,8 +82,8 @@ class DashboardManager:
                                 print(f"     {line}")
                         print()
 
-                print(f"   Please check if dependencies are installed:")
-                print(f'     pip install -e ".[web]"')
+                print("   Please check if dependencies are installed:")
+                print('     pip install -e ".[web]"')
                 print()
                 return False
 
@@ -91,7 +91,7 @@ class DashboardManager:
             try:
                 import requests
 
-                response = requests.get(f"{self.config.dashboard_url}/api/status", timeout=1)
+                response = requests.get(f"{self.config.dashboard_url}/api / status", timeout=1)
                 if response.status_code == 200:
                     print(f" [{Messages.PREFIX_OK}]")
                     print(f"      {Messages.DASHBOARD_READY} {self.config.dashboard_url}")

@@ -2,11 +2,11 @@
 Database configuration module for Parallel AI Coding Orchestrator.
 
 Provides SQLAlchemy engine, session management, and database utilities.
-Supports both PostgreSQL (production) and SQLite (development/testing).
+Supports both PostgreSQL (production) and SQLite (development / testing).
 
 Security:
 - SQL parameterization via SQLAlchemy ORM (Excellence AI Standard)
-- Environment-based configuration (no hardcoded secrets)
+- Environment - based configuration (no hardcoded secrets)
 
 Type Safety:
 - Explicit type annotations (no 'any' types)
@@ -59,7 +59,7 @@ class DatabaseSettings(BaseSettings):
         DB_DATABASE_URL=sqlite:///./parallel_ai.db
 
         # Production (PostgreSQL)
-        DB_DATABASE_URL=postgresql://user:pass@localhost:5432/parallel_ai
+        DB_DATABASE_URL=postgresql://user:pass@localhost:5432 / parallel_ai
     """
 
     model_config = SettingsConfigDict(
@@ -110,7 +110,7 @@ def create_db_engine(settings: DatabaseSettings) -> Engine:
     is_sqlite = settings.database_url.startswith("sqlite")
 
     if is_sqlite:
-        # SQLite: Use StaticPool for in-memory, NullPool for file-based
+        # SQLite: Use StaticPool for in - memory, NullPool for file - based
         connect_args = {"check_same_thread": False}
         engine_kwargs = {
             "connect_args": connect_args,
@@ -151,8 +151,8 @@ def _mask_password(url: str) -> str:
         URL with password masked as '***'
 
     Example:
-        >>> _mask_password("postgresql://user:secret@localhost/db")
-        'postgresql://user:***@localhost/db'
+        >>> _mask_password("postgresql://user:secret@localhost / db")
+        'postgresql://user:***@localhost / db'
     """
     if "@" not in url or "://" not in url:
         return url

@@ -5,9 +5,9 @@ Provides secure token generation and validation using JWT (JSON Web Tokens).
 Implements password hashing with Argon2id (Excellence AI Standard).
 
 Security:
-- Argon2id password hashing (NEVER bcrypt/MD5/SHA)
+- Argon2id password hashing (NEVER bcrypt / MD5 / SHA)
 - JWT token expiration
-- Scope-based authorization
+- Scope - based authorization
 - Secret keys from environment variables
 
 Type Safety:
@@ -167,7 +167,7 @@ def create_access_token(
     Create JWT access token.
 
     Args:
-        user_id: User identifier (non-empty string)
+        user_id: User identifier (non - empty string)
         scopes: List of permission scopes
         expires_delta: Token expiration duration (default: 24 hours)
 
@@ -275,7 +275,7 @@ def create_dev_token(user_id: str = "dev_user", scopes: Optional[List[str]] = No
     """
     Create development token with full permissions.
 
-    WARNING: Only for development/testing. NEVER use in production.
+    WARNING: Only for development / testing. NEVER use in production.
 
     Args:
         user_id: Development user ID (default: "dev_user")

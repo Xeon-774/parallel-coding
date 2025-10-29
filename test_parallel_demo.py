@@ -12,7 +12,7 @@ from pathlib import Path
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
-# Configure UTF-8 encoding BEFORE any output
+# Configure UTF - 8 encoding BEFORE any output
 from orchestrator.utils.encoding_config import configure_console_encoding, safe_print
 
 configure_console_encoding()
@@ -34,9 +34,9 @@ def main():
     config = OrchestratorConfig()
     config.workspace_root = str(project_root / "workspace" / "parallel_demo")
     config.execution_mode = "wsl"
-    config.wsl_distribution = "Ubuntu-24.04"
-    config.claude_command = "~/.local/bin/claude"
-    config.nvm_path = "/usr/bin"
+    config.wsl_distribution = "Ubuntu - 24.04"
+    config.claude_command = "~/.local / bin / claude"
+    config.nvm_path = "/usr / bin"
 
     # ワークスペース準備
     workspace = Path(config.workspace_root)
@@ -91,13 +91,13 @@ def main():
 
         # 全WorkerAIを起動
         for i, task in enumerate(tasks):
-            worker_id = f"demo_worker_{i+1}"
-            safe_print(f"[起動] Worker {i+1}: {task['name']}")
+            worker_id = f"demo_worker_{i + 1}"
+            safe_print(f"[起動] Worker {i + 1}: {task['name']}")
 
             session = worker_manager.spawn_worker(worker_id=worker_id, task=task)
 
             if not session:
-                safe_print(f"[ERROR] Worker {i+1} の起動に失敗しました")
+                safe_print(f"[ERROR] Worker {i + 1} の起動に失敗しました")
                 return False
 
         safe_print("\n[デモ] 全Workerを並列実行中...\n")
@@ -117,15 +117,17 @@ def main():
 
         success_count = 0
         for i, result in enumerate(results):
-            safe_print(f"\n--- Worker {i+1}: {result.name} ---")
+            safe_print(f"\n--- Worker {i + 1}: {result.name} ---")
             safe_print(f"成功: {result.success}")
-            safe_print(f"実行時間: {result.duration:.1f}秒" if result.duration else "実行時間: N/A")
+            safe_print(
+                f"実行時間: {result.duration:.1f}秒" if result.duration else "実行時間: N / A"
+            )
 
             if result.success:
                 success_count += 1
 
             if result.output:
-                safe_print(f"\n出力（最後の300文字）:")
+                safe_print("\n出力（最後の300文字）:")
                 safe_print("-" * 70)
                 safe_print(result.output[-300:])
                 safe_print("-" * 70)
