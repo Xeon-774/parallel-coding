@@ -5,8 +5,8 @@
 """
 
 import sys
-from pathlib import Path
 import time
+from pathlib import Path
 
 # プロジェクトルートをパスに追加
 project_root = Path(__file__).parent
@@ -14,11 +14,12 @@ sys.path.insert(0, str(project_root))
 
 # Configure UTF-8 encoding BEFORE any output
 from orchestrator.utils.encoding_config import configure_console_encoding, safe_print
+
 configure_console_encoding()
 
 from orchestrator.config import OrchestratorConfig
-from orchestrator.core.worker.worker_manager import WorkerManager
 from orchestrator.core.structured_logging import StructuredLogger
+from orchestrator.core.worker.worker_manager import WorkerManager
 
 
 def generate_tasks(num_workers: int):
@@ -38,7 +39,7 @@ def generate_tasks(num_workers: int):
 - F(20) = ?
 
 各結果を表示した後、"Fibonacci calculations completed!" と出力してください。
-"""
+""",
         },
         {
             "type": "prime",
@@ -53,7 +54,7 @@ def generate_tasks(num_workers: int):
 - 最大の素数を表示
 
 完了したら "Prime search completed!" と出力してください。
-"""
+""",
         },
         {
             "type": "text_processing",
@@ -68,7 +69,7 @@ def generate_tasks(num_workers: int):
 3. 文字 'o' の出現回数をカウント
 
 結果を表示した後、"Text processing completed!" と出力してください。
-"""
+""",
         },
         {
             "type": "list_operations",
@@ -84,7 +85,7 @@ def generate_tasks(num_workers: int):
 4. 合計を計算
 
 結果を表示した後、"List operations completed!" と出力してください。
-"""
+""",
         },
     ]
 
@@ -95,7 +96,7 @@ def generate_tasks(num_workers: int):
 
         task = {
             "name": f"{template['name']} #{i+1}",
-            "prompt": template["prompt"].replace("{worker_id}", str(i+1))
+            "prompt": template["prompt"].replace("{worker_id}", str(i + 1)),
         }
         tasks.append(task)
 
@@ -125,17 +126,11 @@ def main():
     workspace.mkdir(parents=True, exist_ok=True)
 
     # ロガー
-    logger = StructuredLogger(
-        name="heavy_parallel_test",
-        log_dir=workspace,
-        enable_console=True
-    )
+    logger = StructuredLogger(name="heavy_parallel_test", log_dir=workspace, enable_console=True)
 
     # WorkerManager初期化
     worker_manager = WorkerManager(
-        config=config,
-        logger=logger,
-        user_approval_callback=None  # 自動承認モード
+        config=config, logger=logger, user_approval_callback=None  # 自動承認モード
     )
 
     # タスク生成
@@ -155,10 +150,7 @@ def main():
         for i, task in enumerate(tasks):
             worker_id = f"heavy_worker_{i+1}"
 
-            session = worker_manager.spawn_worker(
-                worker_id=worker_id,
-                task=task
-            )
+            session = worker_manager.spawn_worker(worker_id=worker_id, task=task)
 
             if not session:
                 safe_print(f"[ERROR] Worker {i+1} の起動に失敗しました")
@@ -172,7 +164,9 @@ def main():
 
         # 並列実行
         safe_print(f"[実行フェーズ] {num_workers}個のWorkerを並列実行中...")
-        safe_print(f"[注意] 各Workerが高負荷タスクを実行します。完了まで数分かかる場合があります。\n")
+        safe_print(
+            f"[注意] 各Workerが高負荷タスクを実行します。完了まで数分かかる場合があります。\n"
+        )
 
         execution_start = time.time()
         results = worker_manager.wait_all(max_workers=16, timeout=600)
@@ -204,7 +198,9 @@ def main():
         # 並列効率の計算
         theoretical_sequential_time = total_duration
         actual_parallel_time = execution_time
-        speedup = theoretical_sequential_time / actual_parallel_time if actual_parallel_time > 0 else 0
+        speedup = (
+            theoretical_sequential_time / actual_parallel_time if actual_parallel_time > 0 else 0
+        )
         efficiency = (speedup / num_workers) * 100 if num_workers > 0 else 0
 
         safe_print(f"理論的逐次実行時間: {theoretical_sequential_time:.1f}秒")
@@ -268,10 +264,11 @@ def main():
     except Exception as e:
         safe_print(f"\n[ERROR] テスト失敗: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     success = main()
     sys.exit(0 if success else 1)

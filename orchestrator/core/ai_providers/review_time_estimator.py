@@ -36,7 +36,6 @@ from typing import Dict, Optional
 
 from pydantic import BaseModel, Field
 
-
 # =============================================================================
 # Constants (Empirically Derived)
 # =============================================================================
@@ -95,28 +94,14 @@ class ReviewTimeEstimate(BaseModel):
         split_suggestion: Suggestion for splitting (if applicable)
     """
 
-    estimated_seconds: int = Field(
-        ..., ge=0, description="Estimated time without buffer"
-    )
-    estimated_minutes: float = Field(
-        ..., ge=0.0, description="Estimated time in minutes"
-    )
-    timeout_seconds: int = Field(
-        ..., ge=0, description="Timeout with safety buffer"
-    )
-    timeout_minutes: float = Field(
-        ..., ge=0.0, description="Timeout in minutes"
-    )
-    strategy: ExecutionStrategy = Field(
-        ..., description="Recommended execution strategy"
-    )
+    estimated_seconds: int = Field(..., ge=0, description="Estimated time without buffer")
+    estimated_minutes: float = Field(..., ge=0.0, description="Estimated time in minutes")
+    timeout_seconds: int = Field(..., ge=0, description="Timeout with safety buffer")
+    timeout_minutes: float = Field(..., ge=0.0, description="Timeout in minutes")
+    strategy: ExecutionStrategy = Field(..., description="Recommended execution strategy")
     message: str = Field(..., description="Human-readable recommendation")
-    should_split: bool = Field(
-        ..., description="Whether to split document"
-    )
-    split_suggestion: Optional[str] = Field(
-        None, description="Document splitting suggestion"
-    )
+    should_split: bool = Field(..., description="Whether to split document")
+    split_suggestion: Optional[str] = Field(None, description="Document splitting suggestion")
 
     class Config:
         """Pydantic configuration."""
@@ -175,9 +160,7 @@ def estimate_codex_review_time(
     # Calculate estimated time components
     line_time = (document_lines / 100) * TIME_PER_100_LINES_SECONDS
     perspective_time = perspective_count * PERSPECTIVE_OVERHEAD_SECONDS
-    estimated_seconds = int(
-        BASE_TIME_SECONDS + line_time + perspective_time
-    )
+    estimated_seconds = int(BASE_TIME_SECONDS + line_time + perspective_time)
 
     # Add safety buffer
     timeout_seconds = int(estimated_seconds * SAFETY_BUFFER_MULTIPLIER)
@@ -237,9 +220,7 @@ def _get_strategy_message(strategy: ExecutionStrategy) -> str:
         Japanese message describing strategy
     """
     messages = {
-        ExecutionStrategy.BLOCKING: (
-            "短時間レビュー (2分以内) - ブロッキング実行推奨"
-        ),
+        ExecutionStrategy.BLOCKING: ("短時間レビュー (2分以内) - ブロッキング実行推奨"),
         ExecutionStrategy.BACKGROUND_SHORT: (
             "中時間レビュー (2-10分) - バックグラウンド実行 + 定期確認"
         ),

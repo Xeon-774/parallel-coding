@@ -14,7 +14,6 @@ from typing import Dict, Final, List, Literal, Optional, Tuple
 
 from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect
 
-
 AUTH_TOKEN_ENV: Final[str] = "API_TOKEN"
 DEFAULT_TOKEN: Final[str] = "dev-token"
 MAX_MSGS_PER_SEC: Final[int] = 10
@@ -177,11 +176,15 @@ async def supervisor_ws(websocket: WebSocket) -> None:
 
 # Helper publish functions for other layers
 async def publish_output(supervisor_id: str, content: str) -> None:
-    await hub.publish(supervisor_id, Event("output", {"supervisorId": supervisor_id, "content": content}))
+    await hub.publish(
+        supervisor_id, Event("output", {"supervisorId": supervisor_id, "content": content})
+    )
 
 
 async def publish_status(supervisor_id: str, status: str) -> None:
-    await hub.publish(supervisor_id, Event("status", {"supervisorId": supervisor_id, "status": status}))
+    await hub.publish(
+        supervisor_id, Event("status", {"supervisorId": supervisor_id, "status": status})
+    )
 
 
 async def publish_confirmation(supervisor_id: str, prompt: dict) -> None:
@@ -189,4 +192,3 @@ async def publish_confirmation(supervisor_id: str, prompt: dict) -> None:
         supervisor_id,
         Event("confirmation", {"supervisorId": supervisor_id, "prompt": prompt}),
     )
-

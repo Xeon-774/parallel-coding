@@ -11,7 +11,7 @@ Usage:
 import asyncio
 import sys
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 # Add project root to path
 project_root = Path(__file__).parent.parent
@@ -21,18 +21,18 @@ from orchestrator.config import OrchestratorConfig
 from orchestrator.core.ai_providers.base_review_provider import (
     ReviewPerspective,
     ReviewRequest,
-    ReviewType,
     ReviewResult,
+    ReviewType,
 )
 from orchestrator.core.ai_providers.codex_review_provider import (
     CodexReviewProvider,
 )
+from orchestrator.core.ai_providers.review_time_estimator import (
+    ExecutionStrategy,
+    estimate_from_file,
+)
 from orchestrator.core.worker.codex_executor import (
     create_codex_executor_from_config,
-)
-from orchestrator.core.ai_providers.review_time_estimator import (
-    estimate_from_file,
-    ExecutionStrategy,
 )
 
 
@@ -70,9 +70,7 @@ async def review_document(
     return result
 
 
-def print_review_summary(
-    document_name: str, result: ReviewResult
-) -> None:
+def print_review_summary(document_name: str, result: ReviewResult) -> None:
     """
     Print review result summary.
 
@@ -176,18 +174,14 @@ async def review_all_design_documents() -> Dict[str, List[ReviewResult]]:
                     perspective=perspective,
                 )
                 all_results[doc_name].append(result)
-                print_review_summary(
-                    f"{doc_name} ({perspective.value})", result
-                )
+                print_review_summary(f"{doc_name} ({perspective.value})", result)
             except Exception as e:
                 print(f"❌ Error reviewing {doc_name}: {e}")
 
     return all_results
 
 
-def print_aggregate_summary(
-    all_results: Dict[str, List[ReviewResult]]
-) -> None:
+def print_aggregate_summary(all_results: Dict[str, List[ReviewResult]]) -> None:
     """
     Print aggregate summary across all documents.
 
@@ -240,9 +234,9 @@ def print_aggregate_summary(
 async def main() -> None:
     """Main entry point."""
     print("🔍 Week 2 Design Document Review")
-    print("="*70)
+    print("=" * 70)
     print("Perspectives: ARCHITECTURE, FEASIBILITY, SECURITY")
-    print("="*70)
+    print("=" * 70)
 
     # Estimate total review time
     docs_dir = project_root / "docs"
@@ -255,9 +249,9 @@ async def main() -> None:
     total_estimated_minutes = 0.0
     total_timeout_minutes = 0.0
 
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("TIME ESTIMATION")
-    print("="*70)
+    print("=" * 70)
 
     for doc_path, perspectives in documents:
         if doc_path.exists():
@@ -291,15 +285,14 @@ async def main() -> None:
 
         # Exit code based on critical issues
         total_critical = sum(
-            result.critical_count
-            for results in all_results.values()
-            for result in results
+            result.critical_count for results in all_results.values() for result in results
         )
         sys.exit(1 if total_critical > 0 else 0)
 
     except Exception as e:
         print(f"❌ Fatal error: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)
 

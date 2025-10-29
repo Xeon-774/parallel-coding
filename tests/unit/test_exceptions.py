@@ -3,53 +3,43 @@
 Tests all exception types, context handling, and utility functions.
 """
 
-import pytest
-from typing import Dict, Any
 import time
+from typing import Any, Dict
 
-from orchestrator.core.exceptions import (
-    # Base exception
-    OrchestratorException,
-    # Configuration errors
+import pytest
+
+from orchestrator.core.exceptions import (  # Base exception; Configuration errors; Worker errors; Interactive errors; Safety errors; API errors; Task errors; Resource errors; Retry errors; Utility functions
+    APIError,
+    AuthenticationError,
     ConfigurationError,
+    ConfirmationParseError,
+    DangerousOperationError,
+    FileSystemError,
+    InsufficientResourcesError,
+    InteractiveError,
     InvalidWorkspaceError,
+    JobNotFoundError,
     MissingDependencyError,
-    # Worker errors
+    OrchestratorException,
+    PatternMatchError,
+    PseudoTerminalError,
+    RateLimitError,
+    ResourceError,
+    RetryableError,
+    SafetyError,
+    TaskDecompositionError,
+    TaskError,
+    TaskExecutionError,
+    TaskValidationError,
+    UserDeniedError,
+    WorkerCommunicationError,
+    WorkerCrashError,
     WorkerError,
     WorkerSpawnError,
     WorkerTimeoutError,
-    WorkerCrashError,
-    WorkerCommunicationError,
-    # Interactive errors
-    InteractiveError,
-    PseudoTerminalError,
-    PatternMatchError,
-    ConfirmationParseError,
-    # Safety errors
-    SafetyError,
-    DangerousOperationError,
-    UserDeniedError,
-    # API errors
-    APIError,
-    AuthenticationError,
-    RateLimitError,
-    JobNotFoundError,
-    # Task errors
-    TaskError,
-    TaskValidationError,
-    TaskDecompositionError,
-    TaskExecutionError,
-    # Resource errors
-    ResourceError,
-    InsufficientResourcesError,
-    FileSystemError,
-    # Retry errors
-    RetryableError,
-    # Utility functions
-    wrap_exception,
     format_exception_chain,
+    wrap_exception,
 )
-
 
 # ======================= Base Exception Tests =======================
 
@@ -111,20 +101,14 @@ class TestConfigurationErrors:
 
     def test_invalid_workspace_error(self):
         """Test InvalidWorkspaceError creation."""
-        exc = InvalidWorkspaceError(
-            "Workspace not found",
-            context={"path": "/invalid/path"}
-        )
+        exc = InvalidWorkspaceError("Workspace not found", context={"path": "/invalid/path"})
         assert exc.message == "Workspace not found"
         assert isinstance(exc, ConfigurationError)
         assert "path=/invalid/path" in str(exc)
 
     def test_missing_dependency_error(self):
         """Test MissingDependencyError creation."""
-        exc = MissingDependencyError(
-            "Git not found",
-            context={"dependency": "git"}
-        )
+        exc = MissingDependencyError("Git not found", context={"dependency": "git"})
         assert exc.message == "Git not found"
         assert isinstance(exc, ConfigurationError)
 
@@ -143,20 +127,13 @@ class TestWorkerErrors:
 
     def test_worker_spawn_error(self):
         """Test WorkerSpawnError creation."""
-        exc = WorkerSpawnError(
-            "Failed to spawn worker",
-            context={"worker_id": "w_123"}
-        )
+        exc = WorkerSpawnError("Failed to spawn worker", context={"worker_id": "w_123"})
         assert exc.message == "Failed to spawn worker"
         assert isinstance(exc, WorkerError)
 
     def test_worker_timeout_error(self):
         """Test WorkerTimeoutError with timeout and worker_id."""
-        exc = WorkerTimeoutError(
-            "Worker timed out",
-            worker_id="w_123",
-            timeout=300.0
-        )
+        exc = WorkerTimeoutError("Worker timed out", worker_id="w_123", timeout=300.0)
         assert exc.message == "Worker timed out"
         assert exc.worker_id == "w_123"
         assert exc.timeout == 300.0
@@ -166,10 +143,7 @@ class TestWorkerErrors:
     def test_worker_timeout_error_with_context(self):
         """Test WorkerTimeoutError with additional context."""
         exc = WorkerTimeoutError(
-            "Worker timed out",
-            worker_id="w_456",
-            timeout=600.0,
-            context={"task": "Build project"}
+            "Worker timed out", worker_id="w_456", timeout=600.0, context={"task": "Build project"}
         )
         assert exc.context["task"] == "Build project"
         assert exc.context["worker_id"] == "w_456"
@@ -177,11 +151,7 @@ class TestWorkerErrors:
 
     def test_worker_crash_error(self):
         """Test WorkerCrashError with exit code."""
-        exc = WorkerCrashError(
-            "Worker crashed",
-            worker_id="w_789",
-            exit_code=1
-        )
+        exc = WorkerCrashError("Worker crashed", worker_id="w_789", exit_code=1)
         assert exc.message == "Worker crashed"
         assert exc.worker_id == "w_789"
         assert exc.exit_code == 1
@@ -190,20 +160,13 @@ class TestWorkerErrors:
 
     def test_worker_crash_error_no_exit_code(self):
         """Test WorkerCrashError with None exit code."""
-        exc = WorkerCrashError(
-            "Worker crashed",
-            worker_id="w_999",
-            exit_code=None
-        )
+        exc = WorkerCrashError("Worker crashed", worker_id="w_999", exit_code=None)
         assert exc.exit_code is None
         assert "exit_code=None" in str(exc)
 
     def test_worker_communication_error(self):
         """Test WorkerCommunicationError creation."""
-        exc = WorkerCommunicationError(
-            "Failed to communicate",
-            context={"worker_id": "w_123"}
-        )
+        exc = WorkerCommunicationError("Failed to communicate", context={"worker_id": "w_123"})
         assert exc.message == "Failed to communicate"
         assert isinstance(exc, WorkerError)
 
@@ -222,30 +185,21 @@ class TestInteractiveErrors:
 
     def test_pseudo_terminal_error(self):
         """Test PseudoTerminalError with platform."""
-        exc = PseudoTerminalError(
-            "PTY creation failed",
-            platform="windows"
-        )
+        exc = PseudoTerminalError("PTY creation failed", platform="windows")
         assert exc.message == "PTY creation failed"
         assert exc.platform == "windows"
         assert "platform=windows" in str(exc)
 
     def test_pseudo_terminal_error_with_context(self):
         """Test PseudoTerminalError with additional context."""
-        exc = PseudoTerminalError(
-            "PTY error",
-            platform="linux",
-            context={"error_code": 13}
-        )
+        exc = PseudoTerminalError("PTY error", platform="linux", context={"error_code": 13})
         assert exc.context["platform"] == "linux"
         assert exc.context["error_code"] == 13
 
     def test_pattern_match_error(self):
         """Test PatternMatchError with pattern and output."""
         exc = PatternMatchError(
-            "Pattern not found",
-            pattern="Expected prompt",
-            output="Actual output here"
+            "Pattern not found", pattern="Expected prompt", output="Actual output here"
         )
         assert exc.message == "Pattern not found"
         assert exc.pattern == "Expected prompt"
@@ -256,11 +210,7 @@ class TestInteractiveErrors:
     def test_pattern_match_error_with_long_output(self):
         """Test PatternMatchError stores output length, not full output."""
         long_output = "x" * 1000
-        exc = PatternMatchError(
-            "Pattern not found",
-            pattern="test",
-            output=long_output
-        )
+        exc = PatternMatchError("Pattern not found", pattern="test", output=long_output)
         assert exc.output == long_output
         assert "output_length=1000" in str(exc)
         # Full output is NOT in the string representation
@@ -268,10 +218,7 @@ class TestInteractiveErrors:
 
     def test_confirmation_parse_error(self):
         """Test ConfirmationParseError with raw message."""
-        exc = ConfirmationParseError(
-            "Failed to parse confirmation",
-            raw_message="Invalid JSON"
-        )
+        exc = ConfirmationParseError("Failed to parse confirmation", raw_message="Invalid JSON")
         assert exc.message == "Failed to parse confirmation"
         assert exc.raw_message == "Invalid JSON"
         assert "raw_message=Invalid JSON" in str(exc)
@@ -292,9 +239,7 @@ class TestSafetyErrors:
     def test_dangerous_operation_error(self):
         """Test DangerousOperationError with operation type and details."""
         exc = DangerousOperationError(
-            "Operation blocked",
-            operation_type="FILE_DELETE",
-            details={"file": "/etc/passwd"}
+            "Operation blocked", operation_type="FILE_DELETE", details={"file": "/etc/passwd"}
         )
         assert exc.message == "Operation blocked"
         assert exc.operation_type == "FILE_DELETE"
@@ -307,17 +252,14 @@ class TestSafetyErrors:
             "Operation blocked",
             operation_type="SYSTEM_MODIFY",
             details={"command": "rm -rf /"},
-            context={"worker_id": "w_123"}
+            context={"worker_id": "w_123"},
         )
         assert exc.context["worker_id"] == "w_123"
         assert exc.context["operation_type"] == "SYSTEM_MODIFY"
 
     def test_user_denied_error(self):
         """Test UserDeniedError with operation type."""
-        exc = UserDeniedError(
-            "User denied operation",
-            operation_type="FILE_WRITE"
-        )
+        exc = UserDeniedError("User denied operation", operation_type="FILE_WRITE")
         assert exc.message == "User denied operation"
         assert exc.operation_type == "FILE_WRITE"
         assert "operation_type=FILE_WRITE" in str(exc)
@@ -337,20 +279,13 @@ class TestAPIErrors:
 
     def test_authentication_error(self):
         """Test AuthenticationError creation."""
-        exc = AuthenticationError(
-            "Authentication failed",
-            context={"user_id": "user_123"}
-        )
+        exc = AuthenticationError("Authentication failed", context={"user_id": "user_123"})
         assert exc.message == "Authentication failed"
         assert isinstance(exc, APIError)
 
     def test_rate_limit_error(self):
         """Test RateLimitError with limit and retry_after."""
-        exc = RateLimitError(
-            "Rate limit exceeded",
-            limit=100,
-            retry_after=60.0
-        )
+        exc = RateLimitError("Rate limit exceeded", limit=100, retry_after=60.0)
         assert exc.message == "Rate limit exceeded"
         assert exc.limit == 100
         assert exc.retry_after == 60.0
@@ -359,19 +294,12 @@ class TestAPIErrors:
 
     def test_rate_limit_error_no_retry_after(self):
         """Test RateLimitError with None retry_after."""
-        exc = RateLimitError(
-            "Rate limit exceeded",
-            limit=50,
-            retry_after=None
-        )
+        exc = RateLimitError("Rate limit exceeded", limit=50, retry_after=None)
         assert exc.retry_after is None
 
     def test_job_not_found_error(self):
         """Test JobNotFoundError with job_id."""
-        exc = JobNotFoundError(
-            "Job not found",
-            job_id="job_123"
-        )
+        exc = JobNotFoundError("Job not found", job_id="job_123")
         assert exc.message == "Job not found"
         assert exc.job_id == "job_123"
         assert "job_id=job_123" in str(exc)
@@ -391,29 +319,19 @@ class TestTaskErrors:
 
     def test_task_validation_error(self):
         """Test TaskValidationError creation."""
-        exc = TaskValidationError(
-            "Invalid task parameters",
-            context={"field": "timeout"}
-        )
+        exc = TaskValidationError("Invalid task parameters", context={"field": "timeout"})
         assert exc.message == "Invalid task parameters"
         assert isinstance(exc, TaskError)
 
     def test_task_decomposition_error(self):
         """Test TaskDecompositionError creation."""
-        exc = TaskDecompositionError(
-            "Failed to split task",
-            context={"task": "Complex operation"}
-        )
+        exc = TaskDecompositionError("Failed to split task", context={"task": "Complex operation"})
         assert exc.message == "Failed to split task"
         assert isinstance(exc, TaskError)
 
     def test_task_execution_error(self):
         """Test TaskExecutionError with task_name and worker_id."""
-        exc = TaskExecutionError(
-            "Execution failed",
-            task_name="Build project",
-            worker_id="w_123"
-        )
+        exc = TaskExecutionError("Execution failed", task_name="Build project", worker_id="w_123")
         assert exc.message == "Execution failed"
         assert exc.task_name == "Build project"
         assert exc.worker_id == "w_123"
@@ -422,11 +340,7 @@ class TestTaskErrors:
 
     def test_task_execution_error_no_worker(self):
         """Test TaskExecutionError with None worker_id."""
-        exc = TaskExecutionError(
-            "Execution failed",
-            task_name="Test task",
-            worker_id=None
-        )
+        exc = TaskExecutionError("Execution failed", task_name="Test task", worker_id=None)
         assert exc.worker_id is None
 
 
@@ -445,10 +359,7 @@ class TestResourceErrors:
     def test_insufficient_resources_error(self):
         """Test InsufficientResourcesError with resource details."""
         exc = InsufficientResourcesError(
-            "Not enough workers",
-            resource_type="workers",
-            required=5,
-            available=2
+            "Not enough workers", resource_type="workers", required=5, available=2
         )
         assert exc.message == "Not enough workers"
         assert exc.resource_type == "workers"
@@ -465,18 +376,14 @@ class TestResourceErrors:
             resource_type="memory",
             required="16GB",
             available="8GB",
-            context={"node": "node_1"}
+            context={"node": "node_1"},
         )
         assert exc.context["node"] == "node_1"
         assert exc.context["resource_type"] == "memory"
 
     def test_file_system_error(self):
         """Test FileSystemError with path and operation."""
-        exc = FileSystemError(
-            "File not found",
-            path="/tmp/test.txt",
-            operation="read"
-        )
+        exc = FileSystemError("File not found", path="/tmp/test.txt", operation="read")
         assert exc.message == "File not found"
         assert exc.path == "/tmp/test.txt"
         assert exc.operation == "read"
@@ -501,11 +408,7 @@ class TestRetryableError:
 
     def test_retryable_error_custom_parameters(self):
         """Test RetryableError with custom retry parameters."""
-        exc = RetryableError(
-            "Transient error",
-            max_retries=5,
-            retry_delay=2.5
-        )
+        exc = RetryableError("Transient error", max_retries=5, retry_delay=2.5)
         assert exc.max_retries == 5
         assert exc.retry_delay == 2.5
 
@@ -552,11 +455,7 @@ class TestWrapException:
     def test_wrap_exception_basic(self):
         """Test wrapping exception with new type."""
         original = ValueError("Original error")
-        wrapped = wrap_exception(
-            original,
-            ConfigurationError,
-            "Configuration failed"
-        )
+        wrapped = wrap_exception(original, ConfigurationError, "Configuration failed")
         assert isinstance(wrapped, ConfigurationError)
         assert wrapped.message == "Configuration failed"
         assert wrapped.cause == original
@@ -565,10 +464,7 @@ class TestWrapException:
         """Test wrapping exception with context."""
         original = KeyError("missing_key")
         wrapped = wrap_exception(
-            original,
-            TaskValidationError,
-            "Task validation failed",
-            context={"key": "missing_key"}
+            original, TaskValidationError, "Task validation failed", context={"key": "missing_key"}
         )
         assert wrapped.context["key"] == "missing_key"
         assert wrapped.cause == original

@@ -3,27 +3,28 @@
 Tests worker and job state transitions, validation, and error handling.
 """
 
-import pytest
 from datetime import datetime
+
+import pytest
 from sqlalchemy.exc import SQLAlchemyError
 
+from orchestrator.core.database import SessionLocal, drop_all_tables, init_db
+from orchestrator.core.db_models import (
+    Job,
+    JobStateTransition,
+    JobStatus,
+    Worker,
+    WorkerStateTransition,
+    WorkerStatus,
+)
 from orchestrator.core.state_machine import (
-    WorkerStateMachine,
+    JOB_TRANSITIONS,
+    WORKER_TRANSITIONS,
+    EntityNotFoundError,
     JobStateMachine,
     StateTransitionError,
-    EntityNotFoundError,
-    WORKER_TRANSITIONS,
-    JOB_TRANSITIONS,
+    WorkerStateMachine,
 )
-from orchestrator.core.db_models import (
-    Worker,
-    WorkerStatus,
-    WorkerStateTransition,
-    Job,
-    JobStatus,
-    JobStateTransition,
-)
-from orchestrator.core.database import SessionLocal, init_db, drop_all_tables
 
 
 @pytest.fixture(scope="function")
@@ -113,9 +114,7 @@ class TestWorkerStateMachine:
         sm = WorkerStateMachine(db_session)
 
         worker = sm.transition_worker(
-            worker_id=sample_worker.id,
-            to_state=WorkerStatus.RUNNING,
-            reason="Test transition"
+            worker_id=sample_worker.id, to_state=WorkerStatus.RUNNING, reason="Test transition"
         )
 
         assert worker.status == WorkerStatus.RUNNING
@@ -126,15 +125,15 @@ class TestWorkerStateMachine:
         sm = WorkerStateMachine(db_session)
 
         sm.transition_worker(
-            worker_id=sample_worker.id,
-            to_state=WorkerStatus.RUNNING,
-            reason="Test audit"
+            worker_id=sample_worker.id, to_state=WorkerStatus.RUNNING, reason="Test audit"
         )
 
         # Check audit trail
-        transitions = db_session.query(WorkerStateTransition).filter(
-            WorkerStateTransition.worker_id == sample_worker.id
-        ).all()
+        transitions = (
+            db_session.query(WorkerStateTransition)
+            .filter(WorkerStateTransition.worker_id == sample_worker.id)
+            .all()
+        )
 
         assert len(transitions) == 1
         assert transitions[0].from_state == WorkerStatus.IDLE.value
@@ -146,27 +145,18 @@ class TestWorkerStateMachine:
         sm = WorkerStateMachine(db_session)
 
         with pytest.raises(EntityNotFoundError, match="Worker not found"):
-            sm.transition_worker(
-                worker_id="nonexistent-worker",
-                to_state=WorkerStatus.RUNNING
-            )
+            sm.transition_worker(worker_id="nonexistent-worker", to_state=WorkerStatus.RUNNING)
 
     def test_transition_worker_invalid_transition_raises_error(self, db_session, sample_worker):
         """Test invalid transition raises StateTransitionError."""
         sm = WorkerStateMachine(db_session)
 
         # Transition to COMPLETED (final state)
-        sm.transition_worker(
-            worker_id=sample_worker.id,
-            to_state=WorkerStatus.TERMINATED
-        )
+        sm.transition_worker(worker_id=sample_worker.id, to_state=WorkerStatus.TERMINATED)
 
         # Try to transition from final state
         with pytest.raises(StateTransitionError) as exc_info:
-            sm.transition_worker(
-                worker_id=sample_worker.id,
-                to_state=WorkerStatus.RUNNING
-            )
+            sm.transition_worker(worker_id=sample_worker.id, to_state=WorkerStatus.RUNNING)
 
         assert exc_info.value.from_state == WorkerStatus.TERMINATED.value
         assert exc_info.value.to_state == WorkerStatus.RUNNING.value
@@ -232,9 +222,7 @@ class TestJobStateMachine:
         sm = JobStateMachine(db_session)
 
         job = sm.transition_job(
-            job_id=sample_job.id,
-            to_state=JobStatus.RUNNING,
-            reason="Test transition"
+            job_id=sample_job.id, to_state=JobStatus.RUNNING, reason="Test transition"
         )
 
         assert job.status == JobStatus.RUNNING
@@ -246,10 +234,7 @@ class TestJobStateMachine:
 
         assert sample_job.started_at is None
 
-        job = sm.transition_job(
-            job_id=sample_job.id,
-            to_state=JobStatus.RUNNING
-        )
+        job = sm.transition_job(job_id=sample_job.id, to_state=JobStatus.RUNNING)
 
         assert job.started_at is not None
 
@@ -271,16 +256,14 @@ class TestJobStateMachine:
         """Test that job transitions are logged to audit trail."""
         sm = JobStateMachine(db_session)
 
-        sm.transition_job(
-            job_id=sample_job.id,
-            to_state=JobStatus.RUNNING,
-            reason="Test audit"
-        )
+        sm.transition_job(job_id=sample_job.id, to_state=JobStatus.RUNNING, reason="Test audit")
 
         # Check audit trail
-        transitions = db_session.query(JobStateTransition).filter(
-            JobStateTransition.job_id == sample_job.id
-        ).all()
+        transitions = (
+            db_session.query(JobStateTransition)
+            .filter(JobStateTransition.job_id == sample_job.id)
+            .all()
+        )
 
         assert len(transitions) == 1
         assert transitions[0].from_state == JobStatus.PENDING.value
@@ -292,10 +275,7 @@ class TestJobStateMachine:
         sm = JobStateMachine(db_session)
 
         with pytest.raises(EntityNotFoundError, match="Job not found"):
-            sm.transition_job(
-                job_id="nonexistent-job",
-                to_state=JobStatus.RUNNING
-            )
+            sm.transition_job(job_id="nonexistent-job", to_state=JobStatus.RUNNING)
 
     def test_transition_job_invalid_transition_raises_error(self, db_session, sample_job):
         """Test invalid job transition raises StateTransitionError."""
@@ -307,10 +287,7 @@ class TestJobStateMachine:
 
         # Try to transition from final state
         with pytest.raises(StateTransitionError) as exc_info:
-            sm.transition_job(
-                job_id=sample_job.id,
-                to_state=JobStatus.RUNNING
-            )
+            sm.transition_job(job_id=sample_job.id, to_state=JobStatus.RUNNING)
 
         assert exc_info.value.from_state == JobStatus.COMPLETED.value
         assert exc_info.value.to_state == JobStatus.RUNNING.value
@@ -320,10 +297,7 @@ class TestJobStateMachine:
         """Test cancel_job convenience method."""
         sm = JobStateMachine(db_session)
 
-        job = sm.cancel_job(
-            job_id=sample_job.id,
-            reason="User requested cancellation"
-        )
+        job = sm.cancel_job(job_id=sample_job.id, reason="User requested cancellation")
 
         assert job.status == JobStatus.CANCELED
         assert job.completed_at is not None
@@ -334,9 +308,11 @@ class TestJobStateMachine:
 
         sm.cancel_job(job_id=sample_job.id)
 
-        transitions = db_session.query(JobStateTransition).filter(
-            JobStateTransition.job_id == sample_job.id
-        ).all()
+        transitions = (
+            db_session.query(JobStateTransition)
+            .filter(JobStateTransition.job_id == sample_job.id)
+            .all()
+        )
 
         assert transitions[0].reason == "Job canceled"
 
@@ -379,11 +355,7 @@ class TestExceptions:
 
     def test_state_transition_error_default_message(self):
         """Test StateTransitionError with default message."""
-        error = StateTransitionError(
-            from_state="IDLE",
-            to_state="COMPLETED",
-            entity_id="w_123"
-        )
+        error = StateTransitionError(from_state="IDLE", to_state="COMPLETED", entity_id="w_123")
 
         assert "Invalid state transition" in str(error)
         assert "IDLE" in str(error)
@@ -398,7 +370,7 @@ class TestExceptions:
             from_state="IDLE",
             to_state="COMPLETED",
             entity_id="w_123",
-            message="Custom error message"
+            message="Custom error message",
         )
 
         assert str(error) == "Custom error message"

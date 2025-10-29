@@ -2,6 +2,7 @@
 
 Implements job submission, retrieval, cancellation, and listing.
 """
+
 from __future__ import annotations
 
 from typing import List, Optional
@@ -14,11 +15,10 @@ from orchestrator.api.dependencies import TokenData, get_db, require_scope
 from orchestrator.api.schemas import JobResponse, JobSubmitRequest
 from orchestrator.core.db_models import Job, JobStatus
 from orchestrator.core.state_machine import (
-    StateTransitionError,
     EntityNotFoundError,
     JobStateMachine,
+    StateTransitionError,
 )
-
 
 router = APIRouter(prefix="/api/jobs", tags=["jobs"])
 
@@ -162,4 +162,3 @@ async def list_jobs(
 
     rows = db.execute(stmt).scalars().all()
     return [JobResponse.model_validate(j) for j in rows]
-

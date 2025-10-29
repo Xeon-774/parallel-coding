@@ -12,10 +12,11 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-if sys.platform == 'win32':
+if sys.platform == "win32":
     import codecs
-    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'replace')
-    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'replace')
+
+    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
+    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
 
 from orchestrator import AdvancedOrchestrator, OrchestratorConfig
 
@@ -32,11 +33,11 @@ def main():
     print()
 
     # Windows環境設定
-    os.environ['ORCHESTRATOR_MODE'] = 'windows'
-    os.environ['CLAUDE_CODE_GIT_BASH_PATH'] = r'C:\opt\Git.Git\usr\bin\bash.exe'
-    os.environ['ORCHESTRATOR_VISIBLE_WORKERS'] = 'true'
-    os.environ['ORCHESTRATOR_AUTO_CLOSE'] = 'false'  # 手動で閉じる
-    os.environ['ORCHESTRATOR_WINDOW_DELAY'] = '10'
+    os.environ["ORCHESTRATOR_MODE"] = "windows"
+    os.environ["CLAUDE_CODE_GIT_BASH_PATH"] = r"C:\opt\Git.Git\usr\bin\bash.exe"
+    os.environ["ORCHESTRATOR_VISIBLE_WORKERS"] = "true"
+    os.environ["ORCHESTRATOR_AUTO_CLOSE"] = "false"  # 手動で閉じる
+    os.environ["ORCHESTRATOR_WINDOW_DELAY"] = "10"
 
     config = OrchestratorConfig.from_env()
 
@@ -62,7 +63,7 @@ def main():
         config=config,
         enable_ai_analysis=False,  # AI分析は無効（シンプルに1タスク）
         enable_worktree=False,
-        enable_realtime_monitoring=True
+        enable_realtime_monitoring=True,
     )
 
     print("[実行開始]")
@@ -86,6 +87,7 @@ def main():
     except Exception as e:
         print(f"エラー: {e}")
         import traceback
+
         traceback.print_exc()
 
     print()
@@ -94,5 +96,5 @@ def main():
     print("=" * 80)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

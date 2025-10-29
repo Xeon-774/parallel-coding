@@ -12,26 +12,27 @@ Author: Claude (Sonnet 4.5)
 Created: 2025-10-24
 """
 
-import pytest
 import time
 from pathlib import Path
 from typing import Optional
 
+import pytest
+
+from orchestrator.config import OrchestratorConfig
 from orchestrator.core.common.base_manager import (
     BaseAIManager,
-    ManagerType,
-    ManagerStatus,
     HealthCheckResult,
     ManagerMetrics,
+    ManagerStatus,
+    ManagerType,
 )
 from orchestrator.core.common.models import ConfirmationRequest, ConfirmationType
-from orchestrator.config import OrchestratorConfig
 from orchestrator.interfaces import ILogger
-
 
 # =============================================================================
 # Test Fixtures
 # =============================================================================
+
 
 class MockLogger:
     """Mock logger for testing"""
@@ -131,6 +132,7 @@ def manager(config, logger):
 # Initialization Tests
 # =============================================================================
 
+
 def test_base_manager_initialization(manager, config):
     """Test BaseAIManager initializes correctly"""
     assert manager.manager_id == "test_manager_001"
@@ -150,6 +152,7 @@ def test_base_manager_creates_workspace(manager):
 # =============================================================================
 # Lifecycle Tests
 # =============================================================================
+
 
 def test_start_manager(manager):
     """Test starting manager"""
@@ -211,6 +214,7 @@ def test_restart_fails_if_start_fails(manager):
 # Status Management Tests
 # =============================================================================
 
+
 def test_get_status(manager):
     """Test getting manager status"""
     assert manager.get_status() == ManagerStatus.READY
@@ -259,6 +263,7 @@ def test_resume_fails_if_not_paused(manager):
 # Health Check Tests
 # =============================================================================
 
+
 def test_health_check(manager):
     """Test health check"""
     manager.start()
@@ -276,6 +281,7 @@ def test_health_check(manager):
 
 def test_health_check_handles_exceptions(manager):
     """Test health check handles exceptions gracefully"""
+
     # Override _health_check_impl to raise exception
     def failing_health_check():
         raise RuntimeError("Test error")
@@ -292,6 +298,7 @@ def test_health_check_handles_exceptions(manager):
 # =============================================================================
 # Metrics Tests
 # =============================================================================
+
 
 def test_get_metrics(manager):
     """Test getting manager metrics"""
@@ -326,6 +333,7 @@ def test_metrics_track_operations(manager):
 # =============================================================================
 # Confirmation Handling Tests
 # =============================================================================
+
 
 def test_handle_confirmation_file_write(manager):
     """Test handling file write confirmation"""
@@ -392,6 +400,7 @@ def test_handle_confirmation_exception_returns_no(manager):
 # Uptime Tests
 # =============================================================================
 
+
 def test_get_uptime_before_start(manager):
     """Test uptime is 0 before start"""
     assert manager.get_uptime() == 0.0
@@ -424,6 +433,7 @@ def test_get_uptime_after_stop(manager):
 # =============================================================================
 # Terminal Output Tests
 # =============================================================================
+
 
 def test_write_terminal_output(manager, tmp_path):
     """Test writing terminal output to file"""
@@ -483,6 +493,7 @@ def test_write_terminal_output_handles_errors(manager, tmp_path):
 # Logging Tests
 # =============================================================================
 
+
 def test_log_event(manager, logger):
     """Test logging events"""
     manager.log_event(
@@ -503,6 +514,7 @@ def test_log_event(manager, logger):
 # String Representation Tests
 # =============================================================================
 
+
 def test_manager_repr(manager):
     """Test string representation"""
     manager.start()
@@ -518,6 +530,7 @@ def test_manager_repr(manager):
 # Abstract Method Enforcement Tests
 # =============================================================================
 
+
 def test_cannot_instantiate_base_manager_directly(config, logger):
     """Test BaseAIManager cannot be instantiated directly"""
     with pytest.raises(TypeError):
@@ -531,11 +544,14 @@ def test_cannot_instantiate_base_manager_directly(config, logger):
 
 def test_derived_class_must_implement_start():
     """Test derived class must implement start()"""
+
     class IncompleteManager(BaseAIManager):
         def stop(self) -> bool:
             return True
+
         def _health_check_impl(self) -> HealthCheckResult:
             return HealthCheckResult(True, ManagerStatus.READY, "ok", 1, 0)
+
         def _handle_confirmation_impl(self, confirmation) -> Optional[str]:
             return "yes"
 
@@ -549,6 +565,7 @@ def test_derived_class_must_implement_start():
 # =============================================================================
 # Integration Tests
 # =============================================================================
+
 
 def test_full_lifecycle_integration(manager):
     """Test full lifecycle: start -> operate -> stop"""

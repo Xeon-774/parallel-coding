@@ -13,16 +13,16 @@ from fastapi import HTTPException
 from fastapi.testclient import TestClient
 
 from orchestrator.api.supervisor_routes import (
-    SpawnSupervisorRequest,
     RespondToConfirmationRequest,
+    SpawnSupervisorRequest,
     authenticate,
     get_worker_manager,
     router,
 )
 from orchestrator.core.worker.worker_manager import (
+    SupervisedWorkerResult,
     SupervisorStatus,
     SupervisorStatusInfo,
-    SupervisedWorkerResult,
 )
 
 
@@ -71,6 +71,7 @@ def test_authenticate_valid_token():
 
 def test_authenticate_missing_header():
     """Test authentication fails with missing Authorization header."""
+
     class MockRequest:
         headers = {}
 
@@ -96,6 +97,7 @@ def test_authenticate_invalid_token():
 
 def test_authenticate_malformed_header():
     """Test authentication fails with malformed Authorization header."""
+
     class MockRequest:
         headers = {"authorization": "InvalidFormat"}
 

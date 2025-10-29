@@ -32,12 +32,12 @@ def simulate_claude_response():
     print("I'm going to create a new file.", flush=True)
     time.sleep(0.3)
 
-    print("Write to file 'output.py'? (y/n): ", end='', flush=True)
+    print("Write to file 'output.py'? (y/n): ", end="", flush=True)
 
     # Wait for response
     response = input()
 
-    if response.lower() == 'y':
+    if response.lower() == "y":
         print("\n[Mock Claude] Great! Creating file output.py...", flush=True)
         time.sleep(0.5)
         print("[Mock Claude] File created successfully!", flush=True)
@@ -50,11 +50,11 @@ def simulate_claude_response():
     print("\n[Mock Claude] Now I'll create the actual content.", flush=True)
     time.sleep(0.3)
 
-    print("Create file 'hello.py' with Hello World code? (y/n): ", end='', flush=True)
+    print("Create file 'hello.py' with Hello World code? (y/n): ", end="", flush=True)
 
     response = input()
 
-    if response.lower() == 'y':
+    if response.lower() == "y":
         print("\n[Mock Claude] Creating hello.py...", flush=True)
         time.sleep(0.5)
         print("[Mock Claude] Done! The file contains:", flush=True)
@@ -70,11 +70,11 @@ def simulate_claude_response():
     print("\n[Mock Claude] Let me verify the file was created.", flush=True)
     time.sleep(0.3)
 
-    print("Execute command 'dir' to list files? (y/n): ", end='', flush=True)
+    print("Execute command 'dir' to list files? (y/n): ", end="", flush=True)
 
     response = input()
 
-    if response.lower() == 'y':
+    if response.lower() == "y":
         print("\n[Mock Claude] Running dir command...", flush=True)
         time.sleep(0.3)
         print("hello.py", flush=True)

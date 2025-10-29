@@ -18,4 +18,3 @@ async def test_3_level_recursion():
     # Depth 0 root, depth 1 children; leaf children may create no further depth
     assert tree["depth"] == 0
     assert all(ch["depth"] == 1 for ch in tree["children"])
-

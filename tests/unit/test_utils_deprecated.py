@@ -3,8 +3,9 @@
 Tests backward compatibility and deprecation warning for utils module.
 """
 
-import pytest
 import warnings
+
+import pytest
 
 
 def test_utils_package_imports_successfully():

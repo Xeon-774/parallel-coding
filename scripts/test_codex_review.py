@@ -109,9 +109,7 @@ async def main():
     if not arch_path.exists():
         print(f"⚠️  ARCHITECTURE.md not found at {arch_path}")
         print("   Trying alternative location...")
-        arch_path = (
-            project_root / "tools" / "parallel-coding" / "docs" / "ARCHITECTURE.md"
-        )
+        arch_path = project_root / "tools" / "parallel-coding" / "docs" / "ARCHITECTURE.md"
         if not arch_path.exists():
             # Try workspace location
             arch_path = (

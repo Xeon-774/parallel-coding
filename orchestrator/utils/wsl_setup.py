@@ -5,13 +5,13 @@ Claude CLIのインストールと認証を完全自動化します。
 トークン入力が必要な場合は、GUIウィンドウで入力を求めます。
 """
 
+import re
 import subprocess
 import threading
 import time
 import tkinter as tk
 from tkinter import messagebox, scrolledtext
-from typing import Optional, Callable
-import re
+from typing import Callable, Optional
 
 
 class TokenInputDialog:

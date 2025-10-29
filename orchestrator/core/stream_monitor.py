@@ -6,8 +6,8 @@ with proper encoding handling and concurrent file writing.
 """
 
 import threading
-from typing import IO, List, Optional
 from pathlib import Path
+from typing import IO, List, Optional
 
 from orchestrator.interfaces import ILogger
 

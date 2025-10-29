@@ -4,10 +4,10 @@ Excellence AI Standard (100% compliance)
 """
 
 from .quality_gate import (
-    QualityGateEngine,
     QualityCheckResult,
-    QualityMetrics,
+    QualityGateEngine,
     QualityGateError,
+    QualityMetrics,
 )
 
 __all__ = [

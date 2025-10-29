@@ -71,4 +71,3 @@ def validate_email(email: str) -> bool:
         return False
 
     return _EMAIL_REGEX.fullmatch(email) is not None
-

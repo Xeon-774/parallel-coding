@@ -5,8 +5,7 @@ Tests simple safety assessment logic for confirmation prompts.
 
 import pytest
 
-from orchestrator.core.ai_safety_judge import Decision, Judgment, AISafetyJudge
-
+from orchestrator.core.ai_safety_judge import AISafetyJudge, Decision, Judgment
 
 # ======================= Enum Tests =======================
 
@@ -179,10 +178,7 @@ class TestAISafetyJudgeWithContext:
     def test_assess_with_context_parameter(self):
         """Test that context parameter is accepted."""
         judge = AISafetyJudge()
-        judgment = judge.assess(
-            "unrecognized prompt",
-            context="worker_id=w123, task=test"
-        )
+        judgment = judge.assess("unrecognized prompt", context="worker_id=w123, task=test")
 
         # Context doesn't affect decision in simple judge
         assert judgment.decision == Decision.DENY

@@ -20,7 +20,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from orchestrator.config import OrchestratorConfig
-from orchestrator.core.worker.worker_manager import WorkerManager, ConfirmationRequest
+from orchestrator.core.worker.worker_manager import ConfirmationRequest, WorkerManager
 from orchestrator.interfaces import ILogger
 
 
@@ -72,9 +72,9 @@ def test_end_to_end_with_hybrid_engine():
     triggering the hybrid engine to make a decision.
     """
 
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print("END-TO-END TEST: Worker AI + Hybrid Orchestrator")
-    print("="*80)
+    print("=" * 80)
     print("\nThis test will:")
     print("  1. Spawn a Claude CLI worker AI")
     print("  2. Give it a task that creates a file")
@@ -84,7 +84,7 @@ def test_end_to_end_with_hybrid_engine():
     print("  6. Worker will complete the task")
     print("  7. Dialogue will be logged completely")
     print("\nThis validates TRUE AI-TO-AI COMMUNICATION with hybrid orchestration.")
-    print("="*80)
+    print("=" * 80)
 
     # Create test logger
     logger = TestLogger()
@@ -96,7 +96,7 @@ def test_end_to_end_with_hybrid_engine():
     manager = WorkerManager(
         config=config,
         logger=logger,
-        user_approval_callback=None  # Pure AI orchestration, no human intervention
+        user_approval_callback=None,  # Pure AI orchestration, no human intervention
     )
 
     # Define a simple task that will trigger file creation confirmation
@@ -113,15 +113,15 @@ The script should:
 Just create the file directly. Don't ask for permission - the orchestrator will handle safety.
 
 After creating the file, print "Task completed successfully!" to confirm.
-"""
+""",
     }
 
-    print("\n" + "-"*80)
+    print("\n" + "-" * 80)
     print("TASK DETAILS")
-    print("-"*80)
+    print("-" * 80)
     print(f"Task name: {task['name']}")
     print(f"Task prompt (first 200 chars): {task['prompt'][:200]}...")
-    print("-"*80)
+    print("-" * 80)
 
     # Spawn worker
     print("\n\nStep 1: Spawning worker AI...")
@@ -136,20 +136,20 @@ After creating the file, print "Task completed successfully!" to confirm.
     # Run interactive session
     print("\n\nStep 2: Running interactive session...")
     print("(This may take 30-60 seconds depending on AI response time)")
-    print("-"*80)
+    print("-" * 80)
 
     start_time = time.time()
     result = manager.run_interactive_session(session.worker_id, max_iterations=50)
     duration = time.time() - start_time
 
-    print("\n" + "-"*80)
+    print("\n" + "-" * 80)
     print(f"Session completed in {duration:.1f}s")
-    print("-"*80)
+    print("-" * 80)
 
     # Analyze results
-    print("\n\n" + "="*80)
+    print("\n\n" + "=" * 80)
     print("RESULTS ANALYSIS")
-    print("="*80)
+    print("=" * 80)
 
     # Check task result
     print(f"\n1. Task Result:")
@@ -167,13 +167,14 @@ After creating the file, print "Task completed successfully!" to confirm.
     if transcript_jsonl.exists():
         print(f"   ✅ JSONL transcript saved: {transcript_jsonl}")
         # Count entries
-        with open(transcript_jsonl, 'r', encoding='utf-8') as f:
+        with open(transcript_jsonl, "r", encoding="utf-8") as f:
             entries = f.readlines()
         print(f"   Entries: {len(entries)}")
 
         # Show sample
         if entries:
             import json
+
             first_entry = json.loads(entries[0])
             print(f"   First entry direction: {first_entry.get('direction', 'unknown')}")
     else:
@@ -194,13 +195,13 @@ After creating the file, print "Task completed successfully!" to confirm.
     if hello_world_file.exists():
         print(f"   ✅ File created: {hello_world_file}")
         # Show content
-        with open(hello_world_file, 'r', encoding='utf-8') as f:
+        with open(hello_world_file, "r", encoding="utf-8") as f:
             content = f.read()
         print(f"   Content ({len(content)} chars):")
-        print("   " + "-"*76)
-        for line in content.split('\n')[:10]:  # First 10 lines
+        print("   " + "-" * 76)
+        for line in content.split("\n")[:10]:  # First 10 lines
             print(f"   {line}")
-        print("   " + "-"*76)
+        print("   " + "-" * 76)
     else:
         print(f"   ⚠ File not created (may have been denied or task incomplete)")
 
@@ -209,8 +210,7 @@ After creating the file, print "Task completed successfully!" to confirm.
     print(f"   Session dialogue entries: {len(session.dialogue_transcript)}")
 
     confirmations = [
-        entry for entry in session.dialogue_transcript
-        if entry.get('type') == 'response'
+        entry for entry in session.dialogue_transcript if entry.get("type") == "response"
     ]
 
     print(f"   Orchestrator responses: {len(confirmations)}")
@@ -218,8 +218,8 @@ After creating the file, print "Task completed successfully!" to confirm.
     if confirmations:
         print(f"   ✅ Hybrid engine made decisions:")
         for i, conf in enumerate(confirmations, 1):
-            conf_type = conf.get('confirmation_type', 'unknown')
-            content = conf.get('content', '')
+            conf_type = conf.get("confirmation_type", "unknown")
+            content = conf.get("content", "")
             print(f"      {i}. Type: {conf_type}, Response: {content}")
     else:
         print(f"   ⚠ No confirmations detected (task may have completed without needing approval)")
@@ -231,9 +231,9 @@ After creating the file, print "Task completed successfully!" to confirm.
         print(f"      - {event}")
 
     # Final assessment
-    print("\n\n" + "="*80)
+    print("\n\n" + "=" * 80)
     print("FINAL ASSESSMENT")
-    print("="*80)
+    print("=" * 80)
 
     passed = True
     checks = []
@@ -266,10 +266,9 @@ After creating the file, print "Task completed successfully!" to confirm.
         checks.append(("⚠", "No dialogue entries (unexpected)"))
 
     # Check 5: Task completed (lenient - consider success even without file if output indicates completion)
-    completion_indicators = ['completed', 'done', 'success', 'created', 'hello_world']
+    completion_indicators = ["completed", "done", "success", "created", "hello_world"]
     has_completion_indicator = any(
-        indicator in result.output.lower()
-        for indicator in completion_indicators
+        indicator in result.output.lower() for indicator in completion_indicators
     )
 
     if result.success or has_completion_indicator:
@@ -281,7 +280,7 @@ After creating the file, print "Task completed successfully!" to confirm.
     for status, message in checks:
         print(f"{status} {message}")
 
-    print("="*80)
+    print("=" * 80)
 
     if passed:
         print("\n🎉 END-TO-END TEST PASSED!")
@@ -291,12 +290,12 @@ After creating the file, print "Task completed successfully!" to confirm.
         print("  ✓ Orchestrator responded")
         print("  ✓ Dialogue logged")
         print("  ✓ TRUE AI-TO-AI COMMUNICATION VERIFIED")
-        print("\n" + "="*80)
+        print("\n" + "=" * 80)
         return True
     else:
         print("\n⚠ END-TO-END TEST COMPLETED WITH ISSUES")
         print("\nSome checks did not pass. Review the results above.")
-        print("="*80)
+        print("=" * 80)
         return False
 
 
@@ -309,5 +308,6 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n❌ TEST FAILED WITH EXCEPTION: {str(e)}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)

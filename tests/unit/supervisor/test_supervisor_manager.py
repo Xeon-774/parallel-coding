@@ -17,7 +17,9 @@ class DummySupervisor(ClaudeCodeSupervisor):
         self._lines = []
         self._alive = False
 
-    def spawn_claude_code(self, task_file: str, timeout: int = 300) -> ProcessResult:  # noqa: ARG002
+    def spawn_claude_code(
+        self, task_file: str, timeout: int = 300
+    ) -> ProcessResult:  # noqa: ARG002
         self._alive = True
         return ProcessResult(True, process_id=1)
 
@@ -39,7 +41,11 @@ class DummySupervisor(ClaudeCodeSupervisor):
         return DummyIO(), object()
 
     def detect_confirmation_prompt(self, output: str):  # noqa: D401
-        return ConfirmationPrompt(output, pattern="are you sure", confidence=1.0) if "sure" in output else None
+        return (
+            ConfirmationPrompt(output, pattern="are you sure", confidence=1.0)
+            if "sure" in output
+            else None
+        )
 
     def terminate(self) -> bool:
         self._alive = False
@@ -88,4 +94,3 @@ async def test_stop_cleans_up():
     mgr.spawn("task.txt")
     await mgr.stop()
     assert mgr.check_health()["process"] == "dead"
-

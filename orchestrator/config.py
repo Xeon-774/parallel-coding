@@ -7,7 +7,7 @@
 import os
 import subprocess
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import List, Optional
 
 
 def find_git_bash() -> Optional[str]:
@@ -65,7 +65,9 @@ class OrchestratorConfig:
 
     # WSL設定
     wsl_distribution: str = "Ubuntu-24.04"
-    nvm_path: str = "/home/chemi/.local/bin:/home/chemi/.nvm/versions/node/v22.21.0/bin"  # Claude CLI + Node.js paths
+    nvm_path: str = (
+        "/home/chemi/.local/bin:/home/chemi/.nvm/versions/node/v22.21.0/bin"  # Claude CLI + Node.js paths
+    )
     claude_command: str = "claude"
     codex_command: str = "codex"  # Codex CLI command
 
@@ -207,7 +209,9 @@ class OrchestratorConfig:
                 "ORCHESTRATOR_WSL_WORKSPACE", "/mnt/d/user/parallel_ai_test_project/workspace"
             ),
             wsl_distribution=os.getenv("WSL_DISTRIBUTION", "Ubuntu-24.04"),
-            nvm_path=os.getenv("NVM_PATH", "/home/chemi/.local/bin:/home/chemi/.nvm/versions/node/v22.21.0/bin"),
+            nvm_path=os.getenv(
+                "NVM_PATH", "/home/chemi/.local/bin:/home/chemi/.nvm/versions/node/v22.21.0/bin"
+            ),
             windows_claude_path=os.getenv("WINDOWS_CLAUDE_PATH", "claude"),
             git_bash_path=git_bash_path,  # 環境変数から、なければ自動検出
             default_timeout=int(os.getenv("ORCHESTRATOR_TIMEOUT", "120")),

@@ -7,10 +7,10 @@
 """
 
 import os
-import sys
-import time
-import threading
 import subprocess
+import sys
+import threading
+import time
 from pathlib import Path
 
 # プロジェクトルートをPythonパスに追加
@@ -18,10 +18,11 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 # UTF-8出力設定
-if sys.platform == 'win32':
+if sys.platform == "win32":
     import codecs
-    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'replace')
-    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'replace')
+
+    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
+    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
 
 
 def monitor_output_file(output_file: Path, worker_id: int, stop_event: threading.Event):
@@ -54,7 +55,7 @@ def monitor_output_file(output_file: Path, worker_id: int, stop_event: threading
     last_position = 0
     line_count = 0
 
-    with open(output_file, 'r', encoding='utf-8', errors='replace') as f:
+    with open(output_file, "r", encoding="utf-8", errors="replace") as f:
         while not stop_event.is_set():
             # 現在の位置に移動
             f.seek(last_position)
@@ -67,7 +68,9 @@ def monitor_output_file(output_file: Path, worker_id: int, stop_event: threading
                     line_count += 1
                     # オーケストレーターとして報告
                     timestamp = time.strftime("%H:%M:%S")
-                    print(f"[{timestamp}] [ORCHESTRATOR把握] Worker {worker_id} Line {line_count}: {line.rstrip()}")
+                    print(
+                        f"[{timestamp}] [ORCHESTRATOR把握] Worker {worker_id} Line {line_count}: {line.rstrip()}"
+                    )
                     sys.stdout.flush()
 
                 # 位置を更新
@@ -83,7 +86,9 @@ def monitor_output_file(output_file: Path, worker_id: int, stop_event: threading
     print("=" * 80)
 
 
-def create_visible_worker(worker_id: int, task_name: str, task_prompt: str, workspace_dir: Path, git_bash_path: str):
+def create_visible_worker(
+    worker_id: int, task_name: str, task_prompt: str, workspace_dir: Path, git_bash_path: str
+):
     """
     視覚的に確認できるワーカーを作成
 
@@ -102,7 +107,7 @@ def create_visible_worker(worker_id: int, task_name: str, task_prompt: str, work
 
     # タスクファイル作成
     task_file = worker_dir / "task.txt"
-    with open(task_file, 'w', encoding='utf-8') as f:
+    with open(task_file, "w", encoding="utf-8") as f:
         f.write(task_prompt)
 
     # 出力ファイル
@@ -142,7 +147,7 @@ echo.
 pause
 """
 
-    with open(batch_file, 'w', encoding='utf-8') as f:
+    with open(batch_file, "w", encoding="utf-8") as f:
         f.write(batch_content)
 
     # 新しいウィンドウで実行
@@ -176,7 +181,7 @@ def test_visible_realtime():
     workspace_dir = Path(project_root) / "workspace"
     workspace_dir.mkdir(exist_ok=True)
 
-    git_bash_path = r'C:\opt\Git.Git\usr\bin\bash.exe'
+    git_bash_path = r"C:\opt\Git.Git\usr\bin\bash.exe"
 
     # 進捗が見えるタスク
     task = {
@@ -194,7 +199,7 @@ def test_visible_realtime():
 ...
 完了！合計XX個の素数を発見
 最初の10個: [...]
-"""
+""",
     }
 
     print("=" * 80)
@@ -218,11 +223,11 @@ def test_visible_realtime():
 
     # ワーカーターミナルを起動
     output_file, process = create_visible_worker(
-        worker_id=task['id'],
-        task_name=task['name'],
-        task_prompt=task['prompt'],
+        worker_id=task["id"],
+        task_name=task["name"],
+        task_prompt=task["prompt"],
         workspace_dir=workspace_dir,
-        git_bash_path=git_bash_path
+        git_bash_path=git_bash_path,
     )
 
     print()
@@ -240,9 +245,7 @@ def test_visible_realtime():
     # 監視スレッド開始
     stop_event = threading.Event()
     monitor_thread = threading.Thread(
-        target=monitor_output_file,
-        args=(output_file, task['id'], stop_event),
-        daemon=False
+        target=monitor_output_file, args=(output_file, task["id"], stop_event), daemon=False
     )
     monitor_thread.start()
 
@@ -275,5 +278,5 @@ def test_visible_realtime():
     print()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_visible_realtime()

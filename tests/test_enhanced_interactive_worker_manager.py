@@ -4,33 +4,30 @@ Comprehensive Unit Tests for WorkerManager (Unified Implementation)
 Tests all major functionality with mocks to avoid requiring actual Claude CLI.
 """
 
-import pytest
 import sys
 from pathlib import Path
-from unittest.mock import Mock, MagicMock, patch, call
 from typing import List
+from unittest.mock import MagicMock, Mock, call, patch
+
+import pytest
 
 # Add project root to path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
+from orchestrator.config import OrchestratorConfig
+from orchestrator.core.exceptions import PatternMatchError, WorkerSpawnError, WorkerTimeoutError
 from orchestrator.core.worker.worker_manager import (
-    WorkerManager,
     ConfirmationRequest,
     ConfirmationType,
-    WorkerSession
+    WorkerManager,
+    WorkerSession,
 )
-from orchestrator.core.exceptions import (
-    WorkerSpawnError,
-    WorkerTimeoutError,
-    PatternMatchError
-)
-from orchestrator.config import OrchestratorConfig
-
 
 # ============================================================================
 # Fixtures
 # ============================================================================
+
 
 @pytest.fixture
 def mock_config():
@@ -64,15 +61,14 @@ def mock_user_callback():
 def manager(mock_config, mock_logger, mock_user_callback):
     """Create WorkerManager instance"""
     return WorkerManager(
-        config=mock_config,
-        logger=mock_logger,
-        user_approval_callback=mock_user_callback
+        config=mock_config, logger=mock_logger, user_approval_callback=mock_user_callback
     )
 
 
 # ============================================================================
 # Initialization Tests
 # ============================================================================
+
 
 class TestInitialization:
     """Test manager initialization"""
@@ -86,7 +82,7 @@ class TestInitialization:
 
     def test_platform_detection(self, manager):
         """Test platform is detected correctly"""
-        assert manager.platform in ['windows', 'unix']
+        assert manager.platform in ["windows", "unix"]
 
     def test_confirmation_patterns_loaded(self, manager):
         """Test confirmation patterns are loaded"""
@@ -102,6 +98,7 @@ class TestInitialization:
 # ============================================================================
 # Command Building Tests
 # ============================================================================
+
 
 class TestCommandBuilding:
     """Test command building for different platforms"""
@@ -119,10 +116,7 @@ class TestCommandBuilding:
         """Test command building with Git Bash"""
         mock_config.git_bash_path = "C:\\Program Files\\Git\\bin\\bash.exe"
 
-        manager = WorkerManager(
-            config=mock_config,
-            logger=mock_logger
-        )
+        manager = WorkerManager(config=mock_config, logger=mock_logger)
 
         cmd = manager._build_command("task.txt")
 
@@ -134,6 +128,7 @@ class TestCommandBuilding:
 # Confirmation Detection Tests
 # ============================================================================
 
+
 class TestConfirmationDetection:
     """Test confirmation request detection"""
 
@@ -143,27 +138,28 @@ class TestConfirmationDetection:
         mock_child = Mock()
         mock_child.after = "Write to file 'output.py'?"
         mock_child.match = Mock()
-        mock_child.match.groups = Mock(return_value=('output.py',))
-        mock_child.match.group = Mock(return_value='output.py')
+        mock_child.match.groups = Mock(return_value=("output.py",))
+        mock_child.match.group = Mock(return_value="output.py")
 
         pattern_index = 0  # FILE_WRITE pattern
         confirmation = manager._parse_confirmation("worker_1", pattern_index, mock_child)
 
         assert confirmation is not None
         assert confirmation.confirmation_type == ConfirmationType.FILE_WRITE
-        assert confirmation.details.get('file') == 'output.py'
+        assert confirmation.details.get("file") == "output.py"
 
     def test_detect_file_delete_confirmation(self, manager):
         """Test detection of file delete confirmation"""
         mock_child = Mock()
         mock_child.after = "Delete file 'temp.txt'?"
         mock_child.match = Mock()
-        mock_child.match.groups = Mock(return_value=('temp.txt',))
-        mock_child.match.group = Mock(return_value='temp.txt')
+        mock_child.match.groups = Mock(return_value=("temp.txt",))
+        mock_child.match.group = Mock(return_value="temp.txt")
 
         # Find DELETE pattern index
         pattern_index = next(
-            i for i, (_, t) in enumerate(manager.confirmation_patterns)
+            i
+            for i, (_, t) in enumerate(manager.confirmation_patterns)
             if t == ConfirmationType.FILE_DELETE
         )
 
@@ -171,19 +167,20 @@ class TestConfirmationDetection:
 
         assert confirmation is not None
         assert confirmation.confirmation_type == ConfirmationType.FILE_DELETE
-        assert confirmation.details.get('file') == 'temp.txt'
+        assert confirmation.details.get("file") == "temp.txt"
 
     def test_detect_command_execute_confirmation(self, manager):
         """Test detection of command execution confirmation"""
         mock_child = Mock()
         mock_child.after = "Execute command 'ls -la'?"
         mock_child.match = Mock()
-        mock_child.match.groups = Mock(return_value=('ls -la',))
-        mock_child.match.group = Mock(return_value='ls -la')
+        mock_child.match.groups = Mock(return_value=("ls -la",))
+        mock_child.match.group = Mock(return_value="ls -la")
 
         # Find COMMAND_EXECUTE pattern index
         pattern_index = next(
-            i for i, (_, t) in enumerate(manager.confirmation_patterns)
+            i
+            for i, (_, t) in enumerate(manager.confirmation_patterns)
             if t == ConfirmationType.COMMAND_EXECUTE
         )
 
@@ -191,17 +188,18 @@ class TestConfirmationDetection:
 
         assert confirmation is not None
         assert confirmation.confirmation_type == ConfirmationType.COMMAND_EXECUTE
-        assert confirmation.details.get('command') == 'ls -la'
+        assert confirmation.details.get("command") == "ls -la"
 
 
 # ============================================================================
 # Confirmation Handling Tests
 # ============================================================================
 
+
 class TestConfirmationHandling:
     """Test confirmation request handling"""
 
-    @patch('orchestrator.core.common.ai_safety_judge.AISafetyJudge')
+    @patch("orchestrator.core.common.ai_safety_judge.AISafetyJudge")
     def test_handle_safe_file_write(self, mock_judge_class, manager):
         """Test handling of safe file write"""
         # Mock AI safety judge
@@ -219,7 +217,7 @@ class TestConfirmationHandling:
             worker_id="worker_1",
             confirmation_type=ConfirmationType.FILE_WRITE,
             message="Write to file 'output.py'?",
-            details={"file": "workspace/output.py"}
+            details={"file": "workspace/output.py"},
         )
 
         # Handle confirmation
@@ -230,7 +228,7 @@ class TestConfirmationHandling:
         # For SAFE operations, the judge should NOT be called (auto-approved)
         mock_judge.judge_confirmation.assert_not_called()
 
-    @patch('orchestrator.core.common.ai_safety_judge.AISafetyJudge')
+    @patch("orchestrator.core.common.ai_safety_judge.AISafetyJudge")
     def test_handle_dangerous_operation_with_user_approval(self, mock_judge_class, manager):
         """Test handling of dangerous operation with user approval"""
         # Mock AI safety judge
@@ -251,7 +249,7 @@ class TestConfirmationHandling:
             worker_id="worker_1",
             confirmation_type=ConfirmationType.FILE_DELETE,
             message="Delete file 'temp.txt'?",
-            details={"file": "workspace/temp.txt"}
+            details={"file": "workspace/temp.txt"},
         )
 
         # Handle confirmation
@@ -260,7 +258,7 @@ class TestConfirmationHandling:
         assert response == "yes"
         manager.user_approval_callback.assert_called_once_with(confirmation)
 
-    @patch('orchestrator.core.common.ai_safety_judge.AISafetyJudge')
+    @patch("orchestrator.core.common.ai_safety_judge.AISafetyJudge")
     def test_handle_dangerous_operation_denied_by_user(self, mock_judge_class, manager):
         """Test handling of dangerous operation denied by user"""
         # Mock AI safety judge
@@ -280,7 +278,7 @@ class TestConfirmationHandling:
             worker_id="worker_1",
             confirmation_type=ConfirmationType.FILE_DELETE,
             message="Delete file 'important.txt'?",
-            details={"file": "important.txt"}
+            details={"file": "important.txt"},
         )
 
         # Handle confirmation
@@ -293,6 +291,7 @@ class TestConfirmationHandling:
 # ConfirmationRequest Tests
 # ============================================================================
 
+
 class TestConfirmationRequest:
     """Test ConfirmationRequest dataclass"""
 
@@ -302,7 +301,7 @@ class TestConfirmationRequest:
             worker_id="worker_1",
             confirmation_type=ConfirmationType.FILE_WRITE,
             message="Write to file?",
-            details={"file": "output.txt"}
+            details={"file": "output.txt"},
         )
 
         assert conf.worker_id == "worker_1"
@@ -317,7 +316,7 @@ class TestConfirmationRequest:
             worker_id="worker_1",
             confirmation_type=ConfirmationType.FILE_DELETE,
             message="Delete file?",
-            details={}
+            details={},
         )
 
         assert conf.is_dangerous() is True
@@ -328,7 +327,7 @@ class TestConfirmationRequest:
             worker_id="worker_1",
             confirmation_type=ConfirmationType.COMMAND_EXECUTE,
             message="Execute command?",
-            details={}
+            details={},
         )
 
         assert conf.is_dangerous() is True
@@ -339,7 +338,7 @@ class TestConfirmationRequest:
             worker_id="worker_1",
             confirmation_type=ConfirmationType.FILE_WRITE,
             message="Write to file?",
-            details={}
+            details={},
         )
 
         assert conf.is_dangerous() is False
@@ -348,6 +347,7 @@ class TestConfirmationRequest:
 # ============================================================================
 # Integration Tests
 # ============================================================================
+
 
 class TestIntegration:
     """Integration tests for complete workflows"""
@@ -359,7 +359,7 @@ class TestIntegration:
             worker_id="worker_1",
             task_name="Test Task",
             child_process=Mock(),
-            started_at=1234567890.0
+            started_at=1234567890.0,
         )
 
         # Add to manager
@@ -378,7 +378,7 @@ class TestIntegration:
                 worker_id=f"worker_{i}",
                 task_name=f"Task {i}",
                 child_process=Mock(),
-                started_at=1234567890.0 + i
+                started_at=1234567890.0 + i,
             )
             sessions.append(session)
             manager.workers[f"worker_{i}"] = session
@@ -390,6 +390,7 @@ class TestIntegration:
 # ============================================================================
 # Edge Cases and Error Handling
 # ============================================================================
+
 
 class TestEdgeCases:
     """Test edge cases and error scenarios"""
@@ -403,7 +404,8 @@ class TestEdgeCases:
 
         # Use PERMISSION_REQUEST pattern (no groups)
         pattern_index = next(
-            i for i, (_, t) in enumerate(manager.confirmation_patterns)
+            i
+            for i, (_, t) in enumerate(manager.confirmation_patterns)
             if t == ConfirmationType.PERMISSION_REQUEST
         )
 
@@ -415,13 +417,9 @@ class TestEdgeCases:
 
     def test_handle_confirmation_without_user_callback(self, mock_config, mock_logger):
         """Test handling confirmation without user callback"""
-        manager = WorkerManager(
-            config=mock_config,
-            logger=mock_logger,
-            user_approval_callback=None
-        )
+        manager = WorkerManager(config=mock_config, logger=mock_logger, user_approval_callback=None)
 
-        with patch('orchestrator.core.common.ai_safety_judge.AISafetyJudge') as mock_judge_class:
+        with patch("orchestrator.core.common.ai_safety_judge.AISafetyJudge") as mock_judge_class:
             # Mock dangerous judgment
             mock_judge = Mock()
             mock_judgment = Mock()
@@ -435,7 +433,7 @@ class TestEdgeCases:
                 worker_id="worker_1",
                 confirmation_type=ConfirmationType.FILE_DELETE,
                 message="Delete?",
-                details={}
+                details={},
             )
 
             # Should deny without user callback

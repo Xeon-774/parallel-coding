@@ -13,11 +13,12 @@ sys.path.insert(0, str(project_root))
 
 # Configure UTF-8 encoding BEFORE any output
 from orchestrator.utils.encoding_config import configure_console_encoding, safe_print
+
 configure_console_encoding()
 
 from orchestrator.config import OrchestratorConfig
-from orchestrator.core.worker.worker_manager import WorkerManager
 from orchestrator.core.structured_logging import StructuredLogger
+from orchestrator.core.worker.worker_manager import WorkerManager
 
 
 def test_parallel_execution_simple():
@@ -45,17 +46,11 @@ def test_parallel_execution_simple():
     workspace.mkdir(parents=True, exist_ok=True)
 
     # Logger
-    logger = StructuredLogger(
-        name="parallel_simple_test",
-        log_dir=workspace,
-        enable_console=True
-    )
+    logger = StructuredLogger(name="parallel_simple_test", log_dir=workspace, enable_console=True)
 
     # Worker manager
     worker_manager = WorkerManager(
-        config=config,
-        logger=logger,
-        user_approval_callback=None  # Auto-approval mode
+        config=config, logger=logger, user_approval_callback=None  # Auto-approval mode
     )
 
     # Define 2 simple tasks
@@ -70,8 +65,8 @@ Calculate the sum: 100 + 200 + 300
 Print the result in this format: "Sum: [result]"
 
 This is a simple test task. Complete it quickly.
-"""
-            }
+""",
+            },
         },
         {
             "worker_id": "worker_02_simple",
@@ -83,9 +78,9 @@ Calculate the product: 5 × 10 × 15
 Print the result in this format: "Product: [result]"
 
 This is a simple test task. Complete it quickly.
-"""
-            }
-        }
+""",
+            },
+        },
     ]
 
     try:
@@ -103,10 +98,7 @@ This is a simple test task. Complete it quickly.
             safe_print(f"\n[Spawn] Worker: {worker_id}")
             safe_print(f"        Task: {task['name']}")
 
-            session = worker_manager.spawn_worker(
-                worker_id=worker_id,
-                task=task
-            )
+            session = worker_manager.spawn_worker(worker_id=worker_id, task=task)
 
             if session:
                 spawned_workers.append(worker_id)
@@ -124,13 +116,11 @@ This is a simple test task. Complete it quickly.
         safe_print("=" * 80)
 
         import time
+
         start_time = time.time()
 
         # Execute in parallel
-        results = worker_manager.wait_all(
-            max_workers=2,
-            timeout=600  # 10 minutes
-        )
+        results = worker_manager.wait_all(max_workers=2, timeout=600)  # 10 minutes
 
         total_time = time.time() - start_time
 
@@ -180,7 +170,9 @@ This is a simple test task. Complete it quickly.
             # Parallel: total_time ≈ max_duration (within 20% tolerance)
             # Sequential: total_time ≈ sum_duration
 
-            is_parallel = total_time < (individual_sum * 0.8)  # If total < 80% of sum, likely parallel
+            is_parallel = total_time < (
+                individual_sum * 0.8
+            )  # If total < 80% of sum, likely parallel
 
             safe_print(f"\nExecution mode: {'✅ PARALLEL' if is_parallel else '❌ SEQUENTIAL'}")
 
@@ -201,10 +193,11 @@ This is a simple test task. Complete it quickly.
     except Exception as e:
         safe_print(f"\n[ERROR] Test failed: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     success = test_parallel_execution_simple()
     sys.exit(0 if success else 1)

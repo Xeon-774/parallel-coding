@@ -25,39 +25,37 @@ Version: 1.0.0
 
 import asyncio
 import subprocess
-import pytest
-from unittest.mock import patch, Mock, AsyncMock, MagicMock
 from pathlib import Path
+from unittest.mock import AsyncMock, MagicMock, Mock, patch
+
+import pytest
 
 from orchestrator.core.ai_providers.codex_cli_provider import (
-    CodexCLIProvider,
-    CodexProviderConfig,
-    CodexExecutionResult,
-    CodexStatus,
-    CodexError,
-    CodexCLINotFoundError,
-    CodexTimeoutError,
-    CodexExecutionError,
-    create_default_provider,
-    validate_codex_installation,
     DEFAULT_TIMEOUT_SECONDS,
     MAX_PROMPT_LENGTH,
     MIN_PROMPT_LENGTH,
+    CodexCLINotFoundError,
+    CodexCLIProvider,
+    CodexError,
+    CodexExecutionError,
+    CodexExecutionResult,
+    CodexProviderConfig,
+    CodexStatus,
+    CodexTimeoutError,
+    create_default_provider,
+    validate_codex_installation,
 )
-
 
 # =============================================================================
 # Fixtures
 # =============================================================================
 
+
 @pytest.fixture
 def valid_config():
     """Create valid configuration for testing"""
     return CodexProviderConfig(
-        timeout_seconds=300,
-        max_retries=3,
-        workspace_root="./test_workspace",
-        enable_logging=True
+        timeout_seconds=300, max_retries=3, workspace_root="./test_workspace", enable_logging=True
     )
 
 
@@ -66,9 +64,7 @@ def mock_successful_subprocess():
     """Mock successful subprocess execution"""
     mock_process = AsyncMock()
     mock_process.returncode = 0
-    mock_process.communicate = AsyncMock(
-        return_value=(b"Success output", b"")
-    )
+    mock_process.communicate = AsyncMock(return_value=(b"Success output", b""))
     return mock_process
 
 
@@ -77,15 +73,14 @@ def mock_failed_subprocess():
     """Mock failed subprocess execution"""
     mock_process = AsyncMock()
     mock_process.returncode = 1
-    mock_process.communicate = AsyncMock(
-        return_value=(b"", b"Error: Command failed")
-    )
+    mock_process.communicate = AsyncMock(return_value=(b"", b"Error: Command failed"))
     return mock_process
 
 
 # =============================================================================
 # Configuration Tests
 # =============================================================================
+
 
 class TestCodexProviderConfig:
     """Test suite for CodexProviderConfig validation"""
@@ -105,7 +100,7 @@ class TestCodexProviderConfig:
             timeout_seconds=600,
             max_retries=5,
             workspace_root="./custom_workspace",
-            enable_logging=False
+            enable_logging=False,
         )
 
         assert config.timeout_seconds == 600
@@ -169,10 +164,11 @@ class TestCodexProviderConfig:
 # Provider Initialization Tests
 # =============================================================================
 
+
 class TestCodexCLIProviderInitialization:
     """Test suite for provider initialization"""
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_init_with_valid_cli_succeeds(self, mock_run, valid_config):
         """Should initialize successfully when CLI is installed"""
         # Arrange
@@ -187,7 +183,7 @@ class TestCodexCLIProviderInitialization:
         # So we expect 2 calls: 1 during init, 1 during is_available check
         assert mock_run.call_count >= 1
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_init_without_cli_raises_error(self, mock_run, valid_config):
         """Should raise error when CLI is not installed"""
         # Arrange
@@ -200,7 +196,7 @@ class TestCodexCLIProviderInitialization:
         assert "not found" in str(exc_info.value).lower()
         assert "npm install" in str(exc_info.value)
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_init_with_broken_cli_raises_error(self, mock_run, valid_config):
         """Should raise error when CLI exists but is broken"""
         # Arrange
@@ -212,7 +208,7 @@ class TestCodexCLIProviderInitialization:
 
         assert "not functioning" in str(exc_info.value).lower()
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_is_available_property(self, mock_run, valid_config):
         """Should correctly report CLI availability"""
         # Arrange
@@ -227,18 +223,15 @@ class TestCodexCLIProviderInitialization:
 # Execution Tests - Happy Path
 # =============================================================================
 
+
 class TestCodexCLIProviderExecution:
     """Test suite for provider execution (happy paths)"""
 
     @pytest.mark.asyncio
-    @patch('subprocess.run')
-    @patch('asyncio.create_subprocess_exec')
+    @patch("subprocess.run")
+    @patch("asyncio.create_subprocess_exec")
     async def test_execute_async_success(
-        self,
-        mock_create_subprocess,
-        mock_run,
-        valid_config,
-        mock_successful_subprocess
+        self, mock_create_subprocess, mock_run, valid_config, mock_successful_subprocess
     ):
         """Should execute Codex command successfully"""
         # Arrange
@@ -259,14 +252,10 @@ class TestCodexCLIProviderExecution:
         assert result.is_failure is False
 
     @pytest.mark.asyncio
-    @patch('subprocess.run')
-    @patch('asyncio.create_subprocess_exec')
+    @patch("subprocess.run")
+    @patch("asyncio.create_subprocess_exec")
     async def test_execute_with_context(
-        self,
-        mock_create_subprocess,
-        mock_run,
-        valid_config,
-        mock_successful_subprocess
+        self, mock_create_subprocess, mock_run, valid_config, mock_successful_subprocess
     ):
         """Should execute with optional context"""
         # Arrange
@@ -277,22 +266,15 @@ class TestCodexCLIProviderExecution:
         context = {"language": "python", "style": "PEP8"}
 
         # Act
-        result = await provider.execute_async(
-            "Write a function",
-            context=context
-        )
+        result = await provider.execute_async("Write a function", context=context)
 
         # Assert
         assert result.is_success is True
 
-    @patch('subprocess.run')
-    @patch('asyncio.create_subprocess_exec')
+    @patch("subprocess.run")
+    @patch("asyncio.create_subprocess_exec")
     def test_execute_sync_wrapper(
-        self,
-        mock_create_subprocess,
-        mock_run,
-        valid_config,
-        mock_successful_subprocess
+        self, mock_create_subprocess, mock_run, valid_config, mock_successful_subprocess
     ):
         """Should execute synchronously via wrapper"""
         # Arrange
@@ -312,11 +294,12 @@ class TestCodexCLIProviderExecution:
 # Execution Tests - Edge Cases
 # =============================================================================
 
+
 class TestCodexCLIProviderEdgeCases:
     """Test suite for edge cases"""
 
     @pytest.mark.asyncio
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     async def test_execute_with_minimum_valid_prompt(self, mock_run, valid_config):
         """Should accept prompt at minimum length (10 characters)"""
         # Arrange
@@ -324,7 +307,7 @@ class TestCodexCLIProviderEdgeCases:
         provider = CodexCLIProvider(valid_config)
 
         # Act & Assert
-        with patch('asyncio.create_subprocess_exec') as mock_exec:
+        with patch("asyncio.create_subprocess_exec") as mock_exec:
             mock_process = AsyncMock()
             mock_process.returncode = 0
             mock_process.communicate = AsyncMock(return_value=(b"OK", b""))
@@ -335,7 +318,7 @@ class TestCodexCLIProviderEdgeCases:
             assert result.is_success is True
 
     @pytest.mark.asyncio
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     async def test_execute_with_maximum_valid_prompt(self, mock_run, valid_config):
         """Should accept prompt at maximum length (50000 characters)"""
         # Arrange
@@ -345,7 +328,7 @@ class TestCodexCLIProviderEdgeCases:
         long_prompt = "a" * MAX_PROMPT_LENGTH  # Exactly 50000 chars
 
         # Act & Assert
-        with patch('asyncio.create_subprocess_exec') as mock_exec:
+        with patch("asyncio.create_subprocess_exec") as mock_exec:
             mock_process = AsyncMock()
             mock_process.returncode = 0
             mock_process.communicate = AsyncMock(return_value=(b"OK", b""))
@@ -356,7 +339,7 @@ class TestCodexCLIProviderEdgeCases:
             assert result.is_success is True
 
     @pytest.mark.asyncio
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     async def test_execute_with_unicode_prompt(self, mock_run, valid_config):
         """Should handle unicode characters in prompt"""
         # Arrange
@@ -366,7 +349,7 @@ class TestCodexCLIProviderEdgeCases:
         unicode_prompt = "日本語のプロンプトを処理する"
 
         # Act & Assert
-        with patch('asyncio.create_subprocess_exec') as mock_exec:
+        with patch("asyncio.create_subprocess_exec") as mock_exec:
             mock_process = AsyncMock()
             mock_process.returncode = 0
             mock_process.communicate = AsyncMock(return_value=(b"OK", b""))
@@ -381,11 +364,12 @@ class TestCodexCLIProviderEdgeCases:
 # Execution Tests - Error Scenarios
 # =============================================================================
 
+
 class TestCodexCLIProviderErrors:
     """Test suite for error scenarios"""
 
     @pytest.mark.asyncio
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     async def test_execute_with_empty_prompt_raises_error(self, mock_run, valid_config):
         """Should reject empty prompt"""
         # Arrange
@@ -399,12 +383,8 @@ class TestCodexCLIProviderErrors:
         assert "empty" in str(exc_info.value).lower()
 
     @pytest.mark.asyncio
-    @patch('subprocess.run')
-    async def test_execute_with_too_short_prompt_raises_error(
-        self,
-        mock_run,
-        valid_config
-    ):
+    @patch("subprocess.run")
+    async def test_execute_with_too_short_prompt_raises_error(self, mock_run, valid_config):
         """Should reject prompt shorter than minimum (10 chars)"""
         # Arrange
         mock_run.return_value = Mock(returncode=0)
@@ -417,12 +397,8 @@ class TestCodexCLIProviderErrors:
         assert "too short" in str(exc_info.value).lower()
 
     @pytest.mark.asyncio
-    @patch('subprocess.run')
-    async def test_execute_with_too_long_prompt_raises_error(
-        self,
-        mock_run,
-        valid_config
-    ):
+    @patch("subprocess.run")
+    async def test_execute_with_too_long_prompt_raises_error(self, mock_run, valid_config):
         """Should reject prompt longer than maximum (50000 chars)"""
         # Arrange
         mock_run.return_value = Mock(returncode=0)
@@ -437,14 +413,10 @@ class TestCodexCLIProviderErrors:
         assert "too long" in str(exc_info.value).lower()
 
     @pytest.mark.asyncio
-    @patch('subprocess.run')
-    @patch('asyncio.create_subprocess_exec')
+    @patch("subprocess.run")
+    @patch("asyncio.create_subprocess_exec")
     async def test_execute_with_cli_failure(
-        self,
-        mock_create_subprocess,
-        mock_run,
-        valid_config,
-        mock_failed_subprocess
+        self, mock_create_subprocess, mock_run, valid_config, mock_failed_subprocess
     ):
         """Should handle CLI execution failure"""
         # Arrange
@@ -461,14 +433,9 @@ class TestCodexCLIProviderErrors:
         assert "failed" in result.error.lower()
 
     @pytest.mark.asyncio
-    @patch('subprocess.run')
-    @patch('asyncio.create_subprocess_exec')
-    async def test_execute_with_timeout(
-        self,
-        mock_create_subprocess,
-        mock_run,
-        valid_config
-    ):
+    @patch("subprocess.run")
+    @patch("asyncio.create_subprocess_exec")
+    async def test_execute_with_timeout(self, mock_create_subprocess, mock_run, valid_config):
         """Should handle execution timeout"""
         # Arrange
         mock_run.return_value = Mock(returncode=0)
@@ -479,8 +446,7 @@ class TestCodexCLIProviderErrors:
         mock_create_subprocess.return_value = mock_process
 
         config = CodexProviderConfig(
-            timeout_seconds=10,
-            max_retries=0  # No retries to speed up test
+            timeout_seconds=10, max_retries=0  # No retries to speed up test
         )
         provider = CodexCLIProvider(config)
 
@@ -497,19 +463,16 @@ class TestCodexCLIProviderErrors:
 # Retry Logic Tests
 # =============================================================================
 
+
 class TestCodexCLIProviderRetry:
     """Test suite for retry logic"""
 
     @pytest.mark.asyncio
-    @patch('subprocess.run')
-    @patch('asyncio.create_subprocess_exec')
-    @patch('asyncio.sleep', new_callable=AsyncMock)  # Speed up test
+    @patch("subprocess.run")
+    @patch("asyncio.create_subprocess_exec")
+    @patch("asyncio.sleep", new_callable=AsyncMock)  # Speed up test
     async def test_retry_on_timeout_success(
-        self,
-        mock_sleep,
-        mock_create_subprocess,
-        mock_run,
-        valid_config
+        self, mock_sleep, mock_create_subprocess, mock_run, valid_config
     ):
         """Should retry on timeout and succeed"""
         # Arrange
@@ -517,26 +480,16 @@ class TestCodexCLIProviderRetry:
 
         # First attempt times out, second succeeds
         mock_process_timeout = AsyncMock()
-        mock_process_timeout.communicate = AsyncMock(
-            side_effect=asyncio.TimeoutError()
-        )
+        mock_process_timeout.communicate = AsyncMock(side_effect=asyncio.TimeoutError())
         mock_process_timeout.kill = Mock()
 
         mock_process_success = AsyncMock()
         mock_process_success.returncode = 0
-        mock_process_success.communicate = AsyncMock(
-            return_value=(b"Success after retry", b"")
-        )
+        mock_process_success.communicate = AsyncMock(return_value=(b"Success after retry", b""))
 
-        mock_create_subprocess.side_effect = [
-            mock_process_timeout,
-            mock_process_success
-        ]
+        mock_create_subprocess.side_effect = [mock_process_timeout, mock_process_success]
 
-        config = CodexProviderConfig(
-            timeout_seconds=10,
-            max_retries=3
-        )
+        config = CodexProviderConfig(timeout_seconds=10, max_retries=3)
         provider = CodexCLIProvider(config)
 
         # Act
@@ -548,15 +501,10 @@ class TestCodexCLIProviderRetry:
         assert mock_create_subprocess.call_count == 2
 
     @pytest.mark.asyncio
-    @patch('subprocess.run')
-    @patch('asyncio.create_subprocess_exec')
-    @patch('asyncio.sleep', new_callable=AsyncMock)
-    async def test_retry_max_attempts_exceeded(
-        self,
-        mock_sleep,
-        mock_create_subprocess,
-        mock_run
-    ):
+    @patch("subprocess.run")
+    @patch("asyncio.create_subprocess_exec")
+    @patch("asyncio.sleep", new_callable=AsyncMock)
+    async def test_retry_max_attempts_exceeded(self, mock_sleep, mock_create_subprocess, mock_run):
         """Should fail after max retries exceeded"""
         # Arrange
         mock_run.return_value = Mock(returncode=0)
@@ -566,10 +514,7 @@ class TestCodexCLIProviderRetry:
         mock_process.kill = Mock()
         mock_create_subprocess.return_value = mock_process
 
-        config = CodexProviderConfig(
-            timeout_seconds=10,
-            max_retries=2
-        )
+        config = CodexProviderConfig(timeout_seconds=10, max_retries=2)
         provider = CodexCLIProvider(config)
 
         # Act
@@ -585,11 +530,12 @@ class TestCodexCLIProviderRetry:
 # Security Tests
 # =============================================================================
 
+
 class TestCodexCLIProviderSecurity:
     """Test suite for security scenarios (CRITICAL)"""
 
     @pytest.mark.asyncio
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     async def test_prompt_injection_prevented(self, mock_run, valid_config):
         """Should handle potential command injection in prompt (SECURITY)"""
         # Arrange
@@ -599,7 +545,7 @@ class TestCodexCLIProviderSecurity:
         malicious_prompt = "Write function; rm -rf /"
 
         # Act & Assert
-        with patch('asyncio.create_subprocess_exec') as mock_exec:
+        with patch("asyncio.create_subprocess_exec") as mock_exec:
             mock_process = AsyncMock()
             mock_process.returncode = 0
             mock_process.communicate = AsyncMock(return_value=(b"OK", b""))
@@ -619,7 +565,7 @@ class TestCodexCLIProviderSecurity:
 
         assert "path traversal" in str(exc_info.value).lower()
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_cli_validation_timeout_protected(self, mock_run):
         """Should timeout CLI validation to prevent hang (SECURITY)"""
         # Arrange
@@ -637,10 +583,11 @@ class TestCodexCLIProviderSecurity:
 # Utility Function Tests
 # =============================================================================
 
+
 class TestUtilityFunctions:
     """Test suite for utility functions"""
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_create_default_provider_success(self, mock_run):
         """Should create provider with default configuration"""
         # Arrange
@@ -653,7 +600,7 @@ class TestUtilityFunctions:
         assert isinstance(provider, CodexCLIProvider)
         assert provider.config.timeout_seconds == DEFAULT_TIMEOUT_SECONDS
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_validate_codex_installation_true(self, mock_run):
         """Should return True when Codex is installed"""
         # Arrange
@@ -665,7 +612,7 @@ class TestUtilityFunctions:
         # Assert
         assert result is True
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_validate_codex_installation_false(self, mock_run):
         """Should return False when Codex is not installed"""
         # Arrange
@@ -682,38 +629,27 @@ class TestUtilityFunctions:
 # Result Model Tests
 # =============================================================================
 
+
 class TestCodexExecutionResult:
     """Test suite for CodexExecutionResult model"""
 
     def test_result_properties_success(self):
         """Should correctly report success via properties"""
-        result = CodexExecutionResult(
-            status=CodexStatus.SUCCESS,
-            output="Success",
-            error=None
-        )
+        result = CodexExecutionResult(status=CodexStatus.SUCCESS, output="Success", error=None)
 
         assert result.is_success is True
         assert result.is_failure is False
 
     def test_result_properties_failure(self):
         """Should correctly report failure via properties"""
-        result = CodexExecutionResult(
-            status=CodexStatus.FAILED,
-            output="",
-            error="Error"
-        )
+        result = CodexExecutionResult(status=CodexStatus.FAILED, output="", error="Error")
 
         assert result.is_success is False
         assert result.is_failure is True
 
     def test_result_properties_timeout(self):
         """Should correctly report timeout as failure"""
-        result = CodexExecutionResult(
-            status=CodexStatus.TIMEOUT,
-            output="",
-            error="Timeout"
-        )
+        result = CodexExecutionResult(status=CodexStatus.TIMEOUT, output="", error="Timeout")
 
         assert result.is_success is False
         assert result.is_failure is True
@@ -723,9 +659,7 @@ class TestCodexExecutionResult:
         metadata = {"worker_id": "worker_1", "task_type": "debug"}
 
         result = CodexExecutionResult(
-            status=CodexStatus.SUCCESS,
-            output="Success",
-            metadata=metadata
+            status=CodexStatus.SUCCESS, output="Success", metadata=metadata
         )
 
         assert result.metadata == metadata

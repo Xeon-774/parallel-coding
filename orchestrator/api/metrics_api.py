@@ -5,12 +5,13 @@ Provides access to worker performance metrics for visualization.
 Phase 2.2 implementation.
 """
 
-from fastapi import APIRouter, HTTPException
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
-from orchestrator.core.common.metrics import MetricsCollector
+from fastapi import APIRouter, HTTPException
+
 from orchestrator.config import DEFAULT_CONFIG
+from orchestrator.core.common.metrics import MetricsCollector
 
 router = APIRouter(prefix="/api/v1", tags=["metrics"])
 

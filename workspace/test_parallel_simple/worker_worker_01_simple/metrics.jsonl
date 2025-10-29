@@ -8,3 +8,5 @@
 {"type": "worker_lifecycle", "timestamp": "2025-10-24T08:47:16.215481Z", "worker_id": "worker_worker_01_simple", "event": "failed", "duration_seconds": 9.11580228805542}
 {"type": "worker_lifecycle", "timestamp": "2025-10-24T14:27:58.900881Z", "worker_id": "worker_worker_01_simple", "event": "spawned", "duration_seconds": null}
 {"type": "worker_lifecycle", "timestamp": "2025-10-24T14:28:08.725422Z", "worker_id": "worker_worker_01_simple", "event": "failed", "duration_seconds": 9.824541568756104}
+{"type": "worker_lifecycle", "timestamp": "2025-10-29T07:46:47.236312Z", "worker_id": "worker_worker_01_simple", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-29T07:46:55.002689Z", "worker_id": "worker_worker_01_simple", "event": "failed", "duration_seconds": 7.766380548477173}

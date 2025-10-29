@@ -35,8 +35,8 @@ import pytest
 
 from orchestrator.config import OrchestratorConfig
 from orchestrator.core.worker.codex_executor import (
-    CodexExecutor,
     CodexExecutionResult,
+    CodexExecutor,
     ExecutionStatus,
     FileChange,
     FileChangeEvent,
@@ -45,7 +45,6 @@ from orchestrator.core.worker.codex_executor import (
     create_codex_executor_from_config,
 )
 from orchestrator.core.worker.worker_manager import WorkerManager
-
 
 # ============================================================================
 # Fixtures
@@ -163,7 +162,9 @@ def test_codex_executor_jsonl_parsing(executor: CodexExecutor) -> None:
     assert event1.thread_id == "019a25d2-test"
 
     # Test file_change
-    line2 = '{"type":"file_change","changes":[{"path":"hello.py","kind":"add"}],"status":"completed"}'
+    line2 = (
+        '{"type":"file_change","changes":[{"path":"hello.py","kind":"add"}],"status":"completed"}'
+    )
     event2 = executor._parse_jsonl_event(line2)
     assert isinstance(event2, FileChangeEvent)
     assert event2.type == "file_change"
@@ -192,9 +193,7 @@ def test_codex_executor_jsonl_parsing(executor: CodexExecutor) -> None:
 
 @pytest.mark.integration
 @pytest.mark.slow
-def test_codex_simple_file_creation(
-    executor: CodexExecutor, test_workspace: Path
-) -> None:
+def test_codex_simple_file_creation(executor: CodexExecutor, test_workspace: Path) -> None:
     """Test simple file creation (hello.py) - SUCCESS case from investigation"""
     # Create task file
     task_file = test_workspace / "task.txt"
@@ -235,9 +234,7 @@ def test_codex_simple_file_creation(
 
 @pytest.mark.integration
 @pytest.mark.slow
-def test_codex_complex_file_creation(
-    executor: CodexExecutor, test_workspace: Path
-) -> None:
+def test_codex_complex_file_creation(executor: CodexExecutor, test_workspace: Path) -> None:
     """Test complex file creation (email_validator.py) - SUCCESS case from investigation"""
     # Create task file
     task_file = test_workspace / "task.txt"
@@ -341,7 +338,9 @@ def test_worker_manager_codex_spawn_and_run(
     assert (worker_dir / "task.txt").exists()
 
     # Run Codex session
-    result = worker_manager.run_codex_session(worker_id="worker_test_001", timeout=60, model="gpt-5")
+    result = worker_manager.run_codex_session(
+        worker_id="worker_test_001", timeout=60, model="gpt-5"
+    )
 
     # Assertions
     assert result.success, f"Failed: {result.error_message}"
@@ -394,7 +393,9 @@ def test_worker_manager_multiple_codex_workers(
         results.append(result)
 
     # Assertions
-    assert all(r.success for r in results), f"Some workers failed: {[r.error_message for r in results if not r.success]}"
+    assert all(
+        r.success for r in results
+    ), f"Some workers failed: {[r.error_message for r in results if not r.success]}"
     assert len(results) == 2
 
     print(f"\n✅ SUCCESS: {len(results)} workers completed")

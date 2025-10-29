@@ -12,8 +12,8 @@ OrchestratorとWorkerAIの対話が正しく機能するかテストします。
 5. 結果取得
 """
 
-import sys
 import os
+import sys
 import time
 from pathlib import Path
 
@@ -22,8 +22,8 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 from orchestrator.config import OrchestratorConfig
-from orchestrator.core.worker.worker_manager import WorkerManager
 from orchestrator.core.structured_logging import StructuredLogger
+from orchestrator.core.worker.worker_manager import WorkerManager
 
 
 def test_simple_file_creation():
@@ -50,17 +50,11 @@ def test_simple_file_creation():
     workspace.mkdir(parents=True, exist_ok=True)
 
     # ロガー
-    logger = StructuredLogger(
-        name="test_logger",
-        log_dir=workspace,
-        enable_console=True
-    )
+    logger = StructuredLogger(name="test_logger", log_dir=workspace, enable_console=True)
 
     # WorkerManager初期化
     worker_manager = WorkerManager(
-        config=config,
-        logger=logger,
-        user_approval_callback=None  # 自動承認モード
+        config=config, logger=logger, user_approval_callback=None  # 自動承認モード
     )
 
     # タスク定義
@@ -81,7 +75,7 @@ def test_simple_file_creation():
 - 作業が完了したら "TASK COMPLETED" と出力してください
 
 開始してください。
-"""
+""",
     }
 
     try:
@@ -92,10 +86,7 @@ def test_simple_file_creation():
         worker_id = "test_worker_1"
 
         # Step 1: Spawn worker
-        session = worker_manager.spawn_worker(
-            worker_id=worker_id,
-            task=task
-        )
+        session = worker_manager.spawn_worker(worker_id=worker_id, task=task)
 
         if not session:
             print("[ERROR] Failed to spawn worker")
@@ -124,7 +115,7 @@ def test_simple_file_creation():
         test_file = workspace / "test_output.txt"
         if test_file.exists():
             print(f"\n[OK] ファイル作成成功: {test_file}")
-            with open(test_file, 'r', encoding='utf-8') as f:
+            with open(test_file, "r", encoding="utf-8") as f:
                 content = f.read()
             print(f"内容: {content}")
         else:
@@ -137,6 +128,7 @@ def test_simple_file_creation():
     except Exception as e:
         print(f"\n[ERROR] テスト失敗: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 
@@ -165,17 +157,11 @@ def test_interactive_task():
     workspace.mkdir(parents=True, exist_ok=True)
 
     # ロガー
-    logger = StructuredLogger(
-        name="test_logger",
-        log_dir=workspace,
-        enable_console=True
-    )
+    logger = StructuredLogger(name="test_logger", log_dir=workspace, enable_console=True)
 
     # WorkerManager初期化
     worker_manager = WorkerManager(
-        config=config,
-        logger=logger,
-        user_approval_callback=None  # 自動承認モード
+        config=config, logger=logger, user_approval_callback=None  # 自動承認モード
     )
 
     # タスク定義
@@ -198,7 +184,7 @@ def test_interactive_task():
 - 全て完了したら "ALL TASKS COMPLETED" と出力してください
 
 開始してください。
-"""
+""",
     }
 
     try:
@@ -209,10 +195,7 @@ def test_interactive_task():
         worker_id = "test_worker_2"
 
         # Step 1: Spawn worker
-        session = worker_manager.spawn_worker(
-            worker_id=worker_id,
-            task=task
-        )
+        session = worker_manager.spawn_worker(worker_id=worker_id, task=task)
 
         if not session:
             print("[ERROR] Failed to spawn worker")
@@ -243,13 +226,13 @@ def test_interactive_task():
             step2 = test_dir / "step2.txt"
 
             if step1.exists():
-                with open(step1, 'r') as f:
+                with open(step1, "r") as f:
                     print(f"  [OK] step1.txt: {f.read()}")
             else:
                 print(f"  [ERROR] step1.txt が作成されませんでした")
 
             if step2.exists():
-                with open(step2, 'r') as f:
+                with open(step2, "r") as f:
                     print(f"  [OK] step2.txt: {f.read()}")
             else:
                 print(f"  [ERROR] step2.txt が作成されませんでした")
@@ -263,6 +246,7 @@ def test_interactive_task():
     except Exception as e:
         print(f"\n[ERROR] テスト失敗: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 
@@ -309,6 +293,6 @@ def run_all_tests():
     return all_passed
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     success = run_all_tests()
     sys.exit(0 if success else 1)

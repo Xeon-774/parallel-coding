@@ -44,7 +44,6 @@ from typing import Any, Dict, List, Literal, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
-
 # =============================================================================
 # Constants
 # =============================================================================
@@ -173,9 +172,7 @@ class ReviewRequest(BaseModel):
         # Check file size
         size_mb = path.stat().st_size / (1024 * 1024)
         if size_mb > MAX_DOCUMENT_SIZE_MB:
-            raise ValueError(
-                f"Document too large: {size_mb:.1f}MB (max: {MAX_DOCUMENT_SIZE_MB}MB)"
-            )
+            raise ValueError(f"Document too large: {size_mb:.1f}MB (max: {MAX_DOCUMENT_SIZE_MB}MB)")
 
         return v
 
@@ -212,17 +209,11 @@ class ReviewFeedback(BaseModel):
 
     severity: FeedbackSeverity = Field(description="Severity level")
 
-    line_number: Optional[int] = Field(
-        default=None, ge=1, description="Line number in document"
-    )
+    line_number: Optional[int] = Field(default=None, ge=1, description="Line number in document")
 
-    section: Optional[str] = Field(
-        default=None, max_length=200, description="Section/heading name"
-    )
+    section: Optional[str] = Field(default=None, max_length=200, description="Section/heading name")
 
-    message: str = Field(
-        min_length=1, max_length=1000, description="Feedback message"
-    )
+    message: str = Field(min_length=1, max_length=1000, description="Feedback message")
 
     suggestion: Optional[str] = Field(
         default=None, max_length=2000, description="Improvement suggestion"
@@ -277,23 +268,15 @@ class ReviewResult(BaseModel):
         default_factory=list, description="List of feedback items"
     )
 
-    overall_score: float = Field(
-        ge=0.0, le=100.0, description="Overall quality score (0-100)"
-    )
+    overall_score: float = Field(ge=0.0, le=100.0, description="Overall quality score (0-100)")
 
-    execution_time_seconds: float = Field(
-        ge=0.0, description="Total execution time in seconds"
-    )
+    execution_time_seconds: float = Field(ge=0.0, description="Total execution time in seconds")
 
     provider_name: str = Field(description="AI provider used for review")
 
-    metadata: Dict[str, Any] = Field(
-        default_factory=dict, description="Provider-specific metadata"
-    )
+    metadata: Dict[str, Any] = Field(default_factory=dict, description="Provider-specific metadata")
 
-    error_message: Optional[str] = Field(
-        default=None, description="Error message if review failed"
-    )
+    error_message: Optional[str] = Field(default=None, description="Error message if review failed")
 
     @field_validator("feedbacks")
     @classmethod
@@ -311,9 +294,7 @@ class ReviewResult(BaseModel):
             ValueError: If too many feedback items
         """
         if len(v) > MAX_FEEDBACK_ITEMS:
-            raise ValueError(
-                f"Too many feedback items: {len(v)} (max: {MAX_FEEDBACK_ITEMS})"
-            )
+            raise ValueError(f"Too many feedback items: {len(v)} (max: {MAX_FEEDBACK_ITEMS})")
         return v
 
     @property
@@ -365,23 +346,17 @@ class AggregatedReview(BaseModel):
 
     review_type: ReviewType = Field(description="Type of review")
 
-    perspectives: List[ReviewPerspective] = Field(
-        description="List of perspectives reviewed"
-    )
+    perspectives: List[ReviewPerspective] = Field(description="List of perspectives reviewed")
 
     results: List[ReviewResult] = Field(description="Individual review results")
 
-    overall_score: float = Field(
-        ge=0.0, le=100.0, description="Weighted average score"
-    )
+    overall_score: float = Field(ge=0.0, le=100.0, description="Weighted average score")
 
     critical_count: int = Field(ge=0, description="Total critical issues")
 
     warning_count: int = Field(ge=0, description="Total warnings")
 
-    execution_time_seconds: float = Field(
-        ge=0.0, description="Total execution time"
-    )
+    execution_time_seconds: float = Field(ge=0.0, description="Total execution time")
 
     @property
     def all_feedbacks(self) -> List[ReviewFeedback]:

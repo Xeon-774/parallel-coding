@@ -19,7 +19,6 @@ from orchestrator.core.auth import create_access_token, create_dev_token
 from orchestrator.core.database import get_db
 from orchestrator.core.db_models import Job, JobStatus, Worker, WorkerStatus
 
-
 # ============================================================================
 # Test Fixtures
 # ============================================================================
@@ -170,7 +169,9 @@ def test_supervisor_list_workers_empty(client: TestClient, auth_headers: dict[st
     assert len(data["workers"]) == 0
 
 
-def test_supervisor_list_workers_populated(client: TestClient, auth_headers: dict[str, str]) -> None:
+def test_supervisor_list_workers_populated(
+    client: TestClient, auth_headers: dict[str, str]
+) -> None:
     """Test GET /api/supervisor/workers endpoint with seeded workers."""
     _seed_worker("worker-1", "ws-1", WorkerStatus.IDLE)
     _seed_worker("worker-2", "ws-1", WorkerStatus.RUNNING)
@@ -310,7 +311,9 @@ def test_jobs_submit(client: TestClient, auth_headers: dict[str, str]) -> None:
 
 def test_jobs_get_success(client: TestClient, auth_headers: dict[str, str]) -> None:
     """Test GET /api/jobs/{id} endpoint with existing job."""
-    job = _seed_job("job-get-test", "Test job retrieval", JobStatus.PENDING, depth=0, worker_count=1)
+    job = _seed_job(
+        "job-get-test", "Test job retrieval", JobStatus.PENDING, depth=0, worker_count=1
+    )
 
     response = client.get(f"/api/jobs/{job.id}", headers=auth_headers)
     assert response.status_code == 200

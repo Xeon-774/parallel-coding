@@ -7,11 +7,11 @@ into various output formats (Markdown, JSON).
 
 import json
 from datetime import datetime
-from typing import List, Dict, Any
 from pathlib import Path
+from typing import Any, Dict, List
 
-from orchestrator.interfaces import ILogger
 from orchestrator.core.models import TaskResult
+from orchestrator.interfaces import ILogger
 
 
 class ResultIntegrator:

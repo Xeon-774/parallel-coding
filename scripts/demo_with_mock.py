@@ -11,12 +11,12 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from orchestrator.core.enhanced_interactive_worker_manager import (
-    EnhancedInteractiveWorkerManager,
-    ConfirmationRequest,
-    WorkerSession
-)
 from orchestrator.config import OrchestratorConfig
+from orchestrator.core.enhanced_interactive_worker_manager import (
+    ConfirmationRequest,
+    EnhancedInteractiveWorkerManager,
+    WorkerSession,
+)
 
 
 # Patched version that uses mock CLI
@@ -31,6 +31,7 @@ class MockInteractiveWorkerManager(EnhancedInteractiveWorkerManager):
 
 class DemoLogger:
     """Simple logger"""
+
     def log_worker_spawn(self, worker_id, task_name):
         print(f"  [SPAWN] {worker_id}: {task_name}")
 
@@ -54,15 +55,15 @@ def approval_callback(confirmation: ConfirmationRequest) -> bool:
     print(f"  Details: {confirmation.details}")
 
     # Auto-approve file writes
-    if confirmation.confirmation_type.value == 'file_write':
+    if confirmation.confirmation_type.value == "file_write":
         print(f"  Decision: AUTO-APPROVE (safe file write)")
         print(f"  {'='*66}\n")
         return True
 
     # Auto-approve safe commands
-    if confirmation.confirmation_type.value == 'command_execute':
-        command = confirmation.details.get('command', '').lower()
-        if 'dir' in command or 'ls' in command:
+    if confirmation.confirmation_type.value == "command_execute":
+        command = confirmation.details.get("command", "").lower()
+        if "dir" in command or "ls" in command:
             print(f"  Decision: AUTO-APPROVE (safe list command)")
             print(f"  {'='*66}\n")
             return True
@@ -75,9 +76,9 @@ def approval_callback(confirmation: ConfirmationRequest) -> bool:
 
 def main():
     """Run demo with mock CLI"""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print(" EnhancedInteractiveWorkerManager - Mock CLI Demo")
-    print("="*70)
+    print("=" * 70)
     print("\nThis demonstrates full bidirectional communication with")
     print("confirmation detection, AI safety judgment, and response handling.")
     print()
@@ -89,22 +90,17 @@ def main():
     logger = DemoLogger()
 
     print(f"Platform: {sys.platform}")
-    print(f"Using: wexpect (Windows)" if sys.platform == 'win32' else f"Using: pexpect (Linux)")
+    print(f"Using: wexpect (Windows)" if sys.platform == "win32" else f"Using: pexpect (Linux)")
     print()
 
     print("Step 1: Creating EnhancedInteractiveWorkerManager...")
     manager = MockInteractiveWorkerManager(
-        config=config,
-        logger=logger,
-        user_approval_callback=approval_callback
+        config=config, logger=logger, user_approval_callback=approval_callback
     )
     print("  [OK] Manager created\n")
 
     # Create task
-    task = {
-        "name": "Demo Task",
-        "prompt": "Create a simple Python script with Hello World"
-    }
+    task = {"name": "Demo Task", "prompt": "Create a simple Python script with Hello World"}
 
     print("Step 2: Spawning worker with mock Claude CLI...")
     session = manager.spawn_worker("demo", task)
@@ -120,9 +116,9 @@ def main():
 
     result = manager.run_interactive_session(session.worker_id, max_iterations=30)
 
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print(" DEMO RESULT")
-    print("="*70)
+    print("=" * 70)
     print(f"Success: {result.success}")
     print(f"Duration: {result.duration:.2f}s")
     print(f"Output length: {len(result.output)} characters")
@@ -131,13 +127,13 @@ def main():
         print(f"Error: {result.error_message}")
 
     print(f"\nFull Output:")
-    print("-"*70)
+    print("-" * 70)
     print(result.output)
-    print("-"*70)
+    print("-" * 70)
 
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print(" KEY VALIDATIONS")
-    print("="*70)
+    print("=" * 70)
     print("  [OK] Worker spawned with pexpect/wexpect")
     print("  [OK] Confirmation patterns detected")
     print("  [OK] AI safety judgment applied")
@@ -150,9 +146,9 @@ def main():
     else:
         print("[PARTIAL] Demo completed (check exit code)")
 
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print(" Demo Complete")
-    print("="*70)
+    print("=" * 70)
 
 
 if __name__ == "__main__":

@@ -5,8 +5,8 @@
 """
 
 import sys
-from pathlib import Path
 import time
+from pathlib import Path
 
 # プロジェクトルートをパスに追加
 project_root = Path(__file__).parent
@@ -14,11 +14,12 @@ sys.path.insert(0, str(project_root))
 
 # Configure UTF-8 encoding BEFORE any output
 from orchestrator.utils.encoding_config import configure_console_encoding, safe_print
+
 configure_console_encoding()
 
 from orchestrator.config import OrchestratorConfig
-from orchestrator.core.worker.worker_manager import WorkerManager
 from orchestrator.core.structured_logging import StructuredLogger
+from orchestrator.core.worker.worker_manager import WorkerManager
 
 
 def main():
@@ -42,17 +43,11 @@ def main():
     workspace.mkdir(parents=True, exist_ok=True)
 
     # ロガー
-    logger = StructuredLogger(
-        name="parallel_demo",
-        log_dir=workspace,
-        enable_console=True
-    )
+    logger = StructuredLogger(name="parallel_demo", log_dir=workspace, enable_console=True)
 
     # WorkerManager初期化
     worker_manager = WorkerManager(
-        config=config,
-        logger=logger,
-        user_approval_callback=None  # 自動承認モード
+        config=config, logger=logger, user_approval_callback=None  # 自動承認モード
     )
 
     # タスク定義
@@ -69,7 +64,7 @@ def main():
 3. 1000 ÷ 25 = ?
 
 各計算結果を表示した後、"Math calculations completed!" と出力してください。
-"""
+""",
         },
         {
             "name": "Text Generator",
@@ -83,8 +78,8 @@ def main():
 3. 1から5までの数字をリストで表示
 
 全て完了したら "Text generation completed!" と出力してください。
-"""
-        }
+""",
+        },
     ]
 
     try:
@@ -99,10 +94,7 @@ def main():
             worker_id = f"demo_worker_{i+1}"
             safe_print(f"[起動] Worker {i+1}: {task['name']}")
 
-            session = worker_manager.spawn_worker(
-                worker_id=worker_id,
-                task=task
-            )
+            session = worker_manager.spawn_worker(worker_id=worker_id, task=task)
 
             if not session:
                 safe_print(f"[ERROR] Worker {i+1} の起動に失敗しました")
@@ -157,10 +149,11 @@ def main():
     except Exception as e:
         safe_print(f"\n[ERROR] テスト失敗: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     success = main()
     sys.exit(0 if success else 1)

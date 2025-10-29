@@ -13,10 +13,11 @@ Coverage target: ≥90%
 Excellence AI Standard: 100% Applied
 """
 
-import pytest
 from pathlib import Path
 from typing import List
-from unittest.mock import Mock, AsyncMock
+from unittest.mock import AsyncMock, Mock
+
+import pytest
 
 from orchestrator.core.ai_providers.base_review_provider import (
     BaseReviewProvider,
@@ -31,7 +32,6 @@ from orchestrator.core.ai_providers.base_review_provider import (
 from orchestrator.core.hierarchical.job_orchestrator import (
     HierarchicalJobOrchestrator,
 )
-
 
 # =============================================================================
 # Mock Provider

@@ -16,12 +16,13 @@ Usage:
        python tests/manual_api_test.py --auto
 """
 
-import sys
-import time
 import argparse
 import subprocess
-import requests
+import sys
+import time
 from pathlib import Path
+
+import requests
 
 # Add project root to path
 project_root = Path(__file__).parent.parent
@@ -32,14 +33,15 @@ from orchestrator_client import OrchestratorClient, OrchestratorError
 
 class Colors:
     """ANSI color codes"""
-    HEADER = '\033[95m'
-    BLUE = '\033[94m'
-    CYAN = '\033[96m'
-    GREEN = '\033[92m'
-    YELLOW = '\033[93m'
-    RED = '\033[91m'
-    END = '\033[0m'
-    BOLD = '\033[1m'
+
+    HEADER = "\033[95m"
+    BLUE = "\033[94m"
+    CYAN = "\033[96m"
+    GREEN = "\033[92m"
+    YELLOW = "\033[93m"
+    RED = "\033[91m"
+    END = "\033[0m"
+    BOLD = "\033[1m"
 
 
 def print_header(text):
@@ -135,10 +137,7 @@ def test_authentication(api_url):
     # Test without API key
     print_info("Testing request without API key...")
     try:
-        response = requests.post(
-            f"{api_url}/api/v1/orchestrate",
-            json={"request": "Test request"}
-        )
+        response = requests.post(f"{api_url}/api/v1/orchestrate", json={"request": "Test request"})
         if response.status_code == 401:
             print_success("Correctly rejected request without API key")
         else:
@@ -153,7 +152,7 @@ def test_authentication(api_url):
         response = requests.post(
             f"{api_url}/api/v1/orchestrate",
             json={"request": "Test request"},
-            headers={"X-API-Key": "invalid-key-12345"}
+            headers={"X-API-Key": "invalid-key-12345"},
         )
         if response.status_code == 401:
             print_success("Correctly rejected request with invalid API key")
@@ -179,12 +178,8 @@ def test_mock_orchestration(client):
         print_info("Submitting orchestration request...")
         job = client.orchestrate(
             request="Print 'Hello World'",
-            config={
-                "max_workers": 1,
-                "default_timeout": 10,
-                "enable_ai_analysis": False
-            },
-            wait=False  # Don't wait for completion
+            config={"max_workers": 1, "default_timeout": 10, "enable_ai_analysis": False},
+            wait=False,  # Don't wait for completion
         )
 
         print_success(f"Job created: {job.job_id}")
@@ -208,6 +203,7 @@ def test_mock_orchestration(client):
     except Exception as e:
         print_error(f"Error: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 
@@ -217,7 +213,7 @@ def test_sdk_client_basic(client):
     print_header("Test 6: SDK Client Functionality")
 
     # Test that client methods exist
-    methods = ['orchestrate', 'get_job', 'get_system_status', 'health_check']
+    methods = ["orchestrate", "get_job", "get_system_status", "health_check"]
 
     for method in methods:
         if hasattr(client, method):
@@ -288,31 +284,25 @@ def run_all_tests(api_url, api_key, skip_execution=False):
 def main():
     parser = argparse.ArgumentParser(
         description="Manual API Test Suite for Claude Orchestrator",
-        formatter_class=argparse.RawDescriptionHelpFormatter
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
 
     parser.add_argument(
         "--api-url",
         default="http://localhost:8000",
-        help="API server URL (default: http://localhost:8000)"
+        help="API server URL (default: http://localhost:8000)",
     )
 
     parser.add_argument(
-        "--api-key",
-        default="sk-orch-dev-key-12345",
-        help="API key for authentication"
+        "--api-key", default="sk-orch-dev-key-12345", help="API key for authentication"
     )
 
     parser.add_argument(
-        "--skip-execution",
-        action="store_true",
-        help="Skip actual orchestration execution test"
+        "--skip-execution", action="store_true", help="Skip actual orchestration execution test"
     )
 
     parser.add_argument(
-        "--auto",
-        action="store_true",
-        help="Start API server automatically (experimental)"
+        "--auto", action="store_true", help="Start API server automatically (experimental)"
     )
 
     args = parser.parse_args()
@@ -326,9 +316,7 @@ def main():
 
         # Start server in background
         server_process = subprocess.Popen(
-            [sys.executable, "start_api_server.py"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
+            [sys.executable, "start_api_server.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
 
         # Wait for server to start
@@ -337,9 +325,7 @@ def main():
 
     try:
         success = run_all_tests(
-            api_url=args.api_url,
-            api_key=args.api_key,
-            skip_execution=args.skip_execution
+            api_url=args.api_url, api_key=args.api_key, skip_execution=args.skip_execution
         )
 
         sys.exit(0 if success else 1)

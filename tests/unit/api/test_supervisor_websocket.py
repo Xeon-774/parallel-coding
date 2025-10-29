@@ -14,9 +14,9 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from orchestrator.api.supervisor_websocket import (
+    Event,
     RateLimiter,
     SupervisorHub,
-    Event,
     _auth_ok,
     _expected_token,
 )

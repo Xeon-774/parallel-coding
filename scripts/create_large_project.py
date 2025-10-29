@@ -7,18 +7,19 @@ v4.1のAI駆動タスク分解の真価を実証
 
 import os
 import sys
-from pathlib import Path
 import time
+from pathlib import Path
 
 # プロジェクトルートをPythonパスに追加
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 # UTF-8出力設定
-if sys.platform == 'win32':
+if sys.platform == "win32":
     import codecs
-    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'replace')
-    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'replace')
+
+    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
+    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
 
 from orchestrator import AdvancedOrchestrator, OrchestratorConfig
 
@@ -100,8 +101,8 @@ Pythonで実装してください。
     print()
 
     # Windows環境設定
-    os.environ['ORCHESTRATOR_MODE'] = 'windows'
-    os.environ['CLAUDE_CODE_GIT_BASH_PATH'] = r'C:\opt\Git.Git\usr\bin\bash.exe'
+    os.environ["ORCHESTRATOR_MODE"] = "windows"
+    os.environ["CLAUDE_CODE_GIT_BASH_PATH"] = r"C:\opt\Git.Git\usr\bin\bash.exe"
 
     config = OrchestratorConfig.from_env()
 
@@ -112,7 +113,7 @@ Pythonで実装してください。
         config=config,
         enable_ai_analysis=True,
         enable_worktree=True,
-        enable_realtime_monitoring=True
+        enable_realtime_monitoring=True,
     )
 
     print("[開始時刻]", time.strftime("%H:%M:%S"))
@@ -142,7 +143,7 @@ Pythonで実装してください。
 
             # ワーカー数を確認
             workspace_path = Path(config.workspace_root)
-            worker_count = sum(1 for item in workspace_path.glob('worker_*') if item.is_dir())
+            worker_count = sum(1 for item in workspace_path.glob("worker_*") if item.is_dir())
 
             print("[プロジェクト統計]")
             print(f"  生成されたコンポーネント数: {worker_count}")
@@ -169,7 +170,7 @@ Pythonで実装してください。
 
                 if task_file.exists() and output_file.exists():
                     # タスク名を抽出（最初の行）
-                    with open(task_file, 'r', encoding='utf-8', errors='replace') as f:
+                    with open(task_file, "r", encoding="utf-8", errors="replace") as f:
                         task_name = f.readline().strip()
 
                     # 出力サイズ
@@ -202,6 +203,7 @@ Pythonで実装してください。
     except Exception as e:
         print(f"\n❌ エラーが発生しました: {e}")
         import traceback
+
         traceback.print_exc()
 
     print()
@@ -211,5 +213,5 @@ Pythonで実装してください。
     print()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

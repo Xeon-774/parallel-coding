@@ -9,9 +9,9 @@ AI駆動のタスク分析・分割システム
 """
 
 import re
-from typing import List, Dict, Any
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Any, Dict, List
 
 
 class TaskComplexity(Enum):

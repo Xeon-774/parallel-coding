@@ -8,7 +8,7 @@ import subprocess
 from pathlib import Path
 from typing import Optional
 
-from orchestrator.window_strategies.base import WindowManagerBase, WindowInfo
+from orchestrator.window_strategies.base import WindowInfo, WindowManagerBase
 
 
 class WindowsWindowManager(WindowManagerBase):

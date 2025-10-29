@@ -11,7 +11,6 @@ from sqlalchemy.orm import Session
 from orchestrator.core.auth import JWTError, TokenData, check_scope, verify_token
 from orchestrator.core.database import get_db as _get_db
 
-
 security = HTTPBearer(auto_error=False)
 
 
@@ -28,7 +27,7 @@ def get_db() -> Generator[Session, None, None]:
 
 
 async def get_current_user(
-    credentials: Annotated[HTTPAuthorizationCredentials | None, Security(security)]
+    credentials: Annotated[HTTPAuthorizationCredentials | None, Security(security)],
 ) -> TokenData:
     """Validate token and return the current user claims.
 
@@ -59,4 +58,3 @@ def require_scope(required_scope: str):
         return user
 
     return check_scope_dependency
-

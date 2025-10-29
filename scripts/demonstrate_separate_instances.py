@@ -7,16 +7,17 @@
 """
 
 import os
-import sys
 import subprocess
+import sys
 import time
 from pathlib import Path
 
 # UTF-8出力設定
-if sys.platform == 'win32':
+if sys.platform == "win32":
     import codecs
-    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'replace')
-    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'replace')
+
+    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
+    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
 
 
 def demonstrate_separation():
@@ -49,11 +50,13 @@ def demonstrate_separation():
     task_file = workspace / "task.txt"
     output_file = workspace / "output.txt"
 
-    with open(task_file, 'w', encoding='utf-8') as f:
-        f.write("""あなたは誰ですか？あなたのプロセスIDは何ですか？
+    with open(task_file, "w", encoding="utf-8") as f:
+        f.write(
+            """あなたは誰ですか？あなたのプロセスIDは何ですか？
 あなたはオーケストレーターAIとは別のインスタンスであることを説明してください。
 
-短く答えてください。""")
+短く答えてください。"""
+        )
 
     print("[ワーカーAI起動準備]")
     print(f"  タスクファイル: {task_file}")
@@ -61,12 +64,12 @@ def demonstrate_separation():
     print()
 
     # 3. ワーカーAIを別プロセスとして起動
-    git_bash_path = r'C:\opt\Git.Git\usr\bin\bash.exe'
+    git_bash_path = r"C:\opt\Git.Git\usr\bin\bash.exe"
 
     cmd = (
         f'"{git_bash_path}" -c '
-        f'"export CLAUDE_CODE_GIT_BASH_PATH=\'{git_bash_path}\' && '
-        f'claude --print --dangerously-skip-permissions < \'{task_file}\' > \'{output_file}\' 2>&1"'
+        f"\"export CLAUDE_CODE_GIT_BASH_PATH='{git_bash_path}' && "
+        f"claude --print --dangerously-skip-permissions < '{task_file}' > '{output_file}' 2>&1\""
     )
 
     print("[ワーカーAI起動コマンド]")
@@ -77,12 +80,7 @@ def demonstrate_separation():
     print()
 
     # subprocess.Popen で別プロセスとして起動
-    process = subprocess.Popen(
-        cmd,
-        shell=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE
-    )
+    process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # ワーカーAIのプロセスID
     worker_pid = process.pid
@@ -101,7 +99,7 @@ def demonstrate_separation():
 
     # 結果を確認
     if output_file.exists():
-        with open(output_file, 'r', encoding='utf-8', errors='replace') as f:
+        with open(output_file, "r", encoding="utf-8", errors="replace") as f:
             worker_output = f.read()
 
         print("=" * 80)
@@ -138,5 +136,5 @@ def demonstrate_separation():
     print()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demonstrate_separation()

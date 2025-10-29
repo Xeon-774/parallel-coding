@@ -5,12 +5,12 @@ AI駆動タスク分解エンジン
 自律的に実行可能なサブタスクに分解する
 """
 
-import subprocess
 import json
+import subprocess
 import tempfile
-from typing import List, Dict, Optional, Tuple, Any
-from pathlib import Path
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 
 @dataclass

@@ -29,15 +29,14 @@ from typing import Dict, Optional, Tuple
 
 from pydantic import BaseModel, Field, model_validator
 
-
 # Default allocation strategy (can be overridden via constructor)
 DEFAULT_WORKERS_BY_DEPTH: Dict[int, int] = {
     0: 10,  # Root (CTO)
-    1: 8,   # PM
-    2: 5,   # Tech Lead
-    3: 3,   # Engineer
-    4: 2,   # Junior
-    5: 1,   # Intern
+    1: 8,  # PM
+    2: 5,  # Tech Lead
+    3: 3,  # Engineer
+    4: 2,  # Junior
+    5: 1,  # Intern
 }
 
 WARN_80 = 0.8
@@ -61,8 +60,8 @@ class ResourceUsage(BaseModel):
     warn_80: bool = Field(default=False)
     warn_90: bool = Field(default=False)
 
-    @model_validator(mode='after')
-    def used_not_exceed_quota(self) -> 'ResourceUsage':
+    @model_validator(mode="after")
+    def used_not_exceed_quota(self) -> "ResourceUsage":
         if self.used > self.quota:
             raise ValueError("used cannot exceed quota")
         return self
@@ -256,4 +255,3 @@ class HierarchicalResourceManager:
                 await self._outer.release_resources(job_id=self._job_id, depth=self._depth)
 
         return _Scope(self)
-

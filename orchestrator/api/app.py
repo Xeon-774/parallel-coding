@@ -1,4 +1,5 @@
 """FastAPI application wiring for the Job Orchestrator."""
+
 from __future__ import annotations
 
 from fastapi import FastAPI
@@ -19,4 +20,3 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
-

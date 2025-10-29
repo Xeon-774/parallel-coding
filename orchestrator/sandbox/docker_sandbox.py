@@ -12,26 +12,28 @@ Features:
 """
 
 import asyncio
-import docker
-from docker.models.containers import Container
-from docker.errors import DockerException, APIError, ContainerError
-from typing import Optional, Dict, Any
-from pathlib import Path
 import logging
+from pathlib import Path
+from typing import Any, Dict, Optional
 
-from orchestrator.sandbox.sandbox_config import SandboxConfig, DEFAULT_MEDIUM_RISK
+import docker
+from docker.errors import APIError, ContainerError, DockerException
+from docker.models.containers import Container
 
+from orchestrator.sandbox.sandbox_config import DEFAULT_MEDIUM_RISK, SandboxConfig
 
 logger = logging.get_logger(__name__)
 
 
 class SandboxExecutionError(Exception):
     """Sandbox execution failed"""
+
     pass
 
 
 class SandboxTimeoutError(SandboxExecutionError):
     """Sandbox execution timed out"""
+
     pass
 
 
@@ -71,10 +73,7 @@ class DockerSandbox:
         return self.client
 
     async def execute(
-        self,
-        command: str,
-        workspace_dir: Path,
-        env_vars: Optional[Dict[str, str]] = None
+        self, command: str, workspace_dir: Path, env_vars: Optional[Dict[str, str]] = None
     ) -> Dict[str, Any]:
         """
         Execute command in hermetic sandbox
@@ -111,7 +110,7 @@ class DockerSandbox:
         # Mount workspace (read-write)
         docker_params["volumes"][str(workspace_dir)] = {
             "bind": str(self.config.workspace_path),
-            "mode": "rw"  # Read-write for workspace
+            "mode": "rw",  # Read-write for workspace
         }
 
         logger.info(f"Starting sandbox container: {self.config.image}")
@@ -125,8 +124,7 @@ class DockerSandbox:
             # Wait for completion with timeout
             try:
                 result = await asyncio.wait_for(
-                    self._wait_for_container(),
-                    timeout=self.config.execution_timeout
+                    self._wait_for_container(), timeout=self.config.execution_timeout
                 )
 
                 return result
@@ -134,7 +132,9 @@ class DockerSandbox:
             except asyncio.TimeoutError:
                 # Kill container on timeout
                 if self.container:
-                    logger.warning(f"Container exceeded timeout ({self.config.execution_timeout}s), killing...")
+                    logger.warning(
+                        f"Container exceeded timeout ({self.config.execution_timeout}s), killing..."
+                    )
                     self.container.kill()
                     self.container.remove(force=True)
 
@@ -161,10 +161,7 @@ class DockerSandbox:
 
         # Wait for container (blocking, so run in executor)
         loop = asyncio.get_event_loop()
-        result = await loop.run_in_executor(
-            None,
-            lambda: self.container.wait()
-        )
+        result = await loop.run_in_executor(None, lambda: self.container.wait())
 
         exit_code = result["StatusCode"]
 
@@ -178,7 +175,7 @@ class DockerSandbox:
             "exit_code": exit_code,
             "stdout": stdout,
             "stderr": stderr,
-            "duration_seconds": 0.0  # TODO: Track actual duration
+            "duration_seconds": 0.0,  # TODO: Track actual duration
         }
 
     async def _cleanup(self):
@@ -207,7 +204,7 @@ async def execute_in_sandbox(
     command: str,
     workspace_dir: Path,
     config: Optional[SandboxConfig] = None,
-    env_vars: Optional[Dict[str, str]] = None
+    env_vars: Optional[Dict[str, str]] = None,
 ) -> Dict[str, Any]:
     """
     Execute command in hermetic sandbox (convenience function)

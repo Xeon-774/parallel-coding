@@ -198,7 +198,9 @@ class HierarchicalJobOrchestrator:
     async def _execute_leaf(self, job_id: str, request: str) -> None:
         # Simulate unit of work with minimal delay proportional to size
         delay = min(max(len(request.strip()) / 200.0, 0.01), 0.05)
-        async with (await self._rm.resource_scope(job_id=job_id, depth=max(0, self._jobs[job_id].depth), requested_workers=1)):
+        async with await self._rm.resource_scope(
+            job_id=job_id, depth=max(0, self._jobs[job_id].depth), requested_workers=1
+        ):
             await asyncio.sleep(delay)
         async with self._lock:
             jr = self._jobs[job_id]
@@ -252,6 +254,7 @@ class HierarchicalJobOrchestrator:
 
     async def get_tree(self, job_id: str) -> Dict[str, Any]:
         async with self._lock:
+
             def build(node: str) -> Dict[str, Any]:
                 jr = self._jobs[node]
                 return {
@@ -286,7 +289,7 @@ class HierarchicalJobOrchestrator:
     async def handle_sub_job_failure(self, job_id: str, error: Exception) -> RetryDecision:
         # Simple policy: retry up to 2 times with exponential backoff based on depth
         depth = (await self.get_status(job_id)).depth
-        backoff = 0.05 * (2 ** depth)
+        backoff = 0.05 * (2**depth)
         return RetryDecision(should_retry=True, delay_seconds=backoff, max_retries=2)
 
     # ----------------------------- Review Functions -----------------------------
@@ -325,9 +328,7 @@ class HierarchicalJobOrchestrator:
             name for name, provider in self._review_providers.items() if provider.is_available()
         ]
 
-    async def review_document(
-        self, request: ReviewRequest, provider: str = "auto"
-    ) -> ReviewResult:
+    async def review_document(self, request: ReviewRequest, provider: str = "auto") -> ReviewResult:
         """
         Execute document review using specified or auto-selected provider.
 
@@ -479,4 +480,3 @@ class HierarchicalJobOrchestrator:
             warning_count=warning_count,
             execution_time_seconds=execution_time,
         )
-

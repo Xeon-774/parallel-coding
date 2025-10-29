@@ -3,18 +3,19 @@
 Tests password hashing, JWT token creation/verification, and scope checking.
 """
 
-import pytest
 from datetime import timedelta
+
+import pytest
 from jose import JWTError
 
 from orchestrator.core.auth import (
+    TokenData,
+    check_scope,
+    create_access_token,
+    create_dev_token,
     hash_password,
     verify_password,
-    create_access_token,
     verify_token,
-    check_scope,
-    create_dev_token,
-    TokenData,
 )
 
 
@@ -95,8 +96,7 @@ class TestJWTTokenCreation:
     def test_create_access_token_success(self):
         """Test creating access token."""
         token = create_access_token(
-            user_id="user_123",
-            scopes=["supervisor:read", "supervisor:write"]
+            user_id="user_123", scopes=["supervisor:read", "supervisor:write"]
         )
 
         assert token is not None
@@ -116,9 +116,7 @@ class TestJWTTokenCreation:
     def test_create_access_token_with_custom_expiration(self):
         """Test creating token with custom expiration."""
         token = create_access_token(
-            user_id="user_123",
-            scopes=["supervisor:read"],
-            expires_delta=timedelta(hours=1)
+            user_id="user_123", scopes=["supervisor:read"], expires_delta=timedelta(hours=1)
         )
 
         assert token is not None
@@ -129,10 +127,7 @@ class TestJWTTokenCreation:
 
     def test_create_access_token_with_empty_scopes(self):
         """Test creating token with empty scopes list."""
-        token = create_access_token(
-            user_id="user_123",
-            scopes=[]
-        )
+        token = create_access_token(user_id="user_123", scopes=[])
 
         assert token is not None
         token_data = verify_token(token)
@@ -144,10 +139,7 @@ class TestJWTTokenVerification:
 
     def test_verify_token_success(self):
         """Test verifying valid token."""
-        token = create_access_token(
-            user_id="user_456",
-            scopes=["jobs:read", "jobs:write"]
-        )
+        token = create_access_token(user_id="user_456", scopes=["jobs:read", "jobs:write"])
 
         token_data = verify_token(token)
 
@@ -166,7 +158,7 @@ class TestJWTTokenVerification:
         token = create_access_token(
             user_id="user_123",
             scopes=["supervisor:read"],
-            expires_delta=timedelta(seconds=-1)  # Already expired
+            expires_delta=timedelta(seconds=-1),  # Already expired
         )
 
         with pytest.raises(JWTError, match="Token verification failed"):
@@ -274,10 +266,7 @@ class TestTokenDataModel:
 
     def test_token_data_creation(self):
         """Test creating TokenData instance."""
-        token_data = TokenData(
-            user_id="user_789",
-            scopes=["scope1", "scope2"]
-        )
+        token_data = TokenData(user_id="user_789", scopes=["scope1", "scope2"])
 
         assert token_data.user_id == "user_789"
         assert len(token_data.scopes) == 2
@@ -303,8 +292,7 @@ class TestIntegration:
 
         # 3. Create token
         token = create_access_token(
-            user_id="integrated_user",
-            scopes=["supervisor:read", "jobs:write"]
+            user_id="integrated_user", scopes=["supervisor:read", "jobs:write"]
         )
 
         # 4. Verify token

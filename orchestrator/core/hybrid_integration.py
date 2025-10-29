@@ -5,39 +5,38 @@ Bridges the worker_manager's confirmation system with the hybrid decision engine
 Handles async/sync conversion and data format mapping.
 """
 
-import sys
 import asyncio
-from typing import Dict, Any, Optional
+import sys
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
+from typing import Any, Dict, Optional
 
 # Handle imports for both module use and direct execution
 try:
     # Import worker_manager types
-    from orchestrator.core.worker.worker_manager import (
-        ConfirmationRequest as WorkerConfirmationRequest,
-        ConfirmationType as WorkerConfirmationType,
-    )
-
     # Import hybrid engine
+    from orchestrator.core.hybrid_engine import ConfirmationRequest as HybridConfirmationRequest
+    from orchestrator.core.hybrid_engine import ConfirmationType as HybridConfirmationType
     from orchestrator.core.hybrid_engine import (
         HybridDecisionEngine,
-        ConfirmationType as HybridConfirmationType,
-        ConfirmationRequest as HybridConfirmationRequest,
     )
+    from orchestrator.core.worker.worker_manager import (
+        ConfirmationRequest as WorkerConfirmationRequest,
+    )
+    from orchestrator.core.worker.worker_manager import ConfirmationType as WorkerConfirmationType
 except ImportError:
     # Direct execution - add parent to path
     sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-    from orchestrator.core.worker.worker_manager import (
-        ConfirmationRequest as WorkerConfirmationRequest,
-        ConfirmationType as WorkerConfirmationType,
-    )
+    from orchestrator.core.hybrid_engine import ConfirmationRequest as HybridConfirmationRequest
+    from orchestrator.core.hybrid_engine import ConfirmationType as HybridConfirmationType
     from orchestrator.core.hybrid_engine import (
         HybridDecisionEngine,
-        ConfirmationType as HybridConfirmationType,
-        ConfirmationRequest as HybridConfirmationRequest,
     )
+    from orchestrator.core.worker.worker_manager import (
+        ConfirmationRequest as WorkerConfirmationRequest,
+    )
+    from orchestrator.core.worker.worker_manager import ConfirmationType as WorkerConfirmationType
 
 
 # Compatibility layer for existing code expecting SafetyJudgment

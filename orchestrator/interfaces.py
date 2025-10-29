@@ -5,9 +5,9 @@
 これにより、依存性の逆転原則（DIP）とインターフェース分離原則（ISP）を実現します。
 """
 
-from abc import ABC, abstractmethod
-from typing import Protocol, Optional, Dict, Any, Type
 import types
+from abc import ABC, abstractmethod
+from typing import Any, Dict, Optional, Protocol, Type
 
 
 class IScreenshotCapture(Protocol):

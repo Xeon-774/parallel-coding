@@ -16,10 +16,9 @@ from sqlalchemy.orm import Session
 
 from orchestrator.api.dependencies import get_db
 from orchestrator.api.dependencies import require_scope as _require_scope
+from orchestrator.core.auth import TokenData
 from orchestrator.core.db_models import Worker, WorkerStatus
 from orchestrator.core.state_machine import WorkerStateMachine
-from orchestrator.core.auth import TokenData
-
 
 router = APIRouter(prefix="/api/supervisor", tags=["supervisor"])
 
@@ -131,7 +130,9 @@ async def pause_worker(
 
     sm = WorkerStateMachine(db)
     try:
-        worker = sm.transition_worker(worker_id=worker_id, to_state=WorkerStatus.PAUSED, reason="User paused worker")
+        worker = sm.transition_worker(
+            worker_id=worker_id, to_state=WorkerStatus.PAUSED, reason="User paused worker"
+        )
     except ValueError:
         raise HTTPException(status_code=404, detail="Worker not found")
     return WorkerResponse.model_validate(worker)
@@ -147,7 +148,9 @@ async def resume_worker(
 
     sm = WorkerStateMachine(db)
     try:
-        worker = sm.transition_worker(worker_id=worker_id, to_state=WorkerStatus.RUNNING, reason="User resumed worker")
+        worker = sm.transition_worker(
+            worker_id=worker_id, to_state=WorkerStatus.RUNNING, reason="User resumed worker"
+        )
     except ValueError:
         raise HTTPException(status_code=404, detail="Worker not found")
     return WorkerResponse.model_validate(worker)
@@ -183,4 +186,3 @@ async def get_metrics(
     for st in WorkerStatus:
         by_status[st.value] = db.query(Worker).filter(Worker.status == st).count()
     return MetricsResponse(total_workers=total, by_status=by_status)
-

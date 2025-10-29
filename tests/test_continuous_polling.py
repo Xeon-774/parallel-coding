@@ -19,11 +19,12 @@ sys.path.insert(0, str(project_root))
 
 # Configure UTF-8 encoding
 from orchestrator.utils.encoding_config import configure_console_encoding, safe_print
+
 configure_console_encoding()
 
 from orchestrator.config import OrchestratorConfig
-from orchestrator.core.worker.worker_manager import WorkerManager
 from orchestrator.core.structured_logging import StructuredLogger
+from orchestrator.core.worker.worker_manager import WorkerManager
 
 
 def test_continuous_polling():
@@ -37,9 +38,9 @@ def test_continuous_polling():
     3. Confirmation counter works correctly
     4. Last output time is tracked
     """
-    safe_print("\n" + "="*70)
+    safe_print("\n" + "=" * 70)
     safe_print("Phase 2.2 - Feature 3: Continuous Output Polling Test")
-    safe_print("="*70 + "\n")
+    safe_print("=" * 70 + "\n")
 
     # Configuration
     config = OrchestratorConfig()
@@ -55,9 +56,7 @@ def test_continuous_polling():
 
     # Logger
     logger = StructuredLogger(
-        name="continuous_polling_test",
-        log_dir=test_workspace,
-        enable_console=True
+        name="continuous_polling_test", log_dir=test_workspace, enable_console=True
     )
 
     # Create worker manager
@@ -76,7 +75,7 @@ Please perform these actions:
 3. Print "Test complete"
 
 Start now. DO NOT ask for confirmation - just execute the task.
-"""
+""",
     }
 
     worker_id = "polling_test"
@@ -89,20 +88,20 @@ Start now. DO NOT ask for confirmation - just execute the task.
 
     # Spawn worker
     safe_print("Spawning worker...")
-    session = manager.spawn_worker(
-        worker_id=worker_id,
-        task=task,
-        timeout=30
-    )
+    session = manager.spawn_worker(worker_id=worker_id, task=task, timeout=30)
 
     if not session:
         safe_print("FAILED: Could not spawn worker")
         return False
 
     safe_print(f"Worker spawned successfully")
-    safe_print(f"   Session started at: {time.strftime('%H:%M:%S', time.localtime(session.started_at))}")
+    safe_print(
+        f"   Session started at: {time.strftime('%H:%M:%S', time.localtime(session.started_at))}"
+    )
     safe_print(f"   Initial confirmation count: {session.confirmation_count}")
-    safe_print(f"   Initial last_output_time: {time.strftime('%H:%M:%S', time.localtime(session.last_output_time))}")
+    safe_print(
+        f"   Initial last_output_time: {time.strftime('%H:%M:%S', time.localtime(session.last_output_time))}"
+    )
     safe_print()
 
     # Run interactive session
@@ -112,15 +111,14 @@ Start now. DO NOT ask for confirmation - just execute the task.
 
     start_time = time.time()
     result = manager.run_interactive_session(
-        worker_id=session.worker_id,  # Use the actual worker_id from session
-        max_iterations=50
+        worker_id=session.worker_id, max_iterations=50  # Use the actual worker_id from session
     )
     duration = time.time() - start_time
 
     # Verify results
-    safe_print("\n" + "="*70)
+    safe_print("\n" + "=" * 70)
     safe_print("Test Results")
-    safe_print("="*70 + "\n")
+    safe_print("=" * 70 + "\n")
 
     safe_print(f"Execution completed in {duration:.2f} seconds")
     safe_print(f"Success: {result.success}")
@@ -143,7 +141,7 @@ Start now. DO NOT ask for confirmation - just execute the task.
 
     # Read and display terminal log
     if terminal_log.exists():
-        with open(terminal_log, 'r', encoding='utf-8') as f:
+        with open(terminal_log, "r", encoding="utf-8") as f:
             content = f.read()
 
         safe_print(f"Worker Terminal Output:")
@@ -158,7 +156,7 @@ Start now. DO NOT ask for confirmation - just execute the task.
             "1": "Number 1",
             "5": "Number 5",
             "10": "Number 10",
-            "Test complete": "Completion message"
+            "Test complete": "Completion message",
         }
 
         safe_print(f"Output Completeness Checks:")
@@ -181,12 +179,12 @@ Start now. DO NOT ask for confirmation - just execute the task.
 
     # Read orchestrator log to check polling messages
     if orchestrator_log.exists():
-        with open(orchestrator_log, 'r', encoding='utf-8') as f:
+        with open(orchestrator_log, "r", encoding="utf-8") as f:
             orch_content = f.read()
 
         # Count polling messages
-        poll_count = orch_content.count('[POLL]')
-        output_count = orch_content.count('[OUTPUT]')
+        poll_count = orch_content.count("[POLL]")
+        output_count = orch_content.count("[OUTPUT]")
 
         safe_print(f"Orchestrator Activity:")
         safe_print(f"   Polling events: {poll_count}")
@@ -194,14 +192,16 @@ Start now. DO NOT ask for confirmation - just execute the task.
         safe_print()
 
     # Final verdict
-    safe_print("="*70)
+    safe_print("=" * 70)
     # Consider test successful if output is complete, regardless of exit code
     # (Claude AI workers may return non-zero exit codes even on successful execution)
     if all_found:
         safe_print("TEST PASSED: Continuous polling is working correctly!")
         safe_print("   Output captured completely (100%)")
         safe_print("   Polling frequency increased (3s timeout)")
-        safe_print(f"   Polling events detected: {poll_count if 'poll_count' in locals() else 'N/A'}")
+        safe_print(
+            f"   Polling events detected: {poll_count if 'poll_count' in locals() else 'N/A'}"
+        )
         safe_print(f"   Worker execution time: {duration:.2f}s")
         if not result.success:
             safe_print("   Note: Exit code non-zero, but output complete (acceptable)")
@@ -212,7 +212,7 @@ Start now. DO NOT ask for confirmation - just execute the task.
         return False
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         success = test_continuous_polling()
         sys.exit(0 if success else 1)
@@ -222,5 +222,6 @@ if __name__ == '__main__':
     except Exception as e:
         safe_print(f"\n\nERROR: Test failed with exception: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)

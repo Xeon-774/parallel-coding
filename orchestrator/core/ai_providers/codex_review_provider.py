@@ -57,7 +57,6 @@ from orchestrator.core.worker.codex_executor import (
     ExecutionStatus,
 )
 
-
 # =============================================================================
 # Constants
 # =============================================================================
@@ -313,9 +312,7 @@ class CodexReviewProvider(BaseReviewProvider):
 
                 # Parse result
                 if codex_result.success:
-                    feedbacks = self._parse_review_output(
-                        codex_result.stdout, request.perspective
-                    )
+                    feedbacks = self._parse_review_output(codex_result.stdout, request.perspective)
                     score = self._calculate_score(feedbacks)
                     status = ReviewStatus.SUCCESS
                     error_message = None
@@ -328,9 +325,7 @@ class CodexReviewProvider(BaseReviewProvider):
                     feedbacks = []
                     score = 0.0
                     status = ReviewStatus.FAILED
-                    error_message = (
-                        codex_result.error_message or "Codex execution failed"
-                    )
+                    error_message = codex_result.error_message or "Codex execution failed"
 
                 execution_time = time.time() - start_time
 
@@ -471,9 +466,7 @@ End your review with a summary line: OVERALL_SCORE: [0-100]
             suggestion_match = re.search(
                 r"Suggestion:\s*(.+?)(?:\n---|$)", block, re.DOTALL | re.IGNORECASE
             )
-            suggestion = (
-                suggestion_match.group(1).strip() if suggestion_match else None
-            )
+            suggestion = suggestion_match.group(1).strip() if suggestion_match else None
 
             # Map severity
             severity_map = {

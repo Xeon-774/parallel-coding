@@ -29,14 +29,13 @@ Usage:
     print(token_data.scopes)   # ["supervisor:read", "supervisor:write"]
 """
 
+import os
 from datetime import datetime, timedelta
 from typing import List, Optional
-import os
 
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel, Field
-
 
 # ============================================================================
 # Configuration
@@ -44,22 +43,19 @@ from pydantic import BaseModel, Field
 
 # JWT settings (from environment variables for security)
 SECRET_KEY = os.getenv(
-    "JWT_SECRET_KEY",
-    "CHANGE_THIS_IN_PRODUCTION_USE_STRONG_SECRET"  # Default for development only
+    "JWT_SECRET_KEY", "CHANGE_THIS_IN_PRODUCTION_USE_STRONG_SECRET"  # Default for development only
 )
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("JWT_EXPIRE_MINUTES", "1440"))  # 24 hours default
 
 # Password hashing (Argon2id - Excellence AI Standard)
-pwd_context = CryptContext(
-    schemes=["argon2"],  # Argon2id ONLY
-    deprecated="auto"
-)
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")  # Argon2id ONLY
 
 
 # ============================================================================
 # Pydantic Models
 # ============================================================================
+
 
 class TokenPayload(BaseModel):
     """
@@ -105,6 +101,7 @@ class TokenData(BaseModel):
 # ============================================================================
 # Password Hashing Functions
 # ============================================================================
+
 
 def hash_password(password: str) -> str:
     """
@@ -162,10 +159,9 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 # JWT Token Functions
 # ============================================================================
 
+
 def create_access_token(
-    user_id: str,
-    scopes: List[str],
-    expires_delta: Optional[timedelta] = None
+    user_id: str, scopes: List[str], expires_delta: Optional[timedelta] = None
 ) -> str:
     """
     Create JWT access token.
@@ -201,20 +197,13 @@ def create_access_token(
     # Create payload with Unix timestamp for exp (JWT standard)
     # Convert UTC datetime to Unix timestamp (seconds since epoch)
     from calendar import timegm
+
     expire_timestamp = timegm(expire.utctimetuple())
 
-    payload_dict = {
-        "sub": user_id,
-        "exp": expire_timestamp,
-        "scopes": scopes
-    }
+    payload_dict = {"sub": user_id, "exp": expire_timestamp, "scopes": scopes}
 
     # Encode JWT
-    token = jwt.encode(
-        payload_dict,
-        SECRET_KEY,
-        algorithm=ALGORITHM
-    )
+    token = jwt.encode(payload_dict, SECRET_KEY, algorithm=ALGORITHM)
 
     return token
 
@@ -241,11 +230,7 @@ def verify_token(token: str) -> TokenData:
     """
     try:
         # Decode JWT
-        payload = jwt.decode(
-            token,
-            SECRET_KEY,
-            algorithms=[ALGORITHM]
-        )
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
 
         # Extract user ID
         user_id: Optional[str] = payload.get("sub")
@@ -285,10 +270,8 @@ def check_scope(required_scope: str, token_scopes: List[str]) -> bool:
 # Development Utilities
 # ============================================================================
 
-def create_dev_token(
-    user_id: str = "dev_user",
-    scopes: Optional[List[str]] = None
-) -> str:
+
+def create_dev_token(user_id: str = "dev_user", scopes: Optional[List[str]] = None) -> str:
     """
     Create development token with full permissions.
 
@@ -336,10 +319,7 @@ if __name__ == "__main__":
     print()
 
     print("=== JWT Token Example ===")
-    token = create_access_token(
-        user_id="user_123",
-        scopes=["supervisor:read", "supervisor:write"]
-    )
+    token = create_access_token(user_id="user_123", scopes=["supervisor:read", "supervisor:write"])
     print(f"Token: {token[:50]}...")
     print()
 

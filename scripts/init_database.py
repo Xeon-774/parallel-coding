@@ -10,6 +10,7 @@ This script:
 - Validates that core tables exist.
 - Optionally seeds development data when ORM models are available.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -19,10 +20,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List
 
-from alembic import command
-from alembic.config import Config
 from sqlalchemy import create_engine, inspect
 
+from alembic import command
+from alembic.config import Config
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
@@ -126,10 +127,10 @@ def _seed_development_data() -> None:
     try:
         from orchestrator.core.database import SessionLocal  # type: ignore
         from orchestrator.core.db_models import (  # type: ignore
-            Worker,
             Job,
-            WorkerStatus,
             JobStatus,
+            Worker,
+            WorkerStatus,
         )
     except Exception:
         # Silently skip seeding if models are not present.
@@ -139,7 +140,9 @@ def _seed_development_data() -> None:
     try:
         # Create a test worker and job only if they don't exist
         if not session.query(Worker).filter_by(id="test-worker-1").first():
-            session.add(Worker(id="test-worker-1", workspace_id="dev-workspace", status=WorkerStatus.IDLE))
+            session.add(
+                Worker(id="test-worker-1", workspace_id="dev-workspace", status=WorkerStatus.IDLE)
+            )
         if not session.query(Job).filter_by(id="test-job-1").first():
             session.add(
                 Job(
@@ -207,4 +210,3 @@ def main(argv: List[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

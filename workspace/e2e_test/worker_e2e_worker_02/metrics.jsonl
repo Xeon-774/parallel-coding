@@ -8,3 +8,4 @@
 {"type": "worker_lifecycle", "timestamp": "2025-10-24T14:28:47.574792Z", "worker_id": "worker_e2e_worker_02", "event": "spawned", "duration_seconds": null}
 {"type": "confirmation", "timestamp": "2025-10-24T14:29:11.037985Z", "worker_id": "worker_e2e_worker_02", "confirmation_number": 1, "orchestrator_latency_ms": 5726.879596710205, "response": "approved"}
 {"type": "worker_lifecycle", "timestamp": "2025-10-24T14:29:11.139978Z", "worker_id": "worker_e2e_worker_02", "event": "failed", "duration_seconds": 23.565187454223633}
+{"type": "worker_lifecycle", "timestamp": "2025-10-29T07:46:55.926467Z", "worker_id": "worker_e2e_worker_02", "event": "spawned", "duration_seconds": null}

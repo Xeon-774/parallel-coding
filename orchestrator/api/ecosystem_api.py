@@ -15,9 +15,9 @@ Part of: Phase 2 Backend Integration
 
 import logging
 import time
-from typing import Dict, List, Optional
 from datetime import datetime
 from pathlib import Path
+from typing import Dict, List, Optional
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse
@@ -106,9 +106,7 @@ async def get_ecosystem_health():
         worker_count = 0
         if workspace_root.exists():
             worker_count = sum(
-                1
-                for d in workspace_root.iterdir()
-                if d.is_dir() and d.name.startswith("worker_")
+                1 for d in workspace_root.iterdir() if d.is_dir() and d.name.startswith("worker_")
             )
 
         # Calculate uptime (mock for now, should track actual start time)
@@ -200,9 +198,7 @@ async def get_metrics_summary():
         }
     except Exception as e:
         logger.error(f"Error getting metrics summary: {e}")
-        return JSONResponse(
-            status_code=500, content={"error": str(e), "timestamp": time.time()}
-        )
+        return JSONResponse(status_code=500, content={"error": str(e), "timestamp": time.time()})
 
 
 @router.websocket("/activity")

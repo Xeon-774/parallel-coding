@@ -12,16 +12,17 @@ import time
 from pathlib import Path
 
 # UTF-8出力設定
-if sys.platform == 'win32':
+if sys.platform == "win32":
     import codecs
-    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'replace')
-    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'replace')
+
+    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
+    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
 
 # プロジェクトルートをPythonパスに追加
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from orchestrator import RefactoredOrchestrator, OrchestratorConfig
+from orchestrator import OrchestratorConfig, RefactoredOrchestrator
 
 
 def main():
@@ -49,8 +50,8 @@ def main():
     print()
 
     # Windows環境設定
-    os.environ['ORCHESTRATOR_MODE'] = 'windows'
-    os.environ['CLAUDE_CODE_GIT_BASH_PATH'] = r'C:\\opt\\Git.Git\\usr\\bin\\bash.exe'
+    os.environ["ORCHESTRATOR_MODE"] = "windows"
+    os.environ["CLAUDE_CODE_GIT_BASH_PATH"] = r"C:\\opt\\Git.Git\\usr\\bin\\bash.exe"
 
     config = OrchestratorConfig.from_env()
 
@@ -65,8 +66,7 @@ def main():
     start_time = time.time()
 
     orchestrator = RefactoredOrchestrator(
-        config=config,
-        enable_realtime_monitoring=True  # リアルタイム監視有効
+        config=config, enable_realtime_monitoring=True  # リアルタイム監視有効
     )
 
     result = orchestrator.execute(task)
@@ -85,7 +85,7 @@ def main():
     worker_1_output = workspace_path / "worker_1" / "output.txt"
 
     if worker_1_output.exists():
-        with open(worker_1_output, 'r', encoding='utf-8', errors='replace') as f:
+        with open(worker_1_output, "r", encoding="utf-8", errors="replace") as f:
             file_content = f.read()
 
         print("=" * 80)
@@ -130,5 +130,5 @@ def main():
     print()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

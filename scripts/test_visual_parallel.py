@@ -7,9 +7,9 @@ Claude AIインスタンスを実行して、並列実行を視覚的に確認
 """
 
 import os
+import subprocess
 import sys
 import time
-import subprocess
 from pathlib import Path
 
 # プロジェクトルートをPythonパスに追加
@@ -17,13 +17,16 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 # UTF-8出力設定
-if sys.platform == 'win32':
+if sys.platform == "win32":
     import codecs
-    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'replace')
-    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'replace')
+
+    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
+    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
 
 
-def create_worker_batch_file(worker_id: int, task_name: str, task_prompt: str, workspace_dir: str, git_bash_path: str):
+def create_worker_batch_file(
+    worker_id: int, task_name: str, task_prompt: str, workspace_dir: str, git_bash_path: str
+):
     """
     各ワーカー用のバッチファイルを作成
 
@@ -39,7 +42,7 @@ def create_worker_batch_file(worker_id: int, task_name: str, task_prompt: str, w
 
     # タスクファイル作成
     task_file = worker_dir / "task.txt"
-    with open(task_file, 'w', encoding='utf-8') as f:
+    with open(task_file, "w", encoding="utf-8") as f:
         f.write(task_prompt)
 
     # バッチファイル作成
@@ -73,7 +76,7 @@ echo.
 pause
 """
 
-    with open(batch_file, 'w', encoding='utf-8') as f:
+    with open(batch_file, "w", encoding="utf-8") as f:
         f.write(batch_content)
 
     return batch_file
@@ -100,35 +103,35 @@ def test_visual_parallel(num_workers: int = 3):
     workspace_dir = Path(project_root) / "workspace"
     workspace_dir.mkdir(exist_ok=True)
 
-    git_bash_path = r'C:\opt\Git.Git\usr\bin\bash.exe'
+    git_bash_path = r"C:\opt\Git.Git\usr\bin\bash.exe"
 
     # タスク定義
     tasks = [
         {
             "id": 1,
             "name": "Fibonacci計算",
-            "prompt": "Pythonで20番目のフィボナッチ数を計算するプログラムを書いてください。再帰とループの両方の実装を含めてください。"
+            "prompt": "Pythonで20番目のフィボナッチ数を計算するプログラムを書いてください。再帰とループの両方の実装を含めてください。",
         },
         {
             "id": 2,
             "name": "素数探索",
-            "prompt": "Pythonで100から200までの素数を見つけるプログラムを書いてください。見つかった素数の数と最初の5個を表示してください。"
+            "prompt": "Pythonで100から200までの素数を見つけるプログラムを書いてください。見つかった素数の数と最初の5個を表示してください。",
         },
         {
             "id": 3,
             "name": "FizzBuzz",
-            "prompt": "Pythonで1から100までのFizzBuzzプログラムを書いてください。3の倍数でFizz、5の倍数でBuzz、両方の倍数でFizzBuzzを出力してください。"
+            "prompt": "Pythonで1から100までのFizzBuzzプログラムを書いてください。3の倍数でFizz、5の倍数でBuzz、両方の倍数でFizzBuzzを出力してください。",
         },
         {
             "id": 4,
             "name": "回文チェック",
-            "prompt": "Pythonで文字列が回文かどうかをチェックする関数を書いてください。いくつかのテストケースで動作を確認してください。"
+            "prompt": "Pythonで文字列が回文かどうかをチェックする関数を書いてください。いくつかのテストケースで動作を確認してください。",
         },
         {
             "id": 5,
             "name": "リスト操作",
-            "prompt": "Pythonでリストの要素を逆順にする関数を書いてください。組み込み関数を使わずに実装してください。"
-        }
+            "prompt": "Pythonでリストの要素を逆順にする関数を書いてください。組み込み関数を使わずに実装してください。",
+        },
     ]
 
     # ワーカー数に合わせてタスクを選択
@@ -146,11 +149,11 @@ def test_visual_parallel(num_workers: int = 3):
     batch_files = []
     for task in selected_tasks:
         batch_file = create_worker_batch_file(
-            worker_id=task['id'],
-            task_name=task['name'],
-            task_prompt=task['prompt'],
+            worker_id=task["id"],
+            task_name=task["name"],
+            task_prompt=task["prompt"],
             workspace_dir=str(workspace_dir),
-            git_bash_path=git_bash_path
+            git_bash_path=git_bash_path,
         )
         batch_files.append(batch_file)
         print(f"  ✓ Worker {task['id']}: {batch_file}")
@@ -173,10 +176,7 @@ def test_visual_parallel(num_workers: int = 3):
         # startコマンドで新しいウィンドウを開く
         cmd = f'start "Worker {i}" /D "{batch_file.parent}" "{batch_file}"'
 
-        process = subprocess.Popen(
-            cmd,
-            shell=True
-        )
+        process = subprocess.Popen(cmd, shell=True)
         processes.append(process)
 
         # ウィンドウが開くまで少し待つ
@@ -205,12 +205,13 @@ def test_visual_parallel(num_workers: int = 3):
     print()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description='視覚的な並列実行テスト')
-    parser.add_argument('-w', '--workers', type=int, default=3,
-                        help='ワーカー数（1-5、デフォルト: 3）')
+    parser = argparse.ArgumentParser(description="視覚的な並列実行テスト")
+    parser.add_argument(
+        "-w", "--workers", type=int, default=3, help="ワーカー数（1-5、デフォルト: 3）"
+    )
 
     args = parser.parse_args()
 

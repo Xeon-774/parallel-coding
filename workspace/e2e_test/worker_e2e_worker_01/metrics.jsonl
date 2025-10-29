@@ -7,3 +7,4 @@
 {"type": "worker_lifecycle", "timestamp": "2025-10-24T14:28:27.583321Z", "worker_id": "worker_e2e_worker_01", "event": "failed", "duration_seconds": 18.34322452545166}
 {"type": "worker_lifecycle", "timestamp": "2025-10-24T14:28:47.169575Z", "worker_id": "worker_e2e_worker_01", "event": "spawned", "duration_seconds": null}
 {"type": "worker_lifecycle", "timestamp": "2025-10-24T14:29:05.470116Z", "worker_id": "worker_e2e_worker_01", "event": "failed", "duration_seconds": 18.300551176071167}
+{"type": "worker_lifecycle", "timestamp": "2025-10-29T07:46:55.518308Z", "worker_id": "worker_e2e_worker_01", "event": "spawned", "duration_seconds": null}

@@ -14,12 +14,13 @@ async def test_5_level_depth_limit_enforced():
     root = await orch.submit_job(req, depth=0)
     await orch._tasks[root.job_id]
     tree = await orch.get_tree(root.job_id)
+
     # Ensure no node deeper than 2
     def collect_depths(node):
         depths = [node["depth"]]
         for c in node.get("children", []):
             depths.extend(collect_depths(c))
         return depths
+
     depths = collect_depths(tree)
     assert max(depths) <= 2
-

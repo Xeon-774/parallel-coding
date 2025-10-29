@@ -87,9 +87,7 @@ class OrchestratorConfigRecursion(BaseModel):
         """
         max_depth = values.get("max_recursion_depth", 3)
         if v > max_depth:
-            raise ValueError(
-                f"Current depth ({v}) exceeds max depth ({max_depth})"
-            )
+            raise ValueError(f"Current depth ({v}) exceeds max depth ({max_depth})")
         return v
 
     @validator("orchestrator_api_url")
@@ -125,4 +123,3 @@ class OrchestratorConfig(BaseModel):
         default_factory=OrchestratorConfigRecursion,
         description="Recursion configuration",
     )
-

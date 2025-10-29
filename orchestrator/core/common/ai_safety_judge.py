@@ -7,9 +7,9 @@ escalated to the user.
 """
 
 import re
-from typing import Dict, Optional, Any
 from dataclasses import dataclass
 from enum import Enum
+from typing import Any, Dict, Optional
 
 from orchestrator.core.common.models import ConfirmationRequest, ConfirmationType
 

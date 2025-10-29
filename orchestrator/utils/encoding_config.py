@@ -12,8 +12,8 @@ Rationale:
 - Consistent encoding across all components
 """
 
-import sys
 import io
+import sys
 from typing import TextIO
 
 # Project-wide encoding standard

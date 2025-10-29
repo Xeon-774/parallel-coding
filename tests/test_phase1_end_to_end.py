@@ -17,13 +17,14 @@ Success Criteria:
 - Performance metrics within targets
 """
 
+import asyncio
 import sys
 import time
-import asyncio
-import pytest
-from pathlib import Path
-from typing import List, Dict, Any
 from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any, Dict, List
+
+import pytest
 
 # Project root
 project_root = Path(__file__).parent.parent
@@ -31,13 +32,14 @@ sys.path.insert(0, str(project_root))
 
 # Configure UTF-8 encoding
 from orchestrator.utils.encoding_config import configure_console_encoding, safe_print
+
 configure_console_encoding()
 
 from orchestrator.config import OrchestratorConfig
+from orchestrator.core.common.metrics import MetricsCollector
+from orchestrator.core.structured_logging import StructuredLogger
 from orchestrator.core.worker.worker_manager import WorkerManager
 from orchestrator.core.worker_status_monitor import WorkerStatusMonitor
-from orchestrator.core.structured_logging import StructuredLogger
-from orchestrator.core.common.metrics import MetricsCollector
 
 
 class Phase1E2EValidator:
@@ -64,15 +66,15 @@ class Phase1E2EValidator:
 
         # Validation results
         self.results = {
-            'workers_spawned': 0,
-            'workers_completed': 0,
-            'workers_failed': 0,
-            'status_updates': [],
-            'dialogue_messages': [],
-            'terminal_outputs': [],
-            'metrics_collected': [],
-            'performance_metrics': {},
-            'validation_errors': []
+            "workers_spawned": 0,
+            "workers_completed": 0,
+            "workers_failed": 0,
+            "status_updates": [],
+            "dialogue_messages": [],
+            "terminal_outputs": [],
+            "metrics_collected": [],
+            "performance_metrics": {},
+            "validation_errors": [],
         }
 
     def _create_config(self) -> OrchestratorConfig:
@@ -91,11 +93,7 @@ class Phase1E2EValidator:
         log_dir = project_root / "logs" / "e2e_test"
         log_dir.mkdir(parents=True, exist_ok=True)
 
-        return StructuredLogger(
-            name="phase1_e2e",
-            log_dir=log_dir,
-            enable_console=True
-        )
+        return StructuredLogger(name="phase1_e2e", log_dir=log_dir, enable_console=True)
 
     def _create_test_tasks(self) -> List[Dict[str, Any]]:
         """
@@ -116,7 +114,7 @@ Requirements:
 4. Add a docstring
 5. Ensure UTF-8 encoding
 
-Complete this task and confirm when done."""
+Complete this task and confirm when done.""",
             },
             {
                 "name": "create_calculator",
@@ -129,7 +127,7 @@ Requirements:
 4. Add basic error handling (division by zero)
 5. Ensure UTF-8 encoding
 
-Complete this task and confirm when done."""
+Complete this task and confirm when done.""",
             },
             {
                 "name": "create_string_utils",
@@ -142,7 +140,7 @@ Requirements:
 4. Add type hints
 5. Ensure UTF-8 encoding
 
-Complete this task and confirm when done."""
+Complete this task and confirm when done.""",
             },
             {
                 "name": "create_file_reader",
@@ -155,16 +153,14 @@ Requirements:
 4. Add docstrings to all functions
 5. Ensure UTF-8 encoding
 
-Complete this task and confirm when done."""
-            }
+Complete this task and confirm when done.""",
+            },
         ]
 
-        return task_templates[:self.num_workers]
+        return task_templates[: self.num_workers]
 
     async def validate_worker_status_updates(
-        self,
-        worker_ids: List[str],
-        timeout: float = 120.0
+        self, worker_ids: List[str], timeout: float = 120.0
     ) -> bool:
         """
         Validate Worker Status Dashboard real-time updates.
@@ -189,19 +185,22 @@ Complete this task and confirm when done."""
                 if status:
                     # Record update
                     update_time = time.time()
-                    latency = update_time - status.get('last_update', update_time)
+                    latency = update_time - status.get("last_update", update_time)
                     update_latencies.append(latency)
 
-                    self.results['status_updates'].append({
-                        'worker_id': worker_id,
-                        'timestamp': update_time,
-                        'latency': latency,
-                        'status': status
-                    })
+                    self.results["status_updates"].append(
+                        {
+                            "worker_id": worker_id,
+                            "timestamp": update_time,
+                            "latency": latency,
+                            "status": status,
+                        }
+                    )
 
             # Check if all workers have completed
             all_done = all(
-                self.status_monitor.get_worker_status(wid).get('state') in ['completed', 'error', 'terminated']
+                self.status_monitor.get_worker_status(wid).get("state")
+                in ["completed", "error", "terminated"]
                 for wid in worker_ids
                 if self.status_monitor.get_worker_status(wid)
             )
@@ -216,8 +215,8 @@ Complete this task and confirm when done."""
             avg_latency = sum(update_latencies) / len(update_latencies)
             max_latency = max(update_latencies)
 
-            self.results['performance_metrics']['status_avg_latency'] = avg_latency
-            self.results['performance_metrics']['status_max_latency'] = max_latency
+            self.results["performance_metrics"]["status_avg_latency"] = avg_latency
+            self.results["performance_metrics"]["status_max_latency"] = max_latency
 
             # Validation: max latency must be <2 seconds
             passed = max_latency < 2.0
@@ -231,7 +230,7 @@ Complete this task and confirm when done."""
             return passed
         else:
             safe_print("[E2E] ❌ No status updates recorded")
-            self.results['validation_errors'].append("No status updates recorded")
+            self.results["validation_errors"].append("No status updates recorded")
             return False
 
     async def validate_dialogue_logging(self, worker_ids: List[str]) -> bool:
@@ -251,7 +250,7 @@ Complete this task and confirm when done."""
 
         if not dialogue_dir.exists():
             safe_print("[E2E] ❌ Dialogue log directory not found")
-            self.results['validation_errors'].append("Dialogue log directory missing")
+            self.results["validation_errors"].append("Dialogue log directory missing")
             return False
 
         # Check for dialogue files
@@ -264,10 +263,10 @@ Complete this task and confirm when done."""
         # Count dialogue messages
         message_count = 0
         for dialogue_file in dialogue_files:
-            with open(dialogue_file, 'r', encoding='utf-8') as f:
+            with open(dialogue_file, "r", encoding="utf-8") as f:
                 lines = f.readlines()
                 message_count += len(lines)
-                self.results['dialogue_messages'].extend(lines)
+                self.results["dialogue_messages"].extend(lines)
 
         safe_print(f"[E2E] Dialogue Messages: {message_count}")
         safe_print(f"[E2E] Dialogue Files: {len(dialogue_files)}")
@@ -293,7 +292,7 @@ Complete this task and confirm when done."""
 
         if not output_dir.exists():
             safe_print("[E2E] ❌ Output directory not found")
-            self.results['validation_errors'].append("Output directory missing")
+            self.results["validation_errors"].append("Output directory missing")
             return False
 
         # Check for output files
@@ -301,19 +300,18 @@ Complete this task and confirm when done."""
 
         if len(output_files) == 0:
             safe_print("[E2E] ❌ No terminal output files found")
-            self.results['validation_errors'].append("No terminal outputs captured")
+            self.results["validation_errors"].append("No terminal outputs captured")
             return False
 
         # Count output lines
         total_lines = 0
         for output_file in output_files:
-            with open(output_file, 'r', encoding='utf-8', errors='replace') as f:
+            with open(output_file, "r", encoding="utf-8", errors="replace") as f:
                 lines = f.readlines()
                 total_lines += len(lines)
-                self.results['terminal_outputs'].append({
-                    'file': output_file.name,
-                    'lines': len(lines)
-                })
+                self.results["terminal_outputs"].append(
+                    {"file": output_file.name, "lines": len(lines)}
+                )
 
         safe_print(f"[E2E] Terminal Output Files: {len(output_files)}")
         safe_print(f"[E2E] Total Output Lines: {total_lines}")
@@ -338,15 +336,15 @@ Complete this task and confirm when done."""
             return True  # Not a failure
 
         # Record metrics
-        self.results['metrics_collected'].append(current_metrics)
+        self.results["metrics_collected"].append(current_metrics)
 
         # Validate metric structure
-        required_fields = ['total_decisions', 'rule_decisions', 'ai_decisions']
+        required_fields = ["total_decisions", "rule_decisions", "ai_decisions"]
         missing_fields = [f for f in required_fields if f not in current_metrics]
 
         if missing_fields:
             safe_print(f"[E2E] ❌ Missing metric fields: {missing_fields}")
-            self.results['validation_errors'].append(f"Missing metrics: {missing_fields}")
+            self.results["validation_errors"].append(f"Missing metrics: {missing_fields}")
             return False
 
         safe_print(f"[E2E] Total Decisions: {current_metrics.get('total_decisions', 0)}")
@@ -377,9 +375,7 @@ Complete this task and confirm when done."""
 
             # Initialize worker manager
             self.worker_manager = WorkerManager(
-                config=self.config,
-                logger=self.logger,
-                user_approval_callback=None  # Auto-approval
+                config=self.config, logger=self.logger, user_approval_callback=None  # Auto-approval
             )
 
             # Create test tasks
@@ -394,17 +390,14 @@ Complete this task and confirm when done."""
 
                 safe_print(f"[E2E] Spawning: {worker_id} - {task['name']}")
 
-                session = self.worker_manager.spawn_worker(
-                    worker_id=worker_id,
-                    task=task
-                )
+                session = self.worker_manager.spawn_worker(worker_id=worker_id, task=task)
 
                 if session:
                     worker_ids.append(worker_id)
-                    self.results['workers_spawned'] += 1
+                    self.results["workers_spawned"] += 1
                     safe_print(f"[E2E] ✅ {worker_id} spawned")
                 else:
-                    self.results['workers_failed'] += 1
+                    self.results["workers_failed"] += 1
                     safe_print(f"[E2E] ❌ {worker_id} failed to spawn")
 
             if len(worker_ids) == 0:
@@ -421,17 +414,16 @@ Complete this task and confirm when done."""
 
             # Wait for workers to complete
             results = self.worker_manager.wait_all(
-                max_workers=len(worker_ids),
-                timeout=300  # 5 minutes
+                max_workers=len(worker_ids), timeout=300  # 5 minutes
             )
 
             # Process results
             for result in results:
                 if result.success:
-                    self.results['workers_completed'] += 1
+                    self.results["workers_completed"] += 1
                     safe_print(f"[E2E] ✅ {result.worker_id} completed")
                 else:
-                    self.results['workers_failed'] += 1
+                    self.results["workers_failed"] += 1
                     safe_print(f"[E2E] ❌ {result.worker_id} failed: {result.error_message}")
 
             # Wait for status validation to complete
@@ -448,28 +440,34 @@ Complete this task and confirm when done."""
             safe_print("=" * 80)
 
             safe_print(f"\n✓ Workers Spawned: {self.results['workers_spawned']}/{self.num_workers}")
-            safe_print(f"✓ Workers Completed: {self.results['workers_completed']}/{self.num_workers}")
+            safe_print(
+                f"✓ Workers Completed: {self.results['workers_completed']}/{self.num_workers}"
+            )
             safe_print(f"✓ Workers Failed: {self.results['workers_failed']}/{self.num_workers}")
 
-            safe_print(f"\n✓ Worker Status Dashboard: {'✅ PASS' if status_validation_passed else '❌ FAIL'}")
+            safe_print(
+                f"\n✓ Worker Status Dashboard: {'✅ PASS' if status_validation_passed else '❌ FAIL'}"
+            )
             safe_print(f"✓ Dialogue View: {'✅ PASS' if dialogue_validation_passed else '❌ FAIL'}")
             safe_print(f"✓ Terminal View: {'✅ PASS' if terminal_validation_passed else '❌ FAIL'}")
-            safe_print(f"✓ Metrics Dashboard: {'✅ PASS' if metrics_validation_passed else '❌ FAIL'}")
+            safe_print(
+                f"✓ Metrics Dashboard: {'✅ PASS' if metrics_validation_passed else '❌ FAIL'}"
+            )
 
             # Overall success criteria
-            completion_rate = (self.results['workers_completed'] / self.num_workers) * 100
+            completion_rate = (self.results["workers_completed"] / self.num_workers) * 100
             all_dashboards_passed = (
-                status_validation_passed and
-                dialogue_validation_passed and
-                terminal_validation_passed and
-                metrics_validation_passed
+                status_validation_passed
+                and dialogue_validation_passed
+                and terminal_validation_passed
+                and metrics_validation_passed
             )
 
             overall_success = (
-                self.results['workers_spawned'] >= 3 and
-                completion_rate >= 75.0 and
-                all_dashboards_passed and
-                len(self.results['validation_errors']) == 0
+                self.results["workers_spawned"] >= 3
+                and completion_rate >= 75.0
+                and all_dashboards_passed
+                and len(self.results["validation_errors"]) == 0
             )
 
             safe_print("\n" + "=" * 80)
@@ -478,9 +476,9 @@ Complete this task and confirm when done."""
                 safe_print("All 4 dashboard views operational, performance targets met!")
             else:
                 safe_print("❌ PHASE 1 E2E VALIDATION: FAILURE")
-                if self.results['validation_errors']:
+                if self.results["validation_errors"]:
                     safe_print("\nErrors:")
-                    for error in self.results['validation_errors']:
+                    for error in self.results["validation_errors"]:
                         safe_print(f"  - {error}")
             safe_print("=" * 80)
 
@@ -489,6 +487,7 @@ Complete this task and confirm when done."""
         except Exception as e:
             safe_print(f"\n[E2E] ❌ Validation failed with exception: {e}")
             import traceback
+
             traceback.print_exc()
             return False
 
@@ -527,8 +526,9 @@ async def test_phase1_e2e_validation_3_workers():
     assert success, "Phase 1 E2E validation with 3 workers failed"
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     """Run E2E validation standalone"""
+
     async def main():
         # Run with 4 workers by default
         validator = Phase1E2EValidator(num_workers=4)

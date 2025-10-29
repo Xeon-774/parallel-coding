@@ -11,7 +11,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from orchestrator import RefactoredOrchestrator, OrchestratorConfig
+from orchestrator import OrchestratorConfig, RefactoredOrchestrator
 
 
 def test_windows_mode():
@@ -23,8 +23,8 @@ def test_windows_mode():
     print()
 
     # Windowsモードに設定
-    os.environ['ORCHESTRATOR_MODE'] = 'windows'
-    os.environ['CLAUDE_CODE_GIT_BASH_PATH'] = r'C:\opt\Git.Git\usr\bin\bash.exe'
+    os.environ["ORCHESTRATOR_MODE"] = "windows"
+    os.environ["CLAUDE_CODE_GIT_BASH_PATH"] = r"C:\opt\Git.Git\usr\bin\bash.exe"
 
     print(f"モード: {os.environ['ORCHESTRATOR_MODE']}")
     print(f"Git Bash: {os.environ['CLAUDE_CODE_GIT_BASH_PATH']}")
@@ -44,10 +44,7 @@ Pythonで簡単な計算をしてください：
     print()
 
     config = OrchestratorConfig.from_env()
-    orchestrator = RefactoredOrchestrator(
-        config=config,
-        enable_realtime_monitoring=True
-    )
+    orchestrator = RefactoredOrchestrator(config=config, enable_realtime_monitoring=True)
 
     try:
         result = orchestrator.execute(task)
@@ -68,11 +65,12 @@ Pythonで簡単な計算をしてください：
     except Exception as e:
         print(f"\n[ERROR] エラー発生: {e}")
         import traceback
+
         traceback.print_exc()
 
     print()
     print("=" * 80)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_windows_mode()

@@ -7,9 +7,9 @@
 """
 
 import os
+import subprocess
 import sys
 import time
-import subprocess
 from pathlib import Path
 
 # プロジェクトルートをPythonパスに追加
@@ -17,13 +17,16 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 # UTF-8出力設定
-if sys.platform == 'win32':
+if sys.platform == "win32":
     import codecs
-    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'replace')
-    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'replace')
+
+    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
+    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
 
 
-def create_interactive_worker_script(worker_id: int, task_name: str, workspace_dir: Path, git_bash_path: str):
+def create_interactive_worker_script(
+    worker_id: int, task_name: str, workspace_dir: Path, git_bash_path: str
+):
     """
     対話型ワーカースクリプトを作成
 
@@ -42,7 +45,7 @@ def create_interactive_worker_script(worker_id: int, task_name: str, workspace_d
     output_file = worker_dir / "output.txt"
 
     # 初期状態
-    status_file.write_text("READY", encoding='utf-8')
+    status_file.write_text("READY", encoding="utf-8")
 
     # PowerShellスクリプト（対話型Claude CLIを制御）
     ps_script = worker_dir / "worker_controller.ps1"
@@ -145,7 +148,7 @@ Write-Host "Enterキーを押して終了..."
 $null = Read-Host
 """
 
-    ps_script.write_text(ps_content, encoding='utf-8')
+    ps_script.write_text(ps_content, encoding="utf-8")
 
     # バッチファイル（PowerShellスクリプトを起動）
     batch_file = worker_dir / f"start_worker_{worker_id}.bat"
@@ -158,7 +161,7 @@ color 0{worker_id % 6 + 2}
 powershell -ExecutionPolicy Bypass -File "{ps_script}"
 """
 
-    batch_file.write_text(batch_content, encoding='utf-8')
+    batch_file.write_text(batch_content, encoding="utf-8")
 
     return batch_file, command_file, status_file, output_file
 
@@ -182,13 +185,25 @@ def test_interactive_parallel():
     workspace_dir = Path(project_root) / "workspace"
     workspace_dir.mkdir(exist_ok=True)
 
-    git_bash_path = r'C:\opt\Git.Git\usr\bin\bash.exe'
+    git_bash_path = r"C:\opt\Git.Git\usr\bin\bash.exe"
 
     # 3つのワーカーを起動
     tasks = [
-        {"id": 1, "name": "素数探索", "task": "100から200までの素数を見つけて、個数と最初の5個を表示してください。"},
-        {"id": 2, "name": "Fibonacci", "task": "20番目までのフィボナッチ数列を計算して表示してください。"},
-        {"id": 3, "name": "ソート", "task": "ランダムな20個の数字を生成してソートし、結果を表示してください。"}
+        {
+            "id": 1,
+            "name": "素数探索",
+            "task": "100から200までの素数を見つけて、個数と最初の5個を表示してください。",
+        },
+        {
+            "id": 2,
+            "name": "Fibonacci",
+            "task": "20番目までのフィボナッチ数列を計算して表示してください。",
+        },
+        {
+            "id": 3,
+            "name": "ソート",
+            "task": "ランダムな20個の数字を生成してソートし、結果を表示してください。",
+        },
     ]
 
     print("=" * 80)
@@ -199,10 +214,10 @@ def test_interactive_parallel():
     workers = []
     for task in tasks:
         batch_file, command_file, status_file, output_file = create_interactive_worker_script(
-            worker_id=task['id'],
-            task_name=task['name'],
+            worker_id=task["id"],
+            task_name=task["name"],
             workspace_dir=workspace_dir,
-            git_bash_path=git_bash_path
+            git_bash_path=git_bash_path,
         )
 
         print(f"[ORCHESTRATOR] Worker {task['id']} ({task['name']}) を起動中...")
@@ -211,14 +226,16 @@ def test_interactive_parallel():
         cmd = f'start "Worker {task["id"]}: {task["name"]}" "{batch_file}"'
         subprocess.Popen(cmd, shell=True)
 
-        workers.append({
-            'id': task['id'],
-            'name': task['name'],
-            'task': task['task'],
-            'command_file': command_file,
-            'status_file': status_file,
-            'output_file': output_file
-        })
+        workers.append(
+            {
+                "id": task["id"],
+                "name": task["name"],
+                "task": task["task"],
+                "command_file": command_file,
+                "status_file": status_file,
+                "output_file": output_file,
+            }
+        )
 
         time.sleep(0.5)
 
@@ -242,7 +259,7 @@ def test_interactive_parallel():
         print(f"  内容: {worker['task']}")
 
         # コマンドファイルに書き込み
-        worker['command_file'].write_text(worker['task'], encoding='utf-8')
+        worker["command_file"].write_text(worker["task"], encoding="utf-8")
 
         print(f"  [送信完了] Worker {worker['id']} がタスクを実行中...")
         print()
@@ -265,8 +282,8 @@ def test_interactive_parallel():
         all_complete = True
 
         for worker in workers:
-            if worker['status_file'].exists():
-                status = worker['status_file'].read_text(encoding='utf-8').strip()
+            if worker["status_file"].exists():
+                status = worker["status_file"].read_text(encoding="utf-8").strip()
                 if status != "COMPLETE":
                     all_complete = False
 
@@ -284,8 +301,8 @@ def test_interactive_parallel():
     for worker in workers:
         print(f"[Worker {worker['id']}: {worker['name']}]")
 
-        if worker['output_file'].exists():
-            output = worker['output_file'].read_text(encoding='utf-8')
+        if worker["output_file"].exists():
+            output = worker["output_file"].read_text(encoding="utf-8")
             print(f"  出力: {output[:200]}...")
         else:
             print(f"  [WARNING] 出力ファイルが見つかりません")
@@ -304,5 +321,5 @@ def test_interactive_parallel():
     print()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_interactive_parallel()

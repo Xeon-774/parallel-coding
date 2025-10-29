@@ -7,9 +7,9 @@ validation, real-time output streaming, and confirmation prompt detection.
 from __future__ import annotations
 
 import os
+import re
 import sys
 import time
-import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional, Tuple
@@ -18,7 +18,6 @@ from pydantic import BaseModel, Field, ValidationError, field_validator
 
 from orchestrator.core.supervisor.io_handler import ProcessIOHandler
 from orchestrator.utils.ansi_utils import strip_ansi
-
 
 DEFAULT_TIMEOUT = 300
 GRACEFUL_TERMINATE_SECS = 2.0
@@ -119,7 +118,9 @@ class ClaudeCodeSupervisor:
         except PermissionError:
             return ProcessResult(False, error_message="Permission denied starting process")
         except Exception as exc:  # noqa: BLE001 - sanitize error
-            return ProcessResult(False, error_message=f"Failed to start process: {type(exc).__name__}")
+            return ProcessResult(
+                False, error_message=f"Failed to start process: {type(exc).__name__}"
+            )
 
     async def monitor_output(self) -> Tuple[ProcessIOHandler, object]:
         """Create an async output stream handler for the child.
@@ -243,4 +244,3 @@ class ClaudeCodeSupervisor:
             return bool(child) and bool(getattr(child, "isalive")())
         except Exception:
             return False
-

@@ -23,34 +23,34 @@ Version: 1.0.0
 """
 
 import asyncio
-import pytest
-from unittest.mock import patch, Mock, AsyncMock, MagicMock
 from pathlib import Path
+from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
+import pytest
+
+from orchestrator.core.ai_providers.codex_cli_provider import (
+    CodexExecutionResult,
+    CodexProviderConfig,
+    CodexStatus,
+)
 from orchestrator.core.manager.claude_codex_manager import (
+    EXCELLENCE_AI_STANDARD_RULES,
+    MAX_SUBTASKS,
+    MAX_TASK_DESCRIPTION_LENGTH,
+    MIN_TASK_DESCRIPTION_LENGTH,
     ClaudeCodexManager,
     ClaudeCodexManagerConfig,
     CodexTask,
-    TaskResult,
     TaskComplexity,
+    TaskResult,
     ValidationStatus,
     create_default_manager,
-    EXCELLENCE_AI_STANDARD_RULES,
-    MAX_SUBTASKS,
-    MIN_TASK_DESCRIPTION_LENGTH,
-    MAX_TASK_DESCRIPTION_LENGTH,
 )
-
-from orchestrator.core.ai_providers.codex_cli_provider import (
-    CodexProviderConfig,
-    CodexExecutionResult,
-    CodexStatus,
-)
-
 
 # =============================================================================
 # Fixtures
 # =============================================================================
+
 
 @pytest.fixture
 def valid_manager_config():
@@ -59,7 +59,7 @@ def valid_manager_config():
         enable_validation=True,
         enable_websocket_events=False,  # Disable for testing
         max_subtasks=10,
-        validation_strict_mode=False
+        validation_strict_mode=False,
     )
 
 
@@ -98,7 +98,7 @@ def validate_email(email: str) -> bool:
 """,
         error=None,
         execution_time_seconds=2.5,
-        retry_count=0
+        retry_count=0,
     )
 
 
@@ -115,13 +115,14 @@ def validate_email(email):  # Missing type hints
 """,
         error=None,
         execution_time_seconds=1.0,
-        retry_count=0
+        retry_count=0,
     )
 
 
 # =============================================================================
 # Configuration Tests
 # =============================================================================
+
 
 class TestClaudeCodexManagerConfig:
     """Test suite for manager configuration"""
@@ -138,16 +139,13 @@ class TestClaudeCodexManagerConfig:
 
     def test_custom_config_valid(self):
         """Should create configuration with custom values"""
-        custom_codex_config = CodexProviderConfig(
-            timeout_seconds=600,
-            max_retries=5
-        )
+        custom_codex_config = CodexProviderConfig(timeout_seconds=600, max_retries=5)
 
         config = ClaudeCodexManagerConfig(
             codex_provider_config=custom_codex_config,
             enable_validation=False,
             max_subtasks=5,
-            validation_strict_mode=True
+            validation_strict_mode=True,
         )
 
         assert config.codex_provider_config.timeout_seconds == 600
@@ -174,15 +172,12 @@ class TestClaudeCodexManagerConfig:
 # Manager Initialization Tests
 # =============================================================================
 
+
 class TestClaudeCodexManagerInitialization:
     """Test suite for manager initialization"""
 
-    @patch('subprocess.run')
-    def test_init_with_valid_config_succeeds(
-        self,
-        mock_run,
-        valid_manager_config
-    ):
+    @patch("subprocess.run")
+    def test_init_with_valid_config_succeeds(self, mock_run, valid_manager_config):
         """Should initialize successfully with valid configuration"""
         # Arrange
         mock_run.return_value = Mock(returncode=0)
@@ -195,7 +190,7 @@ class TestClaudeCodexManagerInitialization:
         assert manager.task_counter == 0
         assert manager.codex_provider is not None
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_get_statistics(self, mock_run, valid_manager_config):
         """Should return correct statistics"""
         # Arrange
@@ -217,11 +212,12 @@ class TestClaudeCodexManagerInitialization:
 # Task Decomposition Tests
 # =============================================================================
 
+
 class TestTaskDecomposition:
     """Test suite for task decomposition"""
 
     @pytest.mark.asyncio
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     async def test_decompose_simple_task(self, mock_run, valid_manager_config):
         """Should decompose simple task into subtasks"""
         # Arrange
@@ -238,7 +234,7 @@ class TestTaskDecomposition:
         assert subtasks[0].description == user_task
 
     @pytest.mark.asyncio
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     async def test_decompose_with_context(self, mock_run, valid_manager_config):
         """Should decompose task with context"""
         # Arrange
@@ -247,10 +243,7 @@ class TestTaskDecomposition:
         context = {"language": "python", "style": "PEP8"}
 
         # Act
-        subtasks = await manager.decompose_task(
-            "Create authentication module",
-            context=context
-        )
+        subtasks = await manager.decompose_task("Create authentication module", context=context)
 
         # Assert
         assert len(subtasks) > 0
@@ -258,12 +251,8 @@ class TestTaskDecomposition:
         assert "python" in subtasks[0].prompt.lower() or True  # POC check
 
     @pytest.mark.asyncio
-    @patch('subprocess.run')
-    async def test_decompose_respects_max_subtasks(
-        self,
-        mock_run,
-        valid_manager_config
-    ):
+    @patch("subprocess.run")
+    async def test_decompose_respects_max_subtasks(self, mock_run, valid_manager_config):
         """Should respect max_subtasks limit"""
         # Arrange
         mock_run.return_value = Mock(returncode=0)
@@ -271,9 +260,7 @@ class TestTaskDecomposition:
         manager = ClaudeCodexManager(valid_manager_config)
 
         # Act
-        subtasks = await manager.decompose_task(
-            "Create a large complex system"
-        )
+        subtasks = await manager.decompose_task("Create a large complex system")
 
         # Assert
         assert len(subtasks) <= 3
@@ -283,18 +270,15 @@ class TestTaskDecomposition:
 # Task Execution Tests
 # =============================================================================
 
+
 class TestTaskExecution:
     """Test suite for task execution"""
 
     @pytest.mark.asyncio
-    @patch('subprocess.run')
-    @patch('asyncio.create_subprocess_exec')
+    @patch("subprocess.run")
+    @patch("asyncio.create_subprocess_exec")
     async def test_execute_task_success(
-        self,
-        mock_create_subprocess,
-        mock_run,
-        valid_manager_config,
-        successful_codex_response
+        self, mock_create_subprocess, mock_run, valid_manager_config, successful_codex_response
     ):
         """Should execute task successfully"""
         # Arrange
@@ -318,14 +302,10 @@ class TestTaskExecution:
         assert results[0].codex_response.is_success
 
     @pytest.mark.asyncio
-    @patch('subprocess.run')
-    @patch('asyncio.create_subprocess_exec')
+    @patch("subprocess.run")
+    @patch("asyncio.create_subprocess_exec")
     async def test_execute_task_with_validation(
-        self,
-        mock_create_subprocess,
-        mock_run,
-        valid_manager_config,
-        successful_codex_response
+        self, mock_create_subprocess, mock_run, valid_manager_config, successful_codex_response
     ):
         """Should validate output when validation enabled"""
         # Arrange
@@ -353,58 +333,41 @@ class TestTaskExecution:
 # Validation Tests
 # =============================================================================
 
+
 class TestOutputValidation:
     """Test suite for output validation"""
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_validate_clean_output_passes(
-        self,
-        mock_run,
-        valid_manager_config,
-        successful_codex_response
+        self, mock_run, valid_manager_config, successful_codex_response
     ):
         """Should pass validation for clean output"""
         # Arrange
         mock_run.return_value = Mock(returncode=0)
         manager = ClaudeCodexManager(valid_manager_config)
 
-        task = CodexTask(
-            description="Test",
-            prompt="Test prompt",
-            complexity=TaskComplexity.SIMPLE
-        )
+        task = CodexTask(description="Test", prompt="Test prompt", complexity=TaskComplexity.SIMPLE)
 
         # Act
-        is_valid, errors, warnings = manager._validate_output(
-            task, successful_codex_response
-        )
+        is_valid, errors, warnings = manager._validate_output(task, successful_codex_response)
 
         # Assert
         assert is_valid is True
         assert len(errors) == 0
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_validate_todo_comments_fail(
-        self,
-        mock_run,
-        valid_manager_config,
-        invalid_codex_response
+        self, mock_run, valid_manager_config, invalid_codex_response
     ):
         """Should fail validation for TODO comments"""
         # Arrange
         mock_run.return_value = Mock(returncode=0)
         manager = ClaudeCodexManager(valid_manager_config)
 
-        task = CodexTask(
-            description="Test",
-            prompt="Test",
-            complexity=TaskComplexity.SIMPLE
-        )
+        task = CodexTask(description="Test", prompt="Test", complexity=TaskComplexity.SIMPLE)
 
         # Act
-        is_valid, errors, warnings = manager._validate_output(
-            task, invalid_codex_response
-        )
+        is_valid, errors, warnings = manager._validate_output(task, invalid_codex_response)
 
         # Assert
         assert is_valid is False
@@ -412,27 +375,19 @@ class TestOutputValidation:
         assert any("FIXME" in err for err in errors)
         assert any("HACK" in err for err in errors)
 
-    @patch('subprocess.run')
-    def test_validate_insecure_hashing_fail(
-        self,
-        mock_run,
-        valid_manager_config
-    ):
+    @patch("subprocess.run")
+    def test_validate_insecure_hashing_fail(self, mock_run, valid_manager_config):
         """Should fail validation for insecure hashing (SECURITY)"""
         # Arrange
         mock_run.return_value = Mock(returncode=0)
         manager = ClaudeCodexManager(valid_manager_config)
 
-        task = CodexTask(
-            description="Test",
-            prompt="Test",
-            complexity=TaskComplexity.SIMPLE
-        )
+        task = CodexTask(description="Test", prompt="Test", complexity=TaskComplexity.SIMPLE)
 
         response = CodexExecutionResult(
             status=CodexStatus.SUCCESS,
             output="import bcrypt\npassword_hash = bcrypt.hash(password)",
-            error=None
+            error=None,
         )
 
         # Act
@@ -442,28 +397,20 @@ class TestOutputValidation:
         assert is_valid is False
         assert any("bcrypt" in err.lower() for err in errors)
 
-    @patch('subprocess.run')
-    def test_validate_with_warnings(
-        self,
-        mock_run,
-        valid_manager_config
-    ):
+    @patch("subprocess.run")
+    def test_validate_with_warnings(self, mock_run, valid_manager_config):
         """Should generate warnings for potential issues"""
         # Arrange
         mock_run.return_value = Mock(returncode=0)
         manager = ClaudeCodexManager(valid_manager_config)
 
-        task = CodexTask(
-            description="Test",
-            prompt="Test",
-            complexity=TaskComplexity.SIMPLE
-        )
+        task = CodexTask(description="Test", prompt="Test", complexity=TaskComplexity.SIMPLE)
 
         # Response with password handling but no argon2
         response = CodexExecutionResult(
             status=CodexStatus.SUCCESS,
             output="def hash_password(password):\n    return hash(password)",
-            error=None
+            error=None,
         )
 
         # Act
@@ -473,28 +420,18 @@ class TestOutputValidation:
         assert len(warnings) > 0
         assert any("argon2" in warn.lower() for warn in warnings)
 
-    @patch('subprocess.run')
-    def test_validate_strict_mode_fails_on_warnings(
-        self,
-        mock_run,
-        valid_manager_config
-    ):
+    @patch("subprocess.run")
+    def test_validate_strict_mode_fails_on_warnings(self, mock_run, valid_manager_config):
         """Should fail validation on warnings in strict mode"""
         # Arrange
         mock_run.return_value = Mock(returncode=0)
         valid_manager_config.validation_strict_mode = True
         manager = ClaudeCodexManager(valid_manager_config)
 
-        task = CodexTask(
-            description="Test",
-            prompt="Test",
-            complexity=TaskComplexity.SIMPLE
-        )
+        task = CodexTask(description="Test", prompt="Test", complexity=TaskComplexity.SIMPLE)
 
         response = CodexExecutionResult(
-            status=CodexStatus.SUCCESS,
-            output="def hash_password(password):\n    pass",
-            error=None
+            status=CodexStatus.SUCCESS, output="def hash_password(password):\n    pass", error=None
         )
 
         # Act
@@ -509,15 +446,12 @@ class TestOutputValidation:
 # Prompt Generation Tests
 # =============================================================================
 
+
 class TestPromptGeneration:
     """Test suite for prompt generation"""
 
-    @patch('subprocess.run')
-    def test_generate_prompt_includes_excellence_rules(
-        self,
-        mock_run,
-        valid_manager_config
-    ):
+    @patch("subprocess.run")
+    def test_generate_prompt_includes_excellence_rules(self, mock_run, valid_manager_config):
         """Should include excellence_ai_standard rules in prompt"""
         # Arrange
         mock_run.return_value = Mock(returncode=0)
@@ -531,12 +465,8 @@ class TestPromptGeneration:
         assert "Argon2id" in prompt
         assert "parameterized" in prompt or "Pydantic" in prompt
 
-    @patch('subprocess.run')
-    def test_generate_prompt_includes_context(
-        self,
-        mock_run,
-        valid_manager_config
-    ):
+    @patch("subprocess.run")
+    def test_generate_prompt_includes_context(self, mock_run, valid_manager_config):
         """Should include context in generated prompt"""
         # Arrange
         mock_run.return_value = Mock(returncode=0)
@@ -545,10 +475,7 @@ class TestPromptGeneration:
         context = {"language": "python", "framework": "FastAPI"}
 
         # Act
-        prompt = manager._generate_detailed_prompt(
-            "Create API endpoint",
-            context=context
-        )
+        prompt = manager._generate_detailed_prompt("Create API endpoint", context=context)
 
         # Assert
         assert "python" in prompt.lower()
@@ -559,10 +486,11 @@ class TestPromptGeneration:
 # Complexity Estimation Tests
 # =============================================================================
 
+
 class TestComplexityEstimation:
     """Test suite for complexity estimation"""
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_estimate_simple_complexity(self, mock_run, valid_manager_config):
         """Should estimate SIMPLE for single functions"""
         # Arrange
@@ -570,19 +498,13 @@ class TestComplexityEstimation:
         manager = ClaudeCodexManager(valid_manager_config)
 
         # Act
-        complexity = manager._estimate_complexity(
-            "Create a simple function to add two numbers"
-        )
+        complexity = manager._estimate_complexity("Create a simple function to add two numbers")
 
         # Assert
         assert complexity == TaskComplexity.SIMPLE
 
-    @patch('subprocess.run')
-    def test_estimate_complex_complexity(
-        self,
-        mock_run,
-        valid_manager_config
-    ):
+    @patch("subprocess.run")
+    def test_estimate_complex_complexity(self, mock_run, valid_manager_config):
         """Should estimate COMPLEX for system architecture"""
         # Arrange
         mock_run.return_value = Mock(returncode=0)
@@ -596,21 +518,15 @@ class TestComplexityEstimation:
         # Assert
         assert complexity == TaskComplexity.COMPLEX
 
-    @patch('subprocess.run')
-    def test_estimate_medium_complexity_default(
-        self,
-        mock_run,
-        valid_manager_config
-    ):
+    @patch("subprocess.run")
+    def test_estimate_medium_complexity_default(self, mock_run, valid_manager_config):
         """Should default to MEDIUM for ambiguous tasks"""
         # Arrange
         mock_run.return_value = Mock(returncode=0)
         manager = ClaudeCodexManager(valid_manager_config)
 
         # Act
-        complexity = manager._estimate_complexity(
-            "Create email validation"
-        )
+        complexity = manager._estimate_complexity("Create email validation")
 
         # Assert
         assert complexity == TaskComplexity.MEDIUM
@@ -620,15 +536,12 @@ class TestComplexityEstimation:
 # Input Validation Tests
 # =============================================================================
 
+
 class TestInputValidation:
     """Test suite for input validation"""
 
-    @patch('subprocess.run')
-    def test_validate_empty_task_raises_error(
-        self,
-        mock_run,
-        valid_manager_config
-    ):
+    @patch("subprocess.run")
+    def test_validate_empty_task_raises_error(self, mock_run, valid_manager_config):
         """Should reject empty user task"""
         # Arrange
         mock_run.return_value = Mock(returncode=0)
@@ -640,12 +553,8 @@ class TestInputValidation:
 
         assert "empty" in str(exc_info.value).lower()
 
-    @patch('subprocess.run')
-    def test_validate_too_short_task_raises_error(
-        self,
-        mock_run,
-        valid_manager_config
-    ):
+    @patch("subprocess.run")
+    def test_validate_too_short_task_raises_error(self, mock_run, valid_manager_config):
         """Should reject task below minimum length"""
         # Arrange
         mock_run.return_value = Mock(returncode=0)
@@ -658,12 +567,8 @@ class TestInputValidation:
         assert "too short" in str(exc_info.value).lower()
 
     @pytest.mark.asyncio
-    @patch('subprocess.run')
-    async def test_execute_with_invalid_task_raises_error(
-        self,
-        mock_run,
-        valid_manager_config
-    ):
+    @patch("subprocess.run")
+    async def test_execute_with_invalid_task_raises_error(self, mock_run, valid_manager_config):
         """Should raise error for invalid task in execute_task"""
         # Arrange
         mock_run.return_value = Mock(returncode=0)
@@ -678,10 +583,11 @@ class TestInputValidation:
 # Utility Function Tests
 # =============================================================================
 
+
 class TestUtilityFunctions:
     """Test suite for utility functions"""
 
-    @patch('subprocess.run')
+    @patch("subprocess.run")
     def test_create_default_manager(self, mock_run):
         """Should create manager with default configuration"""
         # Arrange
@@ -699,6 +605,7 @@ class TestUtilityFunctions:
 # Data Model Tests
 # =============================================================================
 
+
 class TestDataModels:
     """Test suite for data models"""
 
@@ -710,7 +617,7 @@ class TestDataModels:
             complexity=TaskComplexity.SIMPLE,
             context_files=[Path("test.py")],
             expected_output="Function definition",
-            validation_criteria=["Use type hints"]
+            validation_criteria=["Use type hints"],
         )
 
         assert task.description == "Test task"
@@ -719,11 +626,7 @@ class TestDataModels:
 
     def test_task_result_creation(self, successful_codex_response):
         """Should create TaskResult with all fields"""
-        task = CodexTask(
-            description="Test",
-            prompt="Test prompt",
-            complexity=TaskComplexity.SIMPLE
-        )
+        task = CodexTask(description="Test", prompt="Test prompt", complexity=TaskComplexity.SIMPLE)
 
         result = TaskResult(
             task=task,
@@ -731,7 +634,7 @@ class TestDataModels:
             validated=True,
             validation_errors=[],
             validation_warnings=["Minor issue"],
-            execution_time_seconds=2.5
+            execution_time_seconds=2.5,
         )
 
         assert result.validated is True
@@ -743,16 +646,13 @@ class TestDataModels:
 # Edge Case Tests
 # =============================================================================
 
+
 class TestEdgeCases:
     """Test suite for edge cases"""
 
     @pytest.mark.asyncio
-    @patch('subprocess.run')
-    async def test_execute_task_at_minimum_length(
-        self,
-        mock_run,
-        valid_manager_config
-    ):
+    @patch("subprocess.run")
+    async def test_execute_task_at_minimum_length(self, mock_run, valid_manager_config):
         """Should accept task at minimum valid length"""
         # Arrange
         mock_run.return_value = Mock(returncode=0)
@@ -763,46 +663,30 @@ class TestEdgeCases:
 
         # Act & Assert - Should not raise
         with patch.object(
-            manager.codex_provider,
-            'execute_async',
-            new_callable=AsyncMock
+            manager.codex_provider, "execute_async", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = CodexExecutionResult(
-                status=CodexStatus.SUCCESS,
-                output="result",
-                error=None
+                status=CodexStatus.SUCCESS, output="result", error=None
             )
 
             results = await manager.execute_task(min_task)
             assert len(results) > 0
 
-    @patch('subprocess.run')
-    def test_validation_with_failed_execution(
-        self,
-        mock_run,
-        valid_manager_config
-    ):
+    @patch("subprocess.run")
+    def test_validation_with_failed_execution(self, mock_run, valid_manager_config):
         """Should handle validation of failed execution"""
         # Arrange
         mock_run.return_value = Mock(returncode=0)
         manager = ClaudeCodexManager(valid_manager_config)
 
-        task = CodexTask(
-            description="Test",
-            prompt="Test",
-            complexity=TaskComplexity.SIMPLE
-        )
+        task = CodexTask(description="Test", prompt="Test", complexity=TaskComplexity.SIMPLE)
 
         failed_response = CodexExecutionResult(
-            status=CodexStatus.FAILED,
-            output="",
-            error="Execution failed"
+            status=CodexStatus.FAILED, output="", error="Execution failed"
         )
 
         # Act
-        is_valid, errors, warnings = manager._validate_output(
-            task, failed_response
-        )
+        is_valid, errors, warnings = manager._validate_output(task, failed_response)
 
         # Assert
         assert is_valid is False

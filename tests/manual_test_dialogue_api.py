@@ -15,6 +15,7 @@ import asyncio
 import json
 import time
 from pathlib import Path
+
 import websockets
 
 
@@ -35,7 +36,7 @@ def create_test_workspace():
             "content": "I need to run: pip install numpy",
             "type": "output",
             "confirmation_type": "bash",
-            "confirmation_message": "Execute: pip install numpy"
+            "confirmation_message": "Execute: pip install numpy",
         },
         {
             "timestamp": time.time() - 295,
@@ -43,7 +44,7 @@ def create_test_workspace():
             "content": "APPROVED",
             "type": "response",
             "confirmation_type": None,
-            "confirmation_message": None
+            "confirmation_message": None,
         },
         {
             "timestamp": time.time() - 290,
@@ -51,7 +52,7 @@ def create_test_workspace():
             "content": "Successfully installed numpy-1.26.4",
             "type": "output",
             "confirmation_type": None,
-            "confirmation_message": None
+            "confirmation_message": None,
         },
         {
             "timestamp": time.time() - 285,
@@ -59,7 +60,7 @@ def create_test_workspace():
             "content": "I need to create a file: test_data.py",
             "type": "output",
             "confirmation_type": "write_file",
-            "confirmation_message": "Create file test_data.py"
+            "confirmation_message": "Create file test_data.py",
         },
         {
             "timestamp": time.time() - 280,
@@ -67,7 +68,7 @@ def create_test_workspace():
             "content": "APPROVED",
             "type": "response",
             "confirmation_type": None,
-            "confirmation_message": None
+            "confirmation_message": None,
         },
         {
             "timestamp": time.time() - 275,
@@ -75,25 +76,25 @@ def create_test_workspace():
             "content": "File test_data.py created successfully",
             "type": "output",
             "confirmation_type": None,
-            "confirmation_message": None
-        }
+            "confirmation_message": None,
+        },
     ]
 
     # Write to JSONL file
     transcript_jsonl = worker_path / "dialogue_transcript.jsonl"
-    with open(transcript_jsonl, 'w', encoding='utf-8') as f:
+    with open(transcript_jsonl, "w", encoding="utf-8") as f:
         for entry in dialogue_entries:
-            f.write(json.dumps(entry) + '\n')
+            f.write(json.dumps(entry) + "\n")
 
     # Write to TXT file (human-readable)
     transcript_txt = worker_path / "dialogue_transcript.txt"
-    with open(transcript_txt, 'w', encoding='utf-8') as f:
+    with open(transcript_txt, "w", encoding="utf-8") as f:
         f.write("=== Worker-Orchestrator Dialogue ===\n\n")
         for entry in dialogue_entries:
-            timestamp_str = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(entry['timestamp']))
+            timestamp_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(entry["timestamp"]))
             f.write(f"[{timestamp_str}] {entry['direction']}\n")
             f.write(f"  {entry['content']}\n")
-            if entry['confirmation_type']:
+            if entry["confirmation_type"]:
                 f.write(f"  (Confirmation: {entry['confirmation_type']})\n")
             f.write("\n")
 
@@ -133,7 +134,7 @@ async def test_rest_api():
         assert response.status_code == 200
         data = response.json()
         print(f"   [OK] Workers found: {data['count']}")
-        for worker in data['workers']:
+        for worker in data["workers"]:
             print(f"     - {worker['worker_id']}: dialogue={worker['has_dialogue']}")
 
         # Test get worker info
@@ -175,7 +176,7 @@ async def test_websocket():
                     print(f"\n   [Historical #{message_count}]")
                     print(f"     Direction: {data['direction']}")
                     print(f"     Content: {data['content'][:50]}...")
-                    if data['confirmation_type']:
+                    if data["confirmation_type"]:
                         print(f"     Confirmation: {data['confirmation_type']}")
 
                 elif message["type"] == "ready":
@@ -203,11 +204,11 @@ async def test_websocket():
                 "content": "This is a new entry added during the test",
                 "type": "output",
                 "confirmation_type": None,
-                "confirmation_message": None
+                "confirmation_message": None,
             }
 
-            with open(transcript, 'a', encoding='utf-8') as f:
-                f.write(json.dumps(new_entry) + '\n')
+            with open(transcript, "a", encoding="utf-8") as f:
+                f.write(json.dumps(new_entry) + "\n")
 
             print("   Waiting for new entry...")
 

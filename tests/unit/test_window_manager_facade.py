@@ -3,14 +3,14 @@
 Tests facade pattern delegation and factory pattern creation.
 """
 
-import pytest
 import tempfile
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import MagicMock, Mock, patch
+
+import pytest
 
 from orchestrator.window_manager import WindowManager
+from orchestrator.window_strategies.base import WindowInfo, WindowManagerBase
 from orchestrator.window_strategies.factory import WindowManagerFactory
-from orchestrator.window_strategies.base import WindowManagerBase, WindowInfo
-
 
 # ======================= WindowManagerFactory Tests =======================
 

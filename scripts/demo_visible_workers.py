@@ -15,10 +15,11 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 # UTF-8出力設定
-if sys.platform == 'win32':
+if sys.platform == "win32":
     import codecs
-    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'replace')
-    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'replace')
+
+    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
+    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
 
 from orchestrator import AdvancedOrchestrator, OrchestratorConfig
 
@@ -50,11 +51,11 @@ def main():
     print()
 
     # Windows環境設定
-    os.environ['ORCHESTRATOR_MODE'] = 'windows'
-    os.environ['CLAUDE_CODE_GIT_BASH_PATH'] = r'C:\opt\Git.Git\usr\bin\bash.exe'
-    os.environ['ORCHESTRATOR_VISIBLE_WORKERS'] = 'true'  # ウィンドウ表示を有効化
-    os.environ['ORCHESTRATOR_AUTO_CLOSE'] = 'true'       # 自動クローズを有効化
-    os.environ['ORCHESTRATOR_WINDOW_DELAY'] = '5'        # 5秒後に閉じる
+    os.environ["ORCHESTRATOR_MODE"] = "windows"
+    os.environ["CLAUDE_CODE_GIT_BASH_PATH"] = r"C:\opt\Git.Git\usr\bin\bash.exe"
+    os.environ["ORCHESTRATOR_VISIBLE_WORKERS"] = "true"  # ウィンドウ表示を有効化
+    os.environ["ORCHESTRATOR_AUTO_CLOSE"] = "true"  # 自動クローズを有効化
+    os.environ["ORCHESTRATOR_WINDOW_DELAY"] = "5"  # 5秒後に閉じる
 
     config = OrchestratorConfig.from_env()
 
@@ -78,9 +79,9 @@ def main():
 
     orchestrator = AdvancedOrchestrator(
         config=config,
-        enable_ai_analysis=True,        # AI分析を有効化
-        enable_worktree=False,          # Worktreeは不要（単純なタスク）
-        enable_realtime_monitoring=True  # リアルタイム監視を有効化
+        enable_ai_analysis=True,  # AI分析を有効化
+        enable_worktree=False,  # Worktreeは不要（単純なタスク）
+        enable_realtime_monitoring=True,  # リアルタイム監視を有効化
     )
 
     print("[実行開始]")
@@ -118,6 +119,7 @@ def main():
     except Exception as e:
         print(f"\n❌ エラーが発生しました: {e}")
         import traceback
+
         traceback.print_exc()
 
     print()
@@ -127,5 +129,5 @@ def main():
     print()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

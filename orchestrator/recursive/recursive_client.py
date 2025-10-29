@@ -65,9 +65,7 @@ class APIKeyValidator:
         if not api_key:
             raise ValueError("API key cannot be empty")
         if len(api_key) < APIKeyValidator._MIN_LENGTH:
-            raise ValueError(
-                f"API key must be at least {APIKeyValidator._MIN_LENGTH} characters"
-            )
+            raise ValueError(f"API key must be at least {APIKeyValidator._MIN_LENGTH} characters")
         if not api_key.startswith(APIKeyValidator._PREFIX):
             raise ValueError("Invalid API key prefix")
         return True
@@ -292,9 +290,7 @@ class RecursiveOrchestratorClient:
             raise ClientValidationError("poll_interval must be positive")
 
         while True:
-            response = await self._request_with_retry(
-                "GET", f"/api/v1/jobs/{job_id}/status"
-            )
+            response = await self._request_with_retry("GET", f"/api/v1/jobs/{job_id}/status")
             status = JobStatus(**response.json())
             yield status
             if status.status in ("completed", "failed"):
@@ -316,9 +312,7 @@ class RecursiveOrchestratorClient:
         """
         if not job_id:
             raise ClientValidationError("job_id cannot be empty")
-        response = await self._request_with_retry(
-            "GET", f"/api/v1/jobs/{job_id}/results"
-        )
+        response = await self._request_with_retry("GET", f"/api/v1/jobs/{job_id}/results")
         data = response.json()
         if not isinstance(data, dict):
             raise APIError("API returned invalid results payload")
@@ -348,9 +342,7 @@ class RecursiveOrchestratorSyncClient:
         """
 
         async def _submit() -> str:
-            async with RecursiveOrchestratorClient(
-                self._api_url, self._api_key
-            ) as client:
+            async with RecursiveOrchestratorClient(self._api_url, self._api_key) as client:
                 return await client.submit_job(request, **kwargs)
 
         return asyncio.run(_submit())
@@ -367,9 +359,7 @@ class RecursiveOrchestratorSyncClient:
         """
 
         async def _wait() -> Dict[str, Any]:
-            async with RecursiveOrchestratorClient(
-                self._api_url, self._api_key
-            ) as client:
+            async with RecursiveOrchestratorClient(self._api_url, self._api_key) as client:
                 async for status in client.poll_job(job_id, poll_interval=poll_interval):
                     if status.status in ("completed", "failed"):
                         return await client.get_results(job_id)
@@ -377,4 +367,3 @@ class RecursiveOrchestratorSyncClient:
             return {}
 
         return asyncio.run(_wait())
-

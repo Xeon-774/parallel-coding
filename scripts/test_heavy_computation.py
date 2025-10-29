@@ -13,7 +13,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from orchestrator import RefactoredOrchestrator, OrchestratorConfig
+from orchestrator import OrchestratorConfig, RefactoredOrchestrator
 
 
 def test_heavy_computation():
@@ -25,8 +25,8 @@ def test_heavy_computation():
     print()
 
     # Windowsモードに設定
-    os.environ['ORCHESTRATOR_MODE'] = 'windows'
-    os.environ['CLAUDE_CODE_GIT_BASH_PATH'] = r'C:\opt\Git.Git\usr\bin\bash.exe'
+    os.environ["ORCHESTRATOR_MODE"] = "windows"
+    os.environ["CLAUDE_CODE_GIT_BASH_PATH"] = r"C:\opt\Git.Git\usr\bin\bash.exe"
 
     print(f"モード: {os.environ['ORCHESTRATOR_MODE']}")
     print(f"Git Bash: {os.environ['CLAUDE_CODE_GIT_BASH_PATH']}")
@@ -59,11 +59,11 @@ Pythonで以下の計算タスクを実行してください：
 
     config = OrchestratorConfig.from_env()
     orchestrator = RefactoredOrchestrator(
-        config=config,
-        enable_realtime_monitoring=True  # リアルタイム監視を有効化
+        config=config, enable_realtime_monitoring=True  # リアルタイム監視を有効化
     )
 
     import time
+
     start_time = time.time()
 
     try:
@@ -96,12 +96,13 @@ Pythonで以下の計算タスクを実行してください：
             print("=" * 80)
             print("ワーカー詳細出力")
             print("=" * 80)
-            with open(worker_output, 'r', encoding='utf-8') as f:
+            with open(worker_output, "r", encoding="utf-8") as f:
                 print(f.read())
 
     except Exception as e:
         print(f"\n[ERROR] エラー発生: {e}")
         import traceback
+
         traceback.print_exc()
 
     print()
@@ -110,5 +111,5 @@ Pythonで以下の計算タスクを実行してください：
     print("=" * 80)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_heavy_computation()

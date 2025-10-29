@@ -4,7 +4,7 @@ Task analysis and splitting service
 Provides task decomposition using both AI-driven and basic strategies.
 """
 
-from typing import List, Dict, Optional, Any, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from orchestrator.config import TaskConfig
 from orchestrator.interfaces import ILogger

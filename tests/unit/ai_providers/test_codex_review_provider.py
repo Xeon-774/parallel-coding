@@ -13,9 +13,10 @@ Coverage target: ≥90%
 Excellence AI Standard: 100% Applied
 """
 
-import pytest
 from pathlib import Path
-from unittest.mock import Mock, patch, AsyncMock
+from unittest.mock import AsyncMock, Mock, patch
+
+import pytest
 
 from orchestrator.core.ai_providers.base_review_provider import (
     FeedbackSeverity,
@@ -26,9 +27,9 @@ from orchestrator.core.ai_providers.base_review_provider import (
     ReviewType,
 )
 from orchestrator.core.ai_providers.codex_review_provider import (
-    CodexReviewProvider,
     PROVIDER_NAME,
     REVIEW_PROMPTS,
+    CodexReviewProvider,
     create_codex_review_provider,
 )
 from orchestrator.core.worker.codex_executor import (
@@ -37,7 +38,6 @@ from orchestrator.core.worker.codex_executor import (
     ExecutionStatus,
     UsageInfo,
 )
-
 
 # =============================================================================
 # Fixtures
@@ -146,9 +146,7 @@ def test_build_review_prompt_architecture(
     assert "Component B" in prompt
 
 
-def test_build_review_prompt_security(
-    provider: CodexReviewProvider, temp_document: Path
-) -> None:
+def test_build_review_prompt_security(provider: CodexReviewProvider, temp_document: Path) -> None:
     """Test prompt building for security perspective"""
     request = ReviewRequest(
         document_path=str(temp_document),
@@ -221,9 +219,7 @@ Suggestion: Add more examples
 ---
 """
 
-    feedbacks = provider._parse_review_output(
-        output, ReviewPerspective.ARCHITECTURE
-    )
+    feedbacks = provider._parse_review_output(output, ReviewPerspective.ARCHITECTURE)
 
     assert len(feedbacks) == 3
     assert feedbacks[0].severity == FeedbackSeverity.CRITICAL
@@ -240,9 +236,7 @@ Suggestion: Consider microservices pattern
 ---
 """
 
-    feedbacks = provider._parse_review_output(
-        output, ReviewPerspective.ARCHITECTURE
-    )
+    feedbacks = provider._parse_review_output(output, ReviewPerspective.ARCHITECTURE)
 
     assert len(feedbacks) == 1
     assert feedbacks[0].line_number is None

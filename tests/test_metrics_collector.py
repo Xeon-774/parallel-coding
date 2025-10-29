@@ -8,17 +8,14 @@ Tests metrics collection functionality including:
 - Metrics retrieval and aggregation
 """
 
-import pytest
 import json
 import time
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
-from orchestrator.core.common.metrics import (
-    MetricsCollector,
-    MetricType,
-    WorkerEvent
-)
+import pytest
+
+from orchestrator.core.common.metrics import MetricsCollector, MetricType, WorkerEvent
 
 
 @pytest.fixture
@@ -50,7 +47,7 @@ class TestWorkerLifecycleMetrics:
         assert metrics_file.exists()
 
         # Verify metric content
-        with open(metrics_file, 'r', encoding='utf-8') as f:
+        with open(metrics_file, "r", encoding="utf-8") as f:
             line = f.readline().strip()
             metric = json.loads(line)
 
@@ -122,7 +119,7 @@ class TestConfirmationMetrics:
             worker_id=worker_id,
             confirmation_number=1,
             orchestrator_latency_ms=123.45,
-            response="approved"
+            response="approved",
         )
 
         # Read metrics
@@ -147,7 +144,7 @@ class TestConfirmationMetrics:
                 worker_id=worker_id,
                 confirmation_number=i,
                 orchestrator_latency_ms=100 + i * 10,
-                response="approved"
+                response="approved",
             )
 
         # Read metrics
@@ -169,11 +166,7 @@ class TestOutputMetrics:
         worker_id = "worker_test_006"
 
         # Record output
-        metrics_collector.record_output(
-            worker_id=worker_id,
-            output_size_bytes=1024,
-            line_count=50
-        )
+        metrics_collector.record_output(worker_id=worker_id, output_size_bytes=1024, line_count=50)
 
         # Read metrics
         metrics = metrics_collector.get_metrics(worker_id)
@@ -212,18 +205,14 @@ class TestMetricsRetrieval:
 
         # Record confirmations
         metrics_collector.record_confirmation(
-            worker_id, confirmation_number=1,
-            orchestrator_latency_ms=150, response="approved"
+            worker_id, confirmation_number=1, orchestrator_latency_ms=150, response="approved"
         )
         metrics_collector.record_confirmation(
-            worker_id, confirmation_number=2,
-            orchestrator_latency_ms=200, response="approved"
+            worker_id, confirmation_number=2, orchestrator_latency_ms=200, response="approved"
         )
 
         # Record output
-        metrics_collector.record_output(
-            worker_id, output_size_bytes=2048, line_count=100
-        )
+        metrics_collector.record_output(worker_id, output_size_bytes=2048, line_count=100)
 
         # Complete
         metrics_collector.record_worker_completed(worker_id)
@@ -257,14 +246,13 @@ class TestJSONLFormat:
         # Record multiple metrics
         metrics_collector.record_worker_spawned(worker_id)
         metrics_collector.record_confirmation(
-            worker_id, confirmation_number=1,
-            orchestrator_latency_ms=100, response="approved"
+            worker_id, confirmation_number=1, orchestrator_latency_ms=100, response="approved"
         )
         metrics_collector.record_worker_completed(worker_id)
 
         # Read file manually
         metrics_file = temp_workspace / worker_id / "metrics.jsonl"
-        with open(metrics_file, 'r', encoding='utf-8') as f:
+        with open(metrics_file, "r", encoding="utf-8") as f:
             lines = f.readlines()
 
         # Verify each line is valid JSON
@@ -285,10 +273,10 @@ class TestJSONLFormat:
         timestamp = metrics[0]["timestamp"]
 
         # Verify ISO 8601 format (ends with 'Z')
-        assert timestamp.endswith('Z')
+        assert timestamp.endswith("Z")
 
         # Verify parseable by datetime
-        parsed = datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
+        parsed = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
         assert parsed is not None
 
 

@@ -19,7 +19,6 @@ from orchestrator.core.auth import create_dev_token
 from orchestrator.core.database import get_db
 from orchestrator.core.db_models import Job, JobStatus, Worker, WorkerStatus
 
-
 # ============================================================================
 # Test Fixtures
 # ============================================================================
@@ -231,7 +230,9 @@ def test_resource_allocation_workflow(client: TestClient, auth_headers: dict[str
 
     # Step 2: Seed worker and job
     worker = _seed_worker("alloc-wf-worker", "ws-alloc-wf", WorkerStatus.IDLE)
-    job = _seed_job("alloc-wf-job", "Allocation workflow test", JobStatus.PENDING, depth=0, worker_count=1)
+    job = _seed_job(
+        "alloc-wf-job", "Allocation workflow test", JobStatus.PENDING, depth=0, worker_count=1
+    )
 
     # Step 3: Allocate resources
     allocate_response = client.post(

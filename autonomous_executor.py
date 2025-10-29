@@ -15,22 +15,23 @@
     python autonomous_executor.py --roadmap ROADMAP.md --auto-push
 """
 
+import argparse
 import asyncio
 import json
 import os
 import subprocess
 import sys
 import time
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import List, Dict, Any, Optional
-import argparse
+from typing import Any, Dict, List, Optional
 
 
 @dataclass
 class Task:
     """実行タスク"""
+
     id: str
     title: str
     description: str
@@ -46,6 +47,7 @@ class Task:
 @dataclass
 class ExecutionReport:
     """実行レポート"""
+
     session_id: str
     started_at: str
     tasks_completed: int
@@ -64,7 +66,7 @@ class AutonomousExecutor:
         roadmap_path: str,
         workspace: Path,
         auto_push: bool = False,
-        report_interval: int = 300  # 5分ごと
+        report_interval: int = 300,  # 5分ごと
     ):
         self.roadmap_path = Path(roadmap_path)
         self.workspace = workspace
@@ -101,28 +103,28 @@ class AutonomousExecutor:
                 title="E2E Tests Implementation",
                 description="Implement E2E tests for WebSocket + API (coverage ≥90%)",
                 priority=1,
-                status="pending"
+                status="pending",
             ),
             Task(
                 id="task_2",
                 title="Hermetic Sandbox MVP",
                 description="Implement Docker-based hermetic sandbox",
                 priority=2,
-                status="pending"
+                status="pending",
             ),
             Task(
                 id="task_3",
                 title="Quality Gates",
                 description="Add quality gates (coverage ≥90%, lint, type check)",
                 priority=3,
-                status="pending"
+                status="pending",
             ),
             Task(
                 id="task_4",
                 title="Auto PR Creation",
                 description="Implement end-to-end autonomous PR creation",
                 priority=4,
-                status="pending"
+                status="pending",
             ),
         ]
 
@@ -206,12 +208,7 @@ class AutonomousExecutor:
         """自動Git commit (NO user confirmation)"""
         try:
             # Git add
-            subprocess.run(
-                ["git", "add", "."],
-                cwd=self.workspace,
-                check=True,
-                capture_output=True
-            )
+            subprocess.run(["git", "add", "."], cwd=self.workspace, check=True, capture_output=True)
 
             # Git commit
             commit_message = f"""feat: {task.title}
@@ -231,7 +228,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
                 ["git", "commit", "-m", commit_message],
                 cwd=self.workspace,
                 check=True,
-                capture_output=True
+                capture_output=True,
             )
 
             self.commit_count += 1
@@ -239,12 +236,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
             # Auto-push (オプション)
             if self.auto_push:
-                subprocess.run(
-                    ["git", "push"],
-                    cwd=self.workspace,
-                    check=True,
-                    capture_output=True
-                )
+                subprocess.run(["git", "push"], cwd=self.workspace, check=True, capture_output=True)
                 print(f"✅ Auto-push successful")
 
         except subprocess.CalledProcessError as e:
@@ -266,7 +258,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
             tasks_failed=self.failed_count,
             total_commits=self.commit_count,
             current_task=current_task,
-            status="running"
+            status="running",
         )
 
     def save_report(self):
@@ -319,26 +311,11 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 def main():
     parser = argparse.ArgumentParser(description="完全自律実行エンジン")
+    parser.add_argument("--roadmap", default="ROADMAP.md", help="Roadmap file path")
+    parser.add_argument("--workspace", default=".", help="Workspace directory")
+    parser.add_argument("--auto-push", action="store_true", help="Auto-push to remote after commit")
     parser.add_argument(
-        "--roadmap",
-        default="ROADMAP.md",
-        help="Roadmap file path"
-    )
-    parser.add_argument(
-        "--workspace",
-        default=".",
-        help="Workspace directory"
-    )
-    parser.add_argument(
-        "--auto-push",
-        action="store_true",
-        help="Auto-push to remote after commit"
-    )
-    parser.add_argument(
-        "--report-interval",
-        type=int,
-        default=300,
-        help="Report interval in seconds (default: 300)"
+        "--report-interval", type=int, default=300, help="Report interval in seconds (default: 300)"
     )
 
     args = parser.parse_args()
@@ -347,7 +324,7 @@ def main():
         roadmap_path=args.roadmap,
         workspace=Path(args.workspace),
         auto_push=args.auto_push,
-        report_interval=args.report_interval
+        report_interval=args.report_interval,
     )
 
     # Run forever

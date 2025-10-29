@@ -8,22 +8,23 @@
 
 import os
 import sys
-import time
 import threading
-from pathlib import Path
+import time
 from datetime import datetime
+from pathlib import Path
 
 # プロジェクトルートをPythonパスに追加
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 # UTF-8出力設定
-if sys.platform == 'win32':
+if sys.platform == "win32":
     import codecs
-    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'replace')
-    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'replace')
 
-from orchestrator import RefactoredOrchestrator, OrchestratorConfig
+    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
+    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
+
+from orchestrator import OrchestratorConfig, RefactoredOrchestrator
 
 
 def report(message: str, level: str = "INFO"):
@@ -36,13 +37,7 @@ def report(message: str, level: str = "INFO"):
     """
     timestamp = datetime.now().strftime("%H:%M:%S")
 
-    prefix_map = {
-        "INFO": "📊",
-        "SUCCESS": "✅",
-        "WARNING": "⚠️",
-        "ERROR": "❌",
-        "PROGRESS": "🔄"
-    }
+    prefix_map = {"INFO": "📊", "SUCCESS": "✅", "WARNING": "⚠️", "ERROR": "❌", "PROGRESS": "🔄"}
 
     prefix = prefix_map.get(level, "📌")
 
@@ -70,8 +65,8 @@ def test_live_monitoring():
     print()
 
     # Windowsモードに設定
-    os.environ['ORCHESTRATOR_MODE'] = 'windows'
-    os.environ['CLAUDE_CODE_GIT_BASH_PATH'] = r'C:\opt\Git.Git\usr\bin\bash.exe'
+    os.environ["ORCHESTRATOR_MODE"] = "windows"
+    os.environ["CLAUDE_CODE_GIT_BASH_PATH"] = r"C:\opt\Git.Git\usr\bin\bash.exe"
 
     report("実行環境設定完了", "SUCCESS")
     report(f"モード: {os.environ['ORCHESTRATOR_MODE']}", "INFO")
@@ -116,10 +111,7 @@ def test_live_monitoring():
     print()
 
     config = OrchestratorConfig.from_env()
-    orchestrator = RefactoredOrchestrator(
-        config=config,
-        enable_realtime_monitoring=True
-    )
+    orchestrator = RefactoredOrchestrator(config=config, enable_realtime_monitoring=True)
 
     report("ワーカーAIインスタンスを起動します...", "INFO")
     print()
@@ -182,7 +174,7 @@ def test_live_monitoring():
                 if output_file.exists():
                     report(f"Worker {worker_id} の結果を取得しました", "SUCCESS")
 
-                    with open(output_file, 'r', encoding='utf-8') as f:
+                    with open(output_file, "r", encoding="utf-8") as f:
                         output = f.read()
 
                     print()
@@ -191,10 +183,10 @@ def test_live_monitoring():
 
                     # 最初の800文字を表示
                     if len(output) > 800:
-                        print("  " + output[:800].replace('\n', '\n  '))
+                        print("  " + output[:800].replace("\n", "\n  "))
                         print(f"\n  ... (残り {len(output) - 800} 文字)")
                     else:
-                        print("  " + output.replace('\n', '\n  '))
+                        print("  " + output.replace("\n", "\n  "))
 
                     print("  " + "-" * 76)
                     print()
@@ -237,6 +229,7 @@ def test_live_monitoring():
         stop_reporting.set()
         report(f"エラーが発生しました: {e}", "ERROR")
         import traceback
+
         traceback.print_exc()
 
     print()
@@ -258,5 +251,5 @@ def test_live_monitoring():
     print()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_live_monitoring()

@@ -7,8 +7,9 @@ The actual implementations are in orchestrator/window_strategies/.
 This maintains backwards compatibility while using the Strategy pattern internally.
 """
 
-from typing import Optional, Any
-from orchestrator.window_strategies import WindowManagerFactory, WindowManagerBase, WindowInfo
+from typing import Any, Optional
+
+from orchestrator.window_strategies import WindowInfo, WindowManagerBase, WindowManagerFactory
 
 # Re-export for backwards compatibility
 __all__ = ["WindowManager", "WindowInfo"]

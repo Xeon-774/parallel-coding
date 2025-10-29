@@ -5,17 +5,17 @@ Provides endpoints for monitoring worker execution status in real-time.
 Milestone 1.3: Worker Status UI implementation.
 """
 
-import logging
 import asyncio
-from typing import Dict, Any, List, Optional
+import logging
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 
 from orchestrator.core.worker_status_monitor import (
-    WorkerStatusMonitor,
-    WorkerState,
     HealthStatus,
+    WorkerState,
+    WorkerStatusMonitor,
     get_global_monitor,
 )
 

@@ -6,7 +6,7 @@ Implements window management for WSL using tmux sessions.
 
 from typing import Optional
 
-from orchestrator.window_strategies.base import WindowManagerBase, WindowInfo
+from orchestrator.window_strategies.base import WindowInfo, WindowManagerBase
 
 
 class WSLWindowManager(WindowManagerBase):

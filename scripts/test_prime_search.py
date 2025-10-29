@@ -6,9 +6,9 @@
 結果を検証・統合するテストスクリプト
 """
 
+import json
 import os
 import sys
-import json
 import time
 from pathlib import Path
 
@@ -16,7 +16,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from orchestrator import RefactoredOrchestrator, OrchestratorConfig
+from orchestrator import OrchestratorConfig, RefactoredOrchestrator
 
 
 def is_prime(n: int) -> bool:
@@ -41,14 +41,14 @@ def verify_prime(n: int) -> bool:
 def extract_primes_from_output(output: str) -> list:
     """出力から素数のリストを抽出"""
     primes = []
-    lines = output.split('\n')
+    lines = output.split("\n")
 
     for line in lines:
         # 数字のパターンを探す
         words = line.split()
         for word in words:
             # カンマや括弧を除去
-            clean_word = word.strip('[](),')
+            clean_word = word.strip("[](),")
             if clean_word.isdigit():
                 num = int(clean_word)
                 if num > 1:  # 有効な素数候補
@@ -104,8 +104,8 @@ def run_parallel_prime_search(num_workers: int = 5, range_size: int = 1000):
     print()
 
     # Windowsモードに設定
-    os.environ['ORCHESTRATOR_MODE'] = 'windows'
-    os.environ['CLAUDE_CODE_GIT_BASH_PATH'] = r'C:\opt\Git.Git\usr\bin\bash.exe'
+    os.environ["ORCHESTRATOR_MODE"] = "windows"
+    os.environ["CLAUDE_CODE_GIT_BASH_PATH"] = r"C:\opt\Git.Git\usr\bin\bash.exe"
 
     # 探索範囲を分割（1000からスタート）
     base_start = 1000
@@ -119,7 +119,7 @@ def run_parallel_prime_search(num_workers: int = 5, range_size: int = 1000):
     total_range = 0
     for i, (start, end) in enumerate(ranges):
         print(f"  Worker {i+1}: {start:,} - {end:,}")
-        total_range += (end - start + 1)
+        total_range += end - start + 1
     print(f"  合計: {total_range:,}個の整数")
     print()
 
@@ -134,10 +134,7 @@ def run_parallel_prime_search(num_workers: int = 5, range_size: int = 1000):
     print()
 
     config = OrchestratorConfig.from_env()
-    orchestrator = RefactoredOrchestrator(
-        config=config,
-        enable_realtime_monitoring=True
-    )
+    orchestrator = RefactoredOrchestrator(config=config, enable_realtime_monitoring=True)
 
     start_time = time.time()
 
@@ -175,7 +172,7 @@ def run_parallel_prime_search(num_workers: int = 5, range_size: int = 1000):
 
             if output_file.exists():
                 print(f"\n[Worker {i}] (範囲: {ranges[i-1][0]:,} - {ranges[i-1][1]:,})")
-                with open(output_file, 'r', encoding='utf-8') as f:
+                with open(output_file, "r", encoding="utf-8") as f:
                     output = f.read()
 
                 # 出力から素数を抽出
@@ -184,7 +181,7 @@ def run_parallel_prime_search(num_workers: int = 5, range_size: int = 1000):
                 # 実際にその範囲の素数かチェック
                 valid_primes = []
                 for p in primes:
-                    if ranges[i-1][0] <= p <= ranges[i-1][1] and verify_prime(p):
+                    if ranges[i - 1][0] <= p <= ranges[i - 1][1] and verify_prime(p):
                         valid_primes.append(p)
 
                 valid_primes.sort()
@@ -199,12 +196,14 @@ def run_parallel_prime_search(num_workers: int = 5, range_size: int = 1000):
 
                     # 統計に追加
                     all_primes.extend(valid_primes)
-                    worker_stats.append({
-                        'worker_id': i,
-                        'range': ranges[i-1],
-                        'count': len(valid_primes),
-                        'primes': valid_primes
-                    })
+                    worker_stats.append(
+                        {
+                            "worker_id": i,
+                            "range": ranges[i - 1],
+                            "count": len(valid_primes),
+                            "primes": valid_primes,
+                        }
+                    )
                 else:
                     print(f"  [WARNING] 有効な素数が見つかりませんでした")
 
@@ -222,8 +221,8 @@ def run_parallel_prime_search(num_workers: int = 5, range_size: int = 1000):
             # 各ワーカーの貢献度
             print("ワーカー別統計:")
             for stat in worker_stats:
-                worker_id = stat['worker_id']
-                count = stat['count']
+                worker_id = stat["worker_id"]
+                count = stat["count"]
                 percentage = (count / len(all_primes)) * 100
                 print(f"  Worker {worker_id}: {count:3d}個 ({percentage:5.1f}%)")
 
@@ -232,11 +231,13 @@ def run_parallel_prime_search(num_workers: int = 5, range_size: int = 1000):
             # 全体の素数密度
             print("素数密度:")
             for stat in worker_stats:
-                worker_id = stat['worker_id']
-                range_start, range_end = stat['range']
+                worker_id = stat["worker_id"]
+                range_start, range_end = stat["range"]
                 range_size_actual = range_end - range_start + 1
-                density = (stat['count'] / range_size_actual) * 100
-                print(f"  Worker {worker_id}: {density:.2f}% ({stat['count']}/{range_size_actual:,})")
+                density = (stat["count"] / range_size_actual) * 100
+                print(
+                    f"  Worker {worker_id}: {density:.2f}% ({stat['count']}/{range_size_actual:,})"
+                )
 
             print()
 
@@ -264,6 +265,7 @@ def run_parallel_prime_search(num_workers: int = 5, range_size: int = 1000):
     except Exception as e:
         print(f"\n[ERROR] エラー発生: {e}")
         import traceback
+
         traceback.print_exc()
 
     print()
@@ -272,14 +274,14 @@ def run_parallel_prime_search(num_workers: int = 5, range_size: int = 1000):
     print("=" * 80)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description='並列計算テスト - 素数探索')
-    parser.add_argument('-w', '--workers', type=int, default=5,
-                        help='ワーカー数（デフォルト: 5）')
-    parser.add_argument('-r', '--range', type=int, default=1000,
-                        help='各ワーカーの探索範囲（デフォルト: 1000）')
+    parser = argparse.ArgumentParser(description="並列計算テスト - 素数探索")
+    parser.add_argument("-w", "--workers", type=int, default=5, help="ワーカー数（デフォルト: 5）")
+    parser.add_argument(
+        "-r", "--range", type=int, default=1000, help="各ワーカーの探索範囲（デフォルト: 1000）"
+    )
 
     args = parser.parse_args()
 

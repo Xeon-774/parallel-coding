@@ -25,12 +25,12 @@ Usage:
 """
 
 import logging
-from typing import Generator
 from pathlib import Path
+from typing import Generator
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from sqlalchemy import create_engine, event, Engine
-from sqlalchemy.orm import sessionmaker, Session, declarative_base
+from sqlalchemy import Engine, create_engine, event
+from sqlalchemy.orm import Session, declarative_base, sessionmaker
 from sqlalchemy.pool import StaticPool
 
 logger = logging.getLogger(__name__)
@@ -66,7 +66,7 @@ class DatabaseSettings(BaseSettings):
         env_file=".env",
         env_prefix="DB_",
         case_sensitive=False,
-        extra="ignore"  # Ignore extra fields from .env file
+        extra="ignore",  # Ignore extra fields from .env file
     )
 
     database_url: str = "sqlite:///./orchestrator.db"
@@ -76,10 +76,7 @@ class DatabaseSettings(BaseSettings):
     pool_timeout: int = 30
 
 
-def _enable_sqlite_foreign_keys(
-    dbapi_connection: object,
-    connection_record: object
-) -> None:
+def _enable_sqlite_foreign_keys(dbapi_connection: object, connection_record: object) -> None:
     """
     Enable foreign key constraints for SQLite connections.
 
@@ -129,18 +126,14 @@ def create_db_engine(settings: DatabaseSettings) -> Engine:
         }
 
     engine = create_engine(
-        settings.database_url,
-        echo=settings.echo_sql,
-        **engine_kwargs  # type: ignore
+        settings.database_url, echo=settings.echo_sql, **engine_kwargs  # type: ignore
     )
 
     # Enable foreign keys for SQLite
     if is_sqlite:
         event.listen(engine, "connect", _enable_sqlite_foreign_keys)
 
-    logger.info(
-        f"Database engine created: {_mask_password(settings.database_url)}"
-    )
+    logger.info(f"Database engine created: {_mask_password(settings.database_url)}")
 
     return engine
 
@@ -183,12 +176,7 @@ settings = DatabaseSettings()
 engine = create_db_engine(settings)
 
 # Session factory
-SessionLocal = sessionmaker(
-    autocommit=False,
-    autoflush=False,
-    bind=engine,
-    expire_on_commit=False
-)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine, expire_on_commit=False)
 
 # Base class for declarative models
 Base = declarative_base()

@@ -21,19 +21,22 @@ import logging
 from pathlib import Path
 from typing import Optional
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+from orchestrator.api import (
+    jobs_api,
+    metrics_api,
+    resources_api,
+    supervisor_api,
+    supervisor_routes,
+    supervisor_websocket,
+    worker_status_api,
+)
 from orchestrator.api.dialogue_ws import dialogue_websocket_endpoint
 from orchestrator.api.terminal_ws import terminal_websocket_endpoint
-from orchestrator.api import metrics_api
-from orchestrator.api import worker_status_api
-from orchestrator.api import supervisor_routes
-from orchestrator.api import supervisor_websocket
-from orchestrator.api import supervisor_api
-from orchestrator.api import resources_api
-from orchestrator.api import jobs_api
+
 # from orchestrator.api import ecosystem_api  # NOT WORKING - using direct endpoints instead
 
 # Configure logging
@@ -419,8 +422,7 @@ async def get_ecosystem_health():
     worker_count = 0
     if WORKSPACE_ROOT.exists():
         worker_count = sum(
-            1 for d in WORKSPACE_ROOT.iterdir()
-            if d.is_dir() and d.name.startswith("worker_")
+            1 for d in WORKSPACE_ROOT.iterdir() if d.is_dir() and d.name.startswith("worker_")
         )
 
     return {
@@ -431,25 +433,21 @@ async def get_ecosystem_health():
                 "status": "active",
                 "workers_count": worker_count,
                 "uptime": "24h",
-                "version": "1.0.0"
+                "version": "1.0.0",
             },
             "manager_ai": {"status": "coming_soon"},
             "mt4_integration": {"status": "coming_soon"},
-            "trading_dashboard": {"status": "coming_soon"}
+            "trading_dashboard": {"status": "coming_soon"},
         },
-        "system": {
-            "cpu_usage": 0.0,
-            "memory_usage": 0.0,
-            "disk_usage": 0.0
-        }
+        "system": {"cpu_usage": 0.0, "memory_usage": 0.0, "disk_usage": 0.0},
     }
 
 
 @app.get("/api/v1/ecosystem/metrics/summary")
 async def get_ecosystem_metrics_summary():
     """Get aggregate performance metrics across all apps"""
-    import time
     import random
+    import time
 
     return {
         "timestamp": time.time(),
@@ -457,24 +455,19 @@ async def get_ecosystem_metrics_summary():
         "cpu": {
             "average": round(random.uniform(20, 40), 1),
             "peak": round(random.uniform(60, 80), 1),
-            "current": round(random.uniform(15, 35), 1)
+            "current": round(random.uniform(15, 35), 1),
         },
         "memory": {
             "average": round(random.uniform(40, 60), 1),
             "peak": round(random.uniform(70, 85), 1),
-            "current": round(random.uniform(45, 65), 1)
+            "current": round(random.uniform(45, 65), 1),
         },
         "api_calls": {
             "total": random.randint(500, 1000),
             "per_minute": round(random.uniform(5, 15), 2),
-            "errors": random.randint(0, 5)
+            "errors": random.randint(0, 5),
         },
-        "workers": {
-            "total": 0,
-            "active": 0,
-            "idle": 0,
-            "failed": 0
-        }
+        "workers": {"total": 0, "active": 0, "idle": 0, "failed": 0},
     }
 
 
@@ -487,7 +480,7 @@ async def get_ecosystem_status():
         "status": "online",
         "active_connections": 0,  # TODO: Track WebSocket connections
         "version": "1.0.0",
-        "timestamp": time.time()
+        "timestamp": time.time(),
     }
 
 
@@ -518,6 +511,7 @@ class ActivityBroadcaster:
         for conn in disconnected:
             self.disconnect(conn)
 
+
 activity_broadcaster = ActivityBroadcaster()
 
 
@@ -530,13 +524,15 @@ async def websocket_ecosystem_activity(websocket: WebSocket):
 
     try:
         # Send welcome message
-        await websocket.send_json({
-            "id": "system_connected",
-            "timestamp": datetime.now().isoformat(),
-            "app": "ecosystem",
-            "message": "Connected to activity feed",
-            "type": "info"
-        })
+        await websocket.send_json(
+            {
+                "id": "system_connected",
+                "timestamp": datetime.now().isoformat(),
+                "app": "ecosystem",
+                "message": "Connected to activity feed",
+                "type": "info",
+            }
+        )
 
         # Send initial mock activities
         initial_activities = [
@@ -545,15 +541,15 @@ async def websocket_ecosystem_activity(websocket: WebSocket):
                 "timestamp": datetime.now().isoformat(),
                 "app": "parallel_coding",
                 "message": "System initialized successfully",
-                "type": "success"
+                "type": "success",
             },
             {
                 "id": "2",
                 "timestamp": datetime.now().isoformat(),
                 "app": "ecosystem",
                 "message": "Ecosystem Dashboard online",
-                "type": "success"
-            }
+                "type": "success",
+            },
         ]
 
         for activity in initial_activities:
@@ -565,13 +561,15 @@ async def websocket_ecosystem_activity(websocket: WebSocket):
             logger.debug(f"Received from client: {data}")
 
             if data == "ping":
-                await websocket.send_json({
-                    "id": "pong",
-                    "timestamp": datetime.now().isoformat(),
-                    "app": "ecosystem",
-                    "message": "pong",
-                    "type": "info"
-                })
+                await websocket.send_json(
+                    {
+                        "id": "pong",
+                        "timestamp": datetime.now().isoformat(),
+                        "app": "ecosystem",
+                        "message": "pong",
+                        "type": "info",
+                    }
+                )
 
     except WebSocketDisconnect:
         activity_broadcaster.disconnect(websocket)
@@ -580,6 +578,7 @@ async def websocket_ecosystem_activity(websocket: WebSocket):
         logger.error(f"Activity feed WebSocket error: {e}")
         activity_broadcaster.disconnect(websocket)
         raise
+
 
 # ========== END ECOSYSTEM API ENDPOINTS ==========
 

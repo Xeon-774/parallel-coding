@@ -14,10 +14,11 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 # UTF-8出力設定
-if sys.platform == 'win32':
+if sys.platform == "win32":
     import codecs
-    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'replace')
-    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'replace')
+
+    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
+    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
 
 from orchestrator import AdvancedOrchestrator, OrchestratorConfig
 
@@ -42,15 +43,15 @@ def test_case_1_explicit_tasks():
     print(request)
     print()
 
-    os.environ['ORCHESTRATOR_MODE'] = 'windows'
-    os.environ['CLAUDE_CODE_GIT_BASH_PATH'] = r'C:\\opt\\Git.Git\\usr\\bin\\bash.exe'
+    os.environ["ORCHESTRATOR_MODE"] = "windows"
+    os.environ["CLAUDE_CODE_GIT_BASH_PATH"] = r"C:\\opt\\Git.Git\\usr\\bin\\bash.exe"
 
     config = OrchestratorConfig.from_env()
     orchestrator = AdvancedOrchestrator(
         config=config,
         enable_ai_analysis=True,
         enable_worktree=True,
-        enable_realtime_monitoring=True
+        enable_realtime_monitoring=True,
     )
 
     print("[期待される動作]")
@@ -74,7 +75,7 @@ def test_case_1_explicit_tasks():
 
         # ワーカー数を確認
         workspace_path = Path(config.workspace_root)
-        worker_count = sum(1 for item in workspace_path.glob('worker_*') if item.is_dir())
+        worker_count = sum(1 for item in workspace_path.glob("worker_*") if item.is_dir())
 
         print(f"  生成されたワーカー数: {worker_count}")
         if worker_count >= 3:
@@ -104,15 +105,15 @@ def test_case_2_ambiguous_request():
     print(request)
     print()
 
-    os.environ['ORCHESTRATOR_MODE'] = 'windows'
-    os.environ['CLAUDE_CODE_GIT_BASH_PATH'] = r'C:\\opt\\Git.Git\\usr\\bin\\bash.exe'
+    os.environ["ORCHESTRATOR_MODE"] = "windows"
+    os.environ["CLAUDE_CODE_GIT_BASH_PATH"] = r"C:\\opt\\Git.Git\\usr\\bin\\bash.exe"
 
     config = OrchestratorConfig.from_env()
     orchestrator = AdvancedOrchestrator(
         config=config,
         enable_ai_analysis=True,
         enable_worktree=True,
-        enable_realtime_monitoring=True
+        enable_realtime_monitoring=True,
     )
 
     print("[期待される動作]")
@@ -132,7 +133,7 @@ def test_case_2_ambiguous_request():
 
     if result:
         workspace_path = Path(config.workspace_root)
-        worker_count = sum(1 for item in workspace_path.glob('worker_*') if item.is_dir())
+        worker_count = sum(1 for item in workspace_path.glob("worker_*") if item.is_dir())
 
         print(f"✅ テストケース2: 完了")
         print(f"  生成されたワーカー数: {worker_count}")
@@ -227,5 +228,5 @@ def main():
     print()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -26,4 +26,3 @@ def test_init_database_development_creates_schema(tmp_path: Path) -> None:
 
     # Cleanup
     db_file.unlink()
-

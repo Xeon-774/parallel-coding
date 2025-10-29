@@ -3,26 +3,29 @@
 import os
 from pathlib import Path
 from typing import Any, List, Optional, Union
-import pandas as pd
-import numpy as np
 
-from .exceptions import (
-    FileNotFoundError,
-    UnsupportedFileFormatError,
-    ValidationError,
-    DataTypeError,
-    MissingColumnError,
-    EmptyDataError,
-    MemoryError as DataVizMemoryError
-)
+import numpy as np
+import pandas as pd
+
 from .config import (
-    SUPPORTED_DATA_FORMATS,
-    SUPPORTED_IMAGE_FORMATS,
-    MIN_DATAFRAME_ROWS,
-    MIN_DATAFRAME_COLS,
+    CHART_TYPES,
     MAX_FILE_SIZE_MB,
     MAX_MEMORY_MB,
-    CHART_TYPES
+    MIN_DATAFRAME_COLS,
+    MIN_DATAFRAME_ROWS,
+    SUPPORTED_DATA_FORMATS,
+    SUPPORTED_IMAGE_FORMATS,
+)
+from .exceptions import (
+    DataTypeError,
+    EmptyDataError,
+    FileNotFoundError,
+)
+from .exceptions import MemoryError as DataVizMemoryError
+from .exceptions import (
+    MissingColumnError,
+    UnsupportedFileFormatError,
+    ValidationError,
 )
 
 
@@ -68,7 +71,9 @@ def validate_directory_exists(dir_path: Union[str, Path]) -> Path:
     return path
 
 
-def validate_file_format(file_path: Union[str, Path], allowed_formats: Optional[List[str]] = None) -> str:
+def validate_file_format(
+    file_path: Union[str, Path], allowed_formats: Optional[List[str]] = None
+) -> str:
     """
     Validate file format is supported.
 
@@ -83,7 +88,7 @@ def validate_file_format(file_path: Union[str, Path], allowed_formats: Optional[
         UnsupportedFileFormatError: If format is not supported
     """
     path = Path(file_path)
-    extension = path.suffix.lower().lstrip('.')
+    extension = path.suffix.lower().lstrip(".")
 
     if allowed_formats is None:
         allowed_formats = SUPPORTED_DATA_FORMATS
@@ -117,16 +122,18 @@ def validate_file_size(file_path: Union[str, Path], max_size_mb: Optional[int] =
     if file_size_mb > max_size:
         raise ValidationError(
             f"File size ({file_size_mb:.2f}MB) exceeds maximum ({max_size}MB)",
-            details={'file_size_mb': file_size_mb, 'max_size_mb': max_size}
+            details={"file_size_mb": file_size_mb, "max_size_mb": max_size},
         )
 
     return file_size
 
 
-def validate_dataframe(df: pd.DataFrame,
-                       min_rows: Optional[int] = None,
-                       min_cols: Optional[int] = None,
-                       required_columns: Optional[List[str]] = None) -> pd.DataFrame:
+def validate_dataframe(
+    df: pd.DataFrame,
+    min_rows: Optional[int] = None,
+    min_cols: Optional[int] = None,
+    required_columns: Optional[List[str]] = None,
+) -> pd.DataFrame:
     """
     Validate DataFrame meets requirements.
 
@@ -144,7 +151,7 @@ def validate_dataframe(df: pd.DataFrame,
         ValidationError: If DataFrame doesn't meet requirements
     """
     if not isinstance(df, pd.DataFrame):
-        raise DataTypeError('pandas.DataFrame', type(df).__name__)
+        raise DataTypeError("pandas.DataFrame", type(df).__name__)
 
     if df.empty:
         raise EmptyDataError("DataFrame is empty")
@@ -155,13 +162,13 @@ def validate_dataframe(df: pd.DataFrame,
     if len(df) < min_rows:
         raise ValidationError(
             f"DataFrame has {len(df)} rows, minimum required is {min_rows}",
-            details={'actual_rows': len(df), 'min_rows': min_rows}
+            details={"actual_rows": len(df), "min_rows": min_rows},
         )
 
     if len(df.columns) < min_cols:
         raise ValidationError(
             f"DataFrame has {len(df.columns)} columns, minimum required is {min_cols}",
-            details={'actual_cols': len(df.columns), 'min_cols': min_cols}
+            details={"actual_cols": len(df.columns), "min_cols": min_cols},
         )
 
     if required_columns:
@@ -184,15 +191,12 @@ def validate_columns_exist(df: pd.DataFrame, columns: List[str]) -> None:
     missing_columns = [col for col in columns if col not in df.columns]
 
     if missing_columns:
-        raise MissingColumnError(
-            missing_columns[0],
-            available_columns=list(df.columns)
-        )
+        raise MissingColumnError(missing_columns[0], available_columns=list(df.columns))
 
 
-def validate_column_type(df: pd.DataFrame,
-                         column: str,
-                         expected_types: Union[type, List[type]]) -> None:
+def validate_column_type(
+    df: pd.DataFrame, column: str, expected_types: Union[type, List[type]]
+) -> None:
     """
     Validate column data type.
 
@@ -230,7 +234,7 @@ def validate_column_type(df: pd.DataFrame,
             break
 
     if not valid:
-        expected_str = ' or '.join([str(t) for t in expected_types])
+        expected_str = " or ".join([str(t) for t in expected_types])
         raise DataTypeError(expected_str, str(actual_dtype), field=column)
 
 
@@ -251,11 +255,13 @@ def validate_numeric_column(df: pd.DataFrame, column: str) -> None:
         raise ValidationError(
             f"Column '{column}' must be numeric",
             field=column,
-            details={'dtype': str(df[column].dtype)}
+            details={"dtype": str(df[column].dtype)},
         )
 
 
-def validate_categorical_column(df: pd.DataFrame, column: str, max_categories: Optional[int] = None) -> None:
+def validate_categorical_column(
+    df: pd.DataFrame, column: str, max_categories: Optional[int] = None
+) -> None:
     """
     Validate that column is suitable for categorical analysis.
 
@@ -275,7 +281,7 @@ def validate_categorical_column(df: pd.DataFrame, column: str, max_categories: O
         raise ValidationError(
             f"Column '{column}' has {n_unique} unique values, maximum allowed is {max_categories}",
             field=column,
-            details={'n_unique': n_unique, 'max_categories': max_categories}
+            details={"n_unique": n_unique, "max_categories": max_categories},
         )
 
 
@@ -309,20 +315,18 @@ def validate_positive_number(value: Union[int, float], name: str = "value") -> N
         ValidationError: If number is not positive
     """
     if not isinstance(value, (int, float)):
-        raise DataTypeError('int or float', type(value).__name__)
+        raise DataTypeError("int or float", type(value).__name__)
 
     if value <= 0:
-        raise ValidationError(
-            f"{name} must be positive, got {value}",
-            field=name,
-            value=value
-        )
+        raise ValidationError(f"{name} must be positive, got {value}", field=name, value=value)
 
 
-def validate_range(value: Union[int, float],
-                   min_value: Optional[Union[int, float]] = None,
-                   max_value: Optional[Union[int, float]] = None,
-                   name: str = "value") -> None:
+def validate_range(
+    value: Union[int, float],
+    min_value: Optional[Union[int, float]] = None,
+    max_value: Optional[Union[int, float]] = None,
+    name: str = "value",
+) -> None:
     """
     Validate that value is within range.
 
@@ -336,20 +340,16 @@ def validate_range(value: Union[int, float],
         ValidationError: If value is out of range
     """
     if not isinstance(value, (int, float)):
-        raise DataTypeError('int or float', type(value).__name__)
+        raise DataTypeError("int or float", type(value).__name__)
 
     if min_value is not None and value < min_value:
         raise ValidationError(
-            f"{name} must be >= {min_value}, got {value}",
-            field=name,
-            value=value
+            f"{name} must be >= {min_value}, got {value}", field=name, value=value
         )
 
     if max_value is not None and value > max_value:
         raise ValidationError(
-            f"{name} must be <= {max_value}, got {value}",
-            field=name,
-            value=value
+            f"{name} must be <= {max_value}, got {value}", field=name, value=value
         )
 
 
@@ -366,9 +366,9 @@ def validate_chart_type(chart_type: str) -> None:
     if chart_type not in CHART_TYPES:
         raise ValidationError(
             f"Unsupported chart type: {chart_type}",
-            field='chart_type',
+            field="chart_type",
             value=chart_type,
-            details={'supported_types': CHART_TYPES}
+            details={"supported_types": CHART_TYPES},
         )
 
 
@@ -382,7 +382,7 @@ def validate_image_format(format: str) -> None:
     Raises:
         UnsupportedFileFormatError: If format is not supported
     """
-    format_lower = format.lower().lstrip('.')
+    format_lower = format.lower().lstrip(".")
     if format_lower not in SUPPORTED_IMAGE_FORMATS:
         raise UnsupportedFileFormatError(format_lower, SUPPORTED_IMAGE_FORMATS)
 
@@ -405,7 +405,7 @@ def validate_memory_usage(size_bytes: int, max_mb: Optional[int] = None) -> None
         raise DataVizMemoryError(
             f"Memory usage ({size_mb:.2f}MB) exceeds limit ({max_size}MB)",
             current_usage=int(size_mb),
-            limit=max_size
+            limit=max_size,
         )
 
 
@@ -449,19 +449,32 @@ def validate_color(color: str) -> None:
     import re
 
     # Check if hex color
-    hex_pattern = r'^#(?:[0-9a-fA-F]{3}){1,2}$'
+    hex_pattern = r"^#(?:[0-9a-fA-F]{3}){1,2}$"
     if re.match(hex_pattern, color):
         return
 
     # Check if named color (basic validation)
-    named_colors = {'red', 'blue', 'green', 'yellow', 'black', 'white', 'gray',
-                   'cyan', 'magenta', 'orange', 'purple', 'brown', 'pink'}
+    named_colors = {
+        "red",
+        "blue",
+        "green",
+        "yellow",
+        "black",
+        "white",
+        "gray",
+        "cyan",
+        "magenta",
+        "orange",
+        "purple",
+        "brown",
+        "pink",
+    }
     if color.lower() in named_colors:
         return
 
     # Check if rgb/rgba format
-    rgb_pattern = r'^rgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*(?:,\s*[\d.]+\s*)?\)$'
+    rgb_pattern = r"^rgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*(?:,\s*[\d.]+\s*)?\)$"
     if re.match(rgb_pattern, color):
         return
 
-    raise ValidationError(f"Invalid color format: {color}", field='color', value=color)
+    raise ValidationError(f"Invalid color format: {color}", field="color", value=color)

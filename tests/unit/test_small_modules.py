@@ -3,16 +3,16 @@
 Tests common/models.py, ansi_utils.py, and window_manager.py.
 """
 
-import pytest
 import time
 
+import pytest
+
 from orchestrator.core.common.models import (
-    ConfirmationType,
     ConfirmationRequest,
+    ConfirmationType,
 )
 from orchestrator.utils.ansi_utils import strip_ansi, strip_ansi_codes
-from orchestrator.window_manager import WindowManager, WindowInfo
-
+from orchestrator.window_manager import WindowInfo, WindowManager
 
 # ======================= Common Models Tests =======================
 
@@ -41,7 +41,7 @@ class TestConfirmationRequest:
             worker_id="w123",
             confirmation_type=ConfirmationType.FILE_WRITE,
             message="Write to file",
-            details={"path": "/tmp/test.txt"}
+            details={"path": "/tmp/test.txt"},
         )
 
         assert req.worker_id == "w123"
@@ -56,7 +56,7 @@ class TestConfirmationRequest:
             worker_id="w123",
             confirmation_type=ConfirmationType.FILE_DELETE,
             message="Delete file",
-            details={}
+            details={},
         )
 
         assert req.is_dangerous() is True
@@ -67,7 +67,7 @@ class TestConfirmationRequest:
             worker_id="w123",
             confirmation_type=ConfirmationType.COMMAND_EXECUTE,
             message="Run command",
-            details={}
+            details={},
         )
 
         assert req.is_dangerous() is True
@@ -78,7 +78,7 @@ class TestConfirmationRequest:
             worker_id="w123",
             confirmation_type=ConfirmationType.FILE_WRITE,
             message="Write file",
-            details={}
+            details={},
         )
 
         assert req.is_dangerous() is False
@@ -89,7 +89,7 @@ class TestConfirmationRequest:
             worker_id="w123",
             confirmation_type=ConfirmationType.FILE_READ,
             message="Read file",
-            details={}
+            details={},
         )
 
         assert req.is_dangerous() is False
@@ -101,7 +101,7 @@ class TestConfirmationRequest:
             worker_id="w123",
             confirmation_type=ConfirmationType.FILE_WRITE,
             message="Test",
-            details={}
+            details={},
         )
         after = time.time()
 
@@ -164,14 +164,11 @@ class TestWindowManager:
 
     def test_create_window_manager_no_screenshots(self):
         """Test creating WindowManager without screenshots."""
-        import tempfile
         import os
+        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            wm = WindowManager(
-                workspace_root=tmpdir,
-                enable_screenshots=False
-            )
+            wm = WindowManager(workspace_root=tmpdir, enable_screenshots=False)
 
             assert wm is not None
 
@@ -185,7 +182,7 @@ class TestWindowManager:
                 execution_mode="windows",
                 auto_close=False,
                 close_delay=5,
-                enable_screenshots=False
+                enable_screenshots=False,
             )
 
             assert wm is not None
@@ -196,9 +193,7 @@ class TestWindowManager:
 
         with tempfile.TemporaryDirectory() as tmpdir:
             wm = WindowManager(
-                workspace_root=tmpdir,
-                execution_mode="wsl",
-                enable_screenshots=False
+                workspace_root=tmpdir, execution_mode="wsl", enable_screenshots=False
             )
 
             assert wm is not None
@@ -208,10 +203,7 @@ class TestWindowManager:
         import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            wm = WindowManager(
-                workspace_root=tmpdir,
-                enable_screenshots=False
-            )
+            wm = WindowManager(workspace_root=tmpdir, enable_screenshots=False)
 
             # WindowManager should have a _strategy attribute
             assert hasattr(wm, "_strategy")
@@ -222,10 +214,7 @@ class TestWindowManager:
         import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            wm = WindowManager(
-                workspace_root=tmpdir,
-                enable_screenshots=False
-            )
+            wm = WindowManager(workspace_root=tmpdir, enable_screenshots=False)
 
             assert hasattr(wm, "create_monitoring_window")
             assert callable(wm.create_monitoring_window)
@@ -235,10 +224,7 @@ class TestWindowManager:
         import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            wm = WindowManager(
-                workspace_root=tmpdir,
-                enable_screenshots=False
-            )
+            wm = WindowManager(workspace_root=tmpdir, enable_screenshots=False)
 
             assert hasattr(wm, "close_window")
             assert callable(wm.close_window)
@@ -248,10 +234,7 @@ class TestWindowManager:
         import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            wm = WindowManager(
-                workspace_root=tmpdir,
-                enable_screenshots=False
-            )
+            wm = WindowManager(workspace_root=tmpdir, enable_screenshots=False)
 
             assert hasattr(wm, "close_all_windows")
             assert callable(wm.close_all_windows)
@@ -261,10 +244,7 @@ class TestWindowManager:
         import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            wm = WindowManager(
-                workspace_root=tmpdir,
-                enable_screenshots=False
-            )
+            wm = WindowManager(workspace_root=tmpdir, enable_screenshots=False)
 
             assert hasattr(wm, "windows")
 

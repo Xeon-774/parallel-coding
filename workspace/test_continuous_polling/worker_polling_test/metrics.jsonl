@@ -35,3 +35,6 @@
 {"type": "worker_lifecycle", "timestamp": "2025-10-27T11:20:24.299663Z", "worker_id": "worker_polling_test", "event": "spawned", "duration_seconds": null}
 {"type": "worker_lifecycle", "timestamp": "2025-10-27T11:20:50.649824Z", "worker_id": "worker_polling_test", "event": "completed", "duration_seconds": 26.35016441345215}
 {"type": "worker_lifecycle", "timestamp": "2025-10-28T03:40:10.419338Z", "worker_id": "worker_polling_test", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-29T07:35:49.696986Z", "worker_id": "worker_polling_test", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-29T07:45:18.097756Z", "worker_id": "worker_polling_test", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-29T07:45:55.247484Z", "worker_id": "worker_polling_test", "event": "completed", "duration_seconds": 37.14973330497742}

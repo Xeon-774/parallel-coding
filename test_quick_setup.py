@@ -10,6 +10,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from orchestrator.config import OrchestratorConfig
 
+
 def test_config():
     """Test configuration"""
     config = OrchestratorConfig()
@@ -37,6 +38,7 @@ def test_config():
 
     return True
 
+
 if __name__ == "__main__":
     try:
         success = test_config()
@@ -44,5 +46,6 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n❌ Test FAILED: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)

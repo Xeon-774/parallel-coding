@@ -22,46 +22,59 @@ WSLまたはWindows経由で複数のClaude AIを起動し、タスクを並列�
 __version__ = "10.0.0"
 __author__ = "AI Parallel Coding Project"
 
-# コア設定
-from orchestrator.config import OrchestratorConfig, TaskConfig, find_git_bash
-
-# ロギング (updated to use core.structured_logging)
-from orchestrator.core.structured_logging import (
-    get_logger,
-    StructuredLogger,
-    LogLevel,
-    LogCategory,
-    LogContext,
-    LogEntry,
-)
-
-# コアモジュール（新規リファクタリング v10.0）
-from orchestrator.core import (
-    WorkerInfo,
-    TaskResult,
-    WorkerManager,
-    StreamMonitor,
-    ResultIntegrator,
-    TaskAnalyzerService,
-)
-
 # AI分析エンジン
 from orchestrator.ai_task_analyzer import (
     AITaskAnalyzer,
+    ConflictType,
+    RiskLevel,
     TaskAnalysis,
     TaskDependency,
-    RiskLevel,
-    ConflictType,
 )
 
 # AI分解エンジン（v4.1 NEW!）
 from orchestrator.ai_task_decomposer import AITaskDecomposer, DecomposedTask
 
-# Worktreeマネージャー
-from orchestrator.worktree_manager import WorktreeManager, WorktreeInfo
+# コア設定
+from orchestrator.config import OrchestratorConfig, TaskConfig, find_git_bash
 
-# ウィンドウマネージャー（v4.2 NEW!）
-from orchestrator.window_manager import WindowManager, WindowInfo
+# コアモジュール（新規リファクタリング v10.0）
+from orchestrator.core import (
+    ResultIntegrator,
+    StreamMonitor,
+    TaskAnalyzerService,
+    TaskResult,
+    WorkerInfo,
+    WorkerManager,
+)
+
+# 例外
+from orchestrator.core.exceptions import (  # 主要例外クラス; 後方互換性のためのエイリアス
+    ConfigurationError,
+    GitBashError,
+    OrchestratorError,
+    OrchestratorException,
+    OutputError,
+    ResourceError,
+    RetryableError,
+    ScreenshotError,
+    TaskError,
+    TaskSplitError,
+    TimeoutError,
+    ValidationError,
+    WindowManagerError,
+    WorkerError,
+    WorkspaceError,
+)
+
+# ロギング (updated to use core.structured_logging)
+from orchestrator.core.structured_logging import (
+    LogCategory,
+    LogContext,
+    LogEntry,
+    LogLevel,
+    StructuredLogger,
+    get_logger,
+)
 
 # スクリーンショットマネージャー（v4.2 NEW!）
 from orchestrator.screenshot_manager import ScreenshotManager
@@ -69,53 +82,38 @@ from orchestrator.screenshot_manager import ScreenshotManager
 # タスク分割
 from orchestrator.task_splitter import AdvancedTaskSplitter, TaskComplexity, TaskType
 
-# 例外
-from orchestrator.core.exceptions import (
-    # 主要例外クラス
-    OrchestratorException,
-    ConfigurationError,
-    WorkerError,
-    TaskError,
-    ResourceError,
-    RetryableError,
-    # 後方互換性のためのエイリアス
-    OrchestratorError,
-    TaskSplitError,
-    ValidationError,
-    WorkspaceError,
-    GitBashError,
-    TimeoutError,
-    OutputError,
-    WindowManagerError,
-    ScreenshotError,
-)
-
 # ユーティリティ (updated to use utils package)
 from orchestrator.utils import (
     convert_windows_to_wsl_path,
     convert_wsl_to_windows_path,
     detect_platform,
-    is_windows,
-    is_linux,
-    validate_file_path,
     ensure_directory,
     format_duration,
     format_size,
     get_timestamp,
-    truncate_string,
+    is_linux,
+    is_windows,
     safe_read_file,
     safe_write_file,
+    truncate_string,
+    validate_file_path,
 )
 
 # バリデーション
 from orchestrator.validators import (
     validate_config,
-    validate_task,
-    validate_worker_output,
     validate_git_bash_path,
-    validate_workspace,
+    validate_task,
     validate_user_request,
+    validate_worker_output,
+    validate_workspace,
 )
+
+# ウィンドウマネージャー（v4.2 NEW!）
+from orchestrator.window_manager import WindowInfo, WindowManager
+
+# Worktreeマネージャー
+from orchestrator.worktree_manager import WorktreeInfo, WorktreeManager
 
 __all__ = [
     # バージョン情報

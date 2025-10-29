@@ -27,23 +27,25 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Callable
+from typing import Any, Callable, Dict, List, Optional
 
 from orchestrator.config import OrchestratorConfig
-from orchestrator.interfaces import ILogger
 from orchestrator.core.common.metrics import MetricsCollector
 from orchestrator.core.common.models import ConfirmationRequest
+from orchestrator.interfaces import ILogger
 from orchestrator.utils.ansi_utils import strip_ansi_codes
 
 
 class ManagerType(str, Enum):
     """Type of AI manager"""
-    WORKER = "worker"      # Worker AI instance manager
+
+    WORKER = "worker"  # Worker AI instance manager
     SUPERVISOR = "supervisor"  # Supervisor/Manager AI monitor
 
 
 class ManagerStatus(str, Enum):
     """Status of AI manager"""
+
     INITIALIZING = "initializing"
     READY = "ready"
     RUNNING = "running"
@@ -55,6 +57,7 @@ class ManagerStatus(str, Enum):
 @dataclass
 class HealthCheckResult:
     """Health check result for AI manager"""
+
     is_healthy: bool
     status: ManagerStatus
     message: str
@@ -67,6 +70,7 @@ class HealthCheckResult:
 @dataclass
 class ManagerMetrics:
     """Common metrics for AI managers"""
+
     manager_id: str
     manager_type: ManagerType
     status: ManagerStatus
@@ -226,9 +230,7 @@ class BaseAIManager(ABC):
         pass
 
     @abstractmethod
-    def _handle_confirmation_impl(
-        self, confirmation: ConfirmationRequest
-    ) -> Optional[str]:
+    def _handle_confirmation_impl(self, confirmation: ConfirmationRequest) -> Optional[str]:
         """
         Handle confirmation request (manager-specific logic).
 
@@ -363,9 +365,7 @@ class BaseAIManager(ABC):
                 details={"exception": str(e)},
             )
 
-    def handle_confirmation(
-        self, confirmation: ConfirmationRequest
-    ) -> Optional[str]:
+    def handle_confirmation(self, confirmation: ConfirmationRequest) -> Optional[str]:
         """
         Handle confirmation request (template method).
 
@@ -451,12 +451,7 @@ class BaseAIManager(ABC):
             last_activity_time=self._last_activity_time,
         )
 
-    def log_event(
-        self,
-        event_type: str,
-        message: str,
-        **kwargs: Any
-    ) -> None:
+    def log_event(self, event_type: str, message: str, **kwargs: Any) -> None:
         """
         Log an event with structured logging.
 
@@ -575,9 +570,7 @@ class BaseAIManager(ABC):
 # Type Aliases for Convenience
 # =============================================================================
 
-AIManagerFactory = Callable[
-    [OrchestratorConfig, ILogger, str], BaseAIManager
-]
+AIManagerFactory = Callable[[OrchestratorConfig, ILogger, str], BaseAIManager]
 """Factory function type for creating AI managers."""
 
 
@@ -589,7 +582,8 @@ if __name__ == "__main__":
     print("BaseAIManager is an abstract class and cannot be instantiated directly.")
     print("Create a derived class (e.g., WorkerAIManager or SupervisorAIManager).")
     print("\nExample:")
-    print("""
+    print(
+        """
     class MyAIManager(BaseAIManager):
         def start(self) -> bool:
             self._mark_started()
@@ -632,4 +626,5 @@ if __name__ == "__main__":
     health = manager.health_check()
     print(f"Healthy: {health.is_healthy}")
     manager.stop()
-    """)
+    """
+    )

@@ -37,7 +37,6 @@ from orchestrator.core.state_machine import (
     WorkerStateMachine,
 )
 
-
 # ============================================================================
 # Test Fixtures
 # ============================================================================
@@ -82,7 +81,13 @@ def sample_worker(test_db: Session) -> Worker:
 @pytest.fixture
 def sample_job(test_db: Session) -> Job:
     """Create sample job for testing."""
-    job = Job(id="test-job-1", depth=0, worker_count=1, task_description="Test task", status=JobStatus.PENDING)
+    job = Job(
+        id="test-job-1",
+        depth=0,
+        worker_count=1,
+        task_description="Test task",
+        status=JobStatus.PENDING,
+    )
     test_db.add(job)
     test_db.commit()
     test_db.refresh(job)
@@ -207,12 +212,16 @@ def test_job_invalid_transitions(
         )
 
 
-def test_job_cancellation_transitions(
-    test_db: Session, job_sm: JobStateMachine
-) -> None:
+def test_job_cancellation_transitions(test_db: Session, job_sm: JobStateMachine) -> None:
     """Test job cancellation from various states."""
     # PENDING → CANCELLED
-    job1 = Job(id="cancel-test-1", depth=0, worker_count=1, task_description="Test task", status=JobStatus.PENDING)
+    job1 = Job(
+        id="cancel-test-1",
+        depth=0,
+        worker_count=1,
+        task_description="Test task",
+        status=JobStatus.PENDING,
+    )
     test_db.add(job1)
     test_db.commit()
 
@@ -221,7 +230,13 @@ def test_job_cancellation_transitions(
     assert job1.status == JobStatus.CANCELED
 
     # RUNNING → CANCELLED
-    job2 = Job(id="cancel-test-2", depth=0, worker_count=1, task_description="Test task", status=JobStatus.RUNNING)
+    job2 = Job(
+        id="cancel-test-2",
+        depth=0,
+        worker_count=1,
+        task_description="Test task",
+        status=JobStatus.RUNNING,
+    )
     test_db.add(job2)
     test_db.commit()
 
@@ -322,9 +337,7 @@ def test_worker_model_crud(test_db: Session) -> None:
     assert test_db.query(Worker).filter_by(id="crud-worker-1").first() is None
 
 
-def test_job_model_relationships(
-    test_db: Session, sample_worker: Worker, sample_job: Job
-) -> None:
+def test_job_model_relationships(test_db: Session, sample_worker: Worker, sample_job: Job) -> None:
     """Test Job model relationships with foreign keys and cascades."""
     # Assign worker to job
     sample_job.assigned_worker_id = sample_worker.id
@@ -371,12 +384,24 @@ def test_idempotency_key_uniqueness(test_db: Session) -> None:
     key_value = "idempotent-operation-123"
 
     # First insertion
-    key1 = IdempotencyKey(request_id=key_value, endpoint="/test", response_status=200, response_body="{}", expires_at=datetime.utcnow() + timedelta(hours=1))
+    key1 = IdempotencyKey(
+        request_id=key_value,
+        endpoint="/test",
+        response_status=200,
+        response_body="{}",
+        expires_at=datetime.utcnow() + timedelta(hours=1),
+    )
     test_db.add(key1)
     test_db.commit()
 
     # Duplicate insertion should fail (unique constraint)
-    key2 = IdempotencyKey(request_id=key_value, endpoint="/test", response_status=200, response_body="{}", expires_at=datetime.utcnow() + timedelta(hours=1))
+    key2 = IdempotencyKey(
+        request_id=key_value,
+        endpoint="/test",
+        response_status=200,
+        response_body="{}",
+        expires_at=datetime.utcnow() + timedelta(hours=1),
+    )
     test_db.add(key2)
 
     with pytest.raises(Exception):  # IntegrityError or similar
@@ -391,7 +416,12 @@ def test_idempotency_key_uniqueness(test_db: Session) -> None:
 
 def test_worker_status_enum_values(test_db: Session) -> None:
     """Test WorkerStatus enum values are correctly stored and retrieved."""
-    statuses = [WorkerStatus.IDLE, WorkerStatus.RUNNING, WorkerStatus.FAILED, WorkerStatus.TERMINATED]
+    statuses = [
+        WorkerStatus.IDLE,
+        WorkerStatus.RUNNING,
+        WorkerStatus.FAILED,
+        WorkerStatus.TERMINATED,
+    ]
 
     for idx, status in enumerate(statuses):
         worker = Worker(id=f"status-test-{idx}", workspace_id="ws-status", status=status)
@@ -416,7 +446,13 @@ def test_job_status_enum_values(test_db: Session) -> None:
     ]
 
     for idx, status in enumerate(statuses):
-        job = Job(id=f"job-status-test-{idx}", depth=0, worker_count=1, task_description="Test task", status=status)
+        job = Job(
+            id=f"job-status-test-{idx}",
+            depth=0,
+            worker_count=1,
+            task_description="Test task",
+            status=status,
+        )
         test_db.add(job)
 
     test_db.commit()

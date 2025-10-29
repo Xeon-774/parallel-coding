@@ -11,19 +11,19 @@ World-class logging infrastructure with:
 - Asynchronous logging support
 """
 
-import logging
 import json
+import logging
+import threading
 import time
 import traceback
-import threading
-from typing import Any, Dict, Optional, Callable, Generator
-from dataclasses import dataclass, field, asdict
+import uuid
+from contextlib import contextmanager
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import Enum
-from pathlib import Path
 from functools import wraps
-from contextlib import contextmanager
-import uuid
+from pathlib import Path
+from typing import Any, Callable, Dict, Generator, Optional
 
 
 class LogLevel(str, Enum):

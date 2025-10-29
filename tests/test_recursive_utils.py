@@ -2,18 +2,19 @@
 Tests for Recursive Orchestration Utilities
 """
 
-import pytest
 import json
-from pathlib import Path
-import tempfile
 import shutil
+import tempfile
+from pathlib import Path
+
+import pytest
 
 from orchestrator.core.recursive_utils import (
     RecursiveWorkspaceManager,
-    validate_recursion_depth,
     calculate_child_depth,
+    get_ancestry_chain,
     is_recursive_worker,
-    get_ancestry_chain
+    validate_recursion_depth,
 )
 
 
@@ -30,10 +31,7 @@ class TestRecursiveWorkspaceManager:
     @pytest.fixture
     def manager(self, temp_workspace):
         """Create workspace manager instance"""
-        return RecursiveWorkspaceManager(
-            job_id="test_job_123",
-            workspace_root=temp_workspace
-        )
+        return RecursiveWorkspaceManager(job_id="test_job_123", workspace_root=temp_workspace)
 
     def test_create_depth_directory(self, manager):
         """Test creating depth directory"""
@@ -68,10 +66,7 @@ class TestRecursiveWorkspaceManager:
         """Test writing and reading metadata"""
         manager.create_depth_directory(0)
 
-        metadata = {
-            "workers_count": 3,
-            "recursive_workers": ["worker_2"]
-        }
+        metadata = {"workers_count": 3, "recursive_workers": ["worker_2"]}
 
         manager.write_depth_metadata(0, metadata)
         read_metadata = manager.read_depth_metadata(0)
@@ -90,7 +85,7 @@ class TestRecursiveWorkspaceManager:
         parent_info_file = manager.get_depth_directory(1) / "parent_info.json"
         assert parent_info_file.exists()
 
-        with open(parent_info_file, 'r') as f:
+        with open(parent_info_file, "r") as f:
             parent_info = json.load(f)
 
         assert parent_info["parent_job_id"] == "parent_job"
@@ -103,28 +98,23 @@ class TestRecursiveWorkspaceManager:
         manager.create_depth_directory(0)
         manager.create_worker_directory(0, "worker_2", is_recursive=True)
 
-        request_payload = {
-            "request": "Child task",
-            "config": {"max_workers": 3}
-        }
+        request_payload = {"request": "Child task", "config": {"max_workers": 3}}
 
         manager.write_recursive_call_info(
             depth=0,
             worker_id="worker_2",
             child_job_id="child_123",
             child_depth=1,
-            request_payload=request_payload
+            request_payload=request_payload,
         )
 
         recursive_file = (
-            manager.get_depth_directory(0) /
-            "worker_2_recursive" /
-            "recursive_call.json"
+            manager.get_depth_directory(0) / "worker_2_recursive" / "recursive_call.json"
         )
 
         assert recursive_file.exists()
 
-        with open(recursive_file, 'r') as f:
+        with open(recursive_file, "r") as f:
             recursive_info = json.load(f)
 
         assert recursive_info["worker_id"] == "worker_2"
@@ -148,18 +138,14 @@ class TestRecursiveWorkspaceManager:
 
     def test_write_job_metadata(self, manager):
         """Test writing job metadata"""
-        metadata = {
-            "user_request": "Test task",
-            "max_depth": 2,
-            "total_workers": 5
-        }
+        metadata = {"user_request": "Test task", "max_depth": 2, "total_workers": 5}
 
         manager.write_job_metadata(metadata)
 
         metadata_file = manager.job_dir / "job_metadata.json"
         assert metadata_file.exists()
 
-        with open(metadata_file, 'r') as f:
+        with open(metadata_file, "r") as f:
             job_metadata = json.load(f)
 
         assert job_metadata["job_id"] == "test_job_123"
@@ -253,15 +239,10 @@ class TestUtilityFunctions:
     def test_get_ancestry_chain_child(self):
         """Test ancestry chain for child job"""
         chain = get_ancestry_chain(
-            job_id="job_456",
-            parent_job_id="job_123",
-            parent_worker_id="worker_2"
+            job_id="job_456", parent_job_id="job_123", parent_worker_id="worker_2"
         )
 
-        assert chain == [
-            "Job job_123 > worker_2",
-            "Job job_456"
-        ]
+        assert chain == ["Job job_123 > worker_2", "Job job_456"]
 
 
 class TestIntegrationScenarios:
@@ -296,7 +277,7 @@ class TestIntegrationScenarios:
             worker_id="worker_2",
             child_job_id="child_job",
             child_depth=1,
-            request_payload={"request": "Sub-tasks", "config": {}}
+            request_payload={"request": "Sub-tasks", "config": {}},
         )
 
         # Depth 1 workers
@@ -309,11 +290,9 @@ class TestIntegrationScenarios:
         root_manager.create_reports_directory()
 
         # Write job metadata
-        root_manager.write_job_metadata({
-            "user_request": "Complex task",
-            "max_recursion_depth": 2,
-            "actual_recursion_depth": 1
-        })
+        root_manager.write_job_metadata(
+            {"user_request": "Complex task", "max_recursion_depth": 2, "actual_recursion_depth": 1}
+        )
 
         # Verify structure
         job_dir = temp_workspace / "job_root_job"

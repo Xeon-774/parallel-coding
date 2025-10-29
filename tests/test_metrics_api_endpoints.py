@@ -8,7 +8,9 @@ Tests for the new hybrid engine metrics endpoints:
 
 import pytest
 from fastapi.testclient import TestClient
+
 from orchestrator.api.main import app
+
 
 @pytest.fixture
 def client():
@@ -24,28 +26,28 @@ def test_get_current_metrics_structure(client):
     data = response.json()
 
     # Check all required fields exist
-    assert 'total_decisions' in data
-    assert 'rules_decisions' in data
-    assert 'ai_decisions' in data
-    assert 'template_fallbacks' in data
-    assert 'average_latency_ms' in data
-    assert 'rules_percentage' in data
+    assert "total_decisions" in data
+    assert "rules_decisions" in data
+    assert "ai_decisions" in data
+    assert "template_fallbacks" in data
+    assert "average_latency_ms" in data
+    assert "rules_percentage" in data
 
     # Check data types
-    assert isinstance(data['total_decisions'], int)
-    assert isinstance(data['rules_decisions'], int)
-    assert isinstance(data['ai_decisions'], int)
-    assert isinstance(data['template_fallbacks'], int)
-    assert isinstance(data['average_latency_ms'], (int, float))
-    assert isinstance(data['rules_percentage'], (int, float))
+    assert isinstance(data["total_decisions"], int)
+    assert isinstance(data["rules_decisions"], int)
+    assert isinstance(data["ai_decisions"], int)
+    assert isinstance(data["template_fallbacks"], int)
+    assert isinstance(data["average_latency_ms"], (int, float))
+    assert isinstance(data["rules_percentage"], (int, float))
 
     # Check value ranges
-    assert data['total_decisions'] >= 0
-    assert data['rules_decisions'] >= 0
-    assert data['ai_decisions'] >= 0
-    assert data['template_fallbacks'] >= 0
-    assert data['average_latency_ms'] >= 0
-    assert 0 <= data['rules_percentage'] <= 100
+    assert data["total_decisions"] >= 0
+    assert data["rules_decisions"] >= 0
+    assert data["ai_decisions"] >= 0
+    assert data["template_fallbacks"] >= 0
+    assert data["average_latency_ms"] >= 0
+    assert 0 <= data["rules_percentage"] <= 100
 
     print(f"✅ Metrics endpoint works!")
     print(f"   Total decisions: {data['total_decisions']}")
@@ -64,23 +66,19 @@ def test_get_current_metrics_math(client):
 
     # Total should be >= sum of classified parts
     # (may include decisions with unrecognized decided_by values)
-    classified_sum = (
-        data['rules_decisions'] +
-        data['ai_decisions'] +
-        data['template_fallbacks']
-    )
-    assert data['total_decisions'] >= classified_sum, (
+    classified_sum = data["rules_decisions"] + data["ai_decisions"] + data["template_fallbacks"]
+    assert data["total_decisions"] >= classified_sum, (
         f"Total decisions ({data['total_decisions']}) should be >= "
         f"sum of classified ({classified_sum})"
     )
 
     # Rules percentage should be correct
-    if data['total_decisions'] > 0:
-        expected_percentage = (data['rules_decisions'] / data['total_decisions']) * 100
-        assert abs(data['rules_percentage'] - expected_percentage) < 0.01
+    if data["total_decisions"] > 0:
+        expected_percentage = (data["rules_decisions"] / data["total_decisions"]) * 100
+        assert abs(data["rules_percentage"] - expected_percentage) < 0.01
     else:
         # In fresh environment with no data, percentage should be 0
-        assert data['rules_percentage'] == 0.0
+        assert data["rules_percentage"] == 0.0
 
 
 def test_get_recent_decisions_structure(client):
@@ -95,24 +93,24 @@ def test_get_recent_decisions_structure(client):
     # If there are decisions, check structure
     if len(data) > 0:
         decision = data[0]
-        assert 'timestamp' in decision
-        assert 'worker_id' in decision
-        assert 'decision_type' in decision
-        assert 'decided_by' in decision
-        assert 'latency_ms' in decision
-        assert 'is_fallback' in decision
-        assert 'confirmation_type' in decision
-        assert 'reasoning' in decision
+        assert "timestamp" in decision
+        assert "worker_id" in decision
+        assert "decision_type" in decision
+        assert "decided_by" in decision
+        assert "latency_ms" in decision
+        assert "is_fallback" in decision
+        assert "confirmation_type" in decision
+        assert "reasoning" in decision
 
         # Check types (timestamp can be ISO string or Unix timestamp)
-        assert isinstance(decision['timestamp'], (int, float, str))
-        assert isinstance(decision['worker_id'], str)
-        assert isinstance(decision['decision_type'], str)
-        assert isinstance(decision['decided_by'], str)
-        assert isinstance(decision['latency_ms'], (int, float))
-        assert isinstance(decision['is_fallback'], bool)
-        assert isinstance(decision['confirmation_type'], str)
-        assert isinstance(decision['reasoning'], str)
+        assert isinstance(decision["timestamp"], (int, float, str))
+        assert isinstance(decision["worker_id"], str)
+        assert isinstance(decision["decision_type"], str)
+        assert isinstance(decision["decided_by"], str)
+        assert isinstance(decision["latency_ms"], (int, float))
+        assert isinstance(decision["is_fallback"], bool)
+        assert isinstance(decision["confirmation_type"], str)
+        assert isinstance(decision["reasoning"], str)
 
         print(f"✅ Decisions endpoint works!")
         print(f"   Found {len(data)} recent decisions")
@@ -128,8 +126,10 @@ def test_get_recent_decisions_sorting(client):
 
     # Check that timestamps are in descending order
     if len(data) > 1:
-        timestamps = [d['timestamp'] for d in data]
-        assert timestamps == sorted(timestamps, reverse=True), "Decisions should be sorted by timestamp (descending)"
+        timestamps = [d["timestamp"] for d in data]
+        assert timestamps == sorted(
+            timestamps, reverse=True
+        ), "Decisions should be sorted by timestamp (descending)"
 
 
 def test_get_recent_decisions_limit(client):
@@ -159,7 +159,7 @@ def test_metrics_with_no_workspace(client, tmp_path, monkeypatch):
 
     data = response.json()
     # Should return zeros when no data
-    assert isinstance(data['total_decisions'], int)
+    assert isinstance(data["total_decisions"], int)
 
 
 def test_integration_metrics_and_decisions(client):
@@ -174,15 +174,15 @@ def test_integration_metrics_and_decisions(client):
     decisions = decisions_response.json()
 
     # Count decisions by type
-    rules_count = sum(1 for d in decisions if d['decided_by'] == 'rules')
-    ai_count = sum(1 for d in decisions if d['decided_by'] == 'ai')
-    template_count = sum(1 for d in decisions if d['decided_by'] == 'template')
+    rules_count = sum(1 for d in decisions if d["decided_by"] == "rules")
+    ai_count = sum(1 for d in decisions if d["decided_by"] == "ai")
+    template_count = sum(1 for d in decisions if d["decided_by"] == "template")
 
     # Metrics should match decision counts
-    assert metrics['rules_decisions'] == rules_count
-    assert metrics['ai_decisions'] == ai_count
-    assert metrics['template_fallbacks'] == template_count
-    assert metrics['total_decisions'] == len(decisions)
+    assert metrics["rules_decisions"] == rules_count
+    assert metrics["ai_decisions"] == ai_count
+    assert metrics["template_fallbacks"] == template_count
+    assert metrics["total_decisions"] == len(decisions)
 
     print(f"✅ Integration test passed!")
     print(f"   Metrics and decisions are consistent")
@@ -191,4 +191,5 @@ def test_integration_metrics_and_decisions(client):
 if __name__ == "__main__":
     # Quick test run
     import sys
+
     pytest.main([__file__, "-v", "--tb=short"] + sys.argv[1:])

@@ -3,3 +3,4 @@
 {"type": "worker_lifecycle", "timestamp": "2025-10-24T14:28:10.466797Z", "worker_id": "worker_e2e_worker_04", "event": "spawned", "duration_seconds": null}
 {"type": "confirmation", "timestamp": "2025-10-24T14:28:46.641485Z", "worker_id": "worker_e2e_worker_04", "confirmation_number": 1, "orchestrator_latency_ms": 6654.711961746216, "response": "approved"}
 {"type": "worker_lifecycle", "timestamp": "2025-10-24T14:28:46.752649Z", "worker_id": "worker_e2e_worker_04", "event": "failed", "duration_seconds": 36.28585648536682}
+{"type": "worker_lifecycle", "timestamp": "2025-10-29T07:46:56.765407Z", "worker_id": "worker_e2e_worker_04", "event": "spawned", "duration_seconds": null}

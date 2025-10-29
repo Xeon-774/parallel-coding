@@ -51,4 +51,3 @@ class AISafetyJudge:
         if "print" in normalized and "view" in normalized:
             return Judgment(Decision.APPROVE, "Read-only action deemed safe")
         return Judgment(Decision.DENY, "Unrecognized or potentially unsafe request")
-

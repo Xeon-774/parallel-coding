@@ -29,7 +29,6 @@ from orchestrator.core.worker.worker_manager import (
     WorkerManager,
 )
 
-
 # Constants
 DEFAULT_LIMIT = 50
 MAX_LIMIT = 200
@@ -144,14 +143,18 @@ async def spawn_supervisor(
 
     try:
         result = await manager.spawn_supervised_worker(
-            task_file=payload.task_file, workspace_root=payload.workspace_root, timeout=payload.timeout
+            task_file=payload.task_file,
+            workspace_root=payload.workspace_root,
+            timeout=payload.timeout,
         )
     except ValidationError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
     except FileNotFoundError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
     except Exception as exc:  # noqa: BLE001
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="spawn failed") from exc
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="spawn failed"
+        ) from exc
 
     return SpawnSupervisorResponse(supervisor_id=result.supervisor_id, status=result.status.value)
 
@@ -197,7 +200,9 @@ async def list_supervisors(
     manager: WorkerManager = Depends(get_worker_manager),
     limit: int = Query(default=DEFAULT_LIMIT, ge=1, le=MAX_LIMIT),
     offset: int = Query(default=0, ge=0),
-    status_filter: Optional[Literal["spawning", "running", "terminated", "error"]] = Query(default=None),
+    status_filter: Optional[Literal["spawning", "running", "terminated", "error"]] = Query(
+        default=None
+    ),
 ) -> ListSupervisorsResponse:
     """List active supervisors with optional filtering and pagination."""
 
@@ -269,4 +274,3 @@ async def get_output(
     items = [OutputLine(timestamp=ts, content=content) for ts, content in filtered[offset:]]
     next_offset = offset + len(items)
     return OutputResponse(supervisor_id=supervisor_id, items=items, next_offset=next_offset)
-

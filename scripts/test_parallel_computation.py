@@ -6,10 +6,10 @@
 結果を検証・統合するテストスクリプト
 """
 
+import hashlib
+import json
 import os
 import sys
-import json
-import hashlib
 import time
 from pathlib import Path
 
@@ -17,7 +17,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from orchestrator import RefactoredOrchestrator, OrchestratorConfig
+from orchestrator import OrchestratorConfig, RefactoredOrchestrator
 
 
 def calculate_hash(data: str) -> str:
@@ -36,38 +36,35 @@ def verify_proof_of_work(result_text: str, difficulty: int = 4) -> dict:
     Returns:
         検証結果の辞書
     """
-    lines = result_text.strip().split('\n')
+    lines = result_text.strip().split("\n")
 
     for line in lines:
         # "nonce: XXX, hash: YYY" の形式を探す
-        if 'nonce:' in line.lower() and 'hash:' in line.lower():
+        if "nonce:" in line.lower() and "hash:" in line.lower():
             try:
-                parts = line.split(',')
+                parts = line.split(",")
                 nonce = None
                 found_hash = None
 
                 for part in parts:
-                    if 'nonce:' in part.lower():
-                        nonce = part.split(':')[1].strip()
-                    elif 'hash:' in part.lower():
-                        found_hash = part.split(':')[1].strip()
+                    if "nonce:" in part.lower():
+                        nonce = part.split(":")[1].strip()
+                    elif "hash:" in part.lower():
+                        found_hash = part.split(":")[1].strip()
 
                 if nonce and found_hash:
                     # ハッシュが条件を満たすか確認
-                    if found_hash.startswith('0' * difficulty):
+                    if found_hash.startswith("0" * difficulty):
                         return {
-                            'valid': True,
-                            'nonce': nonce,
-                            'hash': found_hash,
-                            'difficulty': difficulty
+                            "valid": True,
+                            "nonce": nonce,
+                            "hash": found_hash,
+                            "difficulty": difficulty,
                         }
             except Exception as e:
                 continue
 
-    return {
-        'valid': False,
-        'error': 'No valid proof of work found'
-    }
+    return {"valid": False, "error": "No valid proof of work found"}
 
 
 def create_pow_task(block_data: str, difficulty: int, worker_range: tuple) -> str:
@@ -114,8 +111,8 @@ def run_parallel_pow_test(num_workers: int = 5, difficulty: int = 4):
     print()
 
     # Windowsモードに設定
-    os.environ['ORCHESTRATOR_MODE'] = 'windows'
-    os.environ['CLAUDE_CODE_GIT_BASH_PATH'] = r'C:\opt\Git.Git\usr\bin\bash.exe'
+    os.environ["ORCHESTRATOR_MODE"] = "windows"
+    os.environ["CLAUDE_CODE_GIT_BASH_PATH"] = r"C:\opt\Git.Git\usr\bin\bash.exe"
 
     # ブロックデータ
     block_data = f"Block #{int(time.time())} - Parallel AI Test"
@@ -151,10 +148,7 @@ def run_parallel_pow_test(num_workers: int = 5, difficulty: int = 4):
     print()
 
     config = OrchestratorConfig.from_env()
-    orchestrator = RefactoredOrchestrator(
-        config=config,
-        enable_realtime_monitoring=True
-    )
+    orchestrator = RefactoredOrchestrator(config=config, enable_realtime_monitoring=True)
 
     start_time = time.time()
 
@@ -180,7 +174,7 @@ def run_parallel_pow_test(num_workers: int = 5, difficulty: int = 4):
             print("[ERROR] results.jsonが見つかりません")
             return
 
-        with open(results_json_path, 'r', encoding='utf-8') as f:
+        with open(results_json_path, "r", encoding="utf-8") as f:
             results_data = json.load(f)
 
         # 各ワーカーの出力ファイルを読み取る
@@ -193,23 +187,25 @@ def run_parallel_pow_test(num_workers: int = 5, difficulty: int = 4):
 
             if output_file.exists():
                 print(f"\n[Worker {i}]")
-                with open(output_file, 'r', encoding='utf-8') as f:
+                with open(output_file, "r", encoding="utf-8") as f:
                     output = f.read()
 
                 verification = verify_proof_of_work(output, difficulty)
 
-                if verification['valid']:
+                if verification["valid"]:
                     print(f"  [VALID] 有効な解を発見！")
                     print(f"  Nonce: {verification['nonce']}")
                     print(f"  Hash: {verification['hash']}")
-                    valid_solutions.append({
-                        'worker_id': i,
-                        'nonce': verification['nonce'],
-                        'hash': verification['hash']
-                    })
+                    valid_solutions.append(
+                        {
+                            "worker_id": i,
+                            "nonce": verification["nonce"],
+                            "hash": verification["hash"],
+                        }
+                    )
                 else:
                     print(f"  [NO SOLUTION] 解が見つからなかった")
-                    if 'error' in verification:
+                    if "error" in verification:
                         print(f"  理由: {verification['error']}")
 
         # コンセンサス検証
@@ -231,8 +227,8 @@ def run_parallel_pow_test(num_workers: int = 5, difficulty: int = 4):
             # 独立検証
             print()
             print("独立検証:")
-            reconstructed_hash = calculate_hash(block_data + winner['nonce'])
-            if reconstructed_hash == winner['hash']:
+            reconstructed_hash = calculate_hash(block_data + winner["nonce"])
+            if reconstructed_hash == winner["hash"]:
                 print(f"  [VERIFIED] ハッシュ検証成功")
                 print(f"  再計算ハッシュ: {reconstructed_hash}")
             else:
@@ -246,6 +242,7 @@ def run_parallel_pow_test(num_workers: int = 5, difficulty: int = 4):
     except Exception as e:
         print(f"\n[ERROR] エラー発生: {e}")
         import traceback
+
         traceback.print_exc()
 
     print()
@@ -254,14 +251,12 @@ def run_parallel_pow_test(num_workers: int = 5, difficulty: int = 4):
     print("=" * 80)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description='並列計算テスト - Proof of Work')
-    parser.add_argument('-w', '--workers', type=int, default=5,
-                        help='ワーカー数（デフォルト: 5）')
-    parser.add_argument('-d', '--difficulty', type=int, default=4,
-                        help='難易度（デフォルト: 4）')
+    parser = argparse.ArgumentParser(description="並列計算テスト - Proof of Work")
+    parser.add_argument("-w", "--workers", type=int, default=5, help="ワーカー数（デフォルト: 5）")
+    parser.add_argument("-d", "--difficulty", type=int, default=4, help="難易度（デフォルト: 4）")
 
     args = parser.parse_args()
 

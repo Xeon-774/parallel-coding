@@ -13,6 +13,7 @@ sys.path.insert(0, str(project_root))
 
 from orchestrator.config import OrchestratorConfig, find_git_bash
 
+
 def verify_modes():
     """両方のモードでコマンド生成を検証"""
     print("=" * 80)
@@ -105,5 +106,5 @@ def verify_modes():
     return all_passed
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     verify_modes()

@@ -16,12 +16,13 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 # UTF-8出力設定
-if sys.platform == 'win32':
+if sys.platform == "win32":
     import codecs
-    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'replace')
-    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'replace')
 
-from orchestrator import RefactoredOrchestrator, OrchestratorConfig
+    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
+    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
+
+from orchestrator import OrchestratorConfig, RefactoredOrchestrator
 
 
 def test_orchestrator_realtime_monitoring():
@@ -44,8 +45,8 @@ def test_orchestrator_realtime_monitoring():
     print()
 
     # Windowsモードに設定
-    os.environ['ORCHESTRATOR_MODE'] = 'windows'
-    os.environ['CLAUDE_CODE_GIT_BASH_PATH'] = r'C:\opt\Git.Git\usr\bin\bash.exe'
+    os.environ["ORCHESTRATOR_MODE"] = "windows"
+    os.environ["CLAUDE_CODE_GIT_BASH_PATH"] = r"C:\opt\Git.Git\usr\bin\bash.exe"
 
     print("[設定]")
     print(f"  実行モード: {os.environ['ORCHESTRATOR_MODE']}")
@@ -80,8 +81,7 @@ def test_orchestrator_realtime_monitoring():
 
     config = OrchestratorConfig.from_env()
     orchestrator = RefactoredOrchestrator(
-        config=config,
-        enable_realtime_monitoring=True  # リアルタイム監視を有効化
+        config=config, enable_realtime_monitoring=True  # リアルタイム監視を有効化
     )
 
     start_time = time.time()
@@ -131,7 +131,7 @@ def test_orchestrator_realtime_monitoring():
                 if output_file.exists():
                     print(f"[Worker {worker_id} 出力]")
                     print("-" * 40)
-                    with open(output_file, 'r', encoding='utf-8') as f:
+                    with open(output_file, "r", encoding="utf-8") as f:
                         output = f.read()
                         # 最初の1000文字を表示
                         if len(output) > 1000:
@@ -161,6 +161,7 @@ def test_orchestrator_realtime_monitoring():
         print("=" * 80)
         print(f"エラー: {e}")
         import traceback
+
         traceback.print_exc()
 
     print()
@@ -169,5 +170,5 @@ def test_orchestrator_realtime_monitoring():
     print("=" * 80)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_orchestrator_realtime_monitoring()

@@ -32,14 +32,13 @@ Excellence AI Standard: 100% Applied
 
 import asyncio
 import subprocess
+import time
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Optional, Dict, Any
-import time
+from typing import Any, Dict, Optional
 
 from pydantic import BaseModel, Field, validator
-
 
 # =============================================================================
 # Constants
@@ -54,8 +53,10 @@ MIN_PROMPT_LENGTH: int = 10  # Minimum meaningful prompt
 # Enums
 # =============================================================================
 
+
 class CodexStatus(str, Enum):
     """Status of Codex execution"""
+
     SUCCESS = "success"
     FAILED = "failed"
     TIMEOUT = "timeout"
@@ -67,29 +68,35 @@ class CodexStatus(str, Enum):
 # Error Classes
 # =============================================================================
 
+
 class CodexError(Exception):
     """Base exception for Codex CLI errors"""
+
     pass
 
 
 class CodexCLINotFoundError(CodexError):
     """Raised when Codex CLI is not installed"""
+
     pass
 
 
 class CodexTimeoutError(CodexError):
     """Raised when Codex execution times out"""
+
     pass
 
 
 class CodexExecutionError(CodexError):
     """Raised when Codex execution fails"""
+
     pass
 
 
 # =============================================================================
 # Configuration Models
 # =============================================================================
+
 
 class CodexProviderConfig(BaseModel):
     """
@@ -112,32 +119,21 @@ class CodexProviderConfig(BaseModel):
     """
 
     timeout_seconds: int = Field(
-        default=DEFAULT_TIMEOUT_SECONDS,
-        ge=10,
-        le=3600,
-        description="Execution timeout in seconds"
+        default=DEFAULT_TIMEOUT_SECONDS, ge=10, le=3600, description="Execution timeout in seconds"
     )
 
-    max_retries: int = Field(
-        default=3,
-        ge=0,
-        le=5,
-        description="Maximum retry attempts on failure"
-    )
+    max_retries: int = Field(default=3, ge=0, le=5, description="Maximum retry attempts on failure")
 
     workspace_root: str = Field(
         default="./workspace",
         min_length=1,
         max_length=255,
-        description="Root directory for file operations"
+        description="Root directory for file operations",
     )
 
-    enable_logging: bool = Field(
-        default=True,
-        description="Enable detailed execution logging"
-    )
+    enable_logging: bool = Field(default=True, description="Enable detailed execution logging")
 
-    @validator('workspace_root')
+    @validator("workspace_root")
     def validate_workspace_root(cls, v: str) -> str:
         """
         Validate workspace root path.
@@ -153,11 +149,11 @@ class CodexProviderConfig(BaseModel):
         Raises:
             ValueError: If path is invalid or dangerous
         """
-        if '..' in v:
+        if ".." in v:
             raise ValueError("Path traversal not allowed in workspace_root")
 
         path = Path(v)
-        if path.is_absolute() and not str(path).startswith(('/home', '/workspace', 'C:\\', 'D:\\')):
+        if path.is_absolute() and not str(path).startswith(("/home", "/workspace", "C:\\", "D:\\")):
             raise ValueError("Workspace must be in safe directory")
 
         return v
@@ -166,6 +162,7 @@ class CodexProviderConfig(BaseModel):
 # =============================================================================
 # Result Models
 # =============================================================================
+
 
 @dataclass
 class CodexExecutionResult:
@@ -210,6 +207,7 @@ class CodexExecutionResult:
 # =============================================================================
 # Main Provider Class
 # =============================================================================
+
 
 class CodexCLIProvider:
     """
@@ -267,22 +265,18 @@ class CodexCLIProvider:
                 capture_output=True,
                 text=True,
                 timeout=5,
-                shell=True  # Required on Windows for .cmd files
+                shell=True,  # Required on Windows for .cmd files
             )
 
             if result.returncode != 0:
-                raise CodexCLINotFoundError(
-                    "Codex CLI found but not functioning correctly"
-                )
+                raise CodexCLINotFoundError("Codex CLI found but not functioning correctly")
 
         except FileNotFoundError:
             raise CodexCLINotFoundError(
                 "Codex CLI not found. Install: npm install -g @openai/codex"
             )
         except subprocess.TimeoutExpired:
-            raise CodexCLINotFoundError(
-                "Codex CLI validation timed out"
-            )
+            raise CodexCLINotFoundError("Codex CLI validation timed out")
 
     @property
     def is_available(self) -> bool:
@@ -299,9 +293,7 @@ class CodexCLIProvider:
             return False
 
     async def execute_async(
-        self,
-        prompt: str,
-        context: Optional[Dict[str, Any]] = None
+        self, prompt: str, context: Optional[Dict[str, Any]] = None
     ) -> CodexExecutionResult:
         """
         Execute Codex CLI command asynchronously.
@@ -354,11 +346,11 @@ class CodexCLIProvider:
                         output="",
                         error=f"Timeout after {retry_count} attempts: {last_error}",
                         execution_time_seconds=time.time() - start_time,
-                        retry_count=retry_count
+                        retry_count=retry_count,
                     )
 
                 # Exponential backoff
-                backoff_seconds = 2 ** retry_count
+                backoff_seconds = 2**retry_count
                 await asyncio.sleep(backoff_seconds)
 
             except CodexExecutionError as e:
@@ -368,7 +360,7 @@ class CodexCLIProvider:
                     output="",
                     error=str(e),
                     execution_time_seconds=time.time() - start_time,
-                    retry_count=retry_count
+                    retry_count=retry_count,
                 )
 
         # Should not reach here, but handle as timeout for safety
@@ -377,13 +369,11 @@ class CodexCLIProvider:
             output="",
             error=f"Max retries ({self.config.max_retries}) exceeded",
             execution_time_seconds=time.time() - start_time,
-            retry_count=retry_count
+            retry_count=retry_count,
         )
 
     def execute(
-        self,
-        prompt: str,
-        context: Optional[Dict[str, Any]] = None
+        self, prompt: str, context: Optional[Dict[str, Any]] = None
     ) -> CodexExecutionResult:
         """
         Execute Codex CLI command synchronously.
@@ -405,9 +395,7 @@ class CodexCLIProvider:
         return asyncio.run(self.execute_async(prompt, context))
 
     async def _execute_single_attempt(
-        self,
-        prompt: str,
-        context: Optional[Dict[str, Any]]
+        self, prompt: str, context: Optional[Dict[str, Any]]
     ) -> CodexExecutionResult:
         """
         Execute single Codex CLI attempt.
@@ -432,35 +420,26 @@ class CodexCLIProvider:
                 " ".join(cmd),
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=self.config.workspace_root
+                cwd=self.config.workspace_root,
             )
 
             try:
                 stdout, stderr = await asyncio.wait_for(
-                    process.communicate(),
-                    timeout=self.config.timeout_seconds
+                    process.communicate(), timeout=self.config.timeout_seconds
                 )
 
             except asyncio.TimeoutError:
                 process.kill()
-                raise CodexTimeoutError(
-                    f"Execution timed out after {self.config.timeout_seconds}s"
-                )
+                raise CodexTimeoutError(f"Execution timed out after {self.config.timeout_seconds}s")
 
             # Process results
-            output = stdout.decode('utf-8', errors='replace')
-            error_output = stderr.decode('utf-8', errors='replace')
+            output = stdout.decode("utf-8", errors="replace")
+            error_output = stderr.decode("utf-8", errors="replace")
 
             if process.returncode == 0:
-                return CodexExecutionResult(
-                    status=CodexStatus.SUCCESS,
-                    output=output,
-                    error=None
-                )
+                return CodexExecutionResult(status=CodexStatus.SUCCESS, output=output, error=None)
             else:
-                raise CodexExecutionError(
-                    f"Codex execution failed: {error_output}"
-                )
+                raise CodexExecutionError(f"Codex execution failed: {error_output}")
 
         except (CodexTimeoutError, CodexExecutionError):
             # Re-raise our custom errors without wrapping
@@ -487,19 +466,16 @@ class CodexCLIProvider:
             raise ValueError("Prompt cannot be empty")
 
         if len(prompt) < MIN_PROMPT_LENGTH:
-            raise ValueError(
-                f"Prompt too short (min {MIN_PROMPT_LENGTH} characters)"
-            )
+            raise ValueError(f"Prompt too short (min {MIN_PROMPT_LENGTH} characters)")
 
         if len(prompt) > MAX_PROMPT_LENGTH:
-            raise ValueError(
-                f"Prompt too long (max {MAX_PROMPT_LENGTH} characters)"
-            )
+            raise ValueError(f"Prompt too long (max {MAX_PROMPT_LENGTH} characters)")
 
 
 # =============================================================================
 # Utility Functions
 # =============================================================================
+
 
 def create_default_provider() -> CodexCLIProvider:
     """
@@ -551,9 +527,7 @@ if __name__ == "__main__":
         try:
             # Create provider with custom config
             config = CodexProviderConfig(
-                timeout_seconds=600,
-                max_retries=3,
-                workspace_root="./workspace"
+                timeout_seconds=600, max_retries=3, workspace_root="./workspace"
             )
             provider = CodexCLIProvider(config)
 
@@ -562,7 +536,7 @@ if __name__ == "__main__":
             # Example execution
             result = await provider.execute_async(
                 prompt="Write a Python function to calculate fibonacci numbers",
-                context={"language": "python", "style": "clean"}
+                context={"language": "python", "style": "clean"},
             )
 
             print(f"\nStatus: {result.status}")

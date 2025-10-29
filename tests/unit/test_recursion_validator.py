@@ -6,8 +6,8 @@ Tests recursion depth validation, timeout calculation, and circular reference de
 import pytest
 
 from orchestrator.recursive.recursion_validator import (
-    RecursionValidator,
     RecursionValidationResult,
+    RecursionValidator,
 )
 
 
@@ -16,11 +16,7 @@ class TestRecursionValidationResult:
 
     def test_create_valid_result(self):
         """Test creating valid result."""
-        result = RecursionValidationResult(
-            is_valid=True,
-            adjusted_timeout=450,
-            max_workers=3
-        )
+        result = RecursionValidationResult(is_valid=True, adjusted_timeout=450, max_workers=3)
         assert result.is_valid is True
         assert result.adjusted_timeout == 450
         assert result.max_workers == 3
@@ -28,10 +24,7 @@ class TestRecursionValidationResult:
 
     def test_create_invalid_result(self):
         """Test creating invalid result with error message."""
-        result = RecursionValidationResult(
-            is_valid=False,
-            error_message="Test error"
-        )
+        result = RecursionValidationResult(is_valid=False, error_message="Test error")
         assert result.is_valid is False
         assert result.error_message == "Test error"
         assert result.adjusted_timeout is None
@@ -44,9 +37,7 @@ class TestRecursionValidator:
     def test_validate_depth_success(self):
         """Test successful depth validation."""
         result = RecursionValidator.validate_depth(
-            current_depth=0,
-            max_depth=3,
-            workers_by_depth={1: 5, 2: 3, 3: 1}
+            current_depth=0, max_depth=3, workers_by_depth={1: 5, 2: 3, 3: 1}
         )
 
         assert result.is_valid is True
@@ -57,9 +48,7 @@ class TestRecursionValidator:
     def test_validate_depth_at_max_depth(self):
         """Test validation fails when at max depth."""
         result = RecursionValidator.validate_depth(
-            current_depth=3,
-            max_depth=3,
-            workers_by_depth={1: 5, 2: 3, 3: 1}
+            current_depth=3, max_depth=3, workers_by_depth={1: 5, 2: 3, 3: 1}
         )
 
         assert result.is_valid is False
@@ -69,9 +58,7 @@ class TestRecursionValidator:
     def test_validate_depth_negative_current_depth(self):
         """Test validation fails with negative current depth."""
         result = RecursionValidator.validate_depth(
-            current_depth=-1,
-            max_depth=3,
-            workers_by_depth={1: 5}
+            current_depth=-1, max_depth=3, workers_by_depth={1: 5}
         )
 
         assert result.is_valid is False
@@ -80,9 +67,7 @@ class TestRecursionValidator:
     def test_validate_depth_negative_max_depth(self):
         """Test validation fails with negative max depth."""
         result = RecursionValidator.validate_depth(
-            current_depth=0,
-            max_depth=-1,
-            workers_by_depth={1: 5}
+            current_depth=0, max_depth=-1, workers_by_depth={1: 5}
         )
 
         assert result.is_valid is False
@@ -91,34 +76,26 @@ class TestRecursionValidator:
     def test_validate_depth_timeout_calculation(self):
         """Test timeout grows exponentially with depth."""
         result_depth_0 = RecursionValidator.validate_depth(
-            current_depth=0,
-            max_depth=5,
-            workers_by_depth={1: 5, 2: 3}
+            current_depth=0, max_depth=5, workers_by_depth={1: 5, 2: 3}
         )
 
         result_depth_1 = RecursionValidator.validate_depth(
-            current_depth=1,
-            max_depth=5,
-            workers_by_depth={1: 5, 2: 3}
+            current_depth=1, max_depth=5, workers_by_depth={1: 5, 2: 3}
         )
 
         result_depth_2 = RecursionValidator.validate_depth(
-            current_depth=2,
-            max_depth=5,
-            workers_by_depth={1: 5, 2: 3, 3: 2}
+            current_depth=2, max_depth=5, workers_by_depth={1: 5, 2: 3, 3: 2}
         )
 
         # Timeout should grow exponentially: int(300 * 1.5^depth)
-        assert result_depth_0.adjusted_timeout == int(300 * (1.5 ** 1))  # 450
-        assert result_depth_1.adjusted_timeout == int(300 * (1.5 ** 2))  # 675
-        assert result_depth_2.adjusted_timeout == int(300 * (1.5 ** 3))  # 1012
+        assert result_depth_0.adjusted_timeout == int(300 * (1.5**1))  # 450
+        assert result_depth_1.adjusted_timeout == int(300 * (1.5**2))  # 675
+        assert result_depth_2.adjusted_timeout == int(300 * (1.5**3))  # 1012
 
     def test_validate_depth_default_workers(self):
         """Test default workers when depth not in workers_by_depth."""
         result = RecursionValidator.validate_depth(
-            current_depth=0,
-            max_depth=5,
-            workers_by_depth={2: 5, 3: 3}  # No entry for depth 1
+            current_depth=0, max_depth=5, workers_by_depth={2: 5, 3: 3}  # No entry for depth 1
         )
 
         assert result.is_valid is True
@@ -127,9 +104,7 @@ class TestRecursionValidator:
     def test_validate_depth_edge_case_depth_0(self):
         """Test validation at depth 0 (root level)."""
         result = RecursionValidator.validate_depth(
-            current_depth=0,
-            max_depth=0,
-            workers_by_depth={}
+            current_depth=0, max_depth=0, workers_by_depth={}
         )
 
         assert result.is_valid is False
@@ -138,9 +113,7 @@ class TestRecursionValidator:
     def test_validate_depth_large_depth(self):
         """Test validation with large depth values."""
         result = RecursionValidator.validate_depth(
-            current_depth=8,
-            max_depth=10,
-            workers_by_depth={9: 1}
+            current_depth=8, max_depth=10, workers_by_depth={9: 1}
         )
 
         assert result.is_valid is True

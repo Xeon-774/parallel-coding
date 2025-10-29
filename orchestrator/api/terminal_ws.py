@@ -16,8 +16,8 @@ import logging
 from pathlib import Path
 from typing import AsyncIterator, Optional
 
+from watchdog.events import FileModifiedEvent, FileSystemEventHandler
 from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler, FileModifiedEvent
 
 logger = logging.getLogger(__name__)
 

@@ -4,12 +4,12 @@
 GUIダイアログでユーザーがトークンを入力できるようにします。
 """
 
+import platform
 import subprocess
 import tkinter as tk
-from tkinter import messagebox, scrolledtext
 from pathlib import Path
+from tkinter import messagebox, scrolledtext
 from typing import Optional
-import platform
 
 
 class ClaudeAuthDialog:

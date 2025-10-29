@@ -4,15 +4,10 @@ Tests core orchestration logic, error handling, and review functions.
 """
 
 import asyncio
-import pytest
 from unittest.mock import AsyncMock, MagicMock
 
-from orchestrator.core.hierarchical import HierarchicalJobOrchestrator
-from orchestrator.core.hierarchical.job_orchestrator import (
-    DepthLimitError,
-    JobResult,
-    RetryDecision,
-)
+import pytest
+
 from orchestrator.core.ai_providers.base_review_provider import (
     BaseReviewProvider,
     ReviewPerspective,
@@ -20,7 +15,12 @@ from orchestrator.core.ai_providers.base_review_provider import (
     ReviewResult,
     ReviewType,
 )
-
+from orchestrator.core.hierarchical import HierarchicalJobOrchestrator
+from orchestrator.core.hierarchical.job_orchestrator import (
+    DepthLimitError,
+    JobResult,
+    RetryDecision,
+)
 
 # ======================= Basic Job Execution Tests =======================
 
@@ -139,8 +139,12 @@ async def test_aggregate_results_success():
     orch = HierarchicalJobOrchestrator()
 
     jobs = [
-        JobResult(job_id="j1", depth=0, status="completed", started_at=1.0, output={"result": "ok"}),
-        JobResult(job_id="j2", depth=0, status="completed", started_at=1.0, output={"result": "ok"}),
+        JobResult(
+            job_id="j1", depth=0, status="completed", started_at=1.0, output={"result": "ok"}
+        ),
+        JobResult(
+            job_id="j2", depth=0, status="completed", started_at=1.0, output={"result": "ok"}
+        ),
     ]
 
     aggregated = await orch.aggregate_results(jobs)
@@ -155,7 +159,9 @@ async def test_aggregate_results_with_failure():
     orch = HierarchicalJobOrchestrator()
 
     jobs = [
-        JobResult(job_id="j1", depth=0, status="completed", started_at=1.0, output={"result": "ok"}),
+        JobResult(
+            job_id="j1", depth=0, status="completed", started_at=1.0, output={"result": "ok"}
+        ),
         JobResult(job_id="j2", depth=0, status="failed", started_at=1.0, error="Test error"),
     ]
 
@@ -358,4 +364,3 @@ async def test_aggregate_review_results_with_no_results_raises_error():
 
     with pytest.raises(ValueError, match="No review results to aggregate"):
         orch._aggregate_review_results("test.md", ReviewType.DESIGN, [])
-

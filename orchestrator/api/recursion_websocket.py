@@ -15,7 +15,6 @@ from typing import Any, Dict, Optional, Set
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, status
 
-
 router = APIRouter()
 
 
@@ -58,7 +57,14 @@ class EventBus:
 
     async def connect(self, ws: WebSocket, min_depth: int, max_depth: int) -> _Conn:
         await ws.accept(subprotocol="json")
-        conn = _Conn(ws=ws, min_depth=min_depth, max_depth=max_depth, last_sent=0.0, tokens=8.0, last_refill=time.time())
+        conn = _Conn(
+            ws=ws,
+            min_depth=min_depth,
+            max_depth=max_depth,
+            last_sent=0.0,
+            tokens=8.0,
+            last_refill=time.time(),
+        )
         async with self._lock:
             self._connections.add(conn)
         return conn
@@ -130,4 +136,3 @@ async def publish_event(event: Dict[str, Any]) -> None:
         {"type": "job_submitted", "data": {"jobId": "...", "depth": 1}}
     """
     await bus.broadcast(event)
-

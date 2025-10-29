@@ -101,4 +101,3 @@ if __name__ == "__main__":
     raise SystemExit(main())
 
 __all__ = ["is_valid_email"]
-

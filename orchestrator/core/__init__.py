@@ -12,11 +12,11 @@ Modules:
 - task_analyzer_service: Task analysis and splitting
 """
 
-from orchestrator.core.models import WorkerInfo, TaskResult
-from orchestrator.core.worker.worker_manager import WorkerManager
-from orchestrator.core.stream_monitor import StreamMonitor
+from orchestrator.core.models import TaskResult, WorkerInfo
 from orchestrator.core.result_integrator import ResultIntegrator
+from orchestrator.core.stream_monitor import StreamMonitor
 from orchestrator.core.task_analyzer_service import TaskAnalyzerService
+from orchestrator.core.worker.worker_manager import WorkerManager
 
 __all__ = [
     # Models

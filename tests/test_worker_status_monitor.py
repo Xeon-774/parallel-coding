@@ -5,14 +5,16 @@ Tests the core functionality of worker status tracking, health monitoring,
 and progress calculation.
 """
 
-import pytest
 import time
 from pathlib import Path
+
+import pytest
+
 from orchestrator.core.worker_status_monitor import (
-    WorkerStatusMonitor,
-    WorkerState,
     HealthStatus,
+    WorkerState,
     WorkerStatus,
+    WorkerStatusMonitor,
 )
 
 

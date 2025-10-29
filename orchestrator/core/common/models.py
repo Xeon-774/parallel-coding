@@ -3,6 +3,7 @@ Common Data Models
 
 Shared data structures used across Worker AI and Supervisor AI management.
 """
+
 import time
 from dataclasses import dataclass, field
 from enum import Enum

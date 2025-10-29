@@ -61,4 +61,3 @@ async def test_close_stops_stream():
 async def _collect(io):
     async for _ in io.read_async():
         await asyncio.sleep(0)
-

@@ -5,12 +5,12 @@ Exports primary classes for external consumers.
 
 from .claude_code_supervisor import (
     ClaudeCodeSupervisor,
-    SpawnClaudeCodeInput,
-    ProcessResult,
     ConfirmationPrompt,
+    ProcessResult,
+    SpawnClaudeCodeInput,
 )
-from .supervisor_manager import SupervisorManager
 from .io_handler import ProcessIOHandler
+from .supervisor_manager import SupervisorManager
 
 __all__ = [
     "ClaudeCodeSupervisor",
@@ -20,4 +20,3 @@ __all__ = [
     "ConfirmationPrompt",
     "ProcessIOHandler",
 ]
-

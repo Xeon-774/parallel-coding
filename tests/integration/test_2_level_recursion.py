@@ -119,4 +119,3 @@ async def test_2_level_recursion_success():
         t for t in results["results"]["tasks"] if "sub-orchestrator" in t["name"].lower()
     )
     assert sub_task["success"] is True
-

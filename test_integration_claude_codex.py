@@ -50,11 +50,11 @@ async def test_simple_task():
             codex_provider_config=CodexProviderConfig(
                 timeout_seconds=60,  # 1 minute timeout
                 max_retries=2,
-                workspace_root=str(workspace_dir.absolute())
+                workspace_root=str(workspace_dir.absolute()),
             ),
             enable_validation=True,
             enable_websocket_events=False,
-            validation_strict_mode=False
+            validation_strict_mode=False,
         )
 
         manager = ClaudeCodexManager(config)
@@ -108,7 +108,7 @@ async def test_simple_task():
                 output = result.codex_response.output
                 print("   Generated Output (first 300 chars):")
                 print("   " + "-" * 66)
-                for line in output[:300].split('\n')[:10]:
+                for line in output[:300].split("\n")[:10]:
                     print(f"   {line}")
                 if len(output) > 300:
                     print("   ...")
@@ -144,6 +144,7 @@ async def test_simple_task():
         print(f"❌ ERROR: {str(e)}")
         print(f"   Type: {type(e).__name__}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)
 
@@ -179,7 +180,7 @@ async def main():
                 "output_length": len(r.codex_response.output),
             }
             for r in results
-        ]
+        ],
     }
 
     report_file = Path("./test_results/claude_codex_integration.json")

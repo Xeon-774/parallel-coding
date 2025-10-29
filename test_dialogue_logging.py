@@ -7,17 +7,18 @@ This test will:
 3. Check if logs are persisted to files
 """
 
-import sys
 import os
-from pathlib import Path
+import sys
 import time
+from pathlib import Path
 
 # Add orchestrator to path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from orchestrator.config import OrchestratorConfig
+from orchestrator.core.structured_logging import LogCategory, get_logger
 from orchestrator.core.worker.worker_manager import WorkerManager
-from orchestrator.core.structured_logging import get_logger, LogCategory
+
 
 def test_dialogue_logging():
     """Test that all dialogue is logged"""
@@ -35,23 +36,19 @@ def test_dialogue_logging():
     workspace.mkdir(parents=True, exist_ok=True)
 
     # Setup logger
-    logger = get_logger(
-        "test_dialogue",
-        category=LogCategory.WORKER,
-        log_dir=workspace / "logs"
-    )
+    logger = get_logger("test_dialogue", category=LogCategory.WORKER, log_dir=workspace / "logs")
 
     # Create worker manager
     manager = WorkerManager(
         config=config,
         logger=logger,
-        user_approval_callback=lambda req: True  # Auto-approve for test
+        user_approval_callback=lambda req: True,  # Auto-approve for test
     )
 
     # Create simple task
     test_task = {
         "name": "Hello World Test",
-        "prompt": "Print 'Hello, World!' and explain what you did."
+        "prompt": "Print 'Hello, World!' and explain what you did.",
     }
 
     print(f"\n✓ Starting test with task: {test_task['name']}")
@@ -153,6 +150,7 @@ def test_dialogue_logging():
 
     return len(issues) == 0
 
+
 if __name__ == "__main__":
     try:
         success = test_dialogue_logging()
@@ -160,5 +158,6 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n❌ TEST FAILED WITH ERROR: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)

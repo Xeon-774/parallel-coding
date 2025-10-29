@@ -1,4 +1,5 @@
 """Pydantic schemas for Job API."""
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -31,4 +32,3 @@ class JobResponse(BaseModel):
     updated_at: datetime
 
     model_config = {"from_attributes": True}
-

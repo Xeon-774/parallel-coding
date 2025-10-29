@@ -3,12 +3,12 @@
 Tests ABC structure, initialization, and abstract method enforcement.
 """
 
-import pytest
 from abc import ABC
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
+
+import pytest
 
 from orchestrator.core.base_ai_manager import BaseAIManager
-
 
 # ======================= Concrete Implementation for Testing =======================
 
@@ -78,49 +78,65 @@ class TestBaseAIManager:
     def test_configure_method_required(self):
         """Test that configure method must be implemented."""
         with pytest.raises(TypeError):
+
             class IncompleteManager1(BaseAIManager):
                 async def start(self) -> None:
                     pass
+
                 async def stop(self) -> None:
                     pass
+
                 def status(self) -> Dict[str, Optional[str]]:
                     return {}
+
             IncompleteManager1("test")
 
     def test_start_method_required(self):
         """Test that start method must be implemented."""
         with pytest.raises(TypeError):
+
             class IncompleteManager2(BaseAIManager):
                 def configure(self, config: Dict[str, Any]) -> None:
                     pass
+
                 async def stop(self) -> None:
                     pass
+
                 def status(self) -> Dict[str, Optional[str]]:
                     return {}
+
             IncompleteManager2("test")
 
     def test_stop_method_required(self):
         """Test that stop method must be implemented."""
         with pytest.raises(TypeError):
+
             class IncompleteManager3(BaseAIManager):
                 def configure(self, config: Dict[str, Any]) -> None:
                     pass
+
                 async def start(self) -> None:
                     pass
+
                 def status(self) -> Dict[str, Optional[str]]:
                     return {}
+
             IncompleteManager3("test")
 
     def test_status_method_required(self):
         """Test that status method must be implemented."""
         with pytest.raises(TypeError):
+
             class IncompleteManager4(BaseAIManager):
                 def configure(self, config: Dict[str, Any]) -> None:
                     pass
+
                 async def start(self) -> None:
                     pass
+
                 async def stop(self) -> None:
                     pass
+
             IncompleteManager4("test")
 
     def test_configure_method_works(self):

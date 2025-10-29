@@ -28,9 +28,7 @@ def test_auth_gui():
 
     # WSLモードでトークン設定（GUI使用）
     success = setup_claude_token(
-        execution_mode="wsl",
-        wsl_distribution="Ubuntu-24.04",
-        use_gui=True  # GUIダイアログを表示
+        execution_mode="wsl", wsl_distribution="Ubuntu-24.04", use_gui=True  # GUIダイアログを表示
     )
 
     print()
@@ -50,6 +48,6 @@ def test_auth_gui():
     return success
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     success = test_auth_gui()
     sys.exit(0 if success else 1)

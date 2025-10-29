@@ -6,18 +6,18 @@ parallel AI execution.
 """
 
 from .config import DashboardConfig, DependencyConfig
-from .dependencies import DependencyManager
+from .constants import HelpText, Messages, Separators
 from .dashboard_manager import DashboardManager
-from .orchestrator_runner import OrchestratorRunner
+from .dependencies import DependencyManager
 from .exceptions import (
+    ConfigurationError,
     DashboardError,
-    DependencyError,
     DashboardStartupError,
     DashboardTimeoutError,
-    ConfigurationError,
+    DependencyError,
     OrchestratorError,
 )
-from .constants import Messages, Separators, HelpText
+from .orchestrator_runner import OrchestratorRunner
 
 __version__ = "5.0.0"
 

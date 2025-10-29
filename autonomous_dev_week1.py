@@ -4,12 +4,12 @@ Autonomous Development Script for AI_Investor Developer Studio Week 1
 Executes Day 3-7 tasks in parallel with full quality assurance
 """
 
-import os
-import sys
 import json
 import logging
-from pathlib import Path
+import os
+import sys
 from datetime import datetime
+from pathlib import Path
 
 # Add orchestrator to path
 sys.path.insert(0, str(Path(__file__).parent))
@@ -172,6 +172,7 @@ ROADMAPに従って以下のタスクを並列実行してください:
 以上、excellence_ai_standard標準を100%適用して実装してください。
 """
 
+
 def main():
     """Execute autonomous development for Week 1 Day 3-7"""
 
@@ -189,10 +190,7 @@ def main():
     logger.info(f"Configuration loaded: max_workers={config.max_workers}")
 
     # Initialize orchestrator
-    orchestrator = AdvancedOrchestrator(
-        config=config,
-        enable_ai_analysis=True
-    )
+    orchestrator = AdvancedOrchestrator(config=config, enable_ai_analysis=True)
 
     logger.info("Orchestrator initialized successfully")
     logger.info(f"Task definition: {len(WEEK1_DAY3_7_TASK)} characters")
@@ -220,14 +218,18 @@ def main():
             "tasks_failed": result.tasks_failed,
             "execution_time": result.execution_time_seconds,
             "quality_metrics": result.quality_metrics,
-            "git_commits": result.git_commits
+            "git_commits": result.git_commits,
         }
 
         # Save report
-        report_path = Path(__file__).parent / "logs" / f"week1_day3_7_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        report_path = (
+            Path(__file__).parent
+            / "logs"
+            / f"week1_day3_7_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        )
         report_path.parent.mkdir(exist_ok=True)
 
-        with open(report_path, 'w', encoding='utf-8') as f:
+        with open(report_path, "w", encoding="utf-8") as f:
             json.dump(report, f, indent=2, ensure_ascii=False)
 
         logger.info(f"Report saved to: {report_path}")
@@ -242,6 +244,7 @@ def main():
     except Exception as e:
         logger.error(f"Fatal error during execution: {e}", exc_info=True)
         return 1
+
 
 if __name__ == "__main__":
     sys.exit(main())

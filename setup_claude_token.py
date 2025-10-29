@@ -19,7 +19,7 @@ from pathlib import Path
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
-from orchestrator.utils import setup_claude_token, get_token_from_env_or_file
+from orchestrator.utils import get_token_from_env_or_file, setup_claude_token
 
 
 def main():
@@ -34,7 +34,7 @@ def main():
     if existing_token:
         print()
         use_existing = input("既存のトークンを使用しますか？ (Y/n): ").strip().lower()
-        if use_existing in ('', 'y', 'yes'):
+        if use_existing in ("", "y", "yes"):
             token = existing_token
         else:
             token = None
@@ -78,16 +78,9 @@ def main():
     print("トークンを設定中...")
 
     if execution_mode == "wsl":
-        success = setup_claude_token(
-            execution_mode="wsl",
-            wsl_distribution=dist,
-            token=token
-        )
+        success = setup_claude_token(execution_mode="wsl", wsl_distribution=dist, token=token)
     else:
-        success = setup_claude_token(
-            execution_mode="windows",
-            token=token
-        )
+        success = setup_claude_token(execution_mode="windows", token=token)
 
     print()
     print("=" * 70)
@@ -107,7 +100,7 @@ def main():
     return success
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         success = main()
         sys.exit(0 if success else 1)
@@ -117,5 +110,6 @@ if __name__ == '__main__':
     except Exception as e:
         print(f"\n❌ エラー: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)

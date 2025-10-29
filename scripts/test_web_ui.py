@@ -7,8 +7,9 @@ Webダッシュボードが正しく起動し、基本的なAPIが機能する�
 
 import sys
 import time
-import requests
 from pathlib import Path
+
+import requests
 
 # プロジェクトルートをPYTHONPATHに追加
 project_root = Path(__file__).parent.parent

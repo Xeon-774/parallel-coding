@@ -5,10 +5,10 @@ Centralizes all configuration settings for the web dashboard,
 including defaults, environment variables, and validation.
 """
 
-from dataclasses import dataclass
-from typing import Optional
-from pathlib import Path
 import os
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Optional
 
 
 @dataclass

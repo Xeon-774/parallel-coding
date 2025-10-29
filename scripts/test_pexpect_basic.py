@@ -8,12 +8,14 @@ import sys
 from pathlib import Path
 
 # Cross-platform pexpect import
-if sys.platform == 'win32':
+if sys.platform == "win32":
     import wexpect as expect_module
-    PLATFORM = 'windows'
+
+    PLATFORM = "windows"
 else:
     import pexpect as expect_module
-    PLATFORM = 'unix'
+
+    PLATFORM = "unix"
 
 
 def test_basic_interaction():
@@ -26,20 +28,20 @@ def test_basic_interaction():
     # Test 1: Simple echo command
     print("[TEST 1] Simple command execution")
     try:
-        if PLATFORM == 'windows':
-            child = expect_module.spawn('cmd', encoding='utf-8', timeout=5)
-            child.expect('>')  # Wait for prompt
-            child.sendline('echo Hello World')
-            child.expect('Hello World')
+        if PLATFORM == "windows":
+            child = expect_module.spawn("cmd", encoding="utf-8", timeout=5)
+            child.expect(">")  # Wait for prompt
+            child.sendline("echo Hello World")
+            child.expect("Hello World")
             print("[OK] Command executed and output captured")
-            child.sendline('exit')
+            child.sendline("exit")
         else:
-            child = expect_module.spawn('bash', encoding='utf-8', timeout=5)
-            child.expect('\\$')  # Wait for prompt
-            child.sendline('echo Hello World')
-            child.expect('Hello World')
+            child = expect_module.spawn("bash", encoding="utf-8", timeout=5)
+            child.expect("\\$")  # Wait for prompt
+            child.sendline("echo Hello World")
+            child.expect("Hello World")
             print("[OK] Command executed and output captured")
-            child.sendline('exit')
+            child.sendline("exit")
 
         print("[PASS] Test 1 passed\n")
 
@@ -49,11 +51,11 @@ def test_basic_interaction():
     # Test 2: Pattern matching with multiple options
     print("[TEST 2] Pattern matching")
     try:
-        if PLATFORM == 'windows':
-            child = expect_module.spawn('cmd', encoding='utf-8', timeout=5)
+        if PLATFORM == "windows":
+            child = expect_module.spawn("cmd", encoding="utf-8", timeout=5)
 
             # Wait for one of several patterns
-            index = child.expect(['>', 'Microsoft', expect_module.TIMEOUT])
+            index = child.expect([">", "Microsoft", expect_module.TIMEOUT])
 
             if index == 0:
                 print("[OK] Matched prompt '>'")
@@ -62,17 +64,17 @@ def test_basic_interaction():
             else:
                 print("[WARN] Timeout occurred")
 
-            child.sendline('exit')
+            child.sendline("exit")
         else:
-            child = expect_module.spawn('bash', encoding='utf-8', timeout=5)
-            index = child.expect(['\\$', '#', expect_module.TIMEOUT])
+            child = expect_module.spawn("bash", encoding="utf-8", timeout=5)
+            index = child.expect(["\\$", "#", expect_module.TIMEOUT])
 
             if index in [0, 1]:
                 print("[OK] Matched shell prompt")
             else:
                 print("[WARN] Timeout occurred")
 
-            child.sendline('exit')
+            child.sendline("exit")
 
         print("[PASS] Test 2 passed\n")
 
@@ -86,8 +88,9 @@ def test_basic_interaction():
         test_script = Path("workspace/test_qa.py")
         test_script.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(test_script, 'w', encoding='utf-8') as f:
-            f.write("""
+        with open(test_script, "w", encoding="utf-8") as f:
+            f.write(
+                """
 import sys
 print("Starting interactive test...", flush=True)
 sys.stdout.flush()
@@ -104,39 +107,36 @@ response2 = input("Question 2: Delete file 'temp.txt'? (y/n): ")
 print(f"You answered: {response2}", flush=True)
 
 print("Interactive test complete!", flush=True)
-""")
+"""
+            )
 
         # Run the script with pexpect/wexpect
-        child = expect_module.spawn(
-            f'python "{test_script}"',
-            encoding='utf-8',
-            timeout=10
-        )
+        child = expect_module.spawn(f'python "{test_script}"', encoding="utf-8", timeout=10)
 
         # Wait for first question
-        index = child.expect(['output.txt.*\\(y/n\\)', expect_module.TIMEOUT])
+        index = child.expect(["output.txt.*\\(y/n\\)", expect_module.TIMEOUT])
 
         if index == 0:
             print("[OK] Detected first question")
-            child.sendline('y')
+            child.sendline("y")
 
             # Wait for acknowledgment
-            child.expect('File write approved')
+            child.expect("File write approved")
             print("[OK] Response processed correctly")
 
             # Wait for second question
-            index = child.expect(['temp.txt.*\\(y/n\\)', expect_module.TIMEOUT])
+            index = child.expect(["temp.txt.*\\(y/n\\)", expect_module.TIMEOUT])
 
             if index == 0:
                 print("[OK] Detected second question")
-                child.sendline('n')
+                child.sendline("n")
 
                 # Wait for acknowledgment
-                child.expect('File write denied')
+                child.expect("File write denied")
                 print("[OK] Second response processed correctly")
 
                 # Wait for completion
-                child.expect('Interactive test complete')
+                child.expect("Interactive test complete")
                 print("[OK] Script completed successfully")
             else:
                 print("[WARN] Second question timeout")
@@ -149,6 +149,7 @@ print("Interactive test complete!", flush=True)
     except Exception as e:
         print(f"[FAIL] Test 3 failed: {e}\n")
         import traceback
+
         traceback.print_exc()
 
     print(f"\n{'='*60}")

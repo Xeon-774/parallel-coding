@@ -6,8 +6,7 @@ Tests Pydantic model validation, defaults, and constraints for orchestrator conf
 import pytest
 from pydantic import ValidationError
 
-from orchestrator.api.models import OrchestratorConfigRecursion, OrchestratorConfig
-
+from orchestrator.api.models import OrchestratorConfig, OrchestratorConfigRecursion
 
 # ======================= OrchestratorConfigRecursion Tests =======================
 
@@ -75,7 +74,9 @@ class TestOrchestratorConfigRecursionValidation:
 
     def test_current_depth_exceeds_max_depth(self):
         """Test custom validator: current_depth cannot exceed max_recursion_depth."""
-        with pytest.raises(ValidationError, match="Current depth \\(4\\) exceeds max depth \\(3\\)"):
+        with pytest.raises(
+            ValidationError, match="Current depth \\(4\\) exceeds max depth \\(3\\)"
+        ):
             OrchestratorConfigRecursion(
                 max_recursion_depth=3,
                 current_depth=4,
@@ -91,9 +92,7 @@ class TestOrchestratorConfigRecursionValidation:
 
     def test_orchestrator_api_url_http_valid(self):
         """Test that http:// URLs are valid."""
-        config = OrchestratorConfigRecursion(
-            orchestrator_api_url="http://localhost:8000"
-        )
+        config = OrchestratorConfigRecursion(orchestrator_api_url="http://localhost:8000")
         assert config.orchestrator_api_url == "http://localhost:8000"
 
     def test_orchestrator_api_url_https_valid(self):
@@ -106,16 +105,12 @@ class TestOrchestratorConfigRecursionValidation:
     def test_orchestrator_api_url_invalid_scheme(self):
         """Test that URLs without http/https scheme are rejected."""
         with pytest.raises(ValidationError, match="API URL must start with http:// or https://"):
-            OrchestratorConfigRecursion(
-                orchestrator_api_url="ftp://example.com"
-            )
+            OrchestratorConfigRecursion(orchestrator_api_url="ftp://example.com")
 
     def test_orchestrator_api_url_no_scheme(self):
         """Test that URLs without scheme are rejected."""
         with pytest.raises(ValidationError, match="API URL must start with http:// or https://"):
-            OrchestratorConfigRecursion(
-                orchestrator_api_url="example.com"
-            )
+            OrchestratorConfigRecursion(orchestrator_api_url="example.com")
 
     def test_orchestrator_api_url_none_valid(self):
         """Test that None is valid for orchestrator_api_url."""
@@ -209,9 +204,7 @@ class TestOrchestratorConfigRecursionEdgeCases:
 
     def test_url_with_port(self):
         """Test orchestrator_api_url with port number."""
-        config = OrchestratorConfigRecursion(
-            orchestrator_api_url="http://localhost:8080/api/v1"
-        )
+        config = OrchestratorConfigRecursion(orchestrator_api_url="http://localhost:8080/api/v1")
         assert config.orchestrator_api_url == "http://localhost:8080/api/v1"
 
     def test_url_with_path(self):

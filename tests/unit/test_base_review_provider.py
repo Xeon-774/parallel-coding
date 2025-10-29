@@ -3,19 +3,20 @@
 Tests BaseReviewProvider abstract class and related models.
 """
 
-import pytest
-from pathlib import Path
 import tempfile
+from pathlib import Path
+
+import pytest
 
 from orchestrator.core.ai_providers.base_review_provider import (
-    ReviewRequest,
-    ReviewResult,
-    ReviewType,
-    ReviewPerspective,
-    ReviewStatus,
+    AggregatedReview,
     FeedbackSeverity,
     ReviewFeedback,
-    AggregatedReview,
+    ReviewPerspective,
+    ReviewRequest,
+    ReviewResult,
+    ReviewStatus,
+    ReviewType,
 )
 
 
@@ -24,7 +25,7 @@ class TestReviewRequestValidation:
 
     def test_document_path_traversal_blocked(self):
         """Test that path traversal is blocked."""
-        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.md') as f:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".md") as f:
             f.write("test")
             temp_path = f.name
 
@@ -34,7 +35,7 @@ class TestReviewRequestValidation:
                 ReviewRequest(
                     document_path="../../../etc/passwd",
                     review_type=ReviewType.DESIGN,
-                    perspective=ReviewPerspective.ARCHITECTURE
+                    perspective=ReviewPerspective.ARCHITECTURE,
                 )
         finally:
             Path(temp_path).unlink(missing_ok=True)
@@ -45,15 +46,15 @@ class TestReviewRequestValidation:
             ReviewRequest(
                 document_path="/nonexistent/file.md",
                 review_type=ReviewType.DESIGN,
-                perspective=ReviewPerspective.ARCHITECTURE
+                perspective=ReviewPerspective.ARCHITECTURE,
             )
 
     def test_document_too_large(self):
         """Test that oversized document raises error."""
         # Create a large file (> 10MB)
-        with tempfile.NamedTemporaryFile(mode='wb', delete=False, suffix='.md') as f:
+        with tempfile.NamedTemporaryFile(mode="wb", delete=False, suffix=".md") as f:
             # Write 11MB of data
-            f.write(b'x' * (11 * 1024 * 1024))
+            f.write(b"x" * (11 * 1024 * 1024))
             temp_path = f.name
 
         try:
@@ -61,7 +62,7 @@ class TestReviewRequestValidation:
                 ReviewRequest(
                     document_path=temp_path,
                     review_type=ReviewType.DESIGN,
-                    perspective=ReviewPerspective.ARCHITECTURE
+                    perspective=ReviewPerspective.ARCHITECTURE,
                 )
         finally:
             Path(temp_path).unlink(missing_ok=True)
@@ -78,7 +79,7 @@ class TestReviewResultValidation:
                 category=ReviewPerspective.ARCHITECTURE,
                 severity=FeedbackSeverity.INFO,
                 message=f"Feedback {i}",
-                line_number=i+1  # line_number must be >= 1
+                line_number=i + 1,  # line_number must be >= 1
             )
             for i in range(501)
         ]
@@ -94,7 +95,7 @@ class TestReviewResultValidation:
                 overall_score=85.0,
                 execution_time_seconds=1.0,
                 provider_name="test",
-                metadata={}
+                metadata={},
             )
 
 
@@ -113,7 +114,7 @@ class TestReviewResultProperties:
             overall_score=85.0,
             execution_time_seconds=1.0,
             provider_name="test",
-            metadata={}
+            metadata={},
         )
 
         assert result.is_success is True
@@ -125,19 +126,19 @@ class TestReviewResultProperties:
                 category=ReviewPerspective.SECURITY,
                 severity=FeedbackSeverity.CRITICAL,
                 message="Critical issue 1",
-                line_number=10
+                line_number=10,
             ),
             ReviewFeedback(
                 category=ReviewPerspective.SECURITY,
                 severity=FeedbackSeverity.WARNING,
                 message="Warning 1",
-                line_number=20
+                line_number=20,
             ),
             ReviewFeedback(
                 category=ReviewPerspective.SECURITY,
                 severity=FeedbackSeverity.CRITICAL,
                 message="Critical issue 2",
-                line_number=30
+                line_number=30,
             ),
         ]
 
@@ -151,7 +152,7 @@ class TestReviewResultProperties:
             overall_score=70.0,
             execution_time_seconds=1.0,
             provider_name="test",
-            metadata={}
+            metadata={},
         )
 
         critical = result.critical_issues
@@ -165,19 +166,19 @@ class TestReviewResultProperties:
                 category=ReviewPerspective.PERFORMANCE,
                 severity=FeedbackSeverity.WARNING,
                 message="Warning 1",
-                line_number=10
+                line_number=10,
             ),
             ReviewFeedback(
                 category=ReviewPerspective.PERFORMANCE,
                 severity=FeedbackSeverity.INFO,
                 message="Info 1",
-                line_number=20
+                line_number=20,
             ),
             ReviewFeedback(
                 category=ReviewPerspective.PERFORMANCE,
                 severity=FeedbackSeverity.WARNING,
                 message="Warning 2",
-                line_number=30
+                line_number=30,
             ),
         ]
 
@@ -191,7 +192,7 @@ class TestReviewResultProperties:
             overall_score=85.0,
             execution_time_seconds=1.0,
             provider_name="test",
-            metadata={}
+            metadata={},
         )
 
         warnings = result.warnings
@@ -205,19 +206,19 @@ class TestReviewResultProperties:
                 category=ReviewPerspective.MAINTAINABILITY,
                 severity=FeedbackSeverity.INFO,
                 message="Info 1",
-                line_number=10
+                line_number=10,
             ),
             ReviewFeedback(
                 category=ReviewPerspective.MAINTAINABILITY,
                 severity=FeedbackSeverity.WARNING,
                 message="Warning 1",
-                line_number=20
+                line_number=20,
             ),
             ReviewFeedback(
                 category=ReviewPerspective.MAINTAINABILITY,
                 severity=FeedbackSeverity.INFO,
                 message="Info 2",
-                line_number=30
+                line_number=30,
             ),
         ]
 
@@ -231,7 +232,7 @@ class TestReviewResultProperties:
             overall_score=90.0,
             execution_time_seconds=1.0,
             provider_name="test",
-            metadata={}
+            metadata={},
         )
 
         info = result.info_items
@@ -255,13 +256,13 @@ class TestAggregatedReview:
                     category=ReviewPerspective.ARCHITECTURE,
                     severity=FeedbackSeverity.INFO,
                     message="Feedback 1",
-                    line_number=10
+                    line_number=10,
                 )
             ],
             overall_score=85.0,
             execution_time_seconds=1.0,
             provider_name="provider1",
-            metadata={}
+            metadata={},
         )
 
         result2 = ReviewResult(
@@ -275,19 +276,19 @@ class TestAggregatedReview:
                     category=ReviewPerspective.SECURITY,
                     severity=FeedbackSeverity.WARNING,
                     message="Feedback 2",
-                    line_number=20
+                    line_number=20,
                 ),
                 ReviewFeedback(
                     category=ReviewPerspective.SECURITY,
                     severity=FeedbackSeverity.CRITICAL,
                     message="Feedback 3",
-                    line_number=30
-                )
+                    line_number=30,
+                ),
             ],
             overall_score=70.0,
             execution_time_seconds=1.5,
             provider_name="provider2",
-            metadata={}
+            metadata={},
         )
 
         aggregated = AggregatedReview(
@@ -299,7 +300,7 @@ class TestAggregatedReview:
             critical_count=1,
             warning_count=1,
             info_count=1,
-            execution_time_seconds=2.5
+            execution_time_seconds=2.5,
         )
 
         all_feedbacks = aggregated.all_feedbacks

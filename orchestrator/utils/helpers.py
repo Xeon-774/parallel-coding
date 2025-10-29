@@ -7,9 +7,9 @@
 import os
 import re
 import sys
+from datetime import datetime
 from pathlib import Path
 from typing import Optional, Union
-from datetime import datetime
 
 
 def convert_windows_to_wsl_path(windows_path: str) -> str:

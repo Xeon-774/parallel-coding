@@ -4,12 +4,14 @@ Tests edge cases, error handling, and validation logic not covered by integratio
 """
 
 import asyncio
+
 import pytest
+
 from orchestrator.core.hierarchical.resource_manager import (
-    HierarchicalResourceManager,
-    ResourceUsage,
-    QuotaStatus,
     AllocationError,
+    HierarchicalResourceManager,
+    QuotaStatus,
+    ResourceUsage,
 )
 
 
@@ -44,9 +46,7 @@ class TestHierarchicalResourceManager:
 
         # Allocate at max depth
         allocation = await rm.allocate_resources(
-            job_id="test-max-depth",
-            depth=5,
-            requested_workers=1
+            job_id="test-max-depth", depth=5, requested_workers=1
         )
 
         assert allocation.job_id == "test-max-depth"
@@ -61,9 +61,7 @@ class TestHierarchicalResourceManager:
 
         # Request more than quota at depth 5 (quota = 1)
         allocation = await rm.allocate_resources(
-            job_id="test-exceed-quota",
-            depth=5,
-            requested_workers=10
+            job_id="test-exceed-quota", depth=5, requested_workers=10
         )
 
         # Should grant only what's available
@@ -76,10 +74,7 @@ class TestHierarchicalResourceManager:
         rm = HierarchicalResourceManager()
 
         # Release for job that was never allocated
-        released = await rm.release_resources(
-            job_id="nonexistent-job",
-            depth=0
-        )
+        released = await rm.release_resources(job_id="nonexistent-job", depth=0)
 
         # Should return False (nothing to release)
         assert released is False
@@ -104,11 +99,7 @@ class TestHierarchicalResourceManager:
         rm = HierarchicalResourceManager()
 
         with pytest.raises(AllocationError, match="requested_workers must be positive"):
-            await rm.allocate_resources(
-                job_id="test-zero-workers",
-                depth=0,
-                requested_workers=0
-            )
+            await rm.allocate_resources(job_id="test-zero-workers", depth=0, requested_workers=0)
 
     @pytest.mark.asyncio
     async def test_multiple_allocations_same_depth(self):
@@ -116,18 +107,10 @@ class TestHierarchicalResourceManager:
         rm = HierarchicalResourceManager()
 
         # First allocation
-        alloc1 = await rm.allocate_resources(
-            job_id="job-1",
-            depth=0,
-            requested_workers=3
-        )
+        alloc1 = await rm.allocate_resources(job_id="job-1", depth=0, requested_workers=3)
 
         # Second allocation
-        alloc2 = await rm.allocate_resources(
-            job_id="job-2",
-            depth=0,
-            requested_workers=3
-        )
+        alloc2 = await rm.allocate_resources(job_id="job-2", depth=0, requested_workers=3)
 
         # Total granted should not exceed quota
         usage = await rm.get_hierarchy_usage()
@@ -144,21 +127,14 @@ class TestHierarchicalResourceManager:
         initial_used = initial_usage[0].used
 
         # Allocate resources
-        await rm.allocate_resources(
-            job_id="test-cycle",
-            depth=0,
-            requested_workers=2
-        )
+        await rm.allocate_resources(job_id="test-cycle", depth=0, requested_workers=2)
 
         # Check usage increased
         after_alloc = await rm.get_hierarchy_usage()
         assert after_alloc[0].used >= initial_used
 
         # Release resources
-        released = await rm.release_resources(
-            job_id="test-cycle",
-            depth=0
-        )
+        released = await rm.release_resources(job_id="test-cycle", depth=0)
 
         assert released is True
 
@@ -173,10 +149,7 @@ class TestQuotaStatus:
     def test_quota_status_creation(self):
         """Test creating QuotaStatus with warnings."""
         status = QuotaStatus(
-            depth=0,
-            available=2,
-            quota=10,
-            warnings=(True, False)  # 80% warning active
+            depth=0, available=2, quota=10, warnings=(True, False)  # 80% warning active
         )
 
         assert status.depth == 0
@@ -186,12 +159,7 @@ class TestQuotaStatus:
 
     def test_quota_status_both_warnings(self):
         """Test QuotaStatus with both warnings active."""
-        status = QuotaStatus(
-            depth=1,
-            available=0,
-            quota=8,
-            warnings=(True, True)  # Both warnings
-        )
+        status = QuotaStatus(depth=1, available=0, quota=8, warnings=(True, True))  # Both warnings
 
         assert status.warnings[0] is True  # 80% warning
         assert status.warnings[1] is True  # 90% warning
@@ -206,11 +174,7 @@ class TestResourceManagerAdvanced:
         rm = HierarchicalResourceManager()
 
         with pytest.raises(AllocationError, match="job_id is required"):
-            await rm.allocate_resources(
-                job_id="",
-                depth=0,
-                requested_workers=1
-            )
+            await rm.allocate_resources(job_id="", depth=0, requested_workers=1)
 
     @pytest.mark.asyncio
     async def test_allocate_no_capacity(self):
@@ -218,19 +182,11 @@ class TestResourceManagerAdvanced:
         rm = HierarchicalResourceManager()
 
         # Exhaust all quota at depth 5 (quota=1)
-        await rm.allocate_resources(
-            job_id="job-1",
-            depth=5,
-            requested_workers=1
-        )
+        await rm.allocate_resources(job_id="job-1", depth=5, requested_workers=1)
 
         # Try to allocate more - should fail
         with pytest.raises(AllocationError, match="No capacity available"):
-            await rm.allocate_resources(
-                job_id="job-2",
-                depth=5,
-                requested_workers=1
-            )
+            await rm.allocate_resources(job_id="job-2", depth=5, requested_workers=1)
 
     @pytest.mark.asyncio
     async def test_cleanup_job_multiple_depths(self):
@@ -287,7 +243,7 @@ class TestResourceManagerAdvanced:
         assert status.depth == 0
         assert status.quota == 10
         assert status.available == 2
-        assert status.warnings[0] is True   # 80% threshold reached
+        assert status.warnings[0] is True  # 80% threshold reached
         assert status.warnings[1] is False  # 90% not reached yet
 
         # Allocate 1 more to reach 90%
@@ -299,6 +255,7 @@ class TestResourceManagerAdvanced:
 
 
 # Legacy tests from original file (kept for backward compatibility)
+
 
 @pytest.mark.asyncio
 async def test_allocate_and_release_happy_path():
@@ -342,7 +299,7 @@ async def test_concurrent_allocations_safely_enforced():
 
     async def worker(jid):
         try:
-            async with (await rm.resource_scope(job_id=jid, depth=0, requested_workers=1)):
+            async with await rm.resource_scope(job_id=jid, depth=0, requested_workers=1):
                 await asyncio.sleep(0.01)
         except AllocationError:
             # Expected when quota is full

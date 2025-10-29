@@ -12,8 +12,8 @@ from typing import Tuple
 
 # Fix Windows console encoding
 if sys.platform == "win32":
-    sys.stdout.reconfigure(encoding='utf-8')
-    sys.stderr.reconfigure(encoding='utf-8')
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
 
 
 def find_git_bash() -> str:
@@ -78,11 +78,11 @@ def setup_environment() -> Tuple[bool, str]:
             if git_bash_path:
                 template_content = template_content.replace(
                     "CLAUDE_CODE_GIT_BASH_PATH=C:\\opt\\Git.Git\\usr\\bin\\bash.exe",
-                    f"CLAUDE_CODE_GIT_BASH_PATH={git_bash_path}"
+                    f"CLAUDE_CODE_GIT_BASH_PATH={git_bash_path}",
                 )
 
             # Write .env
-            env_file.write_text(template_content, encoding='utf-8')
+            env_file.write_text(template_content, encoding="utf-8")
             print(f"[OK] Created {env_file}")
             print()
             print("[WARN] IMPORTANT: Edit .env and add your Claude API token!")

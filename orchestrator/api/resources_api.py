@@ -11,9 +11,8 @@ from typing import Dict, List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
 
-from orchestrator.core.hierarchical import HierarchicalResourceManager
 from orchestrator.api.dependencies import TokenData, require_scope
-
+from orchestrator.core.hierarchical import HierarchicalResourceManager
 
 router = APIRouter(prefix="/api/resources", tags=["resources"])
 
@@ -164,4 +163,3 @@ async def get_usage(
     for depth, u in sorted(usage.items()):
         items.append(UsageItem(depth=depth, allocated=u.used, available=max(u.quota - u.used, 0)))
     return UsageResponse(usage=items)
-

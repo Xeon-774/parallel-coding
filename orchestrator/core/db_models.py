@@ -25,31 +25,33 @@ Usage:
     db.commit()
 """
 
-from datetime import datetime, timedelta
-from typing import Optional, List
 import enum
 import uuid
+from datetime import datetime, timedelta
+from typing import List, Optional
 
 from sqlalchemy import (
-    Column,
-    String,
-    Integer,
-    DateTime,
-    Text,
-    Enum as SQLEnum,
     JSON,
+    CheckConstraint,
+    Column,
+    DateTime,
+)
+from sqlalchemy import Enum as SQLEnum
+from sqlalchemy import (
     ForeignKey,
     Index,
-    CheckConstraint,
+    Integer,
+    String,
+    Text,
 )
 from sqlalchemy.orm import relationship
 
 from orchestrator.core.database import Base
 
-
 # ============================================================================
 # Enumerations
 # ============================================================================
+
 
 class WorkerStatus(str, enum.Enum):
     """
@@ -96,6 +98,7 @@ class JobStatus(str, enum.Enum):
 # ============================================================================
 # Worker Models
 # ============================================================================
+
 
 class Worker(Base):
     """
@@ -159,7 +162,7 @@ class Worker(Base):
         JSON,
         nullable=True,
         comment="Additional worker metadata (JSON)",
-        name="metadata"  # DB column name remains 'metadata' for compatibility
+        name="metadata",  # DB column name remains 'metadata' for compatibility
     )
 
     # Relationships
@@ -179,8 +182,7 @@ class Worker(Base):
     def __repr__(self) -> str:
         """String representation for debugging."""
         return (
-            f"<Worker(id={self.id}, status={self.status.value}, "
-            f"workspace={self.workspace_id})>"
+            f"<Worker(id={self.id}, status={self.status.value}, " f"workspace={self.workspace_id})>"
         )
 
 
@@ -248,9 +250,7 @@ class WorkerStateTransition(Base):
     worker = relationship("Worker", back_populates="state_transitions")
 
     # Indexes
-    __table_args__ = (
-        Index("ix_wst_worker_timestamp", "worker_id", "timestamp"),
-    )
+    __table_args__ = (Index("ix_wst_worker_timestamp", "worker_id", "timestamp"),)
 
     def __repr__(self) -> str:
         """String representation for debugging."""
@@ -263,6 +263,7 @@ class WorkerStateTransition(Base):
 # ============================================================================
 # Job Models
 # ============================================================================
+
 
 class Job(Base):
     """
@@ -465,21 +466,17 @@ class JobStateTransition(Base):
     job = relationship("Job", back_populates="state_transitions")
 
     # Indexes
-    __table_args__ = (
-        Index("ix_jst_job_timestamp", "job_id", "timestamp"),
-    )
+    __table_args__ = (Index("ix_jst_job_timestamp", "job_id", "timestamp"),)
 
     def __repr__(self) -> str:
         """String representation for debugging."""
-        return (
-            f"<JobStateTransition(job={self.job_id}, "
-            f"{self.from_state} → {self.to_state})>"
-        )
+        return f"<JobStateTransition(job={self.job_id}, " f"{self.from_state} → {self.to_state})>"
 
 
 # ============================================================================
 # Resource Models
 # ============================================================================
+
 
 class ResourceAllocation(Base):
     """
@@ -566,6 +563,7 @@ class ResourceAllocation(Base):
 # Idempotency Models
 # ============================================================================
 
+
 class IdempotencyKey(Base):
     """
     Idempotency key tracking model.
@@ -626,9 +624,7 @@ class IdempotencyKey(Base):
     )
 
     # Indexes
-    __table_args__ = (
-        Index("ix_ik_expires_at", "expires_at"),
-    )
+    __table_args__ = (Index("ix_ik_expires_at", "expires_at"),)
 
     def __repr__(self) -> str:
         """String representation for debugging."""

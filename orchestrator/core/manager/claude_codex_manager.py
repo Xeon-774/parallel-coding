@@ -40,17 +40,16 @@ import time
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import List, Optional, Dict, Any, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from pydantic import BaseModel, Field, validator
 
 from orchestrator.core.ai_providers.codex_cli_provider import (
     CodexCLIProvider,
-    CodexProviderConfig,
     CodexExecutionResult,
+    CodexProviderConfig,
     CodexStatus,
 )
-
 
 # =============================================================================
 # Constants
@@ -78,15 +77,18 @@ MAX_TASK_DESCRIPTION_LENGTH: int = 5000
 # Enums
 # =============================================================================
 
+
 class TaskComplexity(str, Enum):
     """Task complexity level for routing decisions"""
-    SIMPLE = "simple"      # <50 lines, straightforward
-    MEDIUM = "medium"      # 50-200 lines, moderate logic
-    COMPLEX = "complex"    # >200 lines, intricate architecture
+
+    SIMPLE = "simple"  # <50 lines, straightforward
+    MEDIUM = "medium"  # 50-200 lines, moderate logic
+    COMPLEX = "complex"  # >200 lines, intricate architecture
 
 
 class ValidationStatus(str, Enum):
     """Validation result status"""
+
     PASSED = "passed"
     FAILED = "failed"
     WARNING = "warning"
@@ -95,6 +97,7 @@ class ValidationStatus(str, Enum):
 # =============================================================================
 # Data Models
 # =============================================================================
+
 
 @dataclass
 class CodexTask:
@@ -179,36 +182,28 @@ class ClaudeCodexManagerConfig(BaseModel):
     """
 
     codex_provider_config: CodexProviderConfig = Field(
-        default_factory=CodexProviderConfig,
-        description="Codex provider configuration"
+        default_factory=CodexProviderConfig, description="Codex provider configuration"
     )
 
     enable_validation: bool = Field(
-        default=True,
-        description="Enable excellence_ai_standard validation"
+        default=True, description="Enable excellence_ai_standard validation"
     )
 
     enable_websocket_events: bool = Field(
-        default=True,
-        description="Enable WebSocket event broadcasting"
+        default=True, description="Enable WebSocket event broadcasting"
     )
 
     max_subtasks: int = Field(
-        default=MAX_SUBTASKS,
-        ge=1,
-        le=50,
-        description="Maximum subtasks per decomposition"
+        default=MAX_SUBTASKS, ge=1, le=50, description="Maximum subtasks per decomposition"
     )
 
-    validation_strict_mode: bool = Field(
-        default=False,
-        description="Fail on validation warnings"
-    )
+    validation_strict_mode: bool = Field(default=False, description="Fail on validation warnings")
 
 
 # =============================================================================
 # Main Manager Class
 # =============================================================================
+
 
 class ClaudeCodexManager:
     """
@@ -262,9 +257,7 @@ class ClaudeCodexManager:
         self.task_counter = 0
 
     async def execute_task(
-        self,
-        user_task: str,
-        context: Optional[Dict[str, Any]] = None
+        self, user_task: str, context: Optional[Dict[str, Any]] = None
     ) -> List[TaskResult]:
         """
         Execute user task using hybrid Claude-Codex approach.
@@ -313,9 +306,7 @@ class ClaudeCodexManager:
         return results
 
     async def decompose_task(
-        self,
-        user_task: str,
-        context: Optional[Dict[str, Any]] = None
+        self, user_task: str, context: Optional[Dict[str, Any]] = None
     ) -> List[CodexTask]:
         """
         Decompose user task into executable subtasks.
@@ -343,21 +334,18 @@ class ClaudeCodexManager:
         subtasks: List[CodexTask] = []
 
         # Create main implementation task
-        main_prompt = self._generate_detailed_prompt(
-            description=user_task,
-            context=context
-        )
+        main_prompt = self._generate_detailed_prompt(description=user_task, context=context)
 
         main_task = CodexTask(
             description=user_task,
             prompt=main_prompt,
             complexity=self._estimate_complexity(user_task),
-            validation_criteria=EXCELLENCE_AI_STANDARD_RULES.copy()
+            validation_criteria=EXCELLENCE_AI_STANDARD_RULES.copy(),
         )
 
         subtasks.append(main_task)
 
-        return subtasks[:self.config.max_subtasks]
+        return subtasks[: self.config.max_subtasks]
 
     async def _execute_subtask(self, task: CodexTask) -> TaskResult:
         """
@@ -373,17 +361,14 @@ class ClaudeCodexManager:
 
         # Execute with Codex
         codex_response = await self.codex_provider.execute_async(
-            prompt=task.prompt,
-            context={"complexity": task.complexity.value}
+            prompt=task.prompt, context={"complexity": task.complexity.value}
         )
 
         execution_time = time.time() - start_time
 
         # Validate output (if enabled)
         if self.config.enable_validation:
-            validated, errors, warnings = self._validate_output(
-                task, codex_response
-            )
+            validated, errors, warnings = self._validate_output(task, codex_response)
         else:
             validated = True
             errors = []
@@ -395,13 +380,11 @@ class ClaudeCodexManager:
             validated=validated,
             validation_errors=errors,
             validation_warnings=warnings,
-            execution_time_seconds=execution_time
+            execution_time_seconds=execution_time,
         )
 
     def _generate_detailed_prompt(
-        self,
-        description: str,
-        context: Optional[Dict[str, Any]] = None
+        self, description: str, context: Optional[Dict[str, Any]] = None
     ) -> str:
         """
         Generate detailed prompt with excellence_ai_standard requirements.
@@ -442,9 +425,7 @@ class ClaudeCodexManager:
         return "\n".join(prompt_parts)
 
     def _validate_output(
-        self,
-        task: CodexTask,
-        response: CodexExecutionResult
+        self, task: CodexTask, response: CodexExecutionResult
     ) -> Tuple[bool, List[str], List[str]]:
         """
         Validate Codex output against excellence_ai_standard.
@@ -483,15 +464,11 @@ class ClaudeCodexManager:
 
         # Warning checks
         if "argon2" not in output and "password" in output:
-            warnings.append(
-                "Password handling detected without Argon2id"
-            )
+            warnings.append("Password handling detected without Argon2id")
 
         if "sql" in output and "execute(" in output:
             if "?" not in output and "$" not in output:
-                warnings.append(
-                    "SQL query may not be parameterized"
-                )
+                warnings.append("SQL query may not be parameterized")
 
         # Determine overall validation status
         is_valid = len(errors) == 0
@@ -514,15 +491,17 @@ class ClaudeCodexManager:
 
         # Complex indicators
         complex_keywords = [
-            "architecture", "system", "module", "framework",
-            "database schema", "api design", "microservice"
+            "architecture",
+            "system",
+            "module",
+            "framework",
+            "database schema",
+            "api design",
+            "microservice",
         ]
 
         # Simple indicators
-        simple_keywords = [
-            "function", "method", "fix", "refactor",
-            "single", "one", "simple"
-        ]
+        simple_keywords = ["function", "method", "fix", "refactor", "single", "one", "simple"]
 
         if any(keyword in desc_lower for keyword in complex_keywords):
             return TaskComplexity.COMPLEX
@@ -547,14 +526,12 @@ class ClaudeCodexManager:
 
         if len(user_task) < MIN_TASK_DESCRIPTION_LENGTH:
             raise ValueError(
-                f"Task description too short "
-                f"(min {MIN_TASK_DESCRIPTION_LENGTH} characters)"
+                f"Task description too short " f"(min {MIN_TASK_DESCRIPTION_LENGTH} characters)"
             )
 
         if len(user_task) > MAX_TASK_DESCRIPTION_LENGTH:
             raise ValueError(
-                f"Task description too long "
-                f"(max {MAX_TASK_DESCRIPTION_LENGTH} characters)"
+                f"Task description too long " f"(max {MAX_TASK_DESCRIPTION_LENGTH} characters)"
             )
 
     def _emit_task_completed_event(self, result: TaskResult) -> None:
@@ -593,6 +570,7 @@ class ClaudeCodexManager:
 # Utility Functions
 # =============================================================================
 
+
 def create_default_manager() -> ClaudeCodexManager:
     """
     Create Claude-Codex Manager with default configuration.
@@ -619,10 +597,7 @@ if __name__ == "__main__":
         """Example usage of Claude-Codex Manager"""
         try:
             # Create manager
-            config = ClaudeCodexManagerConfig(
-                enable_validation=True,
-                validation_strict_mode=False
-            )
+            config = ClaudeCodexManagerConfig(enable_validation=True, validation_strict_mode=False)
             manager = ClaudeCodexManager(config)
 
             print("Claude-Codex Manager initialized successfully")

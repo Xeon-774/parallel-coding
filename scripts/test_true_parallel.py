@@ -16,12 +16,13 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 # UTF-8出力設定
-if sys.platform == 'win32':
+if sys.platform == "win32":
     import codecs
-    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'replace')
-    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'replace')
 
-from orchestrator import RefactoredOrchestrator, OrchestratorConfig
+    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.buffer, "replace")
+    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.buffer, "replace")
+
+from orchestrator import OrchestratorConfig, RefactoredOrchestrator
 
 
 def test_true_parallel_execution(num_workers: int = 5):
@@ -38,8 +39,8 @@ def test_true_parallel_execution(num_workers: int = 5):
     print()
 
     # Windowsモードに設定
-    os.environ['ORCHESTRATOR_MODE'] = 'windows'
-    os.environ['CLAUDE_CODE_GIT_BASH_PATH'] = r'C:\opt\Git.Git\usr\bin\bash.exe'
+    os.environ["ORCHESTRATOR_MODE"] = "windows"
+    os.environ["CLAUDE_CODE_GIT_BASH_PATH"] = r"C:\opt\Git.Git\usr\bin\bash.exe"
 
     print(f"実行モード: {os.environ['ORCHESTRATOR_MODE']}")
     print(f"Git Bash: {os.environ['CLAUDE_CODE_GIT_BASH_PATH']}")
@@ -54,7 +55,7 @@ def test_true_parallel_execution(num_workers: int = 5):
             "prompt": """
 Pythonで35番目のフィボナッチ数を再帰的に計算してください。
 進捗を表示しながら計算し、結果を出力してください。
-"""
+""",
         },
         {
             "id": 2,
@@ -62,7 +63,7 @@ Pythonで35番目のフィボナッチ数を再帰的に計算してください
             "prompt": """
 Pythonで5000から6000までの素数を探索してください。
 見つかった素数の数と最初の10個を表示してください。
-"""
+""",
         },
         {
             "id": 3,
@@ -70,7 +71,7 @@ Pythonで5000から6000までの素数を探索してください。
             "prompt": """
 Pythonでクイックソートを実装し、ランダムな1000個の数値をソートしてください。
 ソート前後の最初の10個を表示してください。
-"""
+""",
         },
         {
             "id": 4,
@@ -78,7 +79,7 @@ Pythonでクイックソートを実装し、ランダムな1000個の数値を�
             "prompt": """
 Pythonで50x50のランダム行列を2つ生成し、行列積を計算してください。
 結果行列の対角成分の合計を表示してください。
-"""
+""",
         },
         {
             "id": 5,
@@ -87,8 +88,8 @@ Pythonで50x50のランダム行列を2つ生成し、行列積を計算して�
 Pythonでシーザー暗号（shift=3）を実装し、
 "Hello World from Worker 5"を暗号化・復号化してください。
 結果を表示してください。
-"""
-        }
+""",
+        },
     ]
 
     # 指定されたワーカー数に合わせてタスクを調整
@@ -100,7 +101,7 @@ Pythonでシーザー暗号（shift=3）を実装し、
     print()
 
     # タスクをカンマ区切り形式に変換
-    task_names = [task['name'] for task in selected_tasks]
+    task_names = [task["name"] for task in selected_tasks]
     combined_request = f"{', '.join(task_names)}の{num_workers}つのプログラムを作って"
 
     print("=" * 80)
@@ -113,10 +114,7 @@ Pythonでシーザー暗号（shift=3）を実装し、
     print()
 
     config = OrchestratorConfig.from_env()
-    orchestrator = RefactoredOrchestrator(
-        config=config,
-        enable_realtime_monitoring=True
-    )
+    orchestrator = RefactoredOrchestrator(config=config, enable_realtime_monitoring=True)
 
     start_time = time.time()
 
@@ -146,7 +144,7 @@ Pythonでシーザー暗号（shift=3）を実装し、
 
                 if worker_output.exists():
                     print(f"\n[Worker {i}: {task['name']}]")
-                    with open(worker_output, 'r', encoding='utf-8') as f:
+                    with open(worker_output, "r", encoding="utf-8") as f:
                         output = f.read()
                         # 最初の500文字のみ表示
                         if len(output) > 500:
@@ -176,6 +174,7 @@ Pythonでシーザー暗号（shift=3）を実装し、
     except Exception as e:
         print(f"\n[ERROR] エラー発生: {e}")
         import traceback
+
         traceback.print_exc()
 
     print()
@@ -184,12 +183,13 @@ Pythonでシーザー暗号（shift=3）を実装し、
     print("=" * 80)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description='真の並列実行テスト')
-    parser.add_argument('-w', '--workers', type=int, default=5,
-                        help='ワーカー数（1-5、デフォルト: 5）')
+    parser = argparse.ArgumentParser(description="真の並列実行テスト")
+    parser.add_argument(
+        "-w", "--workers", type=int, default=5, help="ワーカー数（1-5、デフォルト: 5）"
+    )
 
     args = parser.parse_args()
 

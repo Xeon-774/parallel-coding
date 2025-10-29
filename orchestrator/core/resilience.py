@@ -10,15 +10,15 @@ World-class resilience patterns:
 - Health checks
 """
 
-import time
 import random
 import threading
-from typing import Callable, Optional, Any, Dict, Generator, Tuple, Type
+import time
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from functools import wraps
-from contextlib import contextmanager
+from typing import Any, Callable, Dict, Generator, Optional, Tuple, Type
 
 
 class CircuitState(str, Enum):

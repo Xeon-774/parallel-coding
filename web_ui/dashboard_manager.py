@@ -4,16 +4,16 @@ Dashboard process management for Web UI
 Handles starting, monitoring, and stopping the dashboard server.
 """
 
+import subprocess
 import sys
 import time
-import subprocess
 import webbrowser
 from pathlib import Path
 from typing import Optional
 
 from .config import DashboardConfig
-from .exceptions import DashboardStartupError, DashboardTimeoutError
 from .constants import Messages
+from .exceptions import DashboardStartupError, DashboardTimeoutError
 
 
 class DashboardManager:
@@ -48,13 +48,15 @@ class DashboardManager:
             [
                 sys.executable,
                 "start_dashboard.py",
-                "--host", self.config.host,
-                "--port", str(self.config.port)
+                "--host",
+                self.config.host,
+                "--port",
+                str(self.config.port),
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             cwd=str(self.project_root),
-            text=True
+            text=True,
         )
 
         # Wait for dashboard to start
@@ -75,23 +77,21 @@ class DashboardManager:
                     stderr = self.process.stderr.read()
                     if stderr:
                         print("   Error output:")
-                        for line in stderr.split('\n')[:10]:
+                        for line in stderr.split("\n")[:10]:
                             if line.strip():
                                 print(f"     {line}")
                         print()
 
                 print(f"   Please check if dependencies are installed:")
-                print(f"     pip install -e \".[web]\"")
+                print(f'     pip install -e ".[web]"')
                 print()
                 return False
 
             # Try health check
             try:
                 import requests
-                response = requests.get(
-                    f"{self.config.dashboard_url}/api/status",
-                    timeout=1
-                )
+
+                response = requests.get(f"{self.config.dashboard_url}/api/status", timeout=1)
                 if response.status_code == 200:
                     print(f" [{Messages.PREFIX_OK}]")
                     print(f"      {Messages.DASHBOARD_READY} {self.config.dashboard_url}")

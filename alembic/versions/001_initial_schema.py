@@ -5,11 +5,14 @@ Revises:
 Create Date: 2025-10-28
 
 """
+
 from __future__ import annotations
 
-from alembic import op
-import sqlalchemy as sa
 from typing import Optional
+
+import sqlalchemy as sa
+
+from alembic import op
 
 # For PostgreSQL ENUM creation when using a PostgreSQL connection
 try:
@@ -39,7 +42,13 @@ def upgrade() -> None:
         worker_status.create(op.get_bind(), checkfirst=True)
 
         job_status = postgresql.ENUM(
-            "PENDING", "RUNNING", "COMPLETED", "FAILED", "CANCELED", name="jobstatus", create_type=False
+            "PENDING",
+            "RUNNING",
+            "COMPLETED",
+            "FAILED",
+            "CANCELED",
+            name="jobstatus",
+            create_type=False,
         )
         job_status.create(op.get_bind(), checkfirst=True)
 
@@ -50,7 +59,15 @@ def upgrade() -> None:
         sa.Column("workspace_id", sa.String(36), nullable=False),
         sa.Column(
             "status",
-            sa.Enum("IDLE", "RUNNING", "PAUSED", "COMPLETED", "FAILED", "TERMINATED", name="workerstatus"),
+            sa.Enum(
+                "IDLE",
+                "RUNNING",
+                "PAUSED",
+                "COMPLETED",
+                "FAILED",
+                "TERMINATED",
+                name="workerstatus",
+            ),
             nullable=False,
         ),
         sa.Column("created_at", sa.DateTime(), nullable=False),
@@ -60,7 +77,9 @@ def upgrade() -> None:
     )
     op.create_index("ix_workers_workspace_id", "workers", ["workspace_id"], unique=False)
     op.create_index("ix_workers_status", "workers", ["status"], unique=False)
-    op.create_index("ix_workers_workspace_status", "workers", ["workspace_id", "status"], unique=False)
+    op.create_index(
+        "ix_workers_workspace_status", "workers", ["workspace_id", "status"], unique=False
+    )
     op.create_index("ix_workers_created_at", "workers", ["created_at"], unique=False)
 
     # Create worker_state_transitions table
@@ -75,9 +94,24 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
         sa.ForeignKeyConstraint(["worker_id"], ["workers.id"], ondelete="CASCADE"),
     )
-    op.create_index("ix_worker_state_transitions_worker_id", "worker_state_transitions", ["worker_id"], unique=False)
-    op.create_index("ix_worker_state_transitions_timestamp", "worker_state_transitions", ["timestamp"], unique=False)
-    op.create_index("ix_wst_worker_timestamp", "worker_state_transitions", ["worker_id", "timestamp"], unique=False)
+    op.create_index(
+        "ix_worker_state_transitions_worker_id",
+        "worker_state_transitions",
+        ["worker_id"],
+        unique=False,
+    )
+    op.create_index(
+        "ix_worker_state_transitions_timestamp",
+        "worker_state_transitions",
+        ["timestamp"],
+        unique=False,
+    )
+    op.create_index(
+        "ix_wst_worker_timestamp",
+        "worker_state_transitions",
+        ["worker_id", "timestamp"],
+        unique=False,
+    )
 
     # Create jobs table
     op.create_table(
@@ -88,7 +122,13 @@ def upgrade() -> None:
         sa.Column(
             "status",
             sa.Enum(
-                "SUBMITTED", "PENDING", "RUNNING", "COMPLETED", "FAILED", "CANCELED", name="jobstatus"
+                "SUBMITTED",
+                "PENDING",
+                "RUNNING",
+                "COMPLETED",
+                "FAILED",
+                "CANCELED",
+                name="jobstatus",
             ),
             nullable=False,
         ),
@@ -121,9 +161,15 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
         sa.ForeignKeyConstraint(["job_id"], ["jobs.id"], ondelete="CASCADE"),
     )
-    op.create_index("ix_job_state_transitions_job_id", "job_state_transitions", ["job_id"], unique=False)
-    op.create_index("ix_job_state_transitions_timestamp", "job_state_transitions", ["timestamp"], unique=False)
-    op.create_index("ix_jst_job_timestamp", "job_state_transitions", ["job_id", "timestamp"], unique=False)
+    op.create_index(
+        "ix_job_state_transitions_job_id", "job_state_transitions", ["job_id"], unique=False
+    )
+    op.create_index(
+        "ix_job_state_transitions_timestamp", "job_state_transitions", ["timestamp"], unique=False
+    )
+    op.create_index(
+        "ix_jst_job_timestamp", "job_state_transitions", ["job_id", "timestamp"], unique=False
+    )
 
     # Create resource_allocations table
     op.create_table(
@@ -139,7 +185,9 @@ def upgrade() -> None:
         sa.CheckConstraint("depth >= 0 AND depth <= 5"),
         sa.CheckConstraint("worker_count >= 1"),
     )
-    op.create_index("ix_resource_allocations_job_id", "resource_allocations", ["job_id"], unique=False)
+    op.create_index(
+        "ix_resource_allocations_job_id", "resource_allocations", ["job_id"], unique=False
+    )
 
     # Create idempotency_keys table
     op.create_table(
@@ -152,7 +200,9 @@ def upgrade() -> None:
         sa.Column("expires_at", sa.DateTime(), nullable=False),
         sa.PrimaryKeyConstraint("request_id"),
     )
-    op.create_index("ix_idempotency_keys_expires_at", "idempotency_keys", ["expires_at"], unique=False)
+    op.create_index(
+        "ix_idempotency_keys_expires_at", "idempotency_keys", ["expires_at"], unique=False
+    )
 
 
 def downgrade() -> None:
@@ -182,4 +232,3 @@ def downgrade() -> None:
     if _is_postgresql():
         sa.Enum(name="jobstatus").drop(op.get_bind(), checkfirst=True)
         sa.Enum(name="workerstatus").drop(op.get_bind(), checkfirst=True)
-

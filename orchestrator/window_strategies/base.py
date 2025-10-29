@@ -4,11 +4,11 @@ Base window manager interface
 Abstract base class defining the window management contract.
 """
 
-from abc import ABC, abstractmethod
-from pathlib import Path
-from typing import Optional, Dict, TYPE_CHECKING, Any
-from dataclasses import dataclass
 import subprocess
+from abc import ABC, abstractmethod
+from dataclasses import dataclass
+from pathlib import Path
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 if TYPE_CHECKING:
     from orchestrator.screenshot_manager import ScreenshotManager  # noqa: F401

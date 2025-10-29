@@ -15,3 +15,5 @@
 {"type": "worker_lifecycle", "timestamp": "2025-10-24T14:07:53.325858Z", "worker_id": "worker_test_worker_1", "event": "spawned", "duration_seconds": null}
 {"type": "worker_lifecycle", "timestamp": "2025-10-24T14:17:55.780513Z", "worker_id": "worker_test_worker_1", "event": "failed", "duration_seconds": 602.4546558856964}
 {"type": "worker_lifecycle", "timestamp": "2025-10-27T11:21:13.299425Z", "worker_id": "worker_test_worker_1", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-29T07:46:10.864128Z", "worker_id": "worker_test_worker_1", "event": "spawned", "duration_seconds": null}
+{"type": "worker_lifecycle", "timestamp": "2025-10-29T07:46:22.319941Z", "worker_id": "worker_test_worker_1", "event": "completed", "duration_seconds": 11.455816507339478}

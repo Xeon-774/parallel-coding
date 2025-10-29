@@ -27,21 +27,20 @@ Usage:
     )
 """
 
-from typing import Dict, Set, Optional
 from datetime import datetime
+from typing import Dict, Optional, Set
 
-from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session
 
 from orchestrator.core.db_models import (
-    Worker,
-    WorkerStatus,
-    WorkerStateTransition,
     Job,
-    JobStatus,
     JobStateTransition,
+    JobStatus,
+    Worker,
+    WorkerStateTransition,
+    WorkerStatus,
 )
-
 
 # ============================================================================
 # State Transition Definitions
@@ -93,6 +92,7 @@ JOB_TRANSITIONS: Dict[JobStatus, Set[JobStatus]] = {
 # Custom Exceptions
 # ============================================================================
 
+
 class StateTransitionError(Exception):
     """
     Raised when state transition is invalid.
@@ -104,11 +104,7 @@ class StateTransitionError(Exception):
     """
 
     def __init__(
-        self,
-        from_state: str,
-        to_state: str,
-        entity_id: str,
-        message: Optional[str] = None
+        self, from_state: str, to_state: str, entity_id: str, message: Optional[str] = None
     ):
         """Initialize state transition error."""
         self.from_state = from_state
@@ -116,10 +112,7 @@ class StateTransitionError(Exception):
         self.entity_id = entity_id
 
         if message is None:
-            message = (
-                f"Invalid state transition for {entity_id}: "
-                f"{from_state} → {to_state}"
-            )
+            message = f"Invalid state transition for {entity_id}: " f"{from_state} → {to_state}"
 
         super().__init__(message)
 
@@ -135,6 +128,7 @@ class EntityNotFoundError(Exception):
 # ============================================================================
 # Worker State Machine
 # ============================================================================
+
 
 class WorkerStateMachine:
     """
@@ -161,11 +155,7 @@ class WorkerStateMachine:
         """
         self.db = db
 
-    def can_transition(
-        self,
-        from_state: WorkerStatus,
-        to_state: WorkerStatus
-    ) -> bool:
+    def can_transition(self, from_state: WorkerStatus, to_state: WorkerStatus) -> bool:
         """
         Check if state transition is valid.
 
@@ -186,10 +176,7 @@ class WorkerStateMachine:
         return to_state in allowed_states
 
     def transition_worker(
-        self,
-        worker_id: str,
-        to_state: WorkerStatus,
-        reason: Optional[str] = None
+        self, worker_id: str, to_state: WorkerStatus, reason: Optional[str] = None
     ) -> Worker:
         """
         Transition worker to new state with validation.
@@ -217,9 +204,7 @@ class WorkerStateMachine:
             ... )
         """
         # Fetch worker
-        worker = self.db.query(Worker).filter(
-            Worker.id == worker_id
-        ).first()
+        worker = self.db.query(Worker).filter(Worker.id == worker_id).first()
 
         if not worker:
             raise EntityNotFoundError("Worker", worker_id)
@@ -227,9 +212,7 @@ class WorkerStateMachine:
         # Validate transition
         if not self.can_transition(worker.status, to_state):
             raise StateTransitionError(
-                from_state=worker.status.value,
-                to_state=to_state.value,
-                entity_id=worker_id
+                from_state=worker.status.value, to_state=to_state.value, entity_id=worker_id
             )
 
         # Record old state
@@ -245,7 +228,7 @@ class WorkerStateMachine:
             from_state=from_state.value,
             to_state=to_state.value,
             reason=reason,
-            timestamp=datetime.utcnow()
+            timestamp=datetime.utcnow(),
         )
         self.db.add(transition)
 
@@ -260,9 +243,7 @@ class WorkerStateMachine:
         return worker
 
     def get_transition_history(
-        self,
-        worker_id: str,
-        limit: int = 50
+        self, worker_id: str, limit: int = 50
     ) -> list[WorkerStateTransition]:
         """
         Get worker state transition history.
@@ -291,6 +272,7 @@ class WorkerStateMachine:
 # Job State Machine
 # ============================================================================
 
+
 class JobStateMachine:
     """
     Job state machine with transition validation.
@@ -315,11 +297,7 @@ class JobStateMachine:
         """
         self.db = db
 
-    def can_transition(
-        self,
-        from_state: JobStatus,
-        to_state: JobStatus
-    ) -> bool:
+    def can_transition(self, from_state: JobStatus, to_state: JobStatus) -> bool:
         """
         Check if state transition is valid.
 
@@ -339,12 +317,7 @@ class JobStateMachine:
         allowed_states = JOB_TRANSITIONS.get(from_state, set())
         return to_state in allowed_states
 
-    def transition_job(
-        self,
-        job_id: str,
-        to_state: JobStatus,
-        reason: Optional[str] = None
-    ) -> Job:
+    def transition_job(self, job_id: str, to_state: JobStatus, reason: Optional[str] = None) -> Job:
         """
         Transition job to new state with validation.
 
@@ -380,9 +353,7 @@ class JobStateMachine:
         # Validate transition
         if not self.can_transition(job.status, to_state):
             raise StateTransitionError(
-                from_state=job.status.value,
-                to_state=to_state.value,
-                entity_id=job_id
+                from_state=job.status.value, to_state=to_state.value, entity_id=job_id
             )
 
         # Record old state
@@ -395,11 +366,10 @@ class JobStateMachine:
         now = datetime.utcnow()
         if to_state == JobStatus.RUNNING and job.started_at is None:
             job.started_at = now
-        elif to_state in {
-            JobStatus.COMPLETED,
-            JobStatus.FAILED,
-            JobStatus.CANCELED
-        } and job.completed_at is None:
+        elif (
+            to_state in {JobStatus.COMPLETED, JobStatus.FAILED, JobStatus.CANCELED}
+            and job.completed_at is None
+        ):
             job.completed_at = now
 
         # Log transition to audit trail
@@ -408,7 +378,7 @@ class JobStateMachine:
             from_state=from_state.value,
             to_state=to_state.value,
             reason=reason,
-            timestamp=now
+            timestamp=now,
         )
         self.db.add(transition)
 
@@ -422,11 +392,7 @@ class JobStateMachine:
 
         return job
 
-    def cancel_job(
-        self,
-        job_id: str,
-        reason: Optional[str] = None
-    ) -> Job:
+    def cancel_job(self, job_id: str, reason: Optional[str] = None) -> Job:
         """
         Cancel a job by transitioning to CANCELED state.
 
@@ -445,16 +411,10 @@ class JobStateMachine:
             >>> job = sm.cancel_job("j_xyz789", reason="User requested cancellation")
         """
         return self.transition_job(
-            job_id=job_id,
-            to_state=JobStatus.CANCELED,
-            reason=reason or "Job canceled"
+            job_id=job_id, to_state=JobStatus.CANCELED, reason=reason or "Job canceled"
         )
 
-    def get_transition_history(
-        self,
-        job_id: str,
-        limit: int = 50
-    ) -> list[JobStateTransition]:
+    def get_transition_history(self, job_id: str, limit: int = 50) -> list[JobStateTransition]:
         """
         Get job state transition history.
 

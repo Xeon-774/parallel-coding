@@ -5,8 +5,8 @@ Claude Orchestrator Dashboard起動スクリプト
 簡単にWebダッシュボードを起動できるユーティリティ
 """
 
-import sys
 import argparse
+import sys
 from pathlib import Path
 
 # プロジェクトルートをPYTHONPATHに追加
@@ -34,32 +34,24 @@ def main():
 
   # ワークスペースを指定
   python start_dashboard.py --workspace /path/to/workspace
-        """
+        """,
     )
 
     parser.add_argument(
-        "--host",
-        default="127.0.0.1",
-        help="バインドするホスト (default: 127.0.0.1)"
+        "--host", default="127.0.0.1", help="バインドするホスト (default: 127.0.0.1)"
     )
 
-    parser.add_argument(
-        "--port",
-        type=int,
-        default=8000,
-        help="バインドするポート (default: 8000)"
-    )
+    parser.add_argument("--port", type=int, default=8000, help="バインドするポート (default: 8000)")
 
     parser.add_argument(
-        "--workspace",
-        default="./workspace",
-        help="ワークスペースのパス (default: ./workspace)"
+        "--workspace", default="./workspace", help="ワークスペースのパス (default: ./workspace)"
     )
 
     args = parser.parse_args()
 
     # 環境変数を設定（オプション）
     import os
+
     os.environ["ORCHESTRATOR_WORKSPACE"] = args.workspace
 
     # サーバー起動

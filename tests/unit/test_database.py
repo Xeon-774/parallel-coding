@@ -3,19 +3,20 @@
 Tests database configuration, engine creation, and utility functions.
 """
 
+from unittest.mock import MagicMock, Mock, patch
+
 import pytest
-from unittest.mock import Mock, patch, MagicMock
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
 from orchestrator.core.database import (
     DatabaseSettings,
-    create_db_engine,
-    _mask_password,
     _enable_sqlite_foreign_keys,
+    _mask_password,
+    create_db_engine,
+    drop_all_tables,
     get_db,
     init_db,
-    drop_all_tables,
 )
 
 

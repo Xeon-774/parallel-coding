@@ -1,18 +1,16 @@
 from __future__ import annotations
 
-from typing import Dict, Generator
-
 import os
 import tempfile
+from typing import Dict, Generator
 
 import pytest
 from fastapi.testclient import TestClient
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from orchestrator.api.app import create_app
 from orchestrator.api import dependencies
+from orchestrator.api.app import create_app
 from orchestrator.core.db_models import Base, Job, JobStatus
 
 
@@ -59,7 +57,9 @@ def submit_sample_job(client: TestClient, **overrides):
         "parent_job_id": None,
     }
     payload.update(overrides)
-    resp = client.post("/api/jobs/submit", json=payload, headers=auth_headers("jobs:write jobs:read"))
+    resp = client.post(
+        "/api/jobs/submit", json=payload, headers=auth_headers("jobs:write jobs:read")
+    )
     assert resp.status_code == 201, resp.text
     return resp.json()
 
@@ -131,7 +131,9 @@ def test_list_jobs_with_filters_and_pagination(client: TestClient):
     assert all(j["parent_job_id"] == root["id"] for j in jobs)
 
     # Pagination
-    resp = client.get("/api/jobs", params={"limit": 1, "offset": 0}, headers=auth_headers("jobs:read"))
+    resp = client.get(
+        "/api/jobs", params={"limit": 1, "offset": 0}, headers=auth_headers("jobs:read")
+    )
     assert resp.status_code == 200
     jobs = resp.json()
     assert len(jobs) == 1
@@ -152,4 +154,3 @@ def test_security_scopes_enforced(client: TestClient):
     created = submit_sample_job(client)
     resp = client.get(f"/api/jobs/{created['id']}")
     assert resp.status_code == 403
-

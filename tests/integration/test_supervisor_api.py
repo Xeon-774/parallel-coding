@@ -31,7 +31,9 @@ def _auth_headers(scopes: list[str] | None = None) -> dict[str, str]:
     return {"Authorization": f"Bearer {token}"}
 
 
-def _seed_worker(worker_id: str = "w1", workspace_id: str = "ws1", status: WorkerStatus = WorkerStatus.RUNNING) -> Worker:
+def _seed_worker(
+    worker_id: str = "w1", workspace_id: str = "ws1", status: WorkerStatus = WorkerStatus.RUNNING
+) -> Worker:
     db = next(get_db())
     try:
         w = Worker(id=worker_id, workspace_id=workspace_id, status=status)
@@ -111,4 +113,3 @@ def test_auth_rejections_missing_and_scope():
         headers={"Authorization": f"Bearer {token}"},
     )
     assert r2.status_code == 403
-

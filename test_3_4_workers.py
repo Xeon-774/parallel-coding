@@ -9,8 +9,8 @@
 """
 
 import sys
-from pathlib import Path
 import time
+from pathlib import Path
 
 # プロジェクトルートをパスに追加
 project_root = Path(__file__).parent
@@ -18,11 +18,12 @@ sys.path.insert(0, str(project_root))
 
 # Configure UTF-8 encoding BEFORE any output
 from orchestrator.utils.encoding_config import configure_console_encoding, safe_print
+
 configure_console_encoding()
 
 from orchestrator.config import OrchestratorConfig
-from orchestrator.core.worker.worker_manager import WorkerManager
 from orchestrator.core.structured_logging import StructuredLogger
+from orchestrator.core.worker.worker_manager import WorkerManager
 
 
 def get_task_definitions(num_workers=3):
@@ -63,7 +64,7 @@ Features:
 4. 全機能のリスト
 
 完了したら "File analysis completed!" と出力してください。
-"""
+""",
         },
         {
             "name": "Code Generator",
@@ -84,7 +85,7 @@ Features:
 3. revenue=800, cost=1000 → 期待値: -20.0
 
 完了したら "Code generation completed!" と出力してください。
-"""
+""",
         },
         {
             "name": "Data Processor",
@@ -113,15 +114,16 @@ Features:
 4. 最も購入数が多いユーザー名
 
 完了したら "Data processing completed!" と出力してください。
-"""
-        }
+""",
+        },
     ]
 
     # 4 Worker版の場合、ドキュメント生成タスクを追加
     if num_workers == 4:
-        tasks.append({
-            "name": "Doc Generator",
-            "prompt": """
+        tasks.append(
+            {
+                "name": "Doc Generator",
+                "prompt": """
 あなたはWorkerAI #4です。
 
 【タスク】
@@ -137,8 +139,9 @@ Features:
 3. ## Quick Start - 簡単な使い方の例
 
 完了したら "Documentation completed!" と出力してください。
-"""
-        })
+""",
+            }
+        )
 
     return tasks
 
@@ -170,16 +173,12 @@ def main(num_workers=3):
 
     # ロガー
     logger = StructuredLogger(
-        name=f"test_{num_workers}_workers",
-        log_dir=workspace,
-        enable_console=True
+        name=f"test_{num_workers}_workers", log_dir=workspace, enable_console=True
     )
 
     # WorkerManager初期化
     worker_manager = WorkerManager(
-        config=config,
-        logger=logger,
-        user_approval_callback=None  # 自動承認モード
+        config=config, logger=logger, user_approval_callback=None  # 自動承認モード
     )
 
     # タスク定義取得
@@ -196,10 +195,7 @@ def main(num_workers=3):
             worker_id = f"worker_{i+1}"
             safe_print(f"[起動] Worker {i+1}: {task['name']}")
 
-            session = worker_manager.spawn_worker(
-                worker_id=worker_id,
-                task=task
-            )
+            session = worker_manager.spawn_worker(worker_id=worker_id, task=task)
 
             if not session:
                 safe_print(f"[ERROR] Worker {i+1} の起動に失敗しました")
@@ -264,8 +260,12 @@ def main(num_workers=3):
             safe_print(f"最大実行時間: {max_time:.1f}秒")
             safe_print(f"\n逐次実行予測時間: {sequential_time:.1f}秒")
             safe_print(f"並列実行実時間: {total_time:.1f}秒")
-            safe_print(f"時間短縮: {sequential_time - total_time:.1f}秒 ({(1 - total_time/sequential_time)*100:.1f}%削減)")
-            safe_print(f"並列効率: {sequential_time/total_time:.2f}x （理想値: {num_workers:.0f}x）")
+            safe_print(
+                f"時間短縮: {sequential_time - total_time:.1f}秒 ({(1 - total_time/sequential_time)*100:.1f}%削減)"
+            )
+            safe_print(
+                f"並列効率: {sequential_time/total_time:.2f}x （理想値: {num_workers:.0f}x）"
+            )
 
         safe_print("\n" + "=" * 80)
 
@@ -282,16 +282,22 @@ def main(num_workers=3):
     except Exception as e:
         safe_print(f"\n[ERROR] テスト失敗: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description='3-4 WorkerAI並列実行テスト')
-    parser.add_argument('--workers', type=int, choices=[3, 4], default=3,
-                        help='実行するWorker数（3または4、デフォルト: 3）')
+    parser = argparse.ArgumentParser(description="3-4 WorkerAI並列実行テスト")
+    parser.add_argument(
+        "--workers",
+        type=int,
+        choices=[3, 4],
+        default=3,
+        help="実行するWorker数（3または4、デフォルト: 3）",
+    )
 
     args = parser.parse_args()
 

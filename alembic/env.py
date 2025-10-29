@@ -11,15 +11,17 @@ Usage
 -----
 - Invoked automatically by Alembic commands, e.g. `alembic upgrade head`.
 """
+
 from __future__ import annotations
 
 import os
 import sys
-from typing import Optional
 from logging.config import fileConfig
+from typing import Optional
+
+from sqlalchemy import engine_from_config, pool
 
 from alembic import context
-from sqlalchemy import engine_from_config, pool
 
 # Ensure project root is importable for orchestrator.*
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
@@ -36,6 +38,7 @@ if config.config_file_name is not None:
 target_metadata = None
 try:
     from orchestrator.core.database import Base  # type: ignore
+
     target_metadata = Base.metadata
 except Exception:
     target_metadata = None
@@ -91,4 +94,3 @@ if context.is_offline_mode():
     run_migrations_offline()
 else:
     run_migrations_online()
-

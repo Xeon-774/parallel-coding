@@ -15,32 +15,27 @@ Coverage:
 
 import asyncio
 import json
-import pytest
 import tempfile
 import time
 from pathlib import Path
 from typing import List
 
+import pytest
+
 # Import with fallback for running from different contexts
 try:
-    from orchestrator.api.dialogue_ws import (
-        DialogueEntry,
-        DialogueFileMonitor,
-        ConnectionManager
-    )
+    from orchestrator.api.dialogue_ws import ConnectionManager, DialogueEntry, DialogueFileMonitor
 except ImportError:
     import sys
+
     sys.path.insert(0, str(Path(__file__).parent.parent))
-    from orchestrator.api.dialogue_ws import (
-        DialogueEntry,
-        DialogueFileMonitor,
-        ConnectionManager
-    )
+    from orchestrator.api.dialogue_ws import ConnectionManager, DialogueEntry, DialogueFileMonitor
 
 
 # ============================================================================
 # DialogueEntry Tests
 # ============================================================================
+
 
 def test_dialogue_entry_creation():
     """DialogueEntry can be created with all fields."""
@@ -50,7 +45,7 @@ def test_dialogue_entry_creation():
         content="Test message",
         type="output",
         confirmation_type="bash",
-        confirmation_message="Run ls?"
+        confirmation_message="Run ls?",
     )
 
     assert entry.timestamp == 1234567890.0
@@ -69,37 +64,35 @@ def test_dialogue_entry_to_dict():
         content="Approved",
         type="response",
         confirmation_type=None,
-        confirmation_message=None
+        confirmation_message=None,
     )
 
     data = entry.to_dict()
 
     assert isinstance(data, dict)
-    assert data['timestamp'] == 1234567890.0
-    assert data['direction'] == "orchestrator→worker"
-    assert data['content'] == "Approved"
-    assert data['type'] == "response"
-    assert data['confirmation_type'] is None
-    assert data['confirmation_message'] is None
+    assert data["timestamp"] == 1234567890.0
+    assert data["direction"] == "orchestrator→worker"
+    assert data["content"] == "Approved"
+    assert data["type"] == "response"
+    assert data["confirmation_type"] is None
+    assert data["confirmation_message"] is None
 
 
 def test_dialogue_entry_minimal():
     """DialogueEntry works with minimal fields (optional fields are None)."""
     entry = DialogueEntry(
-        timestamp=1234567890.0,
-        direction="worker→orchestrator",
-        content="Minimal",
-        type="output"
+        timestamp=1234567890.0, direction="worker→orchestrator", content="Minimal", type="output"
     )
 
     data = entry.to_dict()
-    assert data['confirmation_type'] is None
-    assert data['confirmation_message'] is None
+    assert data["confirmation_type"] is None
+    assert data["confirmation_message"] is None
 
 
 # ============================================================================
 # DialogueFileMonitor Tests
 # ============================================================================
+
 
 @pytest.fixture
 def temp_workspace():
@@ -120,7 +113,7 @@ def sample_entries():
             "content": "Running ls",
             "type": "output",
             "confirmation_type": "bash",
-            "confirmation_message": "Run ls?"
+            "confirmation_message": "Run ls?",
         },
         {
             "timestamp": 1001.0,
@@ -128,7 +121,7 @@ def sample_entries():
             "content": "Approved",
             "type": "response",
             "confirmation_type": None,
-            "confirmation_message": None
+            "confirmation_message": None,
         },
         {
             "timestamp": 1002.0,
@@ -136,8 +129,8 @@ def sample_entries():
             "content": "file1.txt\nfile2.txt",
             "type": "output",
             "confirmation_type": None,
-            "confirmation_message": None
-        }
+            "confirmation_message": None,
+        },
     ]
 
 
@@ -155,9 +148,9 @@ def test_dialogue_monitor_with_existing_file(temp_workspace, sample_entries):
     transcript = temp_workspace / "dialogue_transcript.jsonl"
 
     # Write sample entries
-    with open(transcript, 'w', encoding='utf-8') as f:
+    with open(transcript, "w", encoding="utf-8") as f:
         for entry in sample_entries:
-            f.write(json.dumps(entry) + '\n')
+            f.write(json.dumps(entry) + "\n")
 
     # Get file size
     initial_size = transcript.stat().st_size
@@ -183,9 +176,9 @@ async def test_get_historical_entries_with_data(temp_workspace, sample_entries):
     transcript = temp_workspace / "dialogue_transcript.jsonl"
 
     # Write sample entries
-    with open(transcript, 'w', encoding='utf-8') as f:
+    with open(transcript, "w", encoding="utf-8") as f:
         for entry in sample_entries:
-            f.write(json.dumps(entry) + '\n')
+            f.write(json.dumps(entry) + "\n")
 
     monitor = DialogueFileMonitor(temp_workspace)
     entries = await monitor.get_historical_entries(limit=100)
@@ -203,9 +196,9 @@ async def test_get_historical_entries_with_limit(temp_workspace, sample_entries)
     transcript = temp_workspace / "dialogue_transcript.jsonl"
 
     # Write sample entries
-    with open(transcript, 'w', encoding='utf-8') as f:
+    with open(transcript, "w", encoding="utf-8") as f:
         for entry in sample_entries:
-            f.write(json.dumps(entry) + '\n')
+            f.write(json.dumps(entry) + "\n")
 
     monitor = DialogueFileMonitor(temp_workspace)
     entries = await monitor.get_historical_entries(limit=2)
@@ -230,9 +223,9 @@ async def test_read_new_entries(temp_workspace, sample_entries):
     monitor._lock = asyncio.Lock()
 
     # Write entries
-    with open(transcript, 'w', encoding='utf-8') as f:
+    with open(transcript, "w", encoding="utf-8") as f:
         for entry in sample_entries:
-            f.write(json.dumps(entry) + '\n')
+            f.write(json.dumps(entry) + "\n")
 
     # Read new entries
     await monitor._read_new_entries()
@@ -258,8 +251,13 @@ async def test_read_new_entries_incremental(temp_workspace):
     transcript = temp_workspace / "dialogue_transcript.jsonl"
 
     # Write initial entry
-    with open(transcript, 'w', encoding='utf-8') as f:
-        f.write(json.dumps({"timestamp": 1000.0, "direction": "test", "content": "initial", "type": "output"}) + '\n')
+    with open(transcript, "w", encoding="utf-8") as f:
+        f.write(
+            json.dumps(
+                {"timestamp": 1000.0, "direction": "test", "content": "initial", "type": "output"}
+            )
+            + "\n"
+        )
 
     # Create monitor (will set position to end)
     monitor = DialogueFileMonitor(temp_workspace)
@@ -273,8 +271,13 @@ async def test_read_new_entries_incremental(temp_workspace):
         await monitor._new_entries.get()
 
     # Append new entry
-    with open(transcript, 'a', encoding='utf-8') as f:
-        f.write(json.dumps({"timestamp": 2000.0, "direction": "test", "content": "new", "type": "output"}) + '\n')
+    with open(transcript, "a", encoding="utf-8") as f:
+        f.write(
+            json.dumps(
+                {"timestamp": 2000.0, "direction": "test", "content": "new", "type": "output"}
+            )
+            + "\n"
+        )
 
     # Read new entries
     await monitor._read_new_entries()
@@ -300,10 +303,20 @@ async def test_read_new_entries_handles_invalid_json(temp_workspace):
     monitor._lock = asyncio.Lock()
 
     # Write mix of valid and invalid entries
-    with open(transcript, 'w', encoding='utf-8') as f:
-        f.write(json.dumps({"timestamp": 1000.0, "direction": "test", "content": "valid1", "type": "output"}) + '\n')
-        f.write('invalid json line\n')
-        f.write(json.dumps({"timestamp": 2000.0, "direction": "test", "content": "valid2", "type": "output"}) + '\n')
+    with open(transcript, "w", encoding="utf-8") as f:
+        f.write(
+            json.dumps(
+                {"timestamp": 1000.0, "direction": "test", "content": "valid1", "type": "output"}
+            )
+            + "\n"
+        )
+        f.write("invalid json line\n")
+        f.write(
+            json.dumps(
+                {"timestamp": 2000.0, "direction": "test", "content": "valid2", "type": "output"}
+            )
+            + "\n"
+        )
 
     await monitor._read_new_entries()
 
@@ -323,8 +336,13 @@ async def test_read_new_entries_handles_file_truncation(temp_workspace):
     transcript = temp_workspace / "dialogue_transcript.jsonl"
 
     # Write initial content
-    with open(transcript, 'w', encoding='utf-8') as f:
-        f.write(json.dumps({"timestamp": 1000.0, "direction": "test", "content": "initial", "type": "output"}) + '\n')
+    with open(transcript, "w", encoding="utf-8") as f:
+        f.write(
+            json.dumps(
+                {"timestamp": 1000.0, "direction": "test", "content": "initial", "type": "output"}
+            )
+            + "\n"
+        )
 
     monitor = DialogueFileMonitor(temp_workspace)
     initial_position = monitor._last_position
@@ -334,8 +352,13 @@ async def test_read_new_entries_handles_file_truncation(temp_workspace):
     monitor._lock = asyncio.Lock()
 
     # Write shorter content (simulates file being replaced with smaller file)
-    with open(transcript, 'w', encoding='utf-8') as f:
-        f.write(json.dumps({"timestamp": 2000.0, "direction": "test", "content": "new", "type": "output"}) + '\n')
+    with open(transcript, "w", encoding="utf-8") as f:
+        f.write(
+            json.dumps(
+                {"timestamp": 2000.0, "direction": "test", "content": "new", "type": "output"}
+            )
+            + "\n"
+        )
 
     # Read new entries (should detect truncation and reset position)
     await monitor._read_new_entries()
@@ -359,11 +382,21 @@ async def test_read_new_entries_handles_empty_lines(temp_workspace):
     monitor._lock = asyncio.Lock()
 
     # Write entries with empty lines
-    with open(transcript, 'w', encoding='utf-8') as f:
-        f.write(json.dumps({"timestamp": 1000.0, "direction": "test", "content": "entry1", "type": "output"}) + '\n')
-        f.write('\n')
-        f.write('   \n')
-        f.write(json.dumps({"timestamp": 2000.0, "direction": "test", "content": "entry2", "type": "output"}) + '\n')
+    with open(transcript, "w", encoding="utf-8") as f:
+        f.write(
+            json.dumps(
+                {"timestamp": 1000.0, "direction": "test", "content": "entry1", "type": "output"}
+            )
+            + "\n"
+        )
+        f.write("\n")
+        f.write("   \n")
+        f.write(
+            json.dumps(
+                {"timestamp": 2000.0, "direction": "test", "content": "entry2", "type": "output"}
+            )
+            + "\n"
+        )
 
     await monitor._read_new_entries()
 
@@ -374,6 +407,7 @@ async def test_read_new_entries_handles_empty_lines(temp_workspace):
 # ============================================================================
 # ConnectionManager Tests
 # ============================================================================
+
 
 class MockWebSocket:
     """Mock WebSocket for testing."""
@@ -483,6 +517,7 @@ async def test_connection_manager_handles_send_errors():
 # Integration Tests
 # ============================================================================
 
+
 @pytest.mark.asyncio
 async def test_monitor_watch_with_pre_existing_entries(temp_workspace):
     """Integration test: Reading entries after file is written."""
@@ -496,9 +531,19 @@ async def test_monitor_watch_with_pre_existing_entries(temp_workspace):
     monitor._lock = asyncio.Lock()
 
     # Write entries after creating monitor
-    with open(transcript, 'w', encoding='utf-8') as f:
-        f.write(json.dumps({"timestamp": 1000.0, "direction": "test", "content": "entry1", "type": "output"}) + '\n')
-        f.write(json.dumps({"timestamp": 2000.0, "direction": "test", "content": "entry2", "type": "output"}) + '\n')
+    with open(transcript, "w", encoding="utf-8") as f:
+        f.write(
+            json.dumps(
+                {"timestamp": 1000.0, "direction": "test", "content": "entry1", "type": "output"}
+            )
+            + "\n"
+        )
+        f.write(
+            json.dumps(
+                {"timestamp": 2000.0, "direction": "test", "content": "entry2", "type": "output"}
+            )
+            + "\n"
+        )
 
     # Manually trigger reading (simulating what watch() does)
     await monitor._read_new_entries()

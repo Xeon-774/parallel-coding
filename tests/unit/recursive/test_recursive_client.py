@@ -15,7 +15,6 @@ from orchestrator.recursive import (
     RecursiveOrchestratorClient,
 )
 
-
 VALID_KEY = "sk-orch-" + "x" * 32
 BASE = "https://orch.test"
 
@@ -81,7 +80,15 @@ def test_sync_wrapper_roundtrip(monkeypatch):
             )
             router.get("/api/v1/jobs/job-xyz/status").mock(
                 side_effect=[
-                    Response(200, json={"job_id": "job-xyz", "status": "completed", "progress": {}, "results": {}}),
+                    Response(
+                        200,
+                        json={
+                            "job_id": "job-xyz",
+                            "status": "completed",
+                            "progress": {},
+                            "results": {},
+                        },
+                    ),
                 ]
             )
             router.get("/api/v1/jobs/job-xyz/results").mock(
@@ -138,9 +145,7 @@ async def test_authentication_error_401():
 @pytest.mark.asyncio
 async def test_retry_on_5xx_then_success():
     with respx.mock(base_url=BASE) as router:
-        calls = {
-            "count": 0
-        }
+        calls = {"count": 0}
 
         def handler(request):
             calls["count"] += 1
@@ -159,9 +164,7 @@ async def test_retry_on_5xx_then_success():
 async def test_network_error_after_retries():
     with respx.mock(base_url=BASE) as router:
         # Any request errors out with 503, exceeding retries
-        router.post("/api/v1/orchestrate").mock(
-            return_value=Response(503, json={"error": "down"})
-        )
+        router.post("/api/v1/orchestrate").mock(return_value=Response(503, json={"error": "down"}))
         async with RecursiveOrchestratorClient(BASE, VALID_KEY, max_retries=1) as client:
             with pytest.raises(APIError):
                 await client.submit_job("Will fail after retries", max_workers=1)
@@ -180,4 +183,3 @@ async def test_performance_overhead_under_100ms():
             _ = await client.submit_job("Performance check request", max_workers=1)
             elapsed = (time.perf_counter() - start) * 1000.0
             assert elapsed < 100.0
-

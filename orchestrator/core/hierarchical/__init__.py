@@ -3,16 +3,16 @@
 Exposes primary classes used by API and higher layers.
 """
 
-from .resource_manager import (
-    HierarchicalResourceManager,
-    ResourceAllocation,
-    QuotaStatus,
-    ResourceUsage,
-)
 from .job_orchestrator import (
+    AggregatedResult,
     HierarchicalJobOrchestrator,
     JobResult,
-    AggregatedResult,
+)
+from .resource_manager import (
+    HierarchicalResourceManager,
+    QuotaStatus,
+    ResourceAllocation,
+    ResourceUsage,
 )
 
 __all__ = [
@@ -24,4 +24,3 @@ __all__ = [
     "JobResult",
     "AggregatedResult",
 ]
-

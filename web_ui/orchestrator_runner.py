@@ -4,14 +4,14 @@ Orchestrator execution management
 Handles running the orchestrator and displaying results.
 """
 
-import sys
 import subprocess
+import sys
 from pathlib import Path
 from typing import Optional
 
 from .config import DashboardConfig
-from .exceptions import OrchestratorError
 from .constants import Messages, Separators
+from .exceptions import OrchestratorError
 
 
 class OrchestratorRunner:
@@ -55,8 +55,7 @@ class OrchestratorRunner:
         # Run orchestrator
         try:
             result = subprocess.run(
-                [sys.executable, "orchestrator/main.py", user_request],
-                cwd=str(self.project_root)
+                [sys.executable, "orchestrator/main.py", user_request], cwd=str(self.project_root)
             )
             return result.returncode
 

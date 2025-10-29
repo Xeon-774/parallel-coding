@@ -48,4 +48,3 @@ class BaseAIManager(ABC):
         Returns:
             Mapping with status details suitable for dashboards.
         """
-

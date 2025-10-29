@@ -9,44 +9,41 @@ Tests all new world-class features:
 - End-to-end workflows
 """
 
-import pytest
-import time
 import tempfile
+import time
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-# Import v9.0 components
-from orchestrator.core.structured_logging import (
-    StructuredLogger,
-    LogLevel,
-    LogCategory,
-    LogContext
-)
-from orchestrator.core.resilience import (
-    CircuitBreaker,
-    CircuitBreakerConfig,
-    RetryStrategy,
-    RetryConfig,
-    Bulkhead,
-    BulkheadConfig,
-    ResilientOperation,
-    CircuitBreakerOpenError,
-    BulkheadFullError
-)
+import pytest
+
 from orchestrator.core.observability import (
-    ObservabilitySystem,
+    HealthChecker,
+    HealthStatus,
     MetricsCollector,
+    ObservabilitySystem,
     PerformanceMonitor,
     ResourceMonitor,
-    HealthChecker,
-    HealthStatus
 )
+from orchestrator.core.resilience import (
+    Bulkhead,
+    BulkheadConfig,
+    BulkheadFullError,
+    CircuitBreaker,
+    CircuitBreakerConfig,
+    CircuitBreakerOpenError,
+    ResilientOperation,
+    RetryConfig,
+    RetryStrategy,
+)
+
+# Import v9.0 components
+from orchestrator.core.structured_logging import LogCategory, LogContext, LogLevel, StructuredLogger
 from orchestrator.core.validated_config import (
-    OrchestratorValidatedConfig,
-    WorkerConfig,
-    ResilienceConfig,
     ConfigurationPreset,
-    create_preset_config
+    OrchestratorValidatedConfig,
+    ResilienceConfig,
+    WorkerConfig,
+    create_preset_config,
 )
 
 
@@ -59,18 +56,14 @@ class TestStructuredLogging:
             name="test_logger",
             level=LogLevel.DEBUG,
             log_dir=tmp_path,
-            context=LogContext(session_id="test-session")
+            context=LogContext(session_id="test-session"),
         ) as logger:
             assert logger.name == "test_logger"
             assert logger.context.session_id == "test-session"
 
     def test_basic_logging(self, tmp_path):
         """Test basic log methods"""
-        with StructuredLogger(
-            name="test",
-            log_dir=tmp_path,
-            enable_console=False
-        ) as logger:
+        with StructuredLogger(name="test", log_dir=tmp_path, enable_console=False) as logger:
             # Should not raise
             logger.debug("Debug message", key="value")
             logger.info("Info message")
@@ -99,9 +92,7 @@ class TestStructuredLogging:
     def test_context_propagation(self, tmp_path):
         """Test context propagation"""
         with StructuredLogger(
-            name="test",
-            log_dir=tmp_path,
-            context=LogContext(session_id="session-123")
+            name="test", log_dir=tmp_path, context=LogContext(session_id="session-123")
         ) as logger:
             worker_logger = logger.with_context(worker_id="worker-1")
 
@@ -134,11 +125,7 @@ class TestResiliencePatterns:
 
     def test_circuit_breaker_half_open(self):
         """Test circuit breaker half-open state"""
-        config = CircuitBreakerConfig(
-            failure_threshold=2,
-            success_threshold=2,
-            timeout=0.1
-        )
+        config = CircuitBreakerConfig(failure_threshold=2, success_threshold=2, timeout=0.1)
         breaker = CircuitBreaker(config)
 
         # Open circuit
@@ -200,7 +187,7 @@ class TestResiliencePatterns:
             name="test_op",
             circuit_breaker=CircuitBreaker(CircuitBreakerConfig(failure_threshold=5)),
             retry_strategy=RetryStrategy(RetryConfig(max_attempts=2, initial_delay=0.01)),
-            bulkhead=Bulkhead(BulkheadConfig(max_concurrent=5))
+            bulkhead=Bulkhead(BulkheadConfig(max_concurrent=5)),
         )
 
         attempts = [0]
@@ -317,7 +304,7 @@ class TestValidatedConfiguration:
         """Test custom configuration"""
         config = OrchestratorValidatedConfig(
             worker=WorkerConfig(max_workers=8),
-            resilience=ResilienceConfig(circuit_breaker_threshold=10)
+            resilience=ResilienceConfig(circuit_breaker_threshold=10),
         )
 
         assert config.worker.max_workers == 8
@@ -326,9 +313,7 @@ class TestValidatedConfiguration:
     def test_validation_errors(self):
         """Test validation catches errors"""
         with pytest.raises(Exception):  # ValidationError
-            OrchestratorValidatedConfig(
-                worker=WorkerConfig(max_workers=100)  # Exceeds max
-            )
+            OrchestratorValidatedConfig(worker=WorkerConfig(max_workers=100))  # Exceeds max
 
     def test_configuration_presets(self):
         """Test configuration presets"""
@@ -360,14 +345,12 @@ class TestEndToEndWorkflow:
         config = OrchestratorValidatedConfig(
             workspace_root=tmp_path,
             worker=WorkerConfig(max_workers=2),
-            logging=LoggingConfig(log_dir=tmp_path / "logs")
+            logging=LoggingConfig(log_dir=tmp_path / "logs"),
         )
 
         # 2. Initialize structured logging with context manager
         with StructuredLogger(
-            name="integration_test",
-            log_dir=config.logging.log_dir,
-            level=config.logging.level
+            name="integration_test", log_dir=config.logging.log_dir, level=config.logging.level
         ) as logger:
             # 3. Initialize observability
             obs = ObservabilitySystem()
@@ -377,7 +360,7 @@ class TestEndToEndWorkflow:
                 name="test_workflow",
                 circuit_breaker=CircuitBreaker(CircuitBreakerConfig()),
                 retry_strategy=RetryStrategy(RetryConfig(max_attempts=2)),
-                bulkhead=Bulkhead(BulkheadConfig())
+                bulkhead=Bulkhead(BulkheadConfig()),
             )
 
             # 5. Execute operation with logging and monitoring
@@ -426,7 +409,7 @@ class TestEndToEndWorkflow:
             level=config.logging.level,
             log_dir=config.logging.log_dir,
             enable_console=config.logging.enable_console,
-            enable_file=config.logging.enable_file
+            enable_file=config.logging.enable_file,
         ) as logger:
             # Log messages
             logger.info("Test message", config_preset="development")

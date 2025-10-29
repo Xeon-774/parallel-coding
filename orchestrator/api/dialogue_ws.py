@@ -20,13 +20,13 @@ Thread Safety: Yes (using asyncio locks)
 import asyncio
 import json
 import logging
-from pathlib import Path
-from typing import Optional, Dict, Any, AsyncIterator
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, AsyncIterator, Dict, Optional
 
 from fastapi import WebSocket, WebSocketDisconnect, status
+from watchdog.events import FileModifiedEvent, FileSystemEventHandler
 from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler, FileModifiedEvent
 
 # Configure logging
 logger = logging.getLogger(__name__)

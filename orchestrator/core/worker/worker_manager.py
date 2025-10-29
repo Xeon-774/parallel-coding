@@ -16,13 +16,13 @@ This is the unified worker manager consolidating all previous implementations.
 """
 
 import sys
-import time
 import threading
-from typing import Optional, Dict, List, Callable, Any, Tuple
-from pathlib import Path
+import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from enum import Enum
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 # Cross-platform pexpect import
 if sys.platform == "win32":
@@ -35,15 +35,15 @@ else:
     PLATFORM = "unix"
 
 from orchestrator.config import OrchestratorConfig
-from orchestrator.interfaces import ILogger
-from orchestrator.core.models import TaskResult
-from orchestrator.utils.ansi_utils import strip_ansi_codes
 from orchestrator.core.common.metrics import MetricsCollector
+from orchestrator.core.models import TaskResult
 from orchestrator.core.worker.codex_executor import (
-    CodexExecutor,
     CodexExecutionResult,
+    CodexExecutor,
     create_codex_executor_from_config,
 )
+from orchestrator.interfaces import ILogger
+from orchestrator.utils.ansi_utils import strip_ansi_codes
 
 
 # Supervisor-related models for Worker 2 Manager AI Integration
@@ -145,8 +145,9 @@ class OrchestratorTerminalCapture:
         print(formatted.rstrip())
 
 
-from orchestrator.core.common.models import ConfirmationRequest, ConfirmationType
 from orchestrator.core.common.ai_safety_judge import SafetyLevel
+from orchestrator.core.common.models import ConfirmationRequest, ConfirmationType
+
 
 @dataclass
 class WorkerSession:
@@ -374,9 +375,7 @@ class WorkerManager:
         try:
             # Try non-blocking read
             # Note: wexpect doesn't support 'timeout' parameter, use size only
-            pending = session.child_process.read_nonblocking(
-                size=8192  # Read up to 8KB at once
-            )
+            pending = session.child_process.read_nonblocking(size=8192)  # Read up to 8KB at once
 
             if pending and pending.strip():
                 # Output found - append it
@@ -1009,7 +1008,10 @@ class WorkerManager:
         try:
             # Execute via CodexExecutor
             exec_result: CodexExecutionResult = self.codex_executor.execute(
-                task_file=task_file, workspace_dir=session.workspace_dir, timeout=timeout, model=model
+                task_file=task_file,
+                workspace_dir=session.workspace_dir,
+                timeout=timeout,
+                model=model,
             )
 
             # Save execution logs

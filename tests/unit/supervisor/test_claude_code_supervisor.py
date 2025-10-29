@@ -1,6 +1,6 @@
 import sys
-from types import SimpleNamespace
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -77,4 +77,3 @@ def test_terminate(monkeypatch, workspace):
     assert sup.is_alive is True
     assert sup.terminate() is True
     assert sup.is_alive is False
-

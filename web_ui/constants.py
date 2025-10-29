@@ -24,7 +24,7 @@ class Messages:
     DEPENDENCY_INSTALL_FAILED = "Installation failed"
     DEPENDENCY_MANUAL_INSTALL = (
         "Please install them with:\n"
-        "    pip install -e \".[web]\"\n\n"
+        '    pip install -e ".[web]"\n\n'
         "Or install packages individually:\n"
         "    pip install fastapi uvicorn websockets aiofiles requests"
     )

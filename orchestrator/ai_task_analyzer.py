@@ -8,13 +8,13 @@ LLM（Claude自身）を使用して、タスクの高度な分析を実行：
 - ファイル競合の予測
 """
 
-import subprocess
 import json
+import subprocess
 import tempfile
-from typing import Dict, List, Tuple, Optional, Any
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 
 class RiskLevel(Enum):

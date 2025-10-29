@@ -12,16 +12,17 @@ Coverage target: ≥90%
 Excellence AI Standard: 100% Applied
 """
 
-import pytest
 from pathlib import Path
 from typing import List
 
+import pytest
+
 from orchestrator.core.ai_providers.base_review_provider import (
+    MAX_DOCUMENT_SIZE_MB,
+    MAX_FEEDBACK_ITEMS,
     AggregatedReview,
     BaseReviewProvider,
     FeedbackSeverity,
-    MAX_DOCUMENT_SIZE_MB,
-    MAX_FEEDBACK_ITEMS,
     ProviderNotAvailableError,
     ReviewExecutionError,
     ReviewFeedback,
@@ -33,7 +34,6 @@ from orchestrator.core.ai_providers.base_review_provider import (
     ReviewTimeoutError,
     ReviewType,
 )
-
 
 # =============================================================================
 # Fixtures

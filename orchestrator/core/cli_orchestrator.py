@@ -4,13 +4,13 @@ CLI-based Orchestrator AI (Subscription Only - No API)
 Uses Claude CLI with subscription for orchestrator AI decisions.
 """
 
-import subprocess
-import re
-import time
 import asyncio
-from typing import Dict, Any, Optional
+import re
+import subprocess
+import time
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any, Dict, Optional
 
 
 @dataclass

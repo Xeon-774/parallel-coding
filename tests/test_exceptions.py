@@ -5,11 +5,12 @@
 """
 
 import pytest
+
 from orchestrator.core.exceptions import (
     OrchestratorError,
-    WindowManagerError,
-    ScreenshotError,
     RetryableError,
+    ScreenshotError,
+    WindowManagerError,
 )
 
 
@@ -37,11 +38,11 @@ class TestRetryableError:
         """リトライ可能性のテスト"""
         error = RetryableError("Temporary error", max_retries=3)
         assert error.can_retry()
-        
+
         error.increment_retry()
         assert error.retry_count == 1
         assert error.can_retry()
-        
+
         error.increment_retry()
         error.increment_retry()
         assert error.retry_count == 3

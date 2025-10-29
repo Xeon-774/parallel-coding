@@ -20,7 +20,6 @@ from orchestrator.core.supervisor.claude_code_supervisor import (
 )
 from orchestrator.core.supervisor.io_handler import ProcessIOHandler
 
-
 # Strategies
 
 
@@ -149,4 +148,3 @@ class SupervisorManager(BaseAIManager):
     def check_health(self) -> Dict[str, str]:
         status = "alive" if self._supervisor.is_alive else "dead"
         return {"process": status}
-

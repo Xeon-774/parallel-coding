@@ -11,24 +11,25 @@ Coverage:
 - REST API endpoints
 """
 
-import json
-import pytest
-import tempfile
 import asyncio
+import json
+import tempfile
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
+import pytest
 from fastapi.testclient import TestClient
 
 # Import with fallback for running from different contexts
 try:
-    from orchestrator.api.main import app, WORKSPACE_ROOT
     from orchestrator.api import main as main_module
+    from orchestrator.api.main import WORKSPACE_ROOT, app
 except ImportError:
     import sys
+
     sys.path.insert(0, str(Path(__file__).parent.parent))
-    from orchestrator.api.main import app, WORKSPACE_ROOT
     from orchestrator.api import main as main_module
+    from orchestrator.api.main import WORKSPACE_ROOT, app
 
 
 @pytest.fixture
@@ -59,14 +60,15 @@ def create_worker_workspace(workspace_root: Path, worker_id: str) -> Path:
 def write_dialogue_entries(workspace_path: Path, entries: List[Dict[str, Any]]) -> None:
     """Helper to write dialogue entries to transcript file."""
     transcript = workspace_path / "dialogue_transcript.jsonl"
-    with open(transcript, 'w', encoding='utf-8') as f:
+    with open(transcript, "w", encoding="utf-8") as f:
         for entry in entries:
-            f.write(json.dumps(entry) + '\n')
+            f.write(json.dumps(entry) + "\n")
 
 
 # ============================================================================
 # REST API Tests
 # ============================================================================
+
 
 def test_root_endpoint(client):
     """GET / returns API information."""
@@ -108,9 +110,10 @@ def test_list_workers_with_workers(client, temp_workspace):
 
     # Write dialogue to one worker
     worker1_path = temp_workspace / "worker_001"
-    write_dialogue_entries(worker1_path, [
-        {"timestamp": 1000.0, "direction": "test", "content": "test", "type": "output"}
-    ])
+    write_dialogue_entries(
+        worker1_path,
+        [{"timestamp": 1000.0, "direction": "test", "content": "test", "type": "output"}],
+    )
 
     response = client.get("/api/v1/workers")
     assert response.status_code == 200
@@ -132,9 +135,10 @@ def test_list_workers_with_workers(client, temp_workspace):
 def test_get_worker_info(client, temp_workspace):
     """GET /api/v1/workers/{worker_id} returns worker details."""
     worker_path = create_worker_workspace(temp_workspace, "worker_001")
-    write_dialogue_entries(worker_path, [
-        {"timestamp": 1000.0, "direction": "test", "content": "test", "type": "output"}
-    ])
+    write_dialogue_entries(
+        worker_path,
+        [{"timestamp": 1000.0, "direction": "test", "content": "test", "type": "output"}],
+    )
 
     response = client.get("/api/v1/workers/worker_001")
     assert response.status_code == 200
@@ -158,6 +162,7 @@ def test_get_worker_info_not_found(client):
 # WebSocket Integration Tests
 # ============================================================================
 
+
 def test_websocket_worker_not_found(client):
     """WebSocket connection sends error for non-existent worker."""
     with client.websocket_connect("/ws/dialogue/worker_999") as websocket:
@@ -177,7 +182,7 @@ def test_websocket_historical_entries(client, temp_workspace):
             "content": "Running test",
             "type": "output",
             "confirmation_type": None,
-            "confirmation_message": None
+            "confirmation_message": None,
         },
         {
             "timestamp": 2000.0,
@@ -185,8 +190,8 @@ def test_websocket_historical_entries(client, temp_workspace):
             "content": "Approved",
             "type": "response",
             "confirmation_type": None,
-            "confirmation_message": None
-        }
+            "confirmation_message": None,
+        },
     ]
     write_dialogue_entries(worker_path, entries)
 
@@ -240,10 +245,19 @@ def test_websocket_connection_with_multiple_clients(client, temp_workspace):
     """Multiple WebSocket clients can connect to same worker."""
     # Create worker with dialogue
     worker_path = create_worker_workspace(temp_workspace, "worker_001")
-    write_dialogue_entries(worker_path, [
-        {"timestamp": 1000.0, "direction": "test", "content": "test", "type": "output",
-         "confirmation_type": None, "confirmation_message": None}
-    ])
+    write_dialogue_entries(
+        worker_path,
+        [
+            {
+                "timestamp": 1000.0,
+                "direction": "test",
+                "content": "test",
+                "type": "output",
+                "confirmation_type": None,
+                "confirmation_message": None,
+            }
+        ],
+    )
 
     # Connect two clients
     with client.websocket_connect(f"/ws/dialogue/worker_001") as ws1:
@@ -259,6 +273,7 @@ def test_websocket_connection_with_multiple_clients(client, temp_workspace):
 # ============================================================================
 # Error Handling Tests
 # ============================================================================
+
 
 def test_api_handles_invalid_worker_id(client):
     """API handles invalid worker ID formats gracefully."""
@@ -286,6 +301,7 @@ def test_websocket_handles_malformed_path(client):
 # Real-time Streaming Test (Simulation)
 # ============================================================================
 
+
 def test_websocket_entry_format(client, temp_workspace):
     """WebSocket entry format matches expected structure."""
     worker_path = create_worker_workspace(temp_workspace, "worker_001")
@@ -296,7 +312,7 @@ def test_websocket_entry_format(client, temp_workspace):
             "content": "Test content",
             "type": "output",
             "confirmation_type": "bash",
-            "confirmation_message": "Run command?"
+            "confirmation_message": "Run command?",
         }
     ]
     write_dialogue_entries(worker_path, entries)
@@ -330,6 +346,7 @@ def test_websocket_entry_format(client, temp_workspace):
 # Performance Tests
 # ============================================================================
 
+
 def test_websocket_handles_large_history(client, temp_workspace):
     """WebSocket handles large history efficiently (limit=100)."""
     # Create worker with 200 entries
@@ -342,7 +359,7 @@ def test_websocket_handles_large_history(client, temp_workspace):
             "content": f"Entry {i}",
             "type": "output",
             "confirmation_type": None,
-            "confirmation_message": None
+            "confirmation_message": None,
         }
         for i in range(200)
     ]

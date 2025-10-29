@@ -6,12 +6,13 @@ Will be removed in v12.0.
 """
 
 import warnings
+
 from orchestrator.core.structured_logging import (
-    StructuredLogger,
-    LogLevel,
     LogCategory,
     LogContext,
     LogEntry,
+    LogLevel,
+    StructuredLogger,
     get_logger,
 )
 

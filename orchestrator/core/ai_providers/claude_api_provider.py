@@ -31,18 +31,17 @@ Version: 1.0.0
 Excellence AI Standard: 100% Applied
 """
 
-import os
 import asyncio
+import os
 import time
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Optional, Dict, Any, List, Callable, AsyncIterator
+from typing import Any, AsyncIterator, Callable, Dict, List, Optional
 
-from pydantic import BaseModel, Field, validator
 from anthropic import Anthropic, AsyncAnthropic
-from anthropic.types import Message, ContentBlock, MessageStreamEvent
-
+from anthropic.types import ContentBlock, Message, MessageStreamEvent
+from pydantic import BaseModel, Field, validator
 
 # =============================================================================
 # Constants
@@ -61,8 +60,10 @@ RATE_LIMIT_RETRY_DELAY: int = 60  # seconds
 # Enums
 # =============================================================================
 
+
 class ExecutionStatus(str, Enum):
     """Status of Claude API execution"""
+
     SUCCESS = "success"
     FAILED = "failed"
     TIMEOUT = "timeout"
@@ -73,6 +74,7 @@ class ExecutionStatus(str, Enum):
 
 class FileOperationType(str, Enum):
     """Types of file operations"""
+
     READ = "read_file"
     WRITE = "write_file"
     EDIT = "edit_file"
@@ -83,34 +85,41 @@ class FileOperationType(str, Enum):
 # Error Classes
 # =============================================================================
 
+
 class ClaudeAPIError(Exception):
     """Base exception for Claude API errors"""
+
     pass
 
 
 class ClaudeAPIKeyError(ClaudeAPIError):
     """Raised when API key is missing or invalid"""
+
     pass
 
 
 class ClaudeTimeoutError(ClaudeAPIError):
     """Raised when execution times out"""
+
     pass
 
 
 class ClaudeRateLimitError(ClaudeAPIError):
     """Raised when rate limit is exceeded"""
+
     pass
 
 
 class ClaudeExecutionError(ClaudeAPIError):
     """Raised when execution fails"""
+
     pass
 
 
 # =============================================================================
 # Configuration Models
 # =============================================================================
+
 
 class ClaudeAPIConfig(BaseModel):
     """
@@ -137,59 +146,36 @@ class ClaudeAPIConfig(BaseModel):
         ... )
     """
 
-    api_key: str = Field(
-        ...,
-        min_length=1,
-        description="Anthropic API key"
-    )
+    api_key: str = Field(..., min_length=1, description="Anthropic API key")
 
-    model: str = Field(
-        default=DEFAULT_MODEL,
-        min_length=1,
-        description="Claude model identifier"
-    )
+    model: str = Field(default=DEFAULT_MODEL, min_length=1, description="Claude model identifier")
 
     timeout_seconds: int = Field(
-        default=DEFAULT_TIMEOUT_SECONDS,
-        ge=10,
-        le=1800,
-        description="Execution timeout in seconds"
+        default=DEFAULT_TIMEOUT_SECONDS, ge=10, le=1800, description="Execution timeout in seconds"
     )
 
     max_tokens: int = Field(
-        default=DEFAULT_MAX_TOKENS,
-        ge=100,
-        le=8192,
-        description="Maximum tokens in response"
+        default=DEFAULT_MAX_TOKENS, ge=100, le=8192, description="Maximum tokens in response"
     )
 
     max_retries: int = Field(
-        default=MAX_RETRIES,
-        ge=0,
-        le=5,
-        description="Maximum retry attempts on failure"
+        default=MAX_RETRIES, ge=0, le=5, description="Maximum retry attempts on failure"
     )
 
     workspace_root: str = Field(
         default="./workspace",
         min_length=1,
         max_length=255,
-        description="Root directory for file operations"
+        description="Root directory for file operations",
     )
 
     temperature: float = Field(
-        default=1.0,
-        ge=0.0,
-        le=1.0,
-        description="Temperature for generation"
+        default=1.0, ge=0.0, le=1.0, description="Temperature for generation"
     )
 
-    enable_streaming: bool = Field(
-        default=False,
-        description="Enable streaming responses"
-    )
+    enable_streaming: bool = Field(default=False, description="Enable streaming responses")
 
-    @validator('workspace_root')
+    @validator("workspace_root")
     def validate_workspace_root(cls, v: str) -> str:
         """
         Validate workspace root path.
@@ -205,19 +191,19 @@ class ClaudeAPIConfig(BaseModel):
         Raises:
             ValueError: If path is invalid or dangerous
         """
-        if '..' in v:
+        if ".." in v:
             raise ValueError("Path traversal not allowed in workspace_root")
 
         path = Path(v)
         if path.is_absolute():
             # Allow specific safe prefixes
-            safe_prefixes = ['/home', '/workspace', '/tmp', 'C:\\', 'D:\\', 'E:\\']
+            safe_prefixes = ["/home", "/workspace", "/tmp", "C:\\", "D:\\", "E:\\"]
             if not any(str(path).startswith(prefix) for prefix in safe_prefixes):
                 raise ValueError("Workspace must be in safe directory")
 
         return v
 
-    @validator('api_key')
+    @validator("api_key")
     def validate_api_key(cls, v: str) -> str:
         """
         Validate API key format.
@@ -231,7 +217,7 @@ class ClaudeAPIConfig(BaseModel):
         Raises:
             ValueError: If API key is invalid
         """
-        if not v.startswith('sk-ant-'):
+        if not v.startswith("sk-ant-"):
             raise ValueError("Invalid Anthropic API key format (must start with 'sk-ant-')")
 
         return v
@@ -240,6 +226,7 @@ class ClaudeAPIConfig(BaseModel):
 # =============================================================================
 # Result Models
 # =============================================================================
+
 
 @dataclass
 class FileOperation:
@@ -305,13 +292,14 @@ class ClaudeExecutionResult:
         return self.status in (
             ExecutionStatus.FAILED,
             ExecutionStatus.TIMEOUT,
-            ExecutionStatus.API_ERROR
+            ExecutionStatus.API_ERROR,
         )
 
 
 # =============================================================================
 # Tool Definitions
 # =============================================================================
+
 
 def get_file_operation_tools(workspace_root: str) -> List[Dict[str, Any]]:
     """
@@ -340,11 +328,11 @@ def get_file_operation_tools(workspace_root: str) -> List[Dict[str, Any]]:
                 "properties": {
                     "file_path": {
                         "type": "string",
-                        "description": "Path to file relative to workspace root"
+                        "description": "Path to file relative to workspace root",
                     }
                 },
-                "required": ["file_path"]
-            }
+                "required": ["file_path"],
+            },
         },
         {
             "name": "write_file",
@@ -354,15 +342,12 @@ def get_file_operation_tools(workspace_root: str) -> List[Dict[str, Any]]:
                 "properties": {
                     "file_path": {
                         "type": "string",
-                        "description": "Path to file relative to workspace root"
+                        "description": "Path to file relative to workspace root",
                     },
-                    "content": {
-                        "type": "string",
-                        "description": "Content to write to file"
-                    }
+                    "content": {"type": "string", "description": "Content to write to file"},
                 },
-                "required": ["file_path", "content"]
-            }
+                "required": ["file_path", "content"],
+            },
         },
         {
             "name": "edit_file",
@@ -372,19 +357,13 @@ def get_file_operation_tools(workspace_root: str) -> List[Dict[str, Any]]:
                 "properties": {
                     "file_path": {
                         "type": "string",
-                        "description": "Path to file relative to workspace root"
+                        "description": "Path to file relative to workspace root",
                     },
-                    "old_text": {
-                        "type": "string",
-                        "description": "Text to find and replace"
-                    },
-                    "new_text": {
-                        "type": "string",
-                        "description": "Text to replace with"
-                    }
+                    "old_text": {"type": "string", "description": "Text to find and replace"},
+                    "new_text": {"type": "string", "description": "Text to replace with"},
                 },
-                "required": ["file_path", "old_text", "new_text"]
-            }
+                "required": ["file_path", "old_text", "new_text"],
+            },
         },
         {
             "name": "list_files",
@@ -394,18 +373,19 @@ def get_file_operation_tools(workspace_root: str) -> List[Dict[str, Any]]:
                 "properties": {
                     "directory": {
                         "type": "string",
-                        "description": "Directory path relative to workspace root (use '.' for root)"
+                        "description": "Directory path relative to workspace root (use '.' for root)",
                     }
                 },
-                "required": ["directory"]
-            }
-        }
+                "required": ["directory"],
+            },
+        },
     ]
 
 
 # =============================================================================
 # Main Provider Class
 # =============================================================================
+
 
 class ClaudeAPIProvider:
     """
@@ -476,7 +456,7 @@ class ClaudeAPIProvider:
         self,
         prompt: str,
         system_prompt: Optional[str] = None,
-        context: Optional[Dict[str, Any]] = None
+        context: Optional[Dict[str, Any]] = None,
     ) -> ClaudeExecutionResult:
         """
         Execute Claude API request asynchronously with tool use.
@@ -527,9 +507,9 @@ class ClaudeAPIProvider:
                         system=system_prompt or "You are a helpful AI coding assistant.",
                         messages=messages,
                         tools=self.tools,
-                        temperature=self.config.temperature
+                        temperature=self.config.temperature,
                     ),
-                    timeout=self.config.timeout_seconds
+                    timeout=self.config.timeout_seconds,
                 )
 
                 # Process response and handle tool use
@@ -544,24 +524,24 @@ class ClaudeAPIProvider:
                         elif content_block.type == "tool_use":
                             # Execute tool
                             tool_result = await self._execute_tool(
-                                content_block.name,
-                                content_block.input
+                                content_block.name, content_block.input
                             )
                             file_operations.append(tool_result)
 
                             # Add tool result to conversation
-                            messages.append({
-                                "role": "assistant",
-                                "content": response.content
-                            })
-                            messages.append({
-                                "role": "user",
-                                "content": [{
-                                    "type": "tool_result",
-                                    "tool_use_id": content_block.id,
-                                    "content": tool_result.content or "Operation completed"
-                                }]
-                            })
+                            messages.append({"role": "assistant", "content": response.content})
+                            messages.append(
+                                {
+                                    "role": "user",
+                                    "content": [
+                                        {
+                                            "type": "tool_result",
+                                            "tool_use_id": content_block.id,
+                                            "content": tool_result.content or "Operation completed",
+                                        }
+                                    ],
+                                }
+                            )
 
                     # Continue conversation with tool results
                     response = await asyncio.wait_for(
@@ -571,9 +551,9 @@ class ClaudeAPIProvider:
                             system=system_prompt or "You are a helpful AI coding assistant.",
                             messages=messages,
                             tools=self.tools,
-                            temperature=self.config.temperature
+                            temperature=self.config.temperature,
                         ),
-                        timeout=self.config.timeout_seconds
+                        timeout=self.config.timeout_seconds,
                     )
 
                 # Extract final text output
@@ -595,10 +575,7 @@ class ClaudeAPIProvider:
                     execution_time_seconds=execution_time,
                     retry_count=retry_count,
                     tokens_used=tokens_used,
-                    metadata={
-                        "model": self.config.model,
-                        "stop_reason": response.stop_reason
-                    }
+                    metadata={"model": self.config.model, "stop_reason": response.stop_reason},
                 )
 
             except asyncio.TimeoutError:
@@ -612,11 +589,11 @@ class ClaudeAPIProvider:
                         file_operations=file_operations,
                         error=f"Timeout after {retry_count} attempts: {last_error}",
                         execution_time_seconds=time.time() - start_time,
-                        retry_count=retry_count
+                        retry_count=retry_count,
                     )
 
                 # Exponential backoff
-                backoff_seconds = 2 ** retry_count
+                backoff_seconds = 2**retry_count
                 await asyncio.sleep(backoff_seconds)
 
             except Exception as e:
@@ -632,7 +609,7 @@ class ClaudeAPIProvider:
                             file_operations=file_operations,
                             error=f"Rate limit exceeded after {retry_count} attempts",
                             execution_time_seconds=time.time() - start_time,
-                            retry_count=retry_count
+                            retry_count=retry_count,
                         )
 
                     # Wait longer for rate limits
@@ -646,7 +623,7 @@ class ClaudeAPIProvider:
                     file_operations=file_operations,
                     error=error_str,
                     execution_time_seconds=time.time() - start_time,
-                    retry_count=retry_count
+                    retry_count=retry_count,
                 )
 
         # Should not reach here
@@ -656,14 +633,14 @@ class ClaudeAPIProvider:
             file_operations=file_operations,
             error=f"Max retries ({self.config.max_retries}) exceeded",
             execution_time_seconds=time.time() - start_time,
-            retry_count=retry_count
+            retry_count=retry_count,
         )
 
     def execute(
         self,
         prompt: str,
         system_prompt: Optional[str] = None,
-        context: Optional[Dict[str, Any]] = None
+        context: Optional[Dict[str, Any]] = None,
     ) -> ClaudeExecutionResult:
         """
         Execute Claude API request synchronously.
@@ -689,7 +666,7 @@ class ClaudeAPIProvider:
         self,
         prompt: str,
         system_prompt: Optional[str] = None,
-        output_callback: Optional[Callable[[str], None]] = None
+        output_callback: Optional[Callable[[str], None]] = None,
     ) -> AsyncIterator[str]:
         """
         Execute Claude API request with streaming output.
@@ -718,7 +695,7 @@ class ClaudeAPIProvider:
             system=system_prompt or "You are a helpful AI coding assistant.",
             messages=messages,
             tools=self.tools,
-            temperature=self.config.temperature
+            temperature=self.config.temperature,
         ) as stream:
             async for event in stream:
                 if event.type == "content_block_delta":
@@ -728,11 +705,7 @@ class ClaudeAPIProvider:
                             output_callback(chunk)
                         yield chunk
 
-    async def _execute_tool(
-        self,
-        tool_name: str,
-        tool_input: Dict[str, Any]
-    ) -> FileOperation:
+    async def _execute_tool(self, tool_name: str, tool_input: Dict[str, Any]) -> FileOperation:
         """
         Execute a file operation tool.
 
@@ -763,7 +736,7 @@ class ClaudeAPIProvider:
                     operation_type=FileOperationType.READ,
                     file_path=file_path,
                     content=content,
-                    success=True
+                    success=True,
                 )
 
             elif tool_name == "write_file":
@@ -786,7 +759,7 @@ class ClaudeAPIProvider:
                     operation_type=FileOperationType.WRITE,
                     file_path=file_path,
                     content=content,
-                    success=True
+                    success=True,
                 )
 
             elif tool_name == "edit_file":
@@ -809,7 +782,7 @@ class ClaudeAPIProvider:
                     operation_type=FileOperationType.EDIT,
                     file_path=file_path,
                     content=edited_content,
-                    success=True
+                    success=True,
                 )
 
             elif tool_name == "list_files":
@@ -829,7 +802,7 @@ class ClaudeAPIProvider:
                     operation_type=FileOperationType.LIST,
                     file_path=directory,
                     content=files_str,
-                    success=True
+                    success=True,
                 )
 
             else:
@@ -840,7 +813,7 @@ class ClaudeAPIProvider:
                 operation_type=FileOperationType.WRITE,  # Default type
                 file_path=tool_input.get("file_path", "unknown"),
                 success=False,
-                error_message=str(e)
+                error_message=str(e),
             )
 
     def _validate_prompt(self, prompt: str) -> None:
@@ -857,19 +830,16 @@ class ClaudeAPIProvider:
             raise ValueError("Prompt cannot be empty")
 
         if len(prompt) < MIN_PROMPT_LENGTH:
-            raise ValueError(
-                f"Prompt too short (min {MIN_PROMPT_LENGTH} characters)"
-            )
+            raise ValueError(f"Prompt too short (min {MIN_PROMPT_LENGTH} characters)")
 
         if len(prompt) > MAX_PROMPT_LENGTH:
-            raise ValueError(
-                f"Prompt too long (max {MAX_PROMPT_LENGTH} characters)"
-            )
+            raise ValueError(f"Prompt too long (max {MAX_PROMPT_LENGTH} characters)")
 
 
 # =============================================================================
 # Utility Functions
 # =============================================================================
+
 
 def create_default_provider(api_key: Optional[str] = None) -> ClaudeAPIProvider:
     """
@@ -891,9 +861,7 @@ def create_default_provider(api_key: Optional[str] = None) -> ClaudeAPIProvider:
     if api_key is None:
         api_key = os.getenv("ANTHROPIC_API_KEY")
         if not api_key:
-            raise ClaudeAPIKeyError(
-                "ANTHROPIC_API_KEY environment variable not set"
-            )
+            raise ClaudeAPIKeyError("ANTHROPIC_API_KEY environment variable not set")
 
     config = ClaudeAPIConfig(api_key=api_key)
     return ClaudeAPIProvider(config)
@@ -919,7 +887,7 @@ if __name__ == "__main__":
             # Example execution
             result = await provider.execute_async(
                 prompt="Create a Python function named 'greet' that takes a name parameter and returns a greeting string.",
-                system_prompt="You are an expert Python developer. Write clean, documented code."
+                system_prompt="You are an expert Python developer. Write clean, documented code.",
             )
 
             print(f"Status: {result.status}")

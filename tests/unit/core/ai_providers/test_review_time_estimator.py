@@ -10,15 +10,16 @@ Version: 1.0.0
 Excellence AI Standard: 100% Applied
 """
 
-import pytest
 from pathlib import Path
 
+import pytest
+
 from orchestrator.core.ai_providers.review_time_estimator import (
-    estimate_codex_review_time,
-    estimate_from_file,
-    count_document_lines,
     ExecutionStrategy,
     ReviewTimeEstimate,
+    count_document_lines,
+    estimate_codex_review_time,
+    estimate_from_file,
 )
 
 
@@ -290,4 +291,4 @@ class TestMessageLocalization:
             result = estimate_codex_review_time(lines, perspectives)
             assert result.message
             # Check for Japanese characters (Hiragana/Katakana range)
-            assert any("\u3040" <= c <= "\u30FF" for c in result.message)
+            assert any("\u3040" <= c <= "\u30ff" for c in result.message)

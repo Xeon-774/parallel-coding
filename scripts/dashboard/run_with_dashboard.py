@@ -6,9 +6,9 @@ Automatically starts the web dashboard and orchestrator,
 and opens the browser.
 """
 
+import argparse
 import sys
 import time
-import argparse
 from pathlib import Path
 
 # Add project root to PYTHONPATH
@@ -17,24 +17,20 @@ sys.path.insert(0, str(project_root))
 
 from web_ui import (
     DashboardConfig,
+    DashboardManager,
     DependencyConfig,
     DependencyManager,
-    DashboardManager,
-    OrchestratorRunner,
-    Messages,
-    Separators,
     HelpText,
+    Messages,
+    OrchestratorRunner,
+    Separators,
 )
 
 
 class IntegratedLauncher:
     """Integrated launcher for dashboard and orchestrator"""
 
-    def __init__(
-        self,
-        dashboard_config: DashboardConfig,
-        dependency_config: DependencyConfig
-    ):
+    def __init__(self, dashboard_config: DashboardConfig, dependency_config: DependencyConfig):
         """
         Initialize the integrated launcher.
 
@@ -104,38 +100,23 @@ def main() -> int:
     parser = argparse.ArgumentParser(
         description="Claude Orchestrator with Web Dashboard - All-in-One Launcher",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog=HelpText.EPILOG
+        epilog=HelpText.EPILOG,
     )
 
-    parser.add_argument(
-        "request",
-        nargs="?",
-        help="Task description (interactive if omitted)"
-    )
+    parser.add_argument("request", nargs="?", help="Task description (interactive if omitted)")
+
+    parser.add_argument("--host", default="127.0.0.1", help="Dashboard host (default: 127.0.0.1)")
+
+    parser.add_argument("--port", type=int, default=8000, help="Dashboard port (default: 8000)")
 
     parser.add_argument(
-        "--host",
-        default="127.0.0.1",
-        help="Dashboard host (default: 127.0.0.1)"
-    )
-
-    parser.add_argument(
-        "--port",
-        type=int,
-        default=8000,
-        help="Dashboard port (default: 8000)"
-    )
-
-    parser.add_argument(
-        "--no-browser",
-        action="store_true",
-        help="Do not automatically open browser"
+        "--no-browser", action="store_true", help="Do not automatically open browser"
     )
 
     parser.add_argument(
         "--no-auto-install",
         action="store_true",
-        help="Do not automatically install missing dependencies"
+        help="Do not automatically install missing dependencies",
     )
 
     args = parser.parse_args()
@@ -161,13 +142,9 @@ def main() -> int:
 
     # Create configurations
     dashboard_config = DashboardConfig(
-        host=args.host,
-        port=args.port,
-        auto_open_browser=not args.no_browser
+        host=args.host, port=args.port, auto_open_browser=not args.no_browser
     )
-    dependency_config = DependencyConfig(
-        auto_install=not args.no_auto_install
-    )
+    dependency_config = DependencyConfig(auto_install=not args.no_auto_install)
 
     # Create and run launcher
     launcher = IntegratedLauncher(dashboard_config, dependency_config)

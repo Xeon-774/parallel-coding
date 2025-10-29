@@ -11,15 +11,16 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from orchestrator.core.enhanced_interactive_worker_manager import (
-    EnhancedInteractiveWorkerManager,
-    ConfirmationRequest
-)
 from orchestrator.config import OrchestratorConfig
+from orchestrator.core.enhanced_interactive_worker_manager import (
+    ConfirmationRequest,
+    EnhancedInteractiveWorkerManager,
+)
 
 
 class DemoLogger:
     """Simple logger for demo"""
+
     def log_worker_spawn(self, worker_id, task_name):
         print(f"[SPAWN] {worker_id}: {task_name}")
 
@@ -43,13 +44,13 @@ def demo_approval_callback(confirmation: ConfirmationRequest) -> bool:
     print(f"Details: {confirmation.details}")
 
     # Auto-approve file writes
-    if confirmation.confirmation_type.value == 'file_write':
+    if confirmation.confirmation_type.value == "file_write":
         print("[AUTO-APPROVE] Safe file write operation")
         print(f"{'='*60}\n")
         return True
 
     # Auto-approve file reads
-    if confirmation.confirmation_type.value == 'file_read':
+    if confirmation.confirmation_type.value == "file_read":
         print("[AUTO-APPROVE] Safe file read operation")
         print(f"{'='*60}\n")
         return True
@@ -62,9 +63,9 @@ def demo_approval_callback(confirmation: ConfirmationRequest) -> bool:
 
 def main():
     """Run simple demo"""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print(" EnhancedInteractiveWorkerManager Demo")
-    print("="*70)
+    print("=" * 70)
     print("\nThis demo shows the pexpect/wexpect-based interactive mode")
     print("with a simple Python script execution.\n")
 
@@ -75,18 +76,16 @@ def main():
     logger = DemoLogger()
 
     print(f"Platform: {sys.platform}")
-    if sys.platform == 'win32':
+    if sys.platform == "win32":
         print("Using: wexpect (Windows)")
     else:
         print("Using: pexpect (Unix/Linux)")
 
-    print("\n" + "-"*70)
+    print("\n" + "-" * 70)
     print("Creating manager...")
 
     manager = EnhancedInteractiveWorkerManager(
-        config=config,
-        logger=logger,
-        user_approval_callback=demo_approval_callback
+        config=config, logger=logger, user_approval_callback=demo_approval_callback
     )
 
     print("[OK] Manager created\n")
@@ -102,7 +101,7 @@ Please create a simple Python script that:
 2. Saves the output to a file called 'hello.txt'
 
 Just create a basic script and save it.
-"""
+""",
     }
 
     print("\nSpawning worker...")
@@ -117,14 +116,11 @@ Just create a basic script and save it.
             print("\nRunning interactive session...")
             print("(Watch for confirmation detection and AI safety judgments)\n")
 
-            result = manager.run_interactive_session(
-                session.worker_id,
-                max_iterations=20
-            )
+            result = manager.run_interactive_session(session.worker_id, max_iterations=20)
 
-            print("\n" + "="*70)
+            print("\n" + "=" * 70)
             print(" RESULT")
-            print("="*70)
+            print("=" * 70)
             print(f"Success: {result.success}")
             print(f"Duration: {result.duration:.2f}s" if result.duration else "Duration: N/A")
 
@@ -132,13 +128,13 @@ Just create a basic script and save it.
                 print(f"Error: {result.error_message}")
 
             print(f"\nOutput preview ({len(result.output)} chars):")
-            print("-"*70)
+            print("-" * 70)
             # Show first 500 chars
             preview = result.output[:500]
             if len(result.output) > 500:
                 preview += "\n... (truncated)"
             print(preview)
-            print("-"*70)
+            print("-" * 70)
 
             if result.success:
                 print("\n[SUCCESS] Demo completed successfully!")
@@ -159,9 +155,9 @@ Just create a basic script and save it.
         print("  - Basic pexpect/wexpect functionality tests")
         print("  - Mock CLI integration tests")
 
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print(" Demo Complete")
-    print("="*70)
+    print("=" * 70)
 
 
 if __name__ == "__main__":

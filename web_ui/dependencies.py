@@ -4,13 +4,13 @@ Dependency management for Web UI Dashboard
 Handles checking and installing required packages.
 """
 
-import sys
 import subprocess
-from typing import Tuple, Optional
+import sys
+from typing import Optional, Tuple
 
 from .config import DependencyConfig
-from .exceptions import DependencyError
 from .constants import Messages, Separators
+from .exceptions import DependencyError
 
 
 class DependencyManager:
@@ -36,6 +36,7 @@ class DependencyManager:
             import fastapi
             import uvicorn
             import websockets
+
             return True
         except ImportError:
             return False
@@ -58,7 +59,7 @@ class DependencyManager:
                 [sys.executable, "-m", "pip", "install"] + list(self.config.required_packages),
                 capture_output=True,
                 text=True,
-                timeout=self.config.install_timeout
+                timeout=self.config.install_timeout,
             )
 
             if result.returncode == 0:

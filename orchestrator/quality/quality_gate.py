@@ -16,9 +16,10 @@ import json
 import logging
 import subprocess
 import time
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
+
 import tomli
 
 logger = logging.getLogger(__name__)
@@ -28,9 +29,11 @@ logger = logging.getLogger(__name__)
 # Data Models
 # ============================================================================
 
+
 @dataclass
 class QualityCheckResult:
     """Individual quality check result"""
+
     check_type: str
     passed: bool
     score: float
@@ -48,6 +51,7 @@ class QualityCheckResult:
 @dataclass
 class QualityMetrics:
     """Overall quality metrics"""
+
     overall_passed: bool
     coverage: QualityCheckResult
     lint: QualityCheckResult
@@ -65,18 +69,20 @@ class QualityMetrics:
             "type_check": self.type_check.to_dict(),
             "security": self.security.to_dict(),
             "duration_seconds": self.duration_seconds,
-            "timestamp": self.timestamp
+            "timestamp": self.timestamp,
         }
 
 
 class QualityGateError(Exception):
     """Quality gate execution error"""
+
     pass
 
 
 # ============================================================================
 # Quality Gates Engine
 # ============================================================================
+
 
 class QualityGateEngine:
     """
@@ -177,12 +183,14 @@ class QualityGateEngine:
         duration = time.time() - start_time
 
         # Determine overall pass/fail
-        overall_passed = all([
-            coverage_result.passed,
-            lint_result.passed,
-            type_check_result.passed,
-            security_result.passed
-        ])
+        overall_passed = all(
+            [
+                coverage_result.passed,
+                lint_result.passed,
+                type_check_result.passed,
+                security_result.passed,
+            ]
+        )
 
         metrics = QualityMetrics(
             overall_passed=overall_passed,
@@ -191,7 +199,7 @@ class QualityGateEngine:
             type_check=type_check_result,
             security=security_result,
             duration_seconds=round(duration, 2),
-            timestamp=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+            timestamp=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         )
 
         # Log summary
@@ -199,10 +207,18 @@ class QualityGateEngine:
         logger.info("Quality Gates Summary")
         logger.info("=" * 60)
         logger.info(f"Overall: {'✅ PASSED' if overall_passed else '❌ FAILED'}")
-        logger.info(f"Coverage: {'✅' if coverage_result.passed else '❌'} {coverage_result.score:.2f}%")
-        logger.info(f"Lint: {'✅' if lint_result.passed else '❌'} {lint_result.details.get('issues', 0)} issues")
-        logger.info(f"Type Check: {'✅' if type_check_result.passed else '❌'} {type_check_result.details.get('errors', 0)} errors")
-        logger.info(f"Security: {'✅' if security_result.passed else '❌'} {security_result.details.get('issues', 0)} issues")
+        logger.info(
+            f"Coverage: {'✅' if coverage_result.passed else '❌'} {coverage_result.score:.2f}%"
+        )
+        logger.info(
+            f"Lint: {'✅' if lint_result.passed else '❌'} {lint_result.details.get('issues', 0)} issues"
+        )
+        logger.info(
+            f"Type Check: {'✅' if type_check_result.passed else '❌'} {type_check_result.details.get('errors', 0)} errors"
+        )
+        logger.info(
+            f"Security: {'✅' if security_result.passed else '❌'} {security_result.details.get('issues', 0)} issues"
+        )
         logger.info(f"Duration: {duration:.2f}s")
         logger.info("=" * 60)
 
@@ -231,15 +247,11 @@ class QualityGateEngine:
                 "--cov-report=term-missing",
                 "--cov-report=json",
                 f"--cov-fail-under={int(threshold)}",
-                "-v"
+                "-v",
             ]
 
             result = subprocess.run(
-                cmd,
-                cwd=self.project_dir,
-                capture_output=True,
-                text=True,
-                timeout=300
+                cmd, cwd=self.project_dir, capture_output=True, text=True, timeout=300
             )
 
             # Parse coverage report
@@ -252,8 +264,12 @@ class QualityGateEngine:
                     coverage_data = json.load(f)
                     coverage_score = coverage_data.get("totals", {}).get("percent_covered", 0.0)
                     details = {
-                        "total_statements": coverage_data.get("totals", {}).get("num_statements", 0),
-                        "covered_statements": coverage_data.get("totals", {}).get("covered_lines", 0),
+                        "total_statements": coverage_data.get("totals", {}).get(
+                            "num_statements", 0
+                        ),
+                        "covered_statements": coverage_data.get("totals", {}).get(
+                            "covered_lines", 0
+                        ),
                         "missing_lines": coverage_data.get("totals", {}).get("missing_lines", 0),
                     }
 
@@ -266,7 +282,7 @@ class QualityGateEngine:
                 score=coverage_score,
                 threshold=threshold,
                 details=details,
-                duration_seconds=round(duration, 2)
+                duration_seconds=round(duration, 2),
             )
 
         except subprocess.TimeoutExpired:
@@ -278,7 +294,7 @@ class QualityGateEngine:
                 threshold=threshold,
                 details={},
                 errors=["Coverage check timed out (300s)"],
-                duration_seconds=300.0
+                duration_seconds=300.0,
             )
 
         except Exception as e:
@@ -290,7 +306,7 @@ class QualityGateEngine:
                 threshold=threshold,
                 details={},
                 errors=[str(e)],
-                duration_seconds=time.time() - start_time
+                duration_seconds=time.time() - start_time,
             )
 
     async def run_lint(self, auto_fix: Optional[bool] = None) -> QualityCheckResult:
@@ -321,7 +337,7 @@ class QualityGateEngine:
                     cwd=self.project_dir,
                     capture_output=True,
                     text=True,
-                    timeout=60
+                    timeout=60,
                 )
                 if "reformatted" in result.stdout:
                     auto_fixed = True
@@ -335,7 +351,7 @@ class QualityGateEngine:
                     cwd=self.project_dir,
                     capture_output=True,
                     text=True,
-                    timeout=60
+                    timeout=60,
                 )
                 if result.returncode == 0:
                     auto_fixed = True
@@ -345,11 +361,17 @@ class QualityGateEngine:
             if "flake8" in self.config["lint_tools"]:
                 logger.info("Running flake8 check...")
                 result = subprocess.run(
-                    ["flake8", ".", "--max-line-length", str(self.config["lint_max_line_length"]), "--count"],
+                    [
+                        "flake8",
+                        ".",
+                        "--max-line-length",
+                        str(self.config["lint_max_line_length"]),
+                        "--count",
+                    ],
                     cwd=self.project_dir,
                     capture_output=True,
                     text=True,
-                    timeout=60
+                    timeout=60,
                 )
 
                 # Parse flake8 output
@@ -372,7 +394,7 @@ class QualityGateEngine:
                 details={"issues": issues, "tools": self.config["lint_tools"]},
                 auto_fixed=auto_fixed,
                 errors=errors,
-                duration_seconds=round(duration, 2)
+                duration_seconds=round(duration, 2),
             )
 
         except Exception as e:
@@ -384,7 +406,7 @@ class QualityGateEngine:
                 threshold=100.0,
                 details={},
                 errors=[str(e)],
-                duration_seconds=time.time() - start_time
+                duration_seconds=time.time() - start_time,
             )
 
     async def run_type_check(self) -> QualityCheckResult:
@@ -402,11 +424,7 @@ class QualityGateEngine:
             cmd = ["mypy", "orchestrator", "--strict"]
 
             result = subprocess.run(
-                cmd,
-                cwd=self.project_dir,
-                capture_output=True,
-                text=True,
-                timeout=120
+                cmd, cwd=self.project_dir, capture_output=True, text=True, timeout=120
             )
 
             # Parse mypy output
@@ -427,7 +445,7 @@ class QualityGateEngine:
                 threshold=100.0,
                 details={"errors": error_count, "tool": "mypy"},
                 errors=[f"Found {error_count} type errors"] if error_count > 0 else [],
-                duration_seconds=round(duration, 2)
+                duration_seconds=round(duration, 2),
             )
 
         except Exception as e:
@@ -439,7 +457,7 @@ class QualityGateEngine:
                 threshold=100.0,
                 details={},
                 errors=[str(e)],
-                duration_seconds=time.time() - start_time
+                duration_seconds=time.time() - start_time,
             )
 
     async def run_security_scan(self) -> QualityCheckResult:
@@ -456,17 +474,15 @@ class QualityGateEngine:
         try:
             cmd = [
                 "bandit",
-                "-r", "orchestrator",
-                "-f", "json",
-                "-ll"  # Only show medium/high severity
+                "-r",
+                "orchestrator",
+                "-f",
+                "json",
+                "-ll",  # Only show medium/high severity
             ]
 
             result = subprocess.run(
-                cmd,
-                cwd=self.project_dir,
-                capture_output=True,
-                text=True,
-                timeout=120
+                cmd, cwd=self.project_dir, capture_output=True, text=True, timeout=120
             )
 
             # Parse bandit JSON output
@@ -479,7 +495,7 @@ class QualityGateEngine:
                 details = {
                     "issues": issue_count,
                     "severity_level": self.config["security_severity_level"],
-                    "tool": "bandit"
+                    "tool": "bandit",
                 }
             except json.JSONDecodeError:
                 logger.warning("Failed to parse bandit JSON output")
@@ -494,7 +510,7 @@ class QualityGateEngine:
                 threshold=100.0,
                 details=details,
                 errors=[f"Found {issue_count} security issues"] if issue_count > 0 else [],
-                duration_seconds=round(duration, 2)
+                duration_seconds=round(duration, 2),
             )
 
         except Exception as e:
@@ -506,13 +522,14 @@ class QualityGateEngine:
                 threshold=100.0,
                 details={},
                 errors=[str(e)],
-                duration_seconds=time.time() - start_time
+                duration_seconds=time.time() - start_time,
             )
 
 
 # ============================================================================
 # CLI Interface
 # ============================================================================
+
 
 async def main():
     """CLI entry point"""
@@ -528,7 +545,7 @@ async def main():
     # Configure logging
     logging.basicConfig(
         level=logging.DEBUG if args.verbose else logging.INFO,
-        format="%(asctime)s [%(levelname)s] %(message)s"
+        format="%(asctime)s [%(levelname)s] %(message)s",
     )
 
     # Run quality gates

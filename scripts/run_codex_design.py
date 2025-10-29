@@ -5,16 +5,18 @@ Script to run Codex for design document creation.
 Handles TTY requirements and captures output properly.
 """
 
+import os
 import subprocess
 import sys
-import os
 from pathlib import Path
 
 # Force UTF-8 output on Windows
-if sys.platform == 'win32':
+if sys.platform == "win32":
     import io
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
+
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8")
+
 
 def run_codex_with_pseudo_tty(prompt: str, output_file: Path) -> int:
     """Run codex with pseudo-TTY to avoid 'stdout is not a terminal' error"""
@@ -24,7 +26,7 @@ def run_codex_with_pseudo_tty(prompt: str, output_file: Path) -> int:
     CODEX_PATH_WINDOWS = "/c/Users/chemi/AppData/Roaming/npm/codex"
 
     # Method 1: Try WSL bash with full codex path
-    if sys.platform == 'win32':
+    if sys.platform == "win32":
         try:
             # Escape single quotes in prompt for shell
             escaped_prompt = prompt.replace("'", "'\\''")
@@ -33,13 +35,13 @@ def run_codex_with_pseudo_tty(prompt: str, output_file: Path) -> int:
                 ["wsl", "-d", "Ubuntu-24.04", "bash", "-c", f"{CODEX_PATH_WSL} '{escaped_prompt}'"],
                 capture_output=True,
                 text=True,
-                encoding='utf-8',
-                errors='replace',  # Handle encoding errors gracefully
-                timeout=300  # 5 minutes timeout
+                encoding="utf-8",
+                errors="replace",  # Handle encoding errors gracefully
+                timeout=300,  # 5 minutes timeout
             )
 
             if result.returncode == 0 and result.stdout:
-                output_file.write_text(result.stdout, encoding='utf-8')
+                output_file.write_text(result.stdout, encoding="utf-8")
                 print(f"Success! Output written to {output_file}")
                 return 0
             else:
@@ -59,13 +61,13 @@ def run_codex_with_pseudo_tty(prompt: str, output_file: Path) -> int:
             ["script", "-q", "-c", f"{CODEX_PATH_WSL} '{prompt}'", "/dev/null"],
             capture_output=True,
             text=True,
-            encoding='utf-8',
-            errors='replace',
-            timeout=300
+            encoding="utf-8",
+            errors="replace",
+            timeout=300,
         )
 
         if result.returncode == 0:
-            output_file.write_text(result.stdout, encoding='utf-8')
+            output_file.write_text(result.stdout, encoding="utf-8")
             print(f"Success! Output written to {output_file}")
             return 0
         else:
@@ -83,13 +85,13 @@ def run_codex_with_pseudo_tty(prompt: str, output_file: Path) -> int:
             ["winpty", CODEX_PATH_WINDOWS, prompt],
             capture_output=True,
             text=True,
-            encoding='utf-8',
-            errors='replace',
-            timeout=300
+            encoding="utf-8",
+            errors="replace",
+            timeout=300,
         )
 
         if result.returncode == 0:
-            output_file.write_text(result.stdout, encoding='utf-8')
+            output_file.write_text(result.stdout, encoding="utf-8")
             print(f"Success! Output written to {output_file}")
             return 0
         else:
@@ -100,17 +102,13 @@ def run_codex_with_pseudo_tty(prompt: str, output_file: Path) -> int:
 
     # Method 4: Try with pty module (Unix only) with full path
     try:
-        import pty
         import os
+        import pty
 
         master, slave = pty.openpty()
 
         process = subprocess.Popen(
-            [CODEX_PATH_WSL, prompt],
-            stdin=slave,
-            stdout=slave,
-            stderr=slave,
-            text=True
+            [CODEX_PATH_WSL, prompt], stdin=slave, stdout=slave, stderr=slave, text=True
         )
 
         os.close(slave)
@@ -118,7 +116,7 @@ def run_codex_with_pseudo_tty(prompt: str, output_file: Path) -> int:
         output = ""
         try:
             while True:
-                data = os.read(master, 1024).decode('utf-8', errors='replace')
+                data = os.read(master, 1024).decode("utf-8", errors="replace")
                 if not data:
                     break
                 output += data
@@ -129,7 +127,7 @@ def run_codex_with_pseudo_tty(prompt: str, output_file: Path) -> int:
         process.wait(timeout=300)
 
         if output:
-            output_file.write_text(output, encoding='utf-8')
+            output_file.write_text(output, encoding="utf-8")
             print(f"Success! Output written to {output_file}")
             return 0
 
@@ -143,10 +141,10 @@ def run_codex_with_pseudo_tty(prompt: str, output_file: Path) -> int:
             input="",  # Empty stdin
             capture_output=True,
             text=True,
-            encoding='utf-8',
-            errors='replace',
+            encoding="utf-8",
+            errors="replace",
             timeout=300,
-            env={**subprocess.os.environ, "TERM": "dumb"}  # Disable TTY features
+            env={**subprocess.os.environ, "TERM": "dumb"},  # Disable TTY features
         )
 
         # Check if output contains error
@@ -158,7 +156,7 @@ def run_codex_with_pseudo_tty(prompt: str, output_file: Path) -> int:
             print(f"stderr: {stderr_msg}")
             return 1
 
-        output_file.write_text(result.stdout, encoding='utf-8')
+        output_file.write_text(result.stdout, encoding="utf-8")
         print(f"Success! Output written to {output_file}")
         return 0
 
@@ -212,10 +210,12 @@ Include the following sections:
 
 Be comprehensive, innovative, and world-class professional. Output in detailed Markdown format."""
     else:
-        prompt = task_file.read_text(encoding='utf-8')
+        prompt = task_file.read_text(encoding="utf-8")
 
     # Output file
-    output_file = Path(__file__).parent.parent / "docs" / "design" / "codex_autonomous_ai_design_v1.md"
+    output_file = (
+        Path(__file__).parent.parent / "docs" / "design" / "codex_autonomous_ai_design_v1.md"
+    )
     output_file.parent.mkdir(parents=True, exist_ok=True)
 
     print(f"Running Codex design task...")

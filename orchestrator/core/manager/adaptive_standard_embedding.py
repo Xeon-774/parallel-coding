@@ -111,10 +111,7 @@ class AdaptiveStandardEmbedding:
             Appropriate embedding level
         """
         # Security-critical always gets full standard
-        if any(
-            critical in task_type.lower()
-            for critical in self.security_critical_types
-        ):
+        if any(critical in task_type.lower() for critical in self.security_critical_types):
             return EmbeddingLevel.FULL
 
         # Violation-prone gets summary
@@ -126,16 +123,10 @@ class AdaptiveStandardEmbedding:
 
     def load_summary(self) -> str:
         """Load Excellence AI Standard summary (800 tokens)."""
-        summary_path = (
-            self.standard_dir
-            / "summaries"
-            / "excellence_ai_standard_summary.md"
-        )
+        summary_path = self.standard_dir / "summaries" / "excellence_ai_standard_summary.md"
 
         if not summary_path.exists():
-            raise FileNotFoundError(
-                f"Standard summary not found: {summary_path}"
-            )
+            raise FileNotFoundError(f"Standard summary not found: {summary_path}")
 
         return summary_path.read_text(encoding="utf-8")
 

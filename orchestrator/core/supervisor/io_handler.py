@@ -13,7 +13,6 @@ from typing import AsyncGenerator, Optional
 
 from orchestrator.utils.ansi_utils import strip_ansi
 
-
 DEFAULT_CHUNK_SIZE = 1024
 DEFAULT_POLL_INTERVAL = 0.02
 MAX_BUFFER_SIZE = 1_000_000
@@ -90,10 +89,12 @@ class ProcessIOHandler:
         def _read() -> str:
             try:
                 # pexpect/wexpect share read_nonblocking
-                data = self._child.read_nonblocking(
-                    size=self._config.chunk_size, timeout=0
+                data = self._child.read_nonblocking(size=self._config.chunk_size, timeout=0)
+                return (
+                    data.decode("utf-8", errors="replace")
+                    if isinstance(data, (bytes, bytearray))
+                    else str(data)
                 )
-                return data.decode("utf-8", errors="replace") if isinstance(data, (bytes, bytearray)) else str(data)
             except Exception:
                 return ""
 
@@ -140,4 +141,3 @@ class ProcessIOHandler:
             return bool(getattr(self._child, "isalive")())
         except Exception:
             return False
-

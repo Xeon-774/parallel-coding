@@ -17,7 +17,6 @@ from orchestrator.core.hierarchical import (
     HierarchicalResourceManager,
 )
 
-
 router = APIRouter(prefix="/api/v1/recursion", tags=["recursion"])
 
 
@@ -106,8 +105,12 @@ def get_orchestrator(
 
 
 @router.post("/job", response_model=SubmitJobResponse, status_code=status.HTTP_202_ACCEPTED)
-async def submit_job(payload: SubmitJobRequest, orch: HierarchicalJobOrchestrator = Depends(get_orchestrator)):
-    jr = await orch.submit_job(payload.request, depth=(payload.config.current_depth if payload.config else 0))
+async def submit_job(
+    payload: SubmitJobRequest, orch: HierarchicalJobOrchestrator = Depends(get_orchestrator)
+):
+    jr = await orch.submit_job(
+        payload.request, depth=(payload.config.current_depth if payload.config else 0)
+    )
     return SubmitJobResponse(job_id=jr.job_id, status=jr.status, depth=jr.depth)
 
 
@@ -128,7 +131,10 @@ async def cancel_job(job_id: str, orch: HierarchicalJobOrchestrator = Depends(ge
 
 
 @router.get("/hierarchy", response_model=HierarchyResponse)
-async def get_hierarchy(rm: HierarchicalResourceManager = Depends(get_rm), orch: HierarchicalJobOrchestrator = Depends(get_orchestrator)):
+async def get_hierarchy(
+    rm: HierarchicalResourceManager = Depends(get_rm),
+    orch: HierarchicalJobOrchestrator = Depends(get_orchestrator),
+):
     usage = await rm.get_hierarchy_usage()
     # Convert pydantic models to dict for response model typing
     usage_dict = {d: u.model_dump() for d, u in usage.items()}
@@ -157,4 +163,3 @@ async def validate_config(payload: ValidationRequest):
         return ValidationResponse(valid=True)
     except Exception as e:  # pragma: no cover - defensive
         return ValidationResponse(valid=False, reason=str(e))
-

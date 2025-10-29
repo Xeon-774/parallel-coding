@@ -11,20 +11,19 @@ Docker-based isolated execution environment with:
 - Auto-cleanup
 """
 
-from orchestrator.sandbox.sandbox_config import (
-    SandboxConfig,
-    ResourceLimits,
-    NetworkPolicy,
-    DEFAULT_LOW_RISK,
-    DEFAULT_MEDIUM_RISK,
-    DEFAULT_HIGH_RISK,
-)
-
 from orchestrator.sandbox.docker_sandbox import (
     DockerSandbox,
     SandboxExecutionError,
     SandboxTimeoutError,
     execute_in_sandbox,
+)
+from orchestrator.sandbox.sandbox_config import (
+    DEFAULT_HIGH_RISK,
+    DEFAULT_LOW_RISK,
+    DEFAULT_MEDIUM_RISK,
+    NetworkPolicy,
+    ResourceLimits,
+    SandboxConfig,
 )
 
 __all__ = [

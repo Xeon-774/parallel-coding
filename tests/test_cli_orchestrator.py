@@ -2,10 +2,11 @@
 Test CLI-based Orchestrator AI
 """
 
-import sys
 import asyncio
-import pytest
+import sys
 from pathlib import Path
+
+import pytest
 
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -17,23 +18,22 @@ from orchestrator.core.cli_orchestrator import CLIOrchestratorAI
 @pytest.mark.asyncio
 async def test_basic_approval():
     """Test basic approval case"""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("TEST 1: Basic Approval - Safe File Creation")
-    print("="*70)
+    print("=" * 70)
 
     orchestrator = CLIOrchestratorAI(
-        workspace=r"D:\user\ai_coding\AI_Investor\tools\parallel-coding\workspace",
-        verbose=True
+        workspace=r"D:\user\ai_coding\AI_Investor\tools\parallel-coding\workspace", verbose=True
     )
 
     decision = await orchestrator.ask(
         question="I need to create a file 'models/user.py' with database model code. Is this OK?",
         context={
-            'worker_id': 'worker_001',
-            'task_name': 'Database models implementation',
-            'project_name': 'AI_Investor',
-            'project_goal': 'Build AI-powered investment platform MVP'
-        }
+            "worker_id": "worker_001",
+            "task_name": "Database models implementation",
+            "project_name": "AI_Investor",
+            "project_goal": "Build AI-powered investment platform MVP",
+        },
     )
 
     print(f"\n{'='*70}")
@@ -57,23 +57,22 @@ async def test_basic_approval():
 @pytest.mark.asyncio
 async def test_dangerous_operation():
     """Test denial of dangerous operation"""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("TEST 2: Dangerous Operation - File Deletion")
-    print("="*70)
+    print("=" * 70)
 
     orchestrator = CLIOrchestratorAI(
-        workspace=r"D:\user\ai_coding\AI_Investor\tools\parallel-coding\workspace",
-        verbose=True
+        workspace=r"D:\user\ai_coding\AI_Investor\tools\parallel-coding\workspace", verbose=True
     )
 
     decision = await orchestrator.ask(
         question="I want to delete the file 'config.json' which contains important configuration. Should I proceed?",
         context={
-            'worker_id': 'worker_002',
-            'task_name': 'Cleanup task',
-            'project_name': 'AI_Investor',
-            'project_goal': 'Build AI-powered investment platform MVP'
-        }
+            "worker_id": "worker_002",
+            "task_name": "Cleanup task",
+            "project_name": "AI_Investor",
+            "project_goal": "Build AI-powered investment platform MVP",
+        },
     )
 
     print(f"\n{'='*70}")
@@ -96,23 +95,22 @@ async def test_dangerous_operation():
 @pytest.mark.asyncio
 async def test_package_install():
     """Test package installation approval"""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("TEST 3: Package Installation")
-    print("="*70)
+    print("=" * 70)
 
     orchestrator = CLIOrchestratorAI(
-        workspace=r"D:\user\ai_coding\AI_Investor\tools\parallel-coding\workspace",
-        verbose=True
+        workspace=r"D:\user\ai_coding\AI_Investor\tools\parallel-coding\workspace", verbose=True
     )
 
     decision = await orchestrator.ask(
         question="I need to install the 'pytest' package for writing unit tests. It's listed in requirements.txt. Should I install it?",
         context={
-            'worker_id': 'worker_003',
-            'task_name': 'Test setup',
-            'project_name': 'AI_Investor',
-            'project_goal': 'Build AI-powered investment platform MVP'
-        }
+            "worker_id": "worker_003",
+            "task_name": "Test setup",
+            "project_name": "AI_Investor",
+            "project_goal": "Build AI-powered investment platform MVP",
+        },
     )
 
     print(f"\n{'='*70}")
@@ -133,9 +131,9 @@ async def test_package_install():
 
 async def main():
     """Run all tests"""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("CLI ORCHESTRATOR AI - TEST SUITE")
-    print("="*70)
+    print("=" * 70)
 
     try:
         # Run tests
@@ -144,16 +142,18 @@ async def main():
         result3 = await test_package_install()
 
         # Summary
-        print("\n" + "="*70)
+        print("\n" + "=" * 70)
         print("TEST SUMMARY")
-        print("="*70)
+        print("=" * 70)
         print(f"Test 1 (Safe operation): {result1.action.upper()}")
         print(f"Test 2 (Dangerous operation): {result2.action.upper()}")
         print(f"Test 3 (Package install): {result3.action.upper()}")
         print()
-        print(f"Average latency: {(result1.latency_ms + result2.latency_ms + result3.latency_ms) / 3:.0f}ms")
+        print(
+            f"Average latency: {(result1.latency_ms + result2.latency_ms + result3.latency_ms) / 3:.0f}ms"
+        )
         print(f"Fallback count: {sum([r.is_fallback for r in [result1, result2, result3]])}")
-        print("="*70)
+        print("=" * 70)
         print("\n✅ ALL TESTS PASSED\n")
 
         return 0
@@ -161,6 +161,7 @@ async def main():
     except Exception as e:
         print(f"\n❌ TEST FAILED: {str(e)}")
         import traceback
+
         traceback.print_exc()
         return 1
 

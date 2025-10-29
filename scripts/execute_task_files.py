@@ -26,20 +26,21 @@ Created: 2025-10-25
 Version: 1.0.0
 """
 
-import sys
 import argparse
 import asyncio
+import sys
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 # Add project root to path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from orchestrator.config import OrchestratorConfig
-from orchestrator.core.worker.worker_manager import WorkerManager
-from orchestrator.core.cli_orchestrator import CLIOrchestratorAI
 from typing import Any
+
+from orchestrator.config import OrchestratorConfig
+from orchestrator.core.cli_orchestrator import CLIOrchestratorAI
+from orchestrator.core.worker.worker_manager import WorkerManager
 
 
 class SimpleLogger:
@@ -76,7 +77,13 @@ class TaskFileExecutor:
     decomposition.
     """
 
-    def __init__(self, config: OrchestratorConfig, logger: SimpleLogger, auto_approve_caution: bool = True, use_codex: bool = False):
+    def __init__(
+        self,
+        config: OrchestratorConfig,
+        logger: SimpleLogger,
+        auto_approve_caution: bool = True,
+        use_codex: bool = False,
+    ):
         """
         Initialize task file executor.
 
@@ -98,10 +105,7 @@ class TaskFileExecutor:
         user_callback = self._approve_caution_operations if auto_approve_caution else None
 
         self.worker_manager = WorkerManager(config, logger, user_approval_callback=user_callback)
-        self.orchestrator_ai = CLIOrchestratorAI(
-            workspace=config.workspace_root,
-            verbose=True
-        )
+        self.orchestrator_ai = CLIOrchestratorAI(workspace=config.workspace_root, verbose=True)
 
     def _approve_caution_operations(self, confirmation_request) -> bool:
         """
@@ -136,7 +140,7 @@ class TaskFileExecutor:
             raise FileNotFoundError(f"Task file not found: {task_file_path}")
 
         # Read task file content
-        with open(task_file_path, 'r', encoding='utf-8') as f:
+        with open(task_file_path, "r", encoding="utf-8") as f:
             content = f.read()
 
         if not content.strip():
@@ -148,7 +152,7 @@ class TaskFileExecutor:
         # Load Codex worker system prompt
         codex_prompt_path = Path(__file__).parent.parent / "CODEX_WORKER_SYSTEM_PROMPT.md"
         if codex_prompt_path.exists():
-            with open(codex_prompt_path, 'r', encoding='utf-8') as f:
+            with open(codex_prompt_path, "r", encoding="utf-8") as f:
                 codex_prompt = f.read()
         else:
             # Fallback if Codex prompt doesn't exist
@@ -170,11 +174,7 @@ DO NOT ask for permission repeatedly. Proceed with implementation immediately.""
 **START EXECUTION NOW. This task is pre-approved.**
 """
 
-        return {
-            'name': task_name,
-            'prompt': prompt,
-            'source_file': str(task_file_path)
-        }
+        return {"name": task_name, "prompt": prompt, "source_file": str(task_file_path)}
 
     async def execute_tasks_parallel(self, task_files: List[Path]) -> bool:
         """
@@ -217,16 +217,12 @@ DO NOT ask for permission repeatedly. Proceed with implementation immediately.""
             if self.use_codex:
                 # Use Codex Worker
                 session = self.worker_manager.spawn_codex_worker(
-                    worker_id=worker_id,
-                    task=task,
-                    timeout=300
+                    worker_id=worker_id, task=task, timeout=300
                 )
             else:
                 # Use Claude Worker
                 session = self.worker_manager.spawn_worker(
-                    worker_id=worker_id,
-                    task=task,
-                    timeout=300
+                    worker_id=worker_id, task=task, timeout=300
                 )
 
             if session:
@@ -256,23 +252,18 @@ DO NOT ask for permission repeatedly. Proceed with implementation immediately.""
                     # Run in executor to avoid blocking
                     loop = aio.get_event_loop()
                     result = await loop.run_in_executor(
-                        None,
-                        self.worker_manager.run_codex_session,
-                        worker_id,
-                        1800
+                        None, self.worker_manager.run_codex_session, worker_id, 1800
                     )
                     return result
 
                 # Run all Codex workers in parallel
-                results = await aio.gather(*[
-                    run_codex_worker(i, task)
-                    for i, task in enumerate(tasks, 1)
-                ])
+                results = await aio.gather(
+                    *[run_codex_worker(i, task) for i, task in enumerate(tasks, 1)]
+                )
             else:
                 # Claude workers: Use existing wait_all method
                 results = self.worker_manager.wait_all(
-                    max_workers=len(sessions),
-                    timeout=1800  # 30 minutes timeout
+                    max_workers=len(sessions), timeout=1800  # 30 minutes timeout
                 )
 
             # Check if all succeeded
@@ -295,7 +286,7 @@ DO NOT ask for permission repeatedly. Proceed with implementation immediately.""
 def main():
     """Main entry point"""
     parser = argparse.ArgumentParser(
-        description='Execute pre-defined task files in parallel',
+        description="Execute pre-defined task files in parallel",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -312,27 +303,22 @@ Notes:
   - Workers will execute tasks independently
   - Monitor progress via Web Dashboard (http://localhost:8000)
   - All excellence_ai_standard rules are automatically enforced
-"""
+""",
     )
 
+    parser.add_argument("task_files", nargs="+", type=Path, help="Path(s) to task markdown file(s)")
+
     parser.add_argument(
-        'task_files',
-        nargs='+',
+        "--workspace",
         type=Path,
-        help='Path(s) to task markdown file(s)'
+        default=Path("workspace"),
+        help="Workspace root directory (default: workspace/)",
     )
 
     parser.add_argument(
-        '--workspace',
-        type=Path,
-        default=Path('workspace'),
-        help='Workspace root directory (default: workspace/)'
-    )
-
-    parser.add_argument(
-        '--codex',
-        action='store_true',
-        help='Use Codex workers (GPT-5) instead of Claude workers (cost-efficient)'
+        "--codex",
+        action="store_true",
+        help="Use Codex workers (GPT-5) instead of Claude workers (cost-efficient)",
     )
 
     args = parser.parse_args()
@@ -362,5 +348,5 @@ Notes:
         sys.exit(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

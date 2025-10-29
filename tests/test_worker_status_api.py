@@ -12,19 +12,20 @@ Test Coverage:
 - JSON serialization and response formats
 """
 
-import pytest
 import asyncio
 import json
 from pathlib import Path
+
+import pytest
 from fastapi.testclient import TestClient
 from fastapi.websockets import WebSocket
 
-from orchestrator.api.main import app
 from orchestrator.api import worker_status_api
+from orchestrator.api.main import app
 from orchestrator.core.worker_status_monitor import (
-    get_global_monitor,
-    WorkerState,
     HealthStatus,
+    WorkerState,
+    get_global_monitor,
 )
 
 

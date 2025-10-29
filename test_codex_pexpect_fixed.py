@@ -21,6 +21,7 @@ if sys.platform == "win32":
 else:
     import pexpect as pexpect
 
+
 def test_codex_with_pexpect():
     """Test Codex CLI execution with full I/O control"""
     print("=" * 70)
@@ -52,12 +53,7 @@ The function should be named 'hello' and return 'Hello, World!'"""
     try:
         # Spawn process
         print("Spawning: Spawning codex process...")
-        child = pexpect.spawn(
-            cmd,
-            cwd=str(workspace.absolute()),
-            encoding="utf-8",
-            timeout=60
-        )
+        child = pexpect.spawn(cmd, cwd=str(workspace.absolute()), encoding="utf-8", timeout=60)
 
         # Send task via stdin
         print("📨 Sending task content...")
@@ -78,11 +74,7 @@ The function should be named 'hello' and return 'Hello, World!'"""
 
             try:
                 # Wait for any output with short timeout
-                index = child.expect([
-                    pexpect.TIMEOUT,
-                    pexpect.EOF,
-                    r".*\n"  # Any line
-                ], timeout=2)
+                index = child.expect([pexpect.TIMEOUT, pexpect.EOF, r".*\n"], timeout=2)  # Any line
 
                 if index == 0:  # TIMEOUT
                     print(f"[Iteration {iteration}] Timeout (no output)")
@@ -160,8 +152,10 @@ The function should be named 'hello' and return 'Hello, World!'"""
     except Exception as e:
         print(f"FAILED: ERROR: {e}")
         import traceback
+
         traceback.print_exc()
         return False
+
 
 if __name__ == "__main__":
     success = test_codex_with_pexpect()

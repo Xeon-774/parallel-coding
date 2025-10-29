@@ -3,8 +3,9 @@
 Tests backward compatibility and deprecation warning.
 """
 
-import pytest
 import warnings
+
+import pytest
 
 
 def test_logger_imports_with_deprecation_warning():

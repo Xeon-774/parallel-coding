@@ -30,7 +30,6 @@ from typing import Any, Final, Literal, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
-
 # ============================================================================
 # Pydantic Models for JSONL Event Parsing (Type Safety: Excellence Standard)
 # ============================================================================
@@ -195,7 +194,9 @@ class CodexExecutor:
     # Constants
     DEFAULT_TIMEOUT: Final[int] = 300  # 5 minutes
     DEFAULT_MODEL: Final[str] = "gpt-5"
-    REQUIRED_FLAGS: Final[str] = "--json --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check"
+    REQUIRED_FLAGS: Final[str] = (
+        "--json --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check"
+    )
 
     def __init__(
         self,
@@ -288,7 +289,7 @@ class CodexExecutor:
                 # Use Git Bash on Windows
                 return (
                     f'"{self.git_bash_path}" -c '
-                    f'"{self.windows_codex_path} exec {flags} < \'{task_file.absolute()}\'"'
+                    f"\"{self.windows_codex_path} exec {flags} < '{task_file.absolute()}'\""
                 )
             else:
                 # Direct Windows command (not recommended - may fail)
@@ -339,7 +340,7 @@ class CodexExecutor:
             # Encoding error - log and skip
             return UnknownEvent(
                 type="encoding_error",
-                raw_data={"error": f"UTF-8 decode error: {str(e)}", "line_repr": repr(line)}
+                raw_data={"error": f"UTF-8 decode error: {str(e)}", "line_repr": repr(line)},
             )
         except Exception as e:
             # Parse error - create unknown event

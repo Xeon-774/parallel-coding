@@ -4,8 +4,8 @@ Phase 1: 8-Parallel Validation Test
 Execute 8 Claude Code workers in parallel on MicroBlog test project.
 """
 
-import sys
 import json
+import sys
 from pathlib import Path
 
 # Project root
@@ -14,16 +14,17 @@ sys.path.insert(0, str(project_root))
 
 # Configure UTF-8 encoding BEFORE any output
 from orchestrator.utils.encoding_config import configure_console_encoding, safe_print
+
 configure_console_encoding()
 
 from orchestrator.config import OrchestratorConfig
-from orchestrator.core.worker.worker_manager import WorkerManager
 from orchestrator.core.structured_logging import StructuredLogger
+from orchestrator.core.worker.worker_manager import WorkerManager
 
 
 def load_execution_config(config_path: str) -> dict:
     """Load Phase 1 execution configuration"""
-    with open(config_path, 'r', encoding='utf-8-sig') as f:
+    with open(config_path, "r", encoding="utf-8-sig") as f:
         return json.load(f)
 
 
@@ -55,27 +56,21 @@ def test_phase1_parallel_execution():
 
     # Orchestrator configuration
     config = OrchestratorConfig()
-    config.workspace_root = exec_config['project_path']
-    config.execution_mode = exec_config['execution_mode']
-    config.wsl_distribution = exec_config['wsl_distribution']
+    config.workspace_root = exec_config["project_path"]
+    config.execution_mode = exec_config["execution_mode"]
+    config.wsl_distribution = exec_config["wsl_distribution"]
     config.claude_command = "~/.local/bin/claude"
     config.nvm_path = "/usr/bin"
 
     # Logging
-    log_dir = Path(exec_config['logging']['log_dir'])
+    log_dir = Path(exec_config["logging"]["log_dir"])
     log_dir.mkdir(parents=True, exist_ok=True)
 
-    logger = StructuredLogger(
-        name="phase1_validation",
-        log_dir=log_dir,
-        enable_console=True
-    )
+    logger = StructuredLogger(name="phase1_validation", log_dir=log_dir, enable_console=True)
 
     # Worker manager
     worker_manager = WorkerManager(
-        config=config,
-        logger=logger,
-        user_approval_callback=None  # Auto-approval mode
+        config=config, logger=logger, user_approval_callback=None  # Auto-approval mode
     )
 
     safe_print("=" * 80)
@@ -90,19 +85,19 @@ def test_phase1_parallel_execution():
 
     try:
         # Spawn all workers in parallel
-        for worker_config in exec_config['workers']:
+        for worker_config in exec_config["workers"]:
             safe_print(f"\n[Spawn] Worker: {worker_config['worker_id']}")
             safe_print(f"        Module: {worker_config['module_name']}")
             safe_print(f"        Branch: {worker_config['git_branch']}")
 
             # Read task file
-            task_file_path = Path(exec_config['project_path']) / worker_config['task_file']
-            with open(task_file_path, 'r', encoding='utf-8-sig') as f:
+            task_file_path = Path(exec_config["project_path"]) / worker_config["task_file"]
+            with open(task_file_path, "r", encoding="utf-8-sig") as f:
                 task_content = f.read()
 
             # Create task
             task = {
-                "name": worker_config['module_name'],
+                "name": worker_config["module_name"],
                 "prompt": f"""
 You are a WorkerAI developing a module for the MicroBlog platform.
 
@@ -117,20 +112,17 @@ Important:
 - Follow the encoding policy (UTF-8 with BOM)
 
 Start working on this task now.
-"""
+""",
             }
 
             # Spawn worker
-            session = worker_manager.spawn_worker(
-                worker_id=worker_config['worker_id'],
-                task=task
-            )
+            session = worker_manager.spawn_worker(worker_id=worker_config["worker_id"], task=task)
 
             if session:
-                spawned_workers.append(worker_config['worker_id'])
+                spawned_workers.append(worker_config["worker_id"])
                 safe_print(f"[SUCCESS] Worker {worker_config['worker_id']} spawned")
             else:
-                failed_workers.append(worker_config['worker_id'])
+                failed_workers.append(worker_config["worker_id"])
                 safe_print(f"[FAILURE] Worker {worker_config['worker_id']} failed to spawn")
 
         # Wait for all workers to complete IN PARALLEL
@@ -141,8 +133,7 @@ Start working on this task now.
 
         # Execute all workers in parallel
         results = worker_manager.wait_all(
-            max_workers=len(spawned_workers),
-            timeout=1800  # 30 minutes total
+            max_workers=len(spawned_workers), timeout=1800  # 30 minutes total
         )
 
         # Process results
@@ -159,7 +150,7 @@ Start working on this task now.
         safe_print("Phase 1 Validation Results")
         safe_print("=" * 80)
 
-        total_workers = len(exec_config['workers'])
+        total_workers = len(exec_config["workers"])
         spawned_count = len(spawned_workers)
         completed_count = len(completed_workers)
         failed_count = len(failed_workers)
@@ -167,9 +158,13 @@ Start working on this task now.
         completion_rate = (completed_count / total_workers) * 100
         conflict_rate = (len(git_conflicts) / total_workers) * 100 if total_workers > 0 else 0
 
-        safe_print(f"\nWorkers Spawned: {spawned_count}/{total_workers} ({spawned_count/total_workers*100:.1f}%)")
+        safe_print(
+            f"\nWorkers Spawned: {spawned_count}/{total_workers} ({spawned_count/total_workers*100:.1f}%)"
+        )
         safe_print(f"Modules Completed: {completed_count}/{total_workers} ({completion_rate:.1f}%)")
-        safe_print(f"Modules Failed: {failed_count}/{total_workers} ({failed_count/total_workers*100:.1f}%)")
+        safe_print(
+            f"Modules Failed: {failed_count}/{total_workers} ({failed_count/total_workers*100:.1f}%)"
+        )
         safe_print(f"Git Conflicts: {len(git_conflicts)} ({conflict_rate:.1f}%)")
 
         # Evaluate success
@@ -182,8 +177,12 @@ Start working on this task now.
         conflict_target_met = conflict_rate < 20.0
 
         safe_print(f"\n✓ All workers spawned: {'✅ PASS' if all_spawned else '❌ FAIL'}")
-        safe_print(f"✓ Completion rate ≥75%: {'✅ PASS' if completion_target_met else '❌ FAIL'} ({completion_rate:.1f}%)")
-        safe_print(f"✓ Conflict rate <20%: {'✅ PASS' if conflict_target_met else '❌ FAIL'} ({conflict_rate:.1f}%)")
+        safe_print(
+            f"✓ Completion rate ≥75%: {'✅ PASS' if completion_target_met else '❌ FAIL'} ({completion_rate:.1f}%)"
+        )
+        safe_print(
+            f"✓ Conflict rate <20%: {'✅ PASS' if conflict_target_met else '❌ FAIL'} ({conflict_rate:.1f}%)"
+        )
 
         overall_success = all_spawned and completion_target_met and conflict_target_met
 
@@ -204,10 +203,11 @@ Start working on this task now.
     except Exception as e:
         safe_print(f"\n[ERROR] Phase 1 validation failed: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     success = test_phase1_parallel_execution()
     sys.exit(0 if success else 1)

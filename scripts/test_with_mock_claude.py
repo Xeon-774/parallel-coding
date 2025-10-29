@@ -16,12 +16,12 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from orchestrator.core.enhanced_interactive_worker_manager import (
-    EnhancedInteractiveWorkerManager,
-    ConfirmationRequest,
-    WorkerSession
-)
 from orchestrator.config import OrchestratorConfig
+from orchestrator.core.enhanced_interactive_worker_manager import (
+    ConfirmationRequest,
+    EnhancedInteractiveWorkerManager,
+    WorkerSession,
+)
 
 
 # Temporarily patch the command builder to use mock CLI
@@ -73,25 +73,25 @@ def user_approval_callback(confirmation: ConfirmationRequest) -> bool:
     print(f"{'='*60}")
 
     # Auto-approve file writes for testing
-    if confirmation.confirmation_type.value == 'file_write':
+    if confirmation.confirmation_type.value == "file_write":
         print("[AUTO-APPROVE] File write operation")
         return True
 
     # Auto-approve file reads
-    if confirmation.confirmation_type.value == 'file_read':
+    if confirmation.confirmation_type.value == "file_read":
         print("[AUTO-APPROVE] File read operation")
         return True
 
     # For command execution, approve safe commands
-    if confirmation.confirmation_type.value == 'command_execute':
-        command = confirmation.details.get('command', '').lower()
-        if 'dir' in command or 'ls' in command:
+    if confirmation.confirmation_type.value == "command_execute":
+        command = confirmation.details.get("command", "").lower()
+        if "dir" in command or "ls" in command:
             print("[AUTO-APPROVE] Safe list command")
             return True
 
     # Ask user for everything else
     response = input("\nApprove? (y/n): ").strip().lower()
-    approved = response == 'y'
+    approved = response == "y"
 
     print(f"[USER-DECISION] {'APPROVED' if approved else 'DENIED'}")
 
@@ -101,9 +101,9 @@ def user_approval_callback(confirmation: ConfirmationRequest) -> bool:
 def test_mock_integration():
     """Test full integration with mock Claude CLI"""
 
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print(" Testing EnhancedInteractiveWorkerManager with Mock Claude CLI")
-    print("="*70)
+    print("=" * 70)
 
     # Setup
     config = OrchestratorConfig.from_env()
@@ -112,9 +112,7 @@ def test_mock_integration():
     logger = TestLogger()
 
     manager = MockEnhancedInteractiveWorkerManager(
-        config=config,
-        logger=logger,
-        user_approval_callback=user_approval_callback
+        config=config, logger=logger, user_approval_callback=user_approval_callback
     )
 
     # Create task
@@ -123,7 +121,7 @@ def test_mock_integration():
         "prompt": """
 Create a simple Python script that prints "Hello, World!"
 and save it to a file.
-"""
+""",
     }
 
     print("\n[STEP 1] Spawning worker with mock CLI...")
@@ -140,9 +138,9 @@ and save it to a file.
 
     result = manager.run_interactive_session(session.worker_id, max_iterations=20)
 
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print(" TEST RESULT")
-    print("="*70)
+    print("=" * 70)
     print(f"Success: {result.success}")
     print(f"Duration: {result.duration:.2f}s" if result.duration else "Duration: N/A")
     print(f"Error: {result.error_message if result.error_message else 'None'}")
@@ -166,20 +164,20 @@ and save it to a file.
 
 def main():
     """Run test"""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print(" Mock Claude CLI Integration Test")
-    print("="*70)
+    print("=" * 70)
     print("\nThis test validates EnhancedInteractiveWorkerManager")
     print("using a mock Claude CLI that simulates confirmations.\n")
 
     print(f"Platform: {sys.platform}")
 
-    if sys.platform == 'win32':
+    if sys.platform == "win32":
         print("Using: wexpect (Windows)")
     else:
         print("Using: pexpect (Unix/Linux)")
 
-    print("\n" + "-"*70)
+    print("\n" + "-" * 70)
 
     # Skip input in automated mode
     # import os
@@ -190,12 +188,12 @@ def main():
     try:
         success = test_mock_integration()
 
-        print("\n" + "="*70)
+        print("\n" + "=" * 70)
         if success:
             print(" TEST PASSED")
         else:
             print(" TEST FAILED")
-        print("="*70)
+        print("=" * 70)
 
         return success
 
@@ -206,6 +204,7 @@ def main():
     except Exception as e:
         print(f"\n[ERROR] Test failed with exception: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 

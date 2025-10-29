@@ -90,8 +90,7 @@ class RecursionValidator:
 
         # Exponential backoff for timeout by depth.
         adjusted_timeout = int(
-            RecursionValidator._BASE_TIMEOUT
-            * (RecursionValidator._TIMEOUT_GROWTH ** next_depth)
+            RecursionValidator._BASE_TIMEOUT * (RecursionValidator._TIMEOUT_GROWTH**next_depth)
         )
 
         return RecursionValidationResult(
@@ -102,9 +101,7 @@ class RecursionValidator:
         )
 
     @staticmethod
-    def detect_circular_reference(
-        parent_job_ids: List[str], current_job_id: str
-    ) -> bool:
+    def detect_circular_reference(parent_job_ids: List[str], current_job_id: str) -> bool:
         """Detect if the current job creates a circular reference.
 
         Args:
@@ -121,4 +118,3 @@ class RecursionValidator:
             False
         """
         return current_job_id in parent_job_ids
-

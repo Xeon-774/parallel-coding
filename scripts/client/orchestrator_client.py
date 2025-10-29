@@ -22,14 +22,16 @@ Example usage:
 """
 
 import time
-import requests
-from typing import Optional, Dict, Any, List
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Any, Dict, List, Optional
+
+import requests
 
 
 class OrchestratorError(Exception):
     """Base exception for orchestrator client errors"""
+
     pass
 
 
@@ -43,17 +45,20 @@ class RateLimitError(OrchestratorError):
 
 class JobNotFoundError(OrchestratorError):
     """Raised when job is not found"""
+
     pass
 
 
 class AuthenticationError(OrchestratorError):
     """Raised when authentication fails"""
+
     pass
 
 
 @dataclass
 class JobProgress:
     """Job progress information"""
+
     total_tasks: int
     completed_tasks: int
     failed_tasks: int
@@ -65,7 +70,7 @@ class JobProgress:
 class Job:
     """Represents an orchestration job"""
 
-    def __init__(self, client: 'OrchestratorClient', job_id: str):
+    def __init__(self, client: "OrchestratorClient", job_id: str):
         self.client = client
         self.job_id = job_id
         self._status_cache: Optional[Dict[str, Any]] = None
@@ -86,10 +91,7 @@ class Job:
             OrchestratorError: On API errors
         """
         if refresh or self._status_cache is None:
-            response = self.client._request(
-                "GET",
-                f"/api/v1/jobs/{self.job_id}/status"
-            )
+            response = self.client._request("GET", f"/api/v1/jobs/{self.job_id}/status")
             self._status_cache = response
         return self._status_cache
 
@@ -108,10 +110,7 @@ class Job:
             OrchestratorError: If job not complete or on API errors
         """
         if refresh or self._results_cache is None:
-            response = self.client._request(
-                "GET",
-                f"/api/v1/jobs/{self.job_id}/results"
-            )
+            response = self.client._request("GET", f"/api/v1/jobs/{self.job_id}/results")
             self._results_cache = response
         return self._results_cache
 
@@ -119,7 +118,7 @@ class Job:
         self,
         poll_interval: int = 5,
         timeout: Optional[int] = None,
-        callback: Optional[callable] = None
+        callback: Optional[callable] = None,
     ) -> Dict[str, Any]:
         """
         Wait for job to complete
@@ -147,8 +146,8 @@ class Job:
                 callback(status)
 
             # Check if complete
-            job_status = status.get('status', '')
-            if job_status in ['completed', 'failed', 'partial', 'canceled']:
+            job_status = status.get("status", "")
+            if job_status in ["completed", "failed", "partial", "canceled"]:
                 return self.results()
 
             # Check timeout
@@ -177,22 +176,22 @@ class Job:
     def is_complete(self) -> bool:
         """Check if job is complete"""
         status = self.status()
-        return status.get('status') in ['completed', 'failed', 'partial', 'canceled']
+        return status.get("status") in ["completed", "failed", "partial", "canceled"]
 
     def is_running(self) -> bool:
         """Check if job is currently running"""
         status = self.status()
-        return status.get('status') == 'running'
+        return status.get("status") == "running"
 
     def is_successful(self) -> bool:
         """Check if job completed successfully"""
         status = self.status()
-        return status.get('status') == 'completed'
+        return status.get("status") == "completed"
 
     def get_progress(self) -> JobProgress:
         """Get structured progress information"""
         status = self.status()
-        progress_data = status.get('progress', {})
+        progress_data = status.get("progress", {})
         return JobProgress(**progress_data)
 
 
@@ -213,16 +212,18 @@ class OrchestratorClient:
             api_key: API authentication key
             timeout: Request timeout in seconds (default 30)
         """
-        self.api_url = api_url.rstrip('/')
+        self.api_url = api_url.rstrip("/")
         self.api_key = api_key
         self.timeout = timeout
 
         self.session = requests.Session()
-        self.session.headers.update({
-            "X-API-Key": api_key,
-            "Content-Type": "application/json",
-            "User-Agent": "orchestrator-client-python/7.0.0"
-        })
+        self.session.headers.update(
+            {
+                "X-API-Key": api_key,
+                "Content-Type": "application/json",
+                "User-Agent": "orchestrator-client-python/7.0.0",
+            }
+        )
 
     def _request(self, method: str, path: str, **kwargs) -> Dict[str, Any]:
         """Internal method to make HTTP requests"""
@@ -230,23 +231,20 @@ class OrchestratorClient:
 
         try:
             response = self.session.request(
-                method,
-                url,
-                timeout=kwargs.pop('timeout', self.timeout),
-                **kwargs
+                method, url, timeout=kwargs.pop("timeout", self.timeout), **kwargs
             )
 
             # Handle specific status codes
             if response.status_code == 401:
                 raise AuthenticationError("Invalid API key")
             elif response.status_code == 404:
-                raise JobNotFoundError(response.json().get('error', 'Resource not found'))
+                raise JobNotFoundError(response.json().get("error", "Resource not found"))
             elif response.status_code == 429:
-                retry_after = int(response.headers.get('Retry-After', 60))
+                retry_after = int(response.headers.get("Retry-After", 60))
                 raise RateLimitError("Rate limit exceeded", retry_after)
             elif response.status_code >= 400:
                 error_data = response.json() if response.content else {}
-                error_msg = error_data.get('error', f'HTTP {response.status_code}')
+                error_msg = error_data.get("error", f"HTTP {response.status_code}")
                 raise OrchestratorError(error_msg)
 
             response.raise_for_status()
@@ -264,7 +262,7 @@ class OrchestratorClient:
         wait: bool = False,
         poll_interval: int = 5,
         timeout: Optional[int] = None,
-        progress_callback: Optional[callable] = None
+        progress_callback: Optional[callable] = None,
     ) -> Job | Dict[str, Any]:
         """
         Submit orchestration job
@@ -297,10 +295,7 @@ class OrchestratorClient:
             OrchestratorError: On other API errors
         """
         # Build request payload
-        payload = {
-            "request": request,
-            "priority": priority
-        }
+        payload = {"request": request, "priority": priority}
 
         if config:
             payload["config"] = config
@@ -311,15 +306,13 @@ class OrchestratorClient:
         # Submit job
         response = self._request("POST", "/api/v1/orchestrate", json=payload)
 
-        job_id = response.get('job_id')
+        job_id = response.get("job_id")
         job = Job(client=self, job_id=job_id)
 
         # Wait for completion if requested
         if wait:
             return job.wait_for_completion(
-                poll_interval=poll_interval,
-                timeout=timeout,
-                callback=progress_callback
+                poll_interval=poll_interval, timeout=timeout, callback=progress_callback
             )
 
         return job
@@ -370,17 +363,14 @@ class OrchestratorClient:
         """
         try:
             response = self._request("GET", "/api/v1/health")
-            return response.get('status') == 'healthy'
+            return response.get("status") == "healthy"
         except:
             return False
 
 
 # Convenience function for quick usage
 def orchestrate(
-    request: str,
-    api_url: str = "http://localhost:8000",
-    api_key: str = None,
-    **kwargs
+    request: str, api_url: str = "http://localhost:8000", api_key: str = None, **kwargs
 ) -> Dict[str, Any]:
     """
     Convenience function for quick orchestration

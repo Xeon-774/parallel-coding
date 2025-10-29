@@ -13,11 +13,12 @@ sys.path.insert(0, str(project_root))
 
 # Configure UTF-8 encoding BEFORE any output
 from orchestrator.utils.encoding_config import configure_console_encoding, safe_print
+
 configure_console_encoding()
 
 from orchestrator.config import OrchestratorConfig
-from orchestrator.core.worker.worker_manager import WorkerManager
 from orchestrator.core.structured_logging import StructuredLogger
+from orchestrator.core.worker.worker_manager import WorkerManager
 
 
 def test_worker():
@@ -40,17 +41,11 @@ def test_worker():
     workspace.mkdir(parents=True, exist_ok=True)
 
     # ロガー
-    logger = StructuredLogger(
-        name="simple_test_wsl",
-        log_dir=workspace,
-        enable_console=True
-    )
+    logger = StructuredLogger(name="simple_test_wsl", log_dir=workspace, enable_console=True)
 
     # WorkerManager初期化
     worker_manager = WorkerManager(
-        config=config,
-        logger=logger,
-        user_approval_callback=None  # 自動承認モード
+        config=config, logger=logger, user_approval_callback=None  # 自動承認モード
     )
 
     # タスク定義
@@ -65,7 +60,7 @@ def test_worker():
 3. "Test completed!" と出力
 
 開始してください。
-"""
+""",
     }
 
     try:
@@ -77,10 +72,7 @@ def test_worker():
         # WorkerAI起動
         worker_id = "simple_test_worker_wsl"
 
-        session = worker_manager.spawn_worker(
-            worker_id=worker_id,
-            task=task
-        )
+        session = worker_manager.spawn_worker(worker_id=worker_id, task=task)
 
         if not session:
             print("[ERROR] Failed to spawn worker")
@@ -102,7 +94,7 @@ def test_worker():
         if result.output:
             # 出力をファイルに保存 (UTF-8 with BOM)
             output_file = workspace / "worker_output.txt"
-            with open(output_file, 'w', encoding='utf-8-sig') as f:
+            with open(output_file, "w", encoding="utf-8-sig") as f:
                 f.write(result.output)
             safe_print(f"\n出力を保存しました: {output_file}")
             safe_print(f"出力長: {len(result.output)} 文字")
@@ -136,10 +128,11 @@ def test_worker():
     except Exception as e:
         print(f"\n[ERROR] テスト失敗: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     success = test_worker()
     sys.exit(0 if success else 1)

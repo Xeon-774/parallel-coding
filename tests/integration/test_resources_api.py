@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 from fastapi import FastAPI
-from httpx import AsyncClient, ASGITransport
+from httpx import ASGITransport, AsyncClient
 
 from orchestrator.api.resources_api import router as resources_router
 from orchestrator.core.hierarchical.resource_manager import DEFAULT_WORKERS_BY_DEPTH
@@ -136,4 +136,3 @@ async def test_usage_shape_and_values():
         first = data["usage"][0]
         assert set(first.keys()) == {"depth", "allocated", "available"}
         assert first["allocated"] + first["available"] == DEFAULT_WORKERS_BY_DEPTH[first["depth"]]
-

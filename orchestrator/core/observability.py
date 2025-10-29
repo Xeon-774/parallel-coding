@@ -10,15 +10,16 @@ World-class observability with:
 - Real-time dashboards data
 """
 
-import time
-import psutil
+import statistics
 import threading
-from typing import Dict, List, Optional, Any, Callable, Deque
+import time
+from collections import defaultdict, deque
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from collections import defaultdict, deque
-import statistics
+from typing import Any, Callable, Deque, Dict, List, Optional
+
+import psutil
 
 
 class MetricType(str, Enum):

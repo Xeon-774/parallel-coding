@@ -62,6 +62,7 @@ def main():
     except Exception as e:
         print(f"\n[X] エラー: {e}")
         import traceback
+
         traceback.print_exc()
         return 1
 

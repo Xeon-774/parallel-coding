@@ -5,8 +5,8 @@ Phase 0 Week 2 - MVP Implementation
 """
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
 from pathlib import Path
+from typing import Dict, List, Optional
 
 
 @dataclass
@@ -61,9 +61,9 @@ class SandboxConfig:
     # Security
     read_only_root: bool = True
     no_new_privileges: bool = True
-    drop_capabilities: List[str] = field(default_factory=lambda: [
-        "ALL"  # Drop all capabilities by default
-    ])
+    drop_capabilities: List[str] = field(
+        default_factory=lambda: ["ALL"]  # Drop all capabilities by default
+    )
 
     # Timeouts
     startup_timeout: int = 30  # seconds
@@ -85,19 +85,14 @@ class SandboxConfig:
             "environment": self.env_vars,
             "network_disabled": not self.network.enabled,
             "read_only": self.read_only_root,
-            "security_opt": [
-                "no-new-privileges:true"
-            ] if self.no_new_privileges else [],
+            "security_opt": ["no-new-privileges:true"] if self.no_new_privileges else [],
             "cap_drop": self.drop_capabilities,
             "mem_limit": self.resources.memory_limit,
             "memswap_limit": self.resources.memory_swap,
             "nano_cpus": int(self.resources.cpu_quota * 1e9),
             "pids_limit": self.resources.pids_limit,
             "volumes": {
-                str(host): {
-                    "bind": str(container),
-                    "mode": "ro"  # Read-only by default
-                }
+                str(host): {"bind": str(container), "mode": "ro"}  # Read-only by default
                 for host, container in self.bind_mounts.items()
             },
             "detach": True,
@@ -107,31 +102,21 @@ class SandboxConfig:
 
 # Default configurations for different risk levels
 DEFAULT_LOW_RISK = SandboxConfig(
-    resources=ResourceLimits(
-        cpu_quota=0.5,
-        memory_limit="256m",
-        memory_swap="512m"
-    ),
-    execution_timeout=300  # 5 minutes
+    resources=ResourceLimits(cpu_quota=0.5, memory_limit="256m", memory_swap="512m"),
+    execution_timeout=300,  # 5 minutes
 )
 
 DEFAULT_MEDIUM_RISK = SandboxConfig(
-    resources=ResourceLimits(
-        cpu_quota=1.0,
-        memory_limit="512m",
-        memory_swap="1g"
-    ),
-    execution_timeout=600  # 10 minutes
+    resources=ResourceLimits(cpu_quota=1.0, memory_limit="512m", memory_swap="1g"),
+    execution_timeout=600,  # 10 minutes
 )
 
 DEFAULT_HIGH_RISK = SandboxConfig(
     resources=ResourceLimits(
-        cpu_quota=0.25,  # Stricter limits
-        memory_limit="128m",
-        memory_swap="256m"
+        cpu_quota=0.25, memory_limit="128m", memory_swap="256m"  # Stricter limits
     ),
     execution_timeout=120,  # 2 minutes
     network=NetworkPolicy(enabled=False),  # Absolutely no network
     read_only_root=True,
-    no_new_privileges=True
+    no_new_privileges=True,
 )
