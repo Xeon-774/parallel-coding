@@ -54,6 +54,76 @@ async def get_worker_metrics_summary(worker_id: str) -> Dict[str, Any]:
     return summary
 
 
+def _collect_all_worker_metrics(workspace: Path) -> List[Dict[str, Any]]:
+    """Collect metrics from all worker directories."""
+    all_metrics = []
+    if workspace.exists():
+        for worker_dir in workspace.iterdir():
+            if worker_dir.is_dir() and worker_dir.name.startswith("worker_"):
+                try:
+                    metrics = metrics_collector.get_metrics(worker_dir.name)
+                    all_metrics.extend(metrics)
+                except Exception as e:
+                    # Log and continue if one worker fails
+                    print(f"Warning: Failed to get metrics for {worker_dir.name}: {e}")
+    return all_metrics
+
+
+def _process_confirmation_metrics(all_metrics: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """Process confirmation metrics and calculate statistics."""
+    counters = {
+        "total_decisions": 0,
+        "rules_decisions": 0,
+        "ai_decisions": 0,
+        "template_fallbacks": 0,
+        "all_latencies": [],
+    }
+
+    for metric in all_metrics:
+        if metric.get("type") == "confirmation":
+            counters["total_decisions"] += 1
+            _update_decision_counters(metric, counters)
+            _collect_latency(metric, counters)
+
+    return _calculate_final_statistics(counters)
+
+
+def _update_decision_counters(metric: Dict[str, Any], counters: Dict[str, Any]) -> None:
+    """Update decision counters based on metric type."""
+    decided_by = metric.get("decided_by", "unknown")
+    if decided_by == "rules":
+        counters["rules_decisions"] += 1
+    elif decided_by == "ai":
+        counters["ai_decisions"] += 1
+    elif decided_by == "template":
+        counters["template_fallbacks"] += 1
+
+
+def _collect_latency(metric: Dict[str, Any], counters: Dict[str, Any]) -> None:
+    """Collect latency data from metric."""
+    if "latency_ms" in metric:
+        counters["all_latencies"].append(metric["latency_ms"])
+
+
+def _calculate_final_statistics(counters: Dict[str, Any]) -> Dict[str, Any]:
+    """Calculate average latency and rules percentage."""
+    all_latencies = counters["all_latencies"]
+    total_decisions = counters["total_decisions"]
+    rules_decisions = counters["rules_decisions"]
+
+    average_latency_ms = sum(all_latencies) / len(all_latencies) if all_latencies else 0.0
+    rules_percentage = (rules_decisions / total_decisions * 100) if total_decisions > 0 else 0.0
+
+    return {
+        "total_decisions": total_decisions,
+        "rules_decisions": rules_decisions,
+        "ai_decisions": counters["ai_decisions"],
+        "template_fallbacks": counters["template_fallbacks"],
+        "average_latency_ms": average_latency_ms,
+        "rules_percentage": rules_percentage,
+    }
+
+
 @router.get("/metrics / current")
 async def get_current_hybrid_metrics() -> Dict[str, Any]:
     """
@@ -73,56 +143,16 @@ async def get_current_hybrid_metrics() -> Dict[str, Any]:
         }
     """
     workspace = Path(DEFAULT_CONFIG.workspace_root)
-
-    # Aggregate metrics from all workers
-    all_metrics = []
-    if workspace.exists():
-        for worker_dir in workspace.iterdir():
-            if worker_dir.is_dir() and worker_dir.name.startswith("worker_"):
-                try:
-                    metrics = metrics_collector.get_metrics(worker_dir.name)
-                    all_metrics.extend(metrics)
-                except Exception as e:
-                    # Log and continue if one worker fails
-                    print(f"Warning: Failed to get metrics for {worker_dir.name}: {e}")
-
-    # Initialize counters
-    total_decisions = 0
-    rules_decisions = 0
-    ai_decisions = 0
-    template_fallbacks = 0
-    all_latencies = []
-
-    # Process all confirmation metrics
-    for metric in all_metrics:
-        if metric.get("type") == "confirmation":
-            total_decisions += 1
-
-            decided_by = metric.get("decided_by", "unknown")
-            if decided_by == "rules":
-                rules_decisions += 1
-            elif decided_by == "ai":
-                ai_decisions += 1
-            elif decided_by == "template":
-                template_fallbacks += 1
-
-            # Collect latency if available
-            if "latency_ms" in metric:
-                all_latencies.append(metric["latency_ms"])
-
-    # Calculate average latency
-    average_latency_ms = sum(all_latencies) / len(all_latencies) if all_latencies else 0.0
-
-    # Calculate rules percentage
-    rules_percentage = (rules_decisions / total_decisions * 100) if total_decisions > 0 else 0.0
+    all_metrics = _collect_all_worker_metrics(workspace)
+    counters = _process_confirmation_metrics(all_metrics)
 
     return {
-        "total_decisions": total_decisions,
-        "rules_decisions": rules_decisions,
-        "ai_decisions": ai_decisions,
-        "template_fallbacks": template_fallbacks,
-        "average_latency_ms": round(average_latency_ms, 2),
-        "rules_percentage": round(rules_percentage, 2),
+        "total_decisions": counters["total_decisions"],
+        "rules_decisions": counters["rules_decisions"],
+        "ai_decisions": counters["ai_decisions"],
+        "template_fallbacks": counters["template_fallbacks"],
+        "average_latency_ms": round(counters["average_latency_ms"], 2),
+        "rules_percentage": round(counters["rules_percentage"], 2),
     }
 
 

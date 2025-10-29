@@ -97,32 +97,57 @@ class EventBus:
 bus = EventBus()
 
 
-@router.websocket("/ws / recursion")
-async def ws_recursion(ws: WebSocket) -> None:
-    # Parse query params for depth filter, defaults wide open
+def _parse_connection_params(ws: WebSocket) -> tuple[int, int, float] | None:
+    """Parse and validate query parameters for WebSocket connection."""
     qp = ws.query_params
     try:
         min_depth = int(qp.get("min_depth", 0))
         max_depth = int(qp.get("max_depth", 5))
         heartbeat = float(qp.get("heartbeat", 15.0))
+        return (min_depth, max_depth, heartbeat)
     except ValueError:
+        return None
+
+
+async def _handle_heartbeat_loop(ws: WebSocket, heartbeat: float) -> None:
+    """Handle heartbeat loop with timeout."""
+    while True:
+        try:
+            msg = await asyncio.wait_for(ws.receive_text(), timeout=heartbeat)
+            await _process_ping_message(ws, msg)
+        except asyncio.TimeoutError:
+            if not await _send_proactive_heartbeat(ws):
+                break
+
+
+async def _process_ping_message(ws: WebSocket, msg: str) -> None:
+    """Process ping message and send pong response."""
+    if msg == "ping":
+        await ws.send_text("pong")
+
+
+async def _send_proactive_heartbeat(ws: WebSocket) -> bool:
+    """Send proactive heartbeat, return False if connection broken."""
+    try:
+        await ws.send_text("ping")
+        return True
+    except Exception:
+        return False
+
+
+@router.websocket("/ws / recursion")
+async def ws_recursion(ws: WebSocket) -> None:
+    """WebSocket endpoint for hierarchical event streaming with depth filtering."""
+    params = _parse_connection_params(ws)
+    if params is None:
         await ws.close(code=status.WS_1008_POLICY_VIOLATION)
         return
 
+    min_depth, max_depth, heartbeat = params
     conn = await bus.connect(ws, min_depth=min_depth, max_depth=max_depth)
+
     try:
-        while True:
-            # Heartbeat and receive with timeout
-            try:
-                msg = await asyncio.wait_for(ws.receive_text(), timeout=heartbeat)
-                if msg == "ping":
-                    await ws.send_text("pong")
-            except asyncio.TimeoutError:
-                # Proactively send heartbeat
-                try:
-                    await ws.send_text("ping")
-                except Exception:
-                    break
+        await _handle_heartbeat_loop(ws, heartbeat)
     except WebSocketDisconnect:
         pass
     finally:

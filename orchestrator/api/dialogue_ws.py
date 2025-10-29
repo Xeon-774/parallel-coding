@@ -135,8 +135,7 @@ class DialogueFileMonitor(FileSystemEventHandler):
         Error Handling: Logs errors but continues operation
         """
         # Ensure async resources are initialized
-        if self._lock is None or self._new_entries is None:
-            logger.warning("_read_new_entries called before watch() initialized resources")
+        if not self._validate_resources():
             return
 
         async with self._lock:
@@ -144,51 +143,75 @@ class DialogueFileMonitor(FileSystemEventHandler):
                 if not self.transcript_file.exists():
                     return
 
-                current_size = self.transcript_file.stat().st_size
-
-                # File might have been truncated
-                if current_size < self._last_position:
-                    logger.warning("File size decreased, resetting position")
-                    self._last_position = 0
-
-                # No new content
-                if current_size == self._last_position:
+                if not self._check_file_size():
                     return
 
-                # Read new content
-                with open(self.transcript_file, "r", encoding="utf - 8") as f:
-                    f.seek(self._last_position)
-                    new_lines = f.readlines()
-                    self._last_position = f.tell()
-
-                # Parse and queue entries
-                for line in new_lines:
-                    line = line.strip()
-                    if not line:
-                        continue
-
-                    try:
-                        data = json.loads(line)
-                        entry = DialogueEntry(
-                            timestamp=data.get("timestamp", 0),
-                            direction=data.get("direction", ""),
-                            content=data.get("content", ""),
-                            type=data.get("type", ""),
-                            confirmation_type=data.get("confirmation_type"),
-                            confirmation_message=data.get("confirmation_message"),
-                        )
-                        await self._new_entries.put(entry)
-                        logger.debug(f"Queued entry: {entry.direction}")
-
-                    except json.JSONDecodeError as e:
-                        logger.error(f"Failed to parse JSON line: {e}")
-                        continue
-                    except Exception as e:
-                        logger.error(f"Error processing entry: {e}")
-                        continue
+                new_lines = self._read_new_lines()
+                await self._process_and_queue_lines(new_lines)
 
             except Exception as e:
                 logger.error(f"Error reading transcript file: {e}")
+
+    def _validate_resources(self) -> bool:
+        """Validate async resources are initialized."""
+        if self._lock is None or self._new_entries is None:
+            logger.warning("_read_new_entries called before watch() initialized resources")
+            return False
+        return True
+
+    def _check_file_size(self) -> bool:
+        """Check file size and handle truncation or no new content."""
+        current_size = self.transcript_file.stat().st_size
+
+        # File might have been truncated
+        if current_size < self._last_position:
+            logger.warning("File size decreased, resetting position")
+            self._last_position = 0
+
+        # No new content
+        if current_size == self._last_position:
+            return False
+
+        return True
+
+    def _read_new_lines(self) -> list[str]:
+        """Read new lines from transcript file."""
+        with open(self.transcript_file, "r", encoding="utf - 8") as f:
+            f.seek(self._last_position)
+            new_lines = f.readlines()
+            self._last_position = f.tell()
+        return new_lines
+
+    async def _process_and_queue_lines(self, new_lines: list[str]) -> None:
+        """Parse and queue dialogue entries from lines."""
+        for line in new_lines:
+            line = line.strip()
+            if not line:
+                continue
+
+            entry = self._parse_line_to_entry(line)
+            if entry:
+                await self._new_entries.put(entry)
+                logger.debug(f"Queued entry: {entry.direction}")
+
+    def _parse_line_to_entry(self, line: str) -> Optional[DialogueEntry]:
+        """Parse a JSON line into a DialogueEntry."""
+        try:
+            data = json.loads(line)
+            return DialogueEntry(
+                timestamp=data.get("timestamp", 0),
+                direction=data.get("direction", ""),
+                content=data.get("content", ""),
+                type=data.get("type", ""),
+                confirmation_type=data.get("confirmation_type"),
+                confirmation_message=data.get("confirmation_message"),
+            )
+        except json.JSONDecodeError as e:
+            logger.error(f"Failed to parse JSON line: {e}")
+            return None
+        except Exception as e:
+            logger.error(f"Error processing entry: {e}")
+            return None
 
     async def watch(self) -> AsyncIterator[DialogueEntry]:
         """

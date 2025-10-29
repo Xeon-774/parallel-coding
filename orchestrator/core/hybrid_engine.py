@@ -326,107 +326,124 @@ class HybridDecisionEngine:
         Raises:
             Exception: If complete failure occurs (worker should stop)
         """
-
         start_time = time.time()
+        self._log_decision_request(worker_id, request)
 
+        # Step 1: Try rule-based evaluation (fast)
+        rule_result = self.rules.evaluate(request)
+        if rule_result.is_definitive:
+            return self._create_rule_decision(rule_result, start_time)
+
+        # Step 2: Rules inconclusive - ask AI
+        return await self._handle_ai_decision(worker_id, request, context, start_time)
+
+    def _log_decision_request(self, worker_id: str, request: ConfirmationRequest) -> None:
+        """Log incoming decision request."""
         if self.verbose:
             print(f"\n[Hybrid Engine] Processing request from {worker_id}")
             print(f"  Type: {request.confirmation_type.value}")
             print(f"  Message: {request.message[:100]}...")
 
-        # Step 1: Try rule - based evaluation (fast)
-        rule_result = self.rules.evaluate(request)
+    def _create_rule_decision(self, rule_result: Any, start_time: float) -> Decision:
+        """Create decision based on rule evaluation."""
+        latency = (time.time() - start_time) * 1000
 
-        if rule_result.is_definitive:
-            # Rules gave clear answer - use it
-            latency = (time.time() - start_time) * 1000
+        if self.verbose:
+            print(f"  ✓ Rules decided: {rule_result.action.upper()}")
+            print(f"  Reasoning: {rule_result.reason}")
+            print(f"  Latency: {latency:.1f}ms")
 
-            if self.verbose:
-                print(f"  ✓ Rules decided: {rule_result.action.upper()}")
-                print(f"  Reasoning: {rule_result.reason}")
-                print(f"  Latency: {latency:.1f}ms")
+        self.stats["rules_decisions"] += 1
+        self.stats["total_latency_ms"] += latency
 
-            self.stats["rules_decisions"] += 1
-            self.stats["total_latency_ms"] += latency
+        return Decision(
+            action=rule_result.action,
+            reasoning=rule_result.reason,
+            latency_ms=latency,
+            is_fallback=False,
+            decided_by="rules",
+        )
 
-            return Decision(
-                action=rule_result.action,
-                reasoning=rule_result.reason,
-                latency_ms=latency,
-                is_fallback=False,
-                decided_by="rules",
-            )
-
-        # Step 2: Rules inconclusive - ask AI
+    async def _handle_ai_decision(
+        self, worker_id: str, request: ConfirmationRequest, context: Optional[Dict[str, Any]], start_time: float
+    ) -> Decision:
+        """Handle AI-based decision when rules are inconclusive."""
         if self.verbose:
             print("  → Rules inconclusive, consulting AI...")
 
         try:
-            # Build question for AI
-            question = self._build_ai_question(request)
-
-            # Build context
-            if context is None:
-                context = {}
-            context.setdefault("worker_id", worker_id)
-            context.setdefault("task_name", "unknown")
-            context.setdefault("project_name", "AI_Investor")
-            context.setdefault("project_goal", "Build AI - powered investment platform MVP")
-
-            # Ask orchestrator AI
-            ai_result = await self.orchestrator_ai.ask(question=question, context=context)
-
-            latency = (time.time() - start_time) * 1000
-
-            if self.verbose:
-                print(f"  ✓ AI decided: {ai_result.action.upper()}")
-                print(f"  Reasoning: {ai_result.reasoning}")
-                print(f"  Latency: {latency:.1f}ms")
-
-            self.stats["ai_decisions"] += 1
-            self.stats["total_latency_ms"] += latency
-
-            return Decision(
-                action=ai_result.action,
-                reasoning=f"AI: {ai_result.reasoning}",
-                latency_ms=latency,
-                is_fallback=ai_result.is_fallback,
-                decided_by="template" if ai_result.is_fallback else "ai",
-            )
-
+            return await self._get_ai_decision(worker_id, request, context, start_time)
         except Exception as e:
-            # AI failed - use template fallback
-            latency = (time.time() - start_time) * 1000
+            return self._handle_ai_failure(worker_id, request, e, start_time)
 
-            if self.verbose:
-                print(f"  ⚠ AI error: {str(e)[:100]}")
-                print("  → Using template fallback")
+    async def _get_ai_decision(
+        self, worker_id: str, request: ConfirmationRequest, context: Optional[Dict[str, Any]], start_time: float
+    ) -> Decision:
+        """Get decision from AI orchestrator."""
+        question = self._build_ai_question(request)
+        context = self._prepare_ai_context(worker_id, context)
 
-            # Check if this is a complete failure
-            if "completely unresponsive" in str(e).lower():
-                # Complete failure - should stop worker
-                raise Exception(
-                    f"Orchestrator completely unresponsive. Worker {worker_id} should stop."
-                )
+        ai_result = await self.orchestrator_ai.ask(question=question, context=context)
+        latency = (time.time() - start_time) * 1000
 
-            # Use template
-            template = self.templates.get_api_error_template(request)
+        if self.verbose:
+            print(f"  ✓ AI decided: {ai_result.action.upper()}")
+            print(f"  Reasoning: {ai_result.reasoning}")
+            print(f"  Latency: {latency:.1f}ms")
 
-            if self.verbose:
-                print(f"  ✓ Template: {template.action.upper()}")
-                print(f"  Message: {template.message}")
-                print(f"  Latency: {latency:.1f}ms")
+        self.stats["ai_decisions"] += 1
+        self.stats["total_latency_ms"] += latency
 
-            self.stats["template_fallbacks"] += 1
-            self.stats["total_latency_ms"] += latency
+        return Decision(
+            action=ai_result.action,
+            reasoning=f"AI: {ai_result.reasoning}",
+            latency_ms=latency,
+            is_fallback=ai_result.is_fallback,
+            decided_by="template" if ai_result.is_fallback else "ai",
+        )
 
-            return Decision(
-                action=template.action,
-                reasoning=f"Template (error): {template.message}",
-                latency_ms=latency,
-                is_fallback=True,
-                decided_by="template",
-            )
+    def _prepare_ai_context(self, worker_id: str, context: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+        """Prepare context for AI orchestrator."""
+        if context is None:
+            context = {}
+        context.setdefault("worker_id", worker_id)
+        context.setdefault("task_name", "unknown")
+        context.setdefault("project_name", "AI_Investor")
+        context.setdefault("project_goal", "Build AI - powered investment platform MVP")
+        return context
+
+    def _handle_ai_failure(
+        self, worker_id: str, request: ConfirmationRequest, error: Exception, start_time: float
+    ) -> Decision:
+        """Handle AI failure with template fallback."""
+        latency = (time.time() - start_time) * 1000
+
+        if self.verbose:
+            print(f"  ⚠ AI error: {str(error)[:100]}")
+            print("  → Using template fallback")
+
+        # Check if this is a complete failure
+        if "completely unresponsive" in str(error).lower():
+            raise Exception(f"Orchestrator completely unresponsive. Worker {worker_id} should stop.")
+
+        # Use template
+        template = self.templates.get_api_error_template(request)
+
+        if self.verbose:
+            print(f"  ✓ Template: {template.action.UPPER()}")
+            print(f"  Message: {template.message}")
+            print(f"  Latency: {latency:.1f}ms")
+
+        self.stats["template_fallbacks"] += 1
+        self.stats["total_latency_ms"] += latency
+
+        return Decision(
+            action=template.action,
+            reasoning=f"Template (error): {template.message}",
+            latency_ms=latency,
+            is_fallback=True,
+            decided_by="template",
+        )
 
     def _build_ai_question(self, request: ConfirmationRequest) -> str:
         """Build question for AI"""

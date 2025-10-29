@@ -421,12 +421,8 @@ def with_bulkhead(
     return decorator
 
 
-# Testing
-if __name__ == "__main__":
-    print("Testing Resilience Patterns\n")
-    print("=" * 70)
-
-    # Test 1: Circuit Breaker
+def _test_circuit_breaker() -> None:
+    """Test circuit breaker pattern."""
     print("\nTest 1: Circuit Breaker")
     print("-" * 70)
 
@@ -445,7 +441,9 @@ if __name__ == "__main__":
 
     print(f"  Circuit status: {breaker.status}")
 
-    # Test 2: Retry Strategy
+
+def _test_retry_strategy() -> None:
+    """Test retry strategy with exponential backoff."""
     print("\nTest 2: Retry with Exponential Backof")
     print("-" * 70)
 
@@ -464,7 +462,9 @@ if __name__ == "__main__":
     result = retry.execute(intermittent_service)
     print(f"  Result after {Counter.count} attempts: {result}")
 
-    # Test 3: Bulkhead
+
+def _test_bulkhead_pattern() -> None:
+    """Test bulkhead pattern for resource isolation."""
     print("\nTest 3: Bulkhead Pattern")
     print("-" * 70)
 
@@ -486,7 +486,9 @@ if __name__ == "__main__":
 
         print(f"  Bulkhead status: {bulkhead.status}")
 
-    # Test 4: Combined Resilience
+
+def _test_combined_resilience() -> None:
+    """Test combined resilience patterns."""
     print("\nTest 4: Combined Resilience Patterns")
     print("-" * 70)
 
@@ -510,5 +512,21 @@ if __name__ == "__main__":
     print(f"  Result: {result}")
     print(f"  Status: {resilient_op.status}")
 
+
+def _run_all_tests() -> None:
+    """Run all resilience pattern tests."""
+    print("Testing Resilience Patterns\n")
+    print("=" * 70)
+
+    _test_circuit_breaker()
+    _test_retry_strategy()
+    _test_bulkhead_pattern()
+    _test_combined_resilience()
+
     print("\n" + "=" * 70)
     print("Resilience pattern tests completed!")
+
+
+# Testing
+if __name__ == "__main__":
+    _run_all_tests()
