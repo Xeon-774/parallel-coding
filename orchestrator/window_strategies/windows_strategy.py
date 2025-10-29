@@ -76,7 +76,7 @@ class WindowsWindowManager(WindowManagerBase):
         ps_output_file = str(Path(output_file)).replace("\\", "\\\\")
 
         # Escape special PowerShell characters
-        safe_task_name = task_name.replace('"', '`"').replace("$", "`$").replace("`", "``")
+        task_name.replace('"', '`"').replace("$", "`$").replace("`", "``")
 
         ps_script = """
 $host.UI.RawUI.WindowTitle = "{window_title}"

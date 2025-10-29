@@ -7,10 +7,10 @@ and violation history.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List
+from typing import List
 
 
 class EmbeddingLevel(str, Enum):

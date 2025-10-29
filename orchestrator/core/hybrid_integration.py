@@ -221,7 +221,6 @@ class AISafetyJudge(HybridEngineAdapter):
     use the hybrid engine without code changes.
     """
 
-    pass
 
 
 # Example usage

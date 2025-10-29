@@ -19,7 +19,6 @@ Usage:
 
 import logging
 from pathlib import Path
-from typing import Optional
 
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware

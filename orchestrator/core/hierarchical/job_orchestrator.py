@@ -16,10 +16,8 @@ Extended features:
 from __future__ import annotations
 
 import asyncio
-import itertools
 import time
 import uuid
-from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
 
 from pydantic import BaseModel, Field

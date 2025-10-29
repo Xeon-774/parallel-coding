@@ -28,13 +28,11 @@ logger = logging.get_logger(__name__)
 class SandboxExecutionError(Exception):
     """Sandbox execution failed"""
 
-    pass
 
 
 class SandboxTimeoutError(SandboxExecutionError):
     """Sandbox execution timed out"""
 
-    pass
 
 
 class DockerSandbox:

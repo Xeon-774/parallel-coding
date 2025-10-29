@@ -313,7 +313,7 @@ class ResourceMonitor:
         disk = psutil.disk_usage("/")
 
         # Get process metrics
-        process_memory = self.process.memory_info()
+        self.process.memory_info()
 
         metrics = ResourceMetrics(
             cpu_percent=cpu_percent,

@@ -8,7 +8,7 @@ Phase 2.2 implementation.
 from pathlib import Path
 from typing import Any, Dict, List
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 
 from orchestrator.config import DEFAULT_CONFIG
 from orchestrator.core.common.metrics import MetricsCollector

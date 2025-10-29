@@ -25,7 +25,6 @@ Usage:
 """
 
 import logging
-from pathlib import Path
 from typing import Generator
 
 from pydantic_settings import BaseSettings, SettingsConfigDict

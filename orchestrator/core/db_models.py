@@ -27,8 +27,7 @@ Usage:
 
 import enum
 import uuid
-from datetime import datetime, timedelta
-from typing import List, Optional
+from datetime import datetime
 
 from sqlalchemy import (
     JSON,

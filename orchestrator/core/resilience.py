@@ -62,13 +62,11 @@ class BulkheadConfig:
 class CircuitBreakerOpenError(Exception):
     """Raised when circuit breaker is open"""
 
-    pass
 
 
 class BulkheadFullError(Exception):
     """Raised when bulkhead is at capacity"""
 
-    pass
 
 
 class CircuitBreaker:

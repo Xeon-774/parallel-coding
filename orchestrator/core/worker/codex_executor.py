@@ -28,7 +28,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Final, Literal, Optional
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 
 # ============================================================================
 # Pydantic Models for JSONL Event Parsing (Type Safety: Excellence Standard)

@@ -185,7 +185,6 @@ Respond with APPROVED: or DENIED:"""
         wsl_workspace = self._to_wsl_path(str(self.workspace))
 
         # Create temp directory for prompts
-        import tempfile
         import uuid
 
         # Create temp files (in workspace to ensure accessibility from WSL)

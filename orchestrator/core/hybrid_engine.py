@@ -11,17 +11,15 @@ import time
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Dict, Optional
 
 # Handle imports for both module use and direct execution
 try:
     from .cli_orchestrator import CLIOrchestratorAI
-    from .cli_orchestrator import Decision as AIDecision
 except ImportError:
     # Direct execution - add parent to path
     sys.path.insert(0, str(Path(__file__).parent.parent.parent))
     from orchestrator.core.cli_orchestrator import CLIOrchestratorAI
-    from orchestrator.core.cli_orchestrator import Decision as AIDecision
 
 
 class ConfirmationType(Enum):

@@ -24,7 +24,6 @@ Examples:
 from __future__ import annotations
 
 import asyncio
-from dataclasses import dataclass
 from typing import Dict, Optional, Tuple
 
 from pydantic import BaseModel, Field, model_validator

@@ -72,25 +72,21 @@ class CodexStatus(str, Enum):
 class CodexError(Exception):
     """Base exception for Codex CLI errors"""
 
-    pass
 
 
 class CodexCLINotFoundError(CodexError):
     """Raised when Codex CLI is not installed"""
 
-    pass
 
 
 class CodexTimeoutError(CodexError):
     """Raised when Codex execution times out"""
 
-    pass
 
 
 class CodexExecutionError(CodexError):
     """Raised when Codex execution fails"""
 
-    pass
 
 
 # =============================================================================

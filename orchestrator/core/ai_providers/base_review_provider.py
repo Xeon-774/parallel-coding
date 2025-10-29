@@ -40,7 +40,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -426,7 +426,6 @@ class BaseReviewProvider(ABC):
             ... )
             >>> result = await provider.review_document(request)
         """
-        pass
 
     @abstractmethod
     def is_available(self) -> bool:
@@ -442,7 +441,6 @@ class BaseReviewProvider(ABC):
             ... else:
             ...     print("Provider not available")
         """
-        pass
 
     @property
     @abstractmethod
@@ -457,7 +455,6 @@ class BaseReviewProvider(ABC):
             >>> provider.provider_name
             'codex'
         """
-        pass
 
 
 # =============================================================================
@@ -468,25 +465,21 @@ class BaseReviewProvider(ABC):
 class ReviewProviderError(Exception):
     """Base exception for review provider errors"""
 
-    pass
 
 
 class ReviewTimeoutError(ReviewProviderError):
     """Raised when review execution times out"""
 
-    pass
 
 
 class ReviewExecutionError(ReviewProviderError):
     """Raised when review execution fails"""
 
-    pass
 
 
 class ProviderNotAvailableError(ReviewProviderError):
     """Raised when provider is not available"""
 
-    pass
 
 
 # =============================================================================

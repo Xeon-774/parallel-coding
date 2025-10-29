@@ -6,7 +6,6 @@ validation, real - time output streaming, and confirmation prompt detection.
 
 from __future__ import annotations
 
-import os
 import re
 import sys
 import time

@@ -24,7 +24,7 @@ class WSLWindowManager(WindowManagerBase):
         """Create monitoring session for WSL platform"""
 
         clean_task_name = self._sanitize_task_name(task_name)
-        session_name = f"worker_{worker_id}"
+        f"worker_{worker_id}"
 
         # For WSL, we create a simple monitoring setup
         # Full implementation would use tmux or similar

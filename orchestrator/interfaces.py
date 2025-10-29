@@ -66,7 +66,6 @@ class IConfigValidator(ABC):
         Returns:
             (有効かどうか, エラーメッセージ)
         """
-        pass
 
 
 class IResourceManager(Protocol):

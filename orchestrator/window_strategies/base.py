@@ -82,7 +82,6 @@ class WindowManagerBase(ABC):
         Returns:
             WindowInfo containing window details
         """
-        pass
 
     @abstractmethod
     def close_window(self, worker_id: str) -> None:
@@ -92,7 +91,6 @@ class WindowManagerBase(ABC):
         Args:
             worker_id: Worker identifier
         """
-        pass
 
     def close_all_windows(self) -> None:
         """Close all managed windows"""

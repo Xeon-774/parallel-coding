@@ -4,7 +4,6 @@
 GUIダイアログでユーザーがトークンを入力できるようにします。
 """
 
-import platform
 import subprocess
 import tkinter as tk
 from pathlib import Path

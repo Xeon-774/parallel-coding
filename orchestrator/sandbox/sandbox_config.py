@@ -6,7 +6,7 @@ Phase 0 Week 2 - MVP Implementation
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 
 @dataclass

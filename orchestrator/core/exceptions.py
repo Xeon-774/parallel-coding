@@ -54,19 +54,16 @@ class OrchestratorException(Exception):
 class ConfigurationError(OrchestratorException):
     """Configuration is invalid or missing"""
 
-    pass
 
 
 class InvalidWorkspaceError(ConfigurationError):
     """Workspace directory is invalid or inaccessible"""
 
-    pass
 
 
 class MissingDependencyError(ConfigurationError):
     """Required dependency is not installed or configured"""
 
-    pass
 
 
 # ============================================================================
@@ -77,13 +74,11 @@ class MissingDependencyError(ConfigurationError):
 class WorkerError(OrchestratorException):
     """Base exception for worker - related errors"""
 
-    pass
 
 
 class WorkerSpawnError(WorkerError):
     """Failed to spawn worker process"""
 
-    pass
 
 
 class WorkerTimeoutError(WorkerError):
@@ -119,7 +114,6 @@ class WorkerCrashError(WorkerError):
 class WorkerCommunicationError(WorkerError):
     """Failed to communicate with worker"""
 
-    pass
 
 
 # ============================================================================
@@ -130,7 +124,6 @@ class WorkerCommunicationError(WorkerError):
 class InteractiveError(OrchestratorException):
     """Base exception for interactive mode errors"""
 
-    pass
 
 
 class PseudoTerminalError(InteractiveError):
@@ -174,7 +167,6 @@ class ConfirmationParseError(InteractiveError):
 class SafetyError(OrchestratorException):
     """Base exception for safety - related errors"""
 
-    pass
 
 
 class DangerousOperationError(SafetyError):
@@ -212,13 +204,11 @@ class UserDeniedError(SafetyError):
 class APIError(OrchestratorException):
     """Base exception for API - related errors"""
 
-    pass
 
 
 class AuthenticationError(APIError):
     """API authentication failed"""
 
-    pass
 
 
 class RateLimitError(APIError):
@@ -256,19 +246,16 @@ class JobNotFoundError(APIError):
 class TaskError(OrchestratorException):
     """Base exception for task - related errors"""
 
-    pass
 
 
 class TaskValidationError(TaskError):
     """Task parameters are invalid"""
 
-    pass
 
 
 class TaskDecompositionError(TaskError):
     """Failed to decompose task into subtasks"""
 
-    pass
 
 
 class TaskExecutionError(TaskError):
@@ -296,7 +283,6 @@ class TaskExecutionError(TaskError):
 class ResourceError(OrchestratorException):
     """Base exception for resource - related errors"""
 
-    pass
 
 
 class InsufficientResourcesError(ResourceError):

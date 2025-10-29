@@ -27,7 +27,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, Optional
 
 from orchestrator.config import OrchestratorConfig
 from orchestrator.core.common.metrics import MetricsCollector
@@ -189,7 +189,6 @@ class BaseAIManager(ABC):
         Raises:
             NotImplementedError: If not implemented by derived class
         """
-        pass
 
     @abstractmethod
     def stop(self) -> bool:
@@ -208,7 +207,6 @@ class BaseAIManager(ABC):
         Raises:
             NotImplementedError: If not implemented by derived class
         """
-        pass
 
     @abstractmethod
     def _health_check_impl(self) -> HealthCheckResult:
@@ -227,7 +225,6 @@ class BaseAIManager(ABC):
         Raises:
             NotImplementedError: If not implemented by derived class
         """
-        pass
 
     @abstractmethod
     def _handle_confirmation_impl(self, confirmation: ConfirmationRequest) -> Optional[str]:
@@ -249,7 +246,6 @@ class BaseAIManager(ABC):
         Raises:
             NotImplementedError: If not implemented by derived class
         """
-        pass
 
     # =============================================================================
     # Concrete Methods - Implemented in base class
@@ -527,7 +523,6 @@ class BaseAIManager(ABC):
         self._update_activity_time()
 
         # Metrics tracking for manager_started
-        pass
 
     def _mark_stopped(self) -> None:
         """Mark manager as stopped and update metrics."""
@@ -535,7 +530,6 @@ class BaseAIManager(ABC):
         self.status = ManagerStatus.STOPPED
 
         # Metrics tracking for manager_stopped
-        pass
 
     def _update_activity_time(self) -> None:
         """Update last activity timestamp."""

@@ -40,7 +40,6 @@ from pathlib import Path
 from typing import Any, AsyncIterator, Callable, Dict, List, Optional
 
 from anthropic import Anthropic, AsyncAnthropic
-from anthropic.types import ContentBlock, Message, MessageStreamEvent
 from pydantic import BaseModel, Field, validator
 
 # =============================================================================
@@ -89,31 +88,26 @@ class FileOperationType(str, Enum):
 class ClaudeAPIError(Exception):
     """Base exception for Claude API errors"""
 
-    pass
 
 
 class ClaudeAPIKeyError(ClaudeAPIError):
     """Raised when API key is missing or invalid"""
 
-    pass
 
 
 class ClaudeTimeoutError(ClaudeAPIError):
     """Raised when execution times out"""
 
-    pass
 
 
 class ClaudeRateLimitError(ClaudeAPIError):
     """Raised when rate limit is exceeded"""
 
-    pass
 
 
 class ClaudeExecutionError(ClaudeAPIError):
     """Raised when execution fails"""
 
-    pass
 
 
 # =============================================================================

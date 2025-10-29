@@ -8,13 +8,11 @@ Milestone 1.3: Worker Status UI implementation.
 import asyncio
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Optional
 
 from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 
 from orchestrator.core.worker_status_monitor import (
-    HealthStatus,
-    WorkerState,
     WorkerStatusMonitor,
     get_global_monitor,
 )

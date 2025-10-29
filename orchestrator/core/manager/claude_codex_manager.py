@@ -42,13 +42,12 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field
 
 from orchestrator.core.ai_providers.codex_cli_provider import (
     CodexCLIProvider,
     CodexExecutionResult,
     CodexProviderConfig,
-    CodexStatus,
 )
 
 # =============================================================================
@@ -546,7 +545,6 @@ class ClaudeCodexManager:
         """
         # Placeholder for WebSocket integration
         # In production: await websocket_manager.broadcast({...})
-        pass
 
     def get_statistics(self) -> Dict[str, Any]:
         """

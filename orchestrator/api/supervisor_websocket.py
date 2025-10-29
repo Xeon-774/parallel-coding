@@ -10,9 +10,9 @@ import asyncio
 import os
 import time
 from dataclasses import dataclass
-from typing import Dict, Final, List, Literal, Optional, Tuple
+from typing import Dict, Final, List, Literal, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 AUTH_TOKEN_ENV: Final[str] = "API_TOKEN"
 DEFAULT_TOKEN: Final[str] = "dev - token"

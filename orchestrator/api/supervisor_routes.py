@@ -16,16 +16,12 @@ All endpoints require an Authorization token and validate inputs via Pydantic.
 from __future__ import annotations
 
 import os
-import time
-from dataclasses import dataclass
 from typing import Dict, List, Literal, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from pydantic import BaseModel, Field, ValidationError, field_validator
 
-from orchestrator.core.supervisor.supervisor_manager import SupervisorManager
 from orchestrator.core.worker.worker_manager import (
-    SupervisorStatus,
     WorkerManager,
 )
 

@@ -11,7 +11,7 @@ import asyncio
 import json
 import time
 from dataclasses import dataclass
-from typing import Any, Dict, Optional, Set
+from typing import Any, Dict, Set
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, status
 

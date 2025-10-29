@@ -13,7 +13,6 @@ No sensitive data (e.g., API keys) are logged or included in exceptions.
 from __future__ import annotations
 
 import asyncio
-import math
 import random
 from typing import Any, AsyncGenerator, Dict, Optional
 

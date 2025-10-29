@@ -16,7 +16,6 @@ This is the unified worker manager consolidating all previous implementations.
 """
 
 import sys
-import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
@@ -39,7 +38,6 @@ from orchestrator.core.common.metrics import MetricsCollector
 from orchestrator.core.models import TaskResult
 from orchestrator.core.worker.codex_executor import (
     CodexExecutionResult,
-    CodexExecutor,
     create_codex_executor_from_config,
 )
 from orchestrator.interfaces import ILogger

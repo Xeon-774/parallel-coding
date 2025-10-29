@@ -76,7 +76,6 @@ class QualityMetrics:
 class QualityGateError(Exception):
     """Quality gate execution error"""
 
-    pass
 
 
 # ============================================================================
