@@ -322,64 +322,9 @@ class QualityGateEngine:
 
         logger.info(f"Running lint checks (auto_fix: {auto_fix})...")
 
-        issues = 0
-        errors = []
-        auto_fixed = False
-
         try:
-            # 1. Black formatting
-            if auto_fix and "black" in self.config["lint_tools"]:
-                logger.info("Running black auto - format...")
-                result = subprocess.run(
-                    ["black", ".", "--line - length", str(self.config["lint_max_line_length"])],
-                    cwd=self.project_dir,
-                    capture_output=True,
-                    text=True,
-                    timeout=60,
-                )
-                if "reformatted" in result.stdout:
-                    auto_fixed = True
-                    logger.info("Black auto - formatted files")
-
-            # 2. isort import sorting
-            if auto_fix and "isort" in self.config["lint_tools"]:
-                logger.info("Running isort auto - fix...")
-                result = subprocess.run(
-                    ["isort", ".", "--profile", "black"],
-                    cwd=self.project_dir,
-                    capture_output=True,
-                    text=True,
-                    timeout=60,
-                )
-                if result.returncode == 0:
-                    auto_fixed = True
-                    logger.info("isort auto - fixed imports")
-
-            # 3. Flake8 check
-            if "flake8" in self.config["lint_tools"]:
-                logger.info("Running flake8 check...")
-                result = subprocess.run(
-                    [
-                        "flake8",
-                        ".",
-                        "--max - line - length",
-                        str(self.config["lint_max_line_length"]),
-                        "--count",
-                    ],
-                    cwd=self.project_dir,
-                    capture_output=True,
-                    text=True,
-                    timeout=60,
-                )
-
-                # Parse flake8 output
-                if result.returncode != 0:
-                    output_lines = result.stdout.strip().split("\n")
-                    for line in output_lines:
-                        if line.strip().isdigit():
-                            issues = int(line.strip())
-                            break
-                    errors.append(f"Flake8 found {issues} issues")
+            auto_fixed = self._run_autofix_tools(auto_fix)
+            issues, errors = self._run_flake8_check()
 
             passed = issues == 0
             duration = time.time() - start_time
@@ -406,6 +351,83 @@ class QualityGateEngine:
                 errors=[str(e)],
                 duration_seconds=time.time() - start_time,
             )
+
+    def _run_autofix_tools(self, auto_fix: bool) -> bool:
+        """Run auto-fix tools (black, isort)."""
+        auto_fixed = False
+
+        if auto_fix and "black" in self.config["lint_tools"]:
+            if self._run_black_format():
+                auto_fixed = True
+
+        if auto_fix and "isort" in self.config["lint_tools"]:
+            if self._run_isort_fix():
+                auto_fixed = True
+
+        return auto_fixed
+
+    def _run_black_format(self) -> bool:
+        """Run black auto-format."""
+        logger.info("Running black auto - format...")
+        result = subprocess.run(
+            ["black", ".", "--line - length", str(self.config["lint_max_line_length"])],
+            cwd=self.project_dir,
+            capture_output=True,
+            text=True,
+            timeout=60,
+        )
+        if "reformatted" in result.stdout:
+            logger.info("Black auto - formatted files")
+            return True
+        return False
+
+    def _run_isort_fix(self) -> bool:
+        """Run isort auto-fix."""
+        logger.info("Running isort auto - fix...")
+        result = subprocess.run(
+            ["isort", ".", "--profile", "black"],
+            cwd=self.project_dir,
+            capture_output=True,
+            text=True,
+            timeout=60,
+        )
+        if result.returncode == 0:
+            logger.info("isort auto - fixed imports")
+            return True
+        return False
+
+    def _run_flake8_check(self) -> tuple[int, list[str]]:
+        """Run flake8 check and return issues count and errors."""
+        issues = 0
+        errors = []
+
+        if "flake8" not in self.config["lint_tools"]:
+            return issues, errors
+
+        logger.info("Running flake8 check...")
+        result = subprocess.run(
+            [
+                "flake8",
+                ".",
+                "--max - line - length",
+                str(self.config["lint_max_line_length"]),
+                "--count",
+            ],
+            cwd=self.project_dir,
+            capture_output=True,
+            text=True,
+            timeout=60,
+        )
+
+        if result.returncode != 0:
+            output_lines = result.stdout.strip().split("\n")
+            for line in output_lines:
+                if line.strip().isdigit():
+                    issues = int(line.strip())
+                    break
+            errors.append(f"Flake8 found {issues} issues")
+
+        return issues, errors
 
     async def run_type_check(self) -> QualityCheckResult:
         """
