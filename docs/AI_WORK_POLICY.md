@@ -756,6 +756,7 @@ Week 1のManager AI Core実装をお願いします。
 - [ ] **トークン使用状況を更新**: 20Kトークンごとに報告
 - [ ] **チャット履歴を自動保存**（セクション13）: 成果達成時、セッション終了時、定期的
 - [ ] **セットアップガイドを自動生成**（セクション14）: Submodule化時、SETUP_FOR_NEW_PROJECTS.md作成
+- [ ] **Submodule更新チェック**（セクション15）: セッション開始時（週1推奨）、大規模タスク完了後
 
 ---
 
@@ -910,6 +911,223 @@ git submodule add https://github.com/Xeon-774/ai-prompts-standard.git dev-tools/
 
 ---
 
+### 15. Git Submodule定期更新ポリシー
+
+**方針**: 開発ツールのGit Submoduleは**自動的に**定期チェックし、他プロジェクトでも最新版を使用できるよう管理する
+
+#### 対象Submodule
+
+以下のSubmoduleを定期更新対象とする:
+1. **dev-tools/ai-prompts** - 超短文プロンプトv8.1、ポリシー集
+2. **dev-tools/excellence-ai-standard** - 品質規格
+3. **dev-tools/parallel-coding** - AI_WORK_POLICY.md（本ドキュメント）
+4. **dev-tools/token-efficiency** - トークン最適化ツール（オプション）
+
+#### 自動更新チェックのタイミング
+
+AIは以下のタイミングで**自動的に**Submodule更新を提案:
+1. **セッション開始時**（週1回月曜日を推奨）
+2. **大規模タスク完了後**
+3. **トークン残量が50K未満**になった時（次セッション準備として）
+4. **ユーザーが明示的に依頼した時**
+
+#### 更新手順（自動提案）
+
+AIは以下の手順をユーザーに提案:
+
+```bash
+# Step 1: Submodule更新チェック
+git submodule update --remote --merge
+
+# Step 2: 変更内容を確認
+git diff --submodule
+
+# Step 3: 更新をコミット（変更があった場合）
+git add dev-tools/
+git commit -m "chore: Update AI development tools to latest versions
+
+- dev-tools/ai-prompts: [変更内容]
+- dev-tools/excellence-ai-standard: [変更内容]
+- dev-tools/parallel-coding: [変更内容]"
+
+# Step 4: リモートにプッシュ
+git push origin main
+```
+
+#### 更新通知フォーマット
+
+Submodule更新があった場合、AIは以下を報告:
+
+```markdown
+🔄 Submodule更新チェック完了
+
+## 更新あり
+- ✅ dev-tools/ai-prompts: v8.0 → v8.1 (プロンプト改善、トークン+5)
+- ✅ dev-tools/parallel-coding: v2.0 → v2.1 (セクション14追加: セットアップガイド自動生成)
+
+## 更新なし
+- ⏸️ dev-tools/excellence-ai-standard: v1.0 (最新)
+- ⏸️ dev-tools/token-efficiency: v1.2 (最新)
+
+## 推奨アクション
+上記コマンドを実行して更新をコミットしてください。
+```
+
+#### 他プロジェクトでの更新手順
+
+他のプロジェクトでSubmoduleを使用している場合、同様に更新:
+
+```bash
+# プロジェクトAでの更新
+cd /path/to/project-a
+git submodule update --remote --merge
+git add dev-tools/
+git commit -m "chore: Update AI development tools"
+git push
+
+# プロジェクトBでの更新
+cd /path/to/project-b
+git submodule update --remote --merge
+git add dev-tools/
+git commit -m "chore: Update AI development tools"
+git push
+```
+
+#### CI/CD自動更新（推奨）
+
+GitHub Actionsで週次自動更新を設定:
+
+```yaml
+# .github/workflows/update-ai-tools.yml
+name: Update AI Development Tools
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'  # 毎週月曜 00:00 UTC
+  workflow_dispatch:      # 手動トリガー
+
+jobs:
+  update-submodules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update submodules
+        run: |
+          git submodule update --remote --merge
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: "chore: Update AI development tools to latest versions"
+          title: "Weekly AI Tools Update"
+          body: |
+            自動更新: AI development tool submodules
+
+            変更内容を確認してマージしてください。
+          branch: update-ai-tools
+```
+
+#### 更新前の安全チェック
+
+Submodule更新前、AIは以下を確認:
+- [ ] 現在のブランチが`main`または`master`
+- [ ] 未コミットの変更がない（`git status --porcelain`が空）
+- [ ] リモートと同期済み（`git pull`完了）
+- [ ] 更新内容が破壊的変更でないか確認（CHANGELOG.md参照）
+
+#### 破壊的変更の検出
+
+更新に破壊的変更が含まれる場合、AIは警告:
+
+```markdown
+⚠️ 破壊的変更が検出されました
+
+## dev-tools/ai-prompts v8.0 → v9.0
+- BREAKING: CORE_PROMPT_ULTRA_SHORT.mdの参照パスが変更
+  - Before: [[dev-tools/parallel-coding/docs/AI_WORK_POLICY.md]]
+  - After: [[dev-tools/parallel-coding/AI_WORK_POLICY.md]]
+
+## 推奨アクション
+1. CHANGELOG.mdを確認
+2. 影響範囲を評価
+3. 必要に応じてプロンプトを更新
+4. テスト後にコミット
+```
+
+#### ベストプラクティス
+
+**1. 週次チェックを習慣化**:
+- 毎週月曜日にSubmodule更新チェック
+- CI/CDで自動化推奨
+
+**2. 更新内容を必ず確認**:
+- `git diff --submodule`で変更内容を確認
+- CHANGELOG.mdを読む
+
+**3. 段階的ロールアウト**:
+- まず1プロジェクトで更新テスト
+- 問題なければ他プロジェクトに展開
+
+**4. バージョン固定も選択肢**:
+- 安定版が必要なプロジェクトは特定コミットに固定
+- `cd dev-tools/ai-prompts && git checkout v8.1`
+
+#### チェックリスト
+
+定期更新時、AIは以下を自動実行:
+- [ ] **Submodule更新チェック**: `git submodule update --remote --merge`
+- [ ] **変更内容を確認**: `git diff --submodule`
+- [ ] **CHANGELOG確認**: 破壊的変更の有無
+- [ ] **更新通知を生成**: 変更内容の要約
+- [ ] **推奨アクションを提示**: コミットコマンド
+- [ ] **他プロジェクトへの影響を確認**: 使用中のプロジェクト一覧を想起
+
+#### 実装例
+
+```python
+class SubmoduleUpdatePolicy:
+    def check_and_notify_updates(self):
+        """
+        Submodule更新チェックと通知
+        """
+        # 1. 更新をチェック
+        result = run_command("git submodule update --remote --merge --dry-run")
+
+        if result.has_updates:
+            # 2. 変更内容を取得
+            diff = run_command("git diff --submodule")
+
+            # 3. CHANGELOGを確認
+            breaking_changes = self.detect_breaking_changes(diff)
+
+            # 4. ユーザーに通知
+            self.notify_user(
+                updates=result.updates,
+                breaking_changes=breaking_changes,
+                recommended_actions=self.generate_update_commands()
+            )
+        else:
+            print("✅ すべてのSubmoduleが最新です")
+
+    def detect_breaking_changes(self, diff: str) -> list:
+        """
+        破壊的変更を検出
+        """
+        breaking_keywords = ["BREAKING", "MAJOR", "REMOVED", "DEPRECATED"]
+        return [
+            line for line in diff.split('\n')
+            if any(keyword in line for keyword in breaking_keywords)
+        ]
+```
+
+---
+
 **Last Updated**: 2025-10-29
-**Version**: 2.1 (14セクション完成)
+**Version**: 2.2 (15セクション完成)
 **Maintainer**: AI_Investor Development Team
