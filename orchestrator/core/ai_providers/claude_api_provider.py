@@ -738,87 +738,13 @@ class ClaudeAPIProvider:
 
         try:
             if tool_name == "read_file":
-                file_path = tool_input["file_path"]
-                full_path = workspace / file_path
-
-                # Security: Ensure path is within workspace
-                full_path = full_path.resolve()
-                if not str(full_path).startswith(str(workspace.resolve())):
-                    raise ValueError("Path traversal attempt detected")
-
-                content = full_path.read_text(encoding="utf - 8")
-                return FileOperation(
-                    operation_type=FileOperationType.READ,
-                    file_path=file_path,
-                    content=content,
-                    success=True,
-                )
-
+                return self._tool_read_file(workspace, tool_input)
             elif tool_name == "write_file":
-                file_path = tool_input["file_path"]
-                content = tool_input["content"]
-                full_path = workspace / file_path
-
-                # Security: Ensure path is within workspace
-                full_path = full_path.resolve()
-                if not str(full_path).startswith(str(workspace.resolve())):
-                    raise ValueError("Path traversal attempt detected")
-
-                # Create parent directories
-                full_path.parent.mkdir(parents=True, exist_ok=True)
-
-                # Write content
-                full_path.write_text(content, encoding="utf - 8")
-
-                return FileOperation(
-                    operation_type=FileOperationType.WRITE,
-                    file_path=file_path,
-                    content=content,
-                    success=True,
-                )
-
+                return self._tool_write_file(workspace, tool_input)
             elif tool_name == "edit_file":
-                file_path = tool_input["file_path"]
-                old_text = tool_input["old_text"]
-                new_text = tool_input["new_text"]
-                full_path = workspace / file_path
-
-                # Security: Ensure path is within workspace
-                full_path = full_path.resolve()
-                if not str(full_path).startswith(str(workspace.resolve())):
-                    raise ValueError("Path traversal attempt detected")
-
-                # Read, edit, write
-                content = full_path.read_text(encoding="utf - 8")
-                edited_content = content.replace(old_text, new_text)
-                full_path.write_text(edited_content, encoding="utf - 8")
-
-                return FileOperation(
-                    operation_type=FileOperationType.EDIT,
-                    file_path=file_path,
-                    content=edited_content,
-                    success=True,
-                )
-
+                return self._tool_edit_file(workspace, tool_input)
             elif tool_name == "list_files":
-                directory = tool_input["directory"]
-                dir_path = workspace / directory
-
-                # Security: Ensure path is within workspace
-                dir_path = dir_path.resolve()
-                if not str(dir_path).startswith(str(workspace.resolve())):
-                    raise ValueError("Path traversal attempt detected")
-
-                # List files
-                files = [str(f.relative_to(workspace)) for f in dir_path.rglob("*") if f.is_file()]
-                files_str = "\n".join(files)
-
-                return FileOperation(
-                    operation_type=FileOperationType.LIST,
-                    file_path=directory,
-                    content=files_str,
-                    success=True,
-                )
+                return self._tool_list_files(workspace, tool_input)
 
             else:
                 raise ValueError(f"Unknown tool: {tool_name}")
@@ -830,6 +756,75 @@ class ClaudeAPIProvider:
                 success=False,
                 error_message=str(e),
             )
+
+    def _tool_read_file(self, workspace: Path, tool_input: Dict[str, Any]) -> FileOperation:
+        """Execute read_file tool."""
+        file_path = tool_input["file_path"]
+        full_path = self._validate_path_in_workspace(workspace, file_path)
+
+        content = full_path.read_text(encoding="utf - 8")
+        return FileOperation(
+            operation_type=FileOperationType.READ,
+            file_path=file_path,
+            content=content,
+            success=True,
+        )
+
+    def _tool_write_file(self, workspace: Path, tool_input: Dict[str, Any]) -> FileOperation:
+        """Execute write_file tool."""
+        file_path = tool_input["file_path"]
+        content = tool_input["content"]
+        full_path = self._validate_path_in_workspace(workspace, file_path)
+
+        full_path.parent.mkdir(parents=True, exist_ok=True)
+        full_path.write_text(content, encoding="utf - 8")
+
+        return FileOperation(
+            operation_type=FileOperationType.WRITE,
+            file_path=file_path,
+            content=content,
+            success=True,
+        )
+
+    def _tool_edit_file(self, workspace: Path, tool_input: Dict[str, Any]) -> FileOperation:
+        """Execute edit_file tool."""
+        file_path = tool_input["file_path"]
+        old_text = tool_input["old_text"]
+        new_text = tool_input["new_text"]
+        full_path = self._validate_path_in_workspace(workspace, file_path)
+
+        content = full_path.read_text(encoding="utf - 8")
+        edited_content = content.replace(old_text, new_text)
+        full_path.write_text(edited_content, encoding="utf - 8")
+
+        return FileOperation(
+            operation_type=FileOperationType.EDIT,
+            file_path=file_path,
+            content=edited_content,
+            success=True,
+        )
+
+    def _tool_list_files(self, workspace: Path, tool_input: Dict[str, Any]) -> FileOperation:
+        """Execute list_files tool."""
+        directory = tool_input["directory"]
+        dir_path = self._validate_path_in_workspace(workspace, directory)
+
+        files = [str(f.relative_to(workspace)) for f in dir_path.rglob("*") if f.is_file()]
+        files_str = "\n".join(files)
+
+        return FileOperation(
+            operation_type=FileOperationType.LIST,
+            file_path=directory,
+            content=files_str,
+            success=True,
+        )
+
+    def _validate_path_in_workspace(self, workspace: Path, file_path: str) -> Path:
+        """Validate path is within workspace (security check)."""
+        full_path = (workspace / file_path).resolve()
+        if not str(full_path).startswith(str(workspace.resolve())):
+            raise ValueError("Path traversal attempt detected")
+        return full_path
 
     def _validate_prompt(self, prompt: str) -> None:
         """

@@ -30,51 +30,87 @@ def validate_config(config: "OrchestratorConfig") -> Tuple[bool, List[str]]:
     """
     errors = []
 
-    # 実行モードの検証
-    if config.execution_mode not in ["wsl", "windows"]:
-        errors.append(
-            f"Invalid execution_mode: {config.execution_mode}. Must be 'wsl' or 'windows'"
-        )
+    errors.extend(_validate_execution_mode(config))
+    errors.extend(_validate_workspace(config))
+    errors.extend(_validate_numeric_params(config))
+    errors.extend(_validate_mode_specific_config(config))
 
-    # ワークスペースの検証
+    return (len(errors) == 0, errors)
+
+
+def _validate_execution_mode(config: "OrchestratorConfig") -> List[str]:
+    """Validate execution mode setting."""
+    if config.execution_mode not in ["wsl", "windows"]:
+        return [
+            f"Invalid execution_mode: {config.execution_mode}. Must be 'wsl' or 'windows'"
+        ]
+    return []
+
+
+def _validate_workspace(config: "OrchestratorConfig") -> List[str]:
+    """Validate workspace configuration."""
+    errors = []
     if not config.workspace_root:
         errors.append("workspace_root is not set")
     elif not os.path.isabs(config.workspace_root):
         errors.append(f"workspace_root must be an absolute path: {config.workspace_root}")
+    return errors
 
-    # タイムアウトの検証
+
+def _validate_numeric_params(config: "OrchestratorConfig") -> List[str]:
+    """Validate numeric parameters (timeout, retries, workers)."""
+    errors = []
+
+    # Timeout validation
     if config.default_timeout <= 0:
         errors.append(f"default_timeout must be positive: {config.default_timeout}")
     elif config.default_timeout > 3600:
         errors.append(f"default_timeout is too large (max 3600s): {config.default_timeout}")
 
-    # リトライ回数の検証
+    # Retries validation
     if config.max_retries < 0:
         errors.append(f"max_retries cannot be negative: {config.max_retries}")
     elif config.max_retries > 10:
         errors.append(f"max_retries is too large (max 10): {config.max_retries}")
 
-    # ワーカー数の検証
+    # Workers validation
     if config.max_workers <= 0:
         errors.append(f"max_workers must be positive: {config.max_workers}")
     elif config.max_workers > 100:
         errors.append(f"max_workers is too large (max 100): {config.max_workers}")
 
-    # WSLモード固有の検証
+    return errors
+
+
+def _validate_mode_specific_config(config: "OrchestratorConfig") -> List[str]:
+    """Validate mode-specific configuration."""
+    errors = []
+
     if config.execution_mode == "wsl":
-        if not config.wsl_distribution:
-            errors.append("wsl_distribution is not set for WSL mode")
-        if not config.nvm_path:
-            errors.append("nvm_path is not set for WSL mode")
-        if not config.wsl_workspace_root:
-            errors.append("wsl_workspace_root is not set for WSL mode")
+        errors.extend(_validate_wsl_config(config))
+    elif config.execution_mode == "windows":
+        errors.extend(_validate_windows_config(config))
 
-    # Windowsモード固有の検証
-    if config.execution_mode == "windows":
-        if not config.windows_claude_path:
-            errors.append("windows_claude_path is not set for Windows mode")
+    return errors
 
-    return (len(errors) == 0, errors)
+
+def _validate_wsl_config(config: "OrchestratorConfig") -> List[str]:
+    """Validate WSL-specific configuration."""
+    errors = []
+    if not config.wsl_distribution:
+        errors.append("wsl_distribution is not set for WSL mode")
+    if not config.nvm_path:
+        errors.append("nvm_path is not set for WSL mode")
+    if not config.wsl_workspace_root:
+        errors.append("wsl_workspace_root is not set for WSL mode")
+    return errors
+
+
+def _validate_windows_config(config: "OrchestratorConfig") -> List[str]:
+    """Validate Windows-specific configuration."""
+    if not config.windows_claude_path:
+        return ["windows_claude_path is not set for Windows mode"]
+    return []
 
 
 def validate_task(task: Dict[str, Any]) -> Tuple[bool, List[str]]:

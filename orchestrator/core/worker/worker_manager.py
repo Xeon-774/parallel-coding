@@ -1143,8 +1143,6 @@ class WorkerManager:
         self, session: WorkerSession, exec_result: CodexExecutionResult
     ) -> Any:
         """Save Codex execution summary to text file."""
-        from datetime import datetime
-
         summary_file = session.workspace_dir / "codex_summary.txt"
         with open(summary_file, "w", encoding="utf - 8") as f:
             self._write_summary_header(f, session)

@@ -17,28 +17,49 @@ def find_git_bash() -> Optional[str]:
     Returns:
         git - bashのパス、見つからない場合はNone
     """
-    # 環境変数から取得
+    # Try strategies in order of preference
+    bash_path = _find_bash_from_env()
+    if bash_path:
+        return bash_path
+
+    bash_path = _find_bash_via_where()
+    if bash_path:
+        return bash_path
+
+    return _find_bash_from_common_paths()
+
+
+def _find_bash_from_env() -> Optional[str]:
+    """Find bash from environment variable."""
     if "CLAUDE_CODE_GIT_BASH_PATH" in os.environ:
         bash_path = os.environ["CLAUDE_CODE_GIT_BASH_PATH"]
         if os.path.exists(bash_path):
             return bash_path
+    return None
 
-    # whereコマンドで検索
+
+def _find_bash_via_where() -> Optional[str]:
+    """Find bash using where command."""
     try:
         result = subprocess.run(["where", "bash"], capture_output=True, text=True, timeout=5)
         if result.returncode == 0:
-            # 最初に見つかったbashを使用
             paths = result.stdout.strip().split("\n")
             for path in paths:
                 path = path.strip()
-                if path and os.path.exists(path):
-                    # WSLのbash（C:\Windows\System32\bash.exe）は除外
-                    if "System32" not in path and "system32" not in path:
-                        return path
+                if path and os.path.exists(path) and _is_not_wsl_bash(path):
+                    return path
     except Exception:
         pass
+    return None
 
-    # 一般的なGit for Windowsのパスを検索
+
+def _is_not_wsl_bash(path: str) -> bool:
+    """Check if path is not WSL bash."""
+    return "System32" not in path and "system32" not in path
+
+
+def _find_bash_from_common_paths() -> Optional[str]:
+    """Find bash from common Git for Windows installation paths."""
     common_paths = [
         r"C:\Program Files\Git\bin\bash.exe",
         r"C:\Program Files (x86)\Git\bin\bash.exe",
