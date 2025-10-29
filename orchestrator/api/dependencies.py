@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Annotated, Generator
+from typing import Annotated, Any, Callable, Generator
 
 from fastapi import Depends, HTTPException, Security
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -45,7 +45,7 @@ async def get_current_user(
         raise HTTPException(status_code=401, detail="Invalid authentication credentials") from _exc
 
 
-def require_scope(required_scope: str) -> object:
+def require_scope(required_scope: str) -> Callable[..., Any]:
     """Dependency factory for scope checking.
 
     Returns a function suitable as a dependency that validates the caller has
