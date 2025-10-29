@@ -143,7 +143,6 @@ class OrchestratorTerminalCapture:
         print(formatted.rstrip())
 
 
-from orchestrator.core.common.ai_safety_judge import SafetyLevel  # noqa: E402
 from orchestrator.core.common.models import ConfirmationRequest, ConfirmationType  # noqa: E402
 
 
