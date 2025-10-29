@@ -384,13 +384,13 @@ class CodexReviewProvider(BaseReviewProvider):
             >>> prompt = provider._build_review_prompt(request)
         """
         # Get perspective - specific instructions
-        perspective_prompt = REVIEW_PROMPTS.get(
+        _ =  REVIEW_PROMPTS.get(
             request.perspective,
             REVIEW_PROMPTS[ReviewPerspective.ARCHITECTURE],  # Default fallback
         )
 
         # Read document content
-        doc_content = Path(request.document_path).read_text(encoding="utf - 8")
+        _ =  Path(request.document_path).read_text(encoding="utf - 8")
 
         # Build context information
         context_str = ""

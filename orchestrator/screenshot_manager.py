@@ -133,7 +133,7 @@ if ($windows) {{
 
         # PowerShellスクリプトを実行
         try:
-            result = subprocess.run(
+            _ =  subprocess.run(
                 [
                     "powershell.exe",
                     "-NoProfile",

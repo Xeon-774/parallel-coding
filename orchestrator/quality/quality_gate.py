@@ -248,7 +248,7 @@ class QualityGateEngine:
                 "-v",
             ]
 
-            result = subprocess.run(
+            _ =  subprocess.run(
                 cmd, cwd=self.project_dir, capture_output=True, text=True, timeout=300
             )
 

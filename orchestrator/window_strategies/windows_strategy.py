@@ -73,7 +73,7 @@ class WindowsWindowManager(WindowManagerBase):
         """Create PowerShell monitoring script"""
 
         script_path = worker_dir / "monitor.ps1"
-        ps_output_file = str(Path(output_file)).replace("\\", "\\\\")
+        _ =  str(Path(output_file)).replace("\\", "\\\\")
 
         # Escape special PowerShell characters
         task_name.replace('"', '`"').replace("$", "`$").replace("`", "``")
@@ -137,7 +137,7 @@ $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
         """Create batch file to launch PowerShell with correct title"""
 
         batch_file = worker_dir / "launch_monitor.bat"
-        safe_title = window_title.replace("\n", " ").replace("\r", " ")
+        _ =  window_title.replace("\n", " ").replace("\r", " ")
 
         batch_content = """@echo off
 title {safe_title}

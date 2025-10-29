@@ -167,7 +167,7 @@ class OrchestratorConfig:
         if self.git_bash_path:
             # 環境変数CLAUDE_CODE_GIT_BASH_PATHを設定してclaudeを実行
             # これによりClaude CLI自体がgit - bashを認識できる
-            bash_path_escaped = self.git_bash_path.replace("\\", "/")
+            _ =  self.git_bash_path.replace("\\", "/")
 
             if error_file:
                 # stdout と stderr を分離

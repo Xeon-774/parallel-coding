@@ -432,7 +432,7 @@ class HybridDecisionEngine:
         """Build question for AI"""
 
         # Format details nicely
-        details_str = "\n".join([f"  - {k}: {v}" for k, v in request.details.items()])
+        _ =  "\n".join([f"  - {k}: {v}" for k, v in request.details.items()])
 
         question = """Request Type: {request.confirmation_type.value}
 
