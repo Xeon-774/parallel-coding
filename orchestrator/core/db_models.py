@@ -99,7 +99,7 @@ class JobStatus(str, enum.Enum):
 # ============================================================================
 
 
-class Worker(Base):
+class Worker(Base):  # type: ignore[misc]
     """
     Worker instance model.
 
@@ -137,7 +137,7 @@ class Worker(Base):
         index=True,
         comment="Workspace ID for multi - tenancy",
     )
-    status = Column(
+    status: Column[WorkerStatus] = Column(
         SQLEnum(WorkerStatus),
         nullable=False,
         default=WorkerStatus.IDLE,
@@ -185,7 +185,7 @@ class Worker(Base):
         )
 
 
-class WorkerStateTransition(Base):
+class WorkerStateTransition(Base):  # type: ignore[misc]
     """
     Worker state transition audit log.
 
@@ -264,7 +264,7 @@ class WorkerStateTransition(Base):
 # ============================================================================
 
 
-class Job(Base):
+class Job(Base):  # type: ignore[misc]
     """
     Job submission model.
 
@@ -322,7 +322,7 @@ class Job(Base):
         nullable=False,
         comment="Depth in hierarchy (0 - 5)",
     )
-    status = Column(
+    status: Column[JobStatus] = Column(
         SQLEnum(JobStatus),
         nullable=False,
         default=JobStatus.SUBMITTED,
@@ -410,7 +410,7 @@ class Job(Base):
         )
 
 
-class JobStateTransition(Base):
+class JobStateTransition(Base):  # type: ignore[misc]
     """
     Job state transition audit log.
 
@@ -477,7 +477,7 @@ class JobStateTransition(Base):
 # ============================================================================
 
 
-class ResourceAllocation(Base):
+class ResourceAllocation(Base):  # type: ignore[misc]
     """
     Resource allocation tracking model.
 
@@ -563,7 +563,7 @@ class ResourceAllocation(Base):
 # ============================================================================
 
 
-class IdempotencyKey(Base):
+class IdempotencyKey(Base):  # type: ignore[misc]
     """
     Idempotency key tracking model.
 
