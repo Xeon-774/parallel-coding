@@ -500,7 +500,7 @@ class ClaudeAPIProvider:
                 if result is not None:
                     return result
                 # result is None, continue retrying
-                retry_count += 1  # type: ignore[unreachable]
+                retry_count += 1
                 if retry_count > self.config.max_retries:
                     break
                 await asyncio.sleep(RATE_LIMIT_RETRY_DELAY)
