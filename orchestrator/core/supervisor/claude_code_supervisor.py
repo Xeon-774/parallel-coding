@@ -192,7 +192,7 @@ class ClaudeCodeSupervisor:
         cwd = payload.workspace_root
         if sys.platform.startswith("win"):
             try:
-                import wexpect as expect  # type: ignore
+                import wexpect as expect
             except ImportError as exc:
                 raise FileNotFoundError("wexpect not available") from exc
         else:

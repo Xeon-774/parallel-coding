@@ -138,7 +138,7 @@ async def get_hierarchy(
     usage = await rm.get_hierarchy_usage()
     # Convert pydantic models to dict for response model typing
     usage_dict = {d: u.model_dump() for d, u in usage.items()}
-    active_jobs = len([1 for _, t in orch._tasks.items() if not t.done()])  # type: ignore[attr - defined]
+    active_jobs = len([1 for _, t in orch._tasks.items() if not t.done()])
     return HierarchyResponse(usage=usage_dict, active_jobs=active_jobs)
 
 

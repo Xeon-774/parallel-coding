@@ -125,7 +125,7 @@ def create_db_engine(settings: DatabaseSettings) -> Engine:
         }
 
     engine = create_engine(
-        settings.database_url, echo=settings.echo_sql, **engine_kwargs  # type: ignore
+        settings.database_url, echo=settings.echo_sql, **engine_kwargs
     )
 
     # Enable foreign keys for SQLite

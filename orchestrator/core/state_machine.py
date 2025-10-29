@@ -365,12 +365,12 @@ class JobStateMachine:
         # Update timestamps based on state
         now = datetime.utcnow()
         if to_state == JobStatus.RUNNING and job.started_at is None:
-            job.started_at = now
+            job.started_at = now  # type: ignore[unreachable]
         elif (
             to_state in {JobStatus.COMPLETED, JobStatus.FAILED, JobStatus.CANCELED}
             and job.completed_at is None
         ):
-            job.completed_at = now
+            job.completed_at = now  # type: ignore[unreachable]
 
         # Log transition to audit trail
         transition = JobStateTransition(

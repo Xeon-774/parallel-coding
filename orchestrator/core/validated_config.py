@@ -375,7 +375,8 @@ def create_preset_config(preset: ConfigurationPreset) -> OrchestratorValidatedCo
         )
 
     else:
-        return OrchestratorValidatedConfig()
+        # Fallback for any future presets
+        return OrchestratorValidatedConfig()  # type: ignore[unreachable]
 
 
 # Testing

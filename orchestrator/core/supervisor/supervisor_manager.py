@@ -134,7 +134,7 @@ class SupervisorManager(BaseAIManager):
         lowered = text.lower()
         return any(tag in lowered for tag in ("error:", "traceback", "exception"))
 
-    async def retry_with_backoff(self, fn, *args, **kwargs) -> object:  # type: ignore[no - untyped - def]
+    async def retry_with_backoff(self, fn, *args, **kwargs) -> object:
         for attempt in range(self._retry.max_retries + 1):
             try:
                 return await fn(*args, **kwargs)

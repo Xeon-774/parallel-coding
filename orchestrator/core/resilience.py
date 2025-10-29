@@ -481,7 +481,10 @@ def _test_bulkhead_pattern() -> None:
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
         futures = []
         for i in range(5):
-            future = executor.submit(lambda: bulkhead.acquire().__enter__() and slow_operation())
+            def _run_with_bulkhead():
+                with bulkhead.acquire():
+                    return slow_operation()
+            future = executor.submit(_run_with_bulkhead)
             futures.append(future)
 
         print(f"  Bulkhead status: {bulkhead.status}")
