@@ -531,7 +531,7 @@ class QualityGateEngine:
 # ============================================================================
 
 
-async def main():
+async def main() -> None:
     """CLI entry point"""
     import argparse
 
