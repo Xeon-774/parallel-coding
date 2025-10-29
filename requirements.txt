@@ -82,6 +82,11 @@ flake8>=6.0.0
 mypy>=1.4.0
 isort>=5.12.0
 
+# Type stubs for mypy
+types-psutil>=7.0.0
+types-python-jose>=3.5.0
+types-passlib>=1.7.7
+
 # Documentation
 sphinx>=7.0.0
 sphinx-rtd-theme>=1.2.0
