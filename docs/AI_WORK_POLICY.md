@@ -755,9 +755,161 @@ Week 1のManager AI Core実装をお願いします。
 - [ ] **学習ポイントを記録**: 次回タスクへの改善提案
 - [ ] **トークン使用状況を更新**: 20Kトークンごとに報告
 - [ ] **チャット履歴を自動保存**（セクション13）: 成果達成時、セッション終了時、定期的
+- [ ] **セットアップガイドを自動生成**（セクション14）: Submodule化時、SETUP_FOR_NEW_PROJECTS.md作成
+
+---
+
+### 14. 再利用可能ツール・ドキュメント作成時の自動セットアップガイド生成ポリシー
+
+**方針**: Git submodule化したツールやドキュメントを作成した際は、**必ず**他のプロジェクトへの導入ガイドを自動生成する
+
+#### 対象
+
+以下を作成・Submodule化した場合:
+1. 開発ツール (`dev-tools/` 配下)
+2. 再利用可能なライブラリ・フレームワーク
+3. プロンプト・テンプレート集
+4. 品質規格・ポリシードキュメント
+
+#### 自動生成すべきドキュメント
+
+AIは**自動的に**以下のドキュメントを生成・更新する（ユーザー指示不要）:
+
+**1. SETUP_FOR_NEW_PROJECTS.md** (必須)
+```markdown
+# [Tool Name] - Setup Guide for New Projects
+
+## Quick Start (5 minutes)
+### Step 1: Add Git Submodules
+### Step 2: Initialize Submodules
+### Step 3: Verify Installation
+
+## What You Get
+## Project Structure After Setup
+## Minimal Setup
+## Usage Examples
+## Updating
+## Troubleshooting
+## Verification Checklist
+```
+
+**2. README.md の更新** (Submodule化した場合)
+- GitHub Repository URLを記載
+- Quick Start セクションを追加
+- 他プロジェクトでの使用例を追加
+
+**3. 親プロジェクトの .gitmodules 確認**
+- 新規Submoduleが正しく登録されているか確認
+- URLが正しいか確認
+
+#### 生成タイミング
+
+AIは以下のタイミングで**自動的に**セットアップガイドを生成:
+1. **Git submodule追加直後**
+2. **新規ツール・ライブラリのリリース時**
+3. **既存ツールの大きな更新時**（バージョン番号の変更）
+
+#### セットアップガイドの必須要素
+
+**Quick Start**:
+- 推定所要時間（例: "5 minutes"）
+- 最小限の手順（3ステップ以内）
+- コピペ可能なコマンド
+
+**What You Get**:
+- 機能一覧
+- 主要な成果物
+- トークン削減率などの定量的メリット
+
+**Troubleshooting**:
+- よくある問題とその解決策
+- 最低3つの問題を想定
+
+**Verification Checklist**:
+- セットアップ完了の確認項目
+- チェックボックス形式
+
+#### 実装例
+
+```python
+class SetupGuideGenerator:
+    def auto_generate_on_submodule_add(self, submodule_path: str):
+        """
+        Submodule追加時に自動的にセットアップガイドを生成
+        """
+        # 1. ツール名を抽出
+        tool_name = extract_tool_name(submodule_path)
+
+        # 2. GitHub URLを取得
+        github_url = get_github_url_from_gitmodules(submodule_path)
+
+        # 3. セットアップガイドを生成
+        setup_guide = self.generate_setup_guide(
+            tool_name=tool_name,
+            submodule_path=submodule_path,
+            github_url=github_url
+        )
+
+        # 4. SETUP_FOR_NEW_PROJECTS.md に書き込み
+        setup_file = f"{submodule_path}/SETUP_FOR_NEW_PROJECTS.md"
+        write_file(setup_file, setup_guide)
+
+        # 5. README.md を更新
+        self.update_readme_with_setup_link(submodule_path, github_url)
+
+        # 6. ユーザーに通知
+        print(f"✅ セットアップガイドを自動生成しました: {setup_file}")
+```
+
+#### チェックリスト
+
+Submodule化後、AIは以下を自動確認:
+- [ ] `SETUP_FOR_NEW_PROJECTS.md` が存在する
+- [ ] Quick Start セクションがある（所要時間付き）
+- [ ] コピペ可能なコマンドがある
+- [ ] Troubleshooting セクションがある（最低3問題）
+- [ ] Verification Checklist がある
+- [ ] README.md にGitHub URLがある
+- [ ] README.md にQuick Startへのリンクがある
+- [ ] .gitmodules に新規Submoduleが登録されている
+
+#### ユーザーへの通知
+
+Submodule化完了時、AIは以下を報告:
+```
+✅ dev-tools/ai-prompts を Git Submodule化完了！
+
+📄 自動生成されたドキュメント:
+- SETUP_FOR_NEW_PROJECTS.md (他プロジェクトへの導入ガイド)
+- README.md（更新済み - GitHub URL、Quick Start追加）
+
+🔗 GitHub Repository:
+https://github.com/Xeon-774/ai-prompts-standard
+
+📋 他のプロジェクトで使用する場合:
+git submodule add https://github.com/Xeon-774/ai-prompts-standard.git dev-tools/ai-prompts
+```
+
+#### ベストプラクティス
+
+**1. 定量的メリットを明示**:
+- ❌ "効率化されます"
+- ✅ "98.625%のトークン削減（4,000 → 55 tokens）"
+
+**2. コマンドは完全なもの**:
+- ❌ `git submodule add <url> <path>`
+- ✅ `git submodule add https://github.com/Xeon-774/ai-prompts-standard.git dev-tools/ai-prompts`
+
+**3. 前提条件を明示**:
+- Git CLIがインストールされているか
+- 必要な他のSubmoduleがあるか
+
+**4. 最小構成を提示**:
+- すべてのSubmoduleが必要とは限らない
+- 最小限の構成を示す
 
 ---
 
 **Last Updated**: 2025-10-29
-**Version**: 2.0 (13セクション完成)
+**Version**: 2.1 (14セクション完成)
 **Maintainer**: AI_Investor Development Team
