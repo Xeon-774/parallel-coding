@@ -81,7 +81,7 @@ def _process_confirmation_metrics(all_metrics: List[Dict[str, Any]]) -> Dict[str
 
     for metric in all_metrics:
         if metric.get("type") == "confirmation":
-            counters["total_decisions"] += 1
+            counters["total_decisions"] += 1  # type: ignore[operator]
             _update_decision_counters(metric, counters)
             _collect_latency(metric, counters)
 

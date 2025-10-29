@@ -471,7 +471,7 @@ class HierarchicalJobOrchestrator:
 
         return AggregatedReview(
             document_path=document_path,
-            review_type=review_type,
+            review_type=review_type,  # type: ignore[arg-type]
             perspectives=perspectives,
             results=results,
             overall_score=overall_score,

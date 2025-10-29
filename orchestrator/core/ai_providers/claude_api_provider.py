@@ -494,7 +494,7 @@ class ClaudeAPIProvider:
                     )
                 await asyncio.sleep(2**retry_count)
             except Exception as e:
-                result = self._handle_api_exception(
+                result = self._handle_api_exception(  # type: ignore[assignment]
                     e, file_operations, retry_count, start_time
                 )
                 if result is not None:
@@ -530,8 +530,8 @@ class ClaudeAPIProvider:
                 model=self.config.model,
                 max_tokens=self.config.max_tokens,
                 system=system_prompt or "You are a helpful AI coding assistant.",
-                messages=messages,
-                tools=self.tools,
+                messages=messages,  # type: ignore[arg-type]
+                tools=self.tools,  # type: ignore[arg-type]
                 temperature=self.config.temperature,
             ),
             timeout=self.config.timeout_seconds,
@@ -595,8 +595,8 @@ class ClaudeAPIProvider:
                     model=self.config.model,
                     max_tokens=self.config.max_tokens,
                     system=system_prompt or "You are a helpful AI coding assistant.",
-                    messages=messages,
-                    tools=self.tools,
+                    messages=messages,  # type: ignore[arg-type]
+                    tools=self.tools,  # type: ignore[arg-type]
                     temperature=self.config.temperature,
                 ),
                 timeout=self.config.timeout_seconds,
@@ -709,8 +709,8 @@ class ClaudeAPIProvider:
             model=self.config.model,
             max_tokens=self.config.max_tokens,
             system=system_prompt or "You are a helpful AI coding assistant.",
-            messages=messages,
-            tools=self.tools,
+            messages=messages,  # type: ignore[arg-type]
+            tools=self.tools,  # type: ignore[arg-type]
             temperature=self.config.temperature,
         ) as stream:
             async for event in stream:

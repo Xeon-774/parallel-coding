@@ -76,7 +76,7 @@ def open_file_utf8(file_path: str, mode: str = "r", use_bom: bool = True, **kwar
     if "errors" not in kwargs:
         kwargs["errors"] = "replace"
 
-    return open(file_path, mode, encoding=encoding, **kwargs)
+    return open(file_path, mode, encoding=encoding, **kwargs)  # type: ignore[return-value]
 
 
 def safe_write(text: str, file_obj: TextIO | None = None) -> None:

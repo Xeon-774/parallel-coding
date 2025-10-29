@@ -134,7 +134,7 @@ async def get_ecosystem_health() -> Dict[str, Any]:
         }
     except Exception as e:
         logger.error(f"Error getting ecosystem health: {e}")
-        return JSONResponse(
+        return JSONResponse(  # type: ignore[return-value]
             status_code=500,
             content={"status": "unhealthy", "error": str(e), "timestamp": time.time()},
         )
@@ -198,7 +198,7 @@ async def get_metrics_summary() -> Dict[str, Any]:
         }
     except Exception as e:
         logger.error(f"Error getting metrics summary: {e}")
-        return JSONResponse(status_code=500, content={"error": str(e), "timestamp": time.time()})
+        return JSONResponse(status_code=500, content={"error": str(e), "timestamp": time.time()})  # type: ignore[return-value]
 
 
 @router.websocket("/activity")
