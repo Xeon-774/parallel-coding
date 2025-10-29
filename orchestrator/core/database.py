@@ -117,7 +117,7 @@ def create_db_engine(settings: DatabaseSettings) -> Engine:
         }
     else:
         # PostgreSQL: Use connection pooling
-        engine_kwargs = {
+        engine_kwargs: Dict[str, Any] = {
             "pool_size": settings.pool_size,
             "max_overflow": settings.max_overflow,
             "pool_timeout": settings.pool_timeout,
