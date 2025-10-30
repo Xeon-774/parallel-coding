@@ -294,7 +294,7 @@ class CodexExecutor:
                 # Use Git Bash on Windows
                 return (
                     f'"{self.git_bash_path}" -c '
-                    "\"{self.windows_codex_path} exec {flags} < '{task_file.absolute()}'\""
+                    f'"{self.windows_codex_path} exec {flags} < \'{task_file.absolute()}\'"'
                 )
             else:
                 # Direct Windows command (not recommended - may fail)
