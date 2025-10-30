@@ -89,7 +89,7 @@ class AutonomousExecutor:
 
     def load_roadmap(self) -> List[Task]:
         """ROADMAPからタスク読み込み"""
-        print(f"📖 Loading roadmap: {self.roadmap_path}")
+        print(f"[Loading] Loading roadmap: {self.roadmap_path}")
 
         if not self.roadmap_path.exists():
             raise FileNotFoundError(f"Roadmap not found: {self.roadmap_path}")
@@ -181,7 +181,7 @@ class AutonomousExecutor:
         2. Claude API: anthropic.Anthropic().messages.create(...)
         3. parallel - coding Orchestrator: OrchestratorAI.execute(task)
         """
-        print("⏳ Simulating task execution... (実装: Codex / Claude API呼び出し)")
+        print("[PROGRESS] Simulating task execution... (実装: Codex / Claude API呼び出し)")
 
         # デモ用: 3秒待機
         await asyncio.sleep(3)
@@ -209,7 +209,7 @@ class AutonomousExecutor:
             subprocess.run(["git", "add", "."], cwd=self.workspace, check=True, capture_output=True)
 
             # Git commit
-            commit_message = """feat: {task.title}
+            commit_message = f"""feat: {task.title}
 
 {task.description}
 
@@ -217,9 +217,9 @@ Task ID: {task.id}
 Session: {self.session_id}
 Completed: {task.completed_at}
 
-🤖 Generated with [Claude Code](https://claude.com / claude - code)
+Generated with Claude Code (Autonomous Executor)
 
-Co - Authored - By: Claude <noreply@anthropic.com>
+Co-Authored-By: Claude <noreply@anthropic.com>
 """
 
             subprocess.run(
@@ -265,7 +265,7 @@ Co - Authored - By: Claude <noreply@anthropic.com>
         with open(self.report_path, "w", encoding="utf - 8") as f:
             json.dump(asdict(report), f, indent=2, ensure_ascii=False)
 
-        print(f"\n📊 Report saved: {self.report_path}")
+        print(f"\n[REPORT] Report saved: {self.report_path}")
         print(f"   Completed: {report.tasks_completed}")
         print(f"   Failed: {report.tasks_failed}")
         print(f"   Commits: {report.total_commits}")
