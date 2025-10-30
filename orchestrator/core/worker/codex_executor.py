@@ -279,8 +279,8 @@ class CodexExecutor:
             # Use PATH environment variable to find codex
             return (
                 f"wsl -d {self.wsl_distribution} bash -c "
-                f"\"export PATH='{self.nvm_path}:$PATH' && "
-                f"/mnt / c/Users / chemi / AppData / Roaming / npm / codex exec {flags} < '{wsl_task_file}'\""
+                f"\"export PATH='{self.nvm_path}' && "
+                f"{self.codex_command} exec {flags} < '{wsl_task_file}'\""
             )
         elif self.execution_mode == "windows":
             # Windows native mode
