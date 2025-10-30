@@ -272,7 +272,7 @@ Co - Authored - By: Claude <noreply@anthropic.com>
 
     async def run_forever(self):
         """無限ループ実行 (Ctrl + C で停止)"""
-        print("\n🔄 Starting infinite execution loop...")
+        print("\n[LOOP] Starting infinite execution loop...")
         print("   Press Ctrl + C to stop\n")
 
         last_report_time = time.time()
