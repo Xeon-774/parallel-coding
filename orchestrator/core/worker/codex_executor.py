@@ -193,9 +193,9 @@ class CodexExecutor:
 
     # Constants
     DEFAULT_TIMEOUT: Final[int] = 300  # 5 minutes
-    DEFAULT_MODEL: Final[str] = "gpt - 5"
+    DEFAULT_MODEL: Final[str] = "gpt-5"
     REQUIRED_FLAGS: Final[str] = (
-        "--json --dangerously - bypass - approvals - and - sandbox --skip - git - repo - check"
+        "--json --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check"
     )
 
     def __init__(
@@ -251,7 +251,7 @@ class CodexExecutor:
         # Replace backslashes with forward slashes
         path = windows_path.replace("\\", "/")
         # Convert drive letter (D:/ -> /mnt / d/)
-        path = re.sub(r"^([A - Za - z]):", lambda m: f"/mnt/{m.group(1).lower()}", path)
+        path = re.sub(r"^([A-Za-z]):", lambda m: f"/mnt/{m.group(1).lower()}", path)
         return path
 
     def _build_command(self, task_file: Path, model: str = DEFAULT_MODEL) -> str:
@@ -280,8 +280,8 @@ class CodexExecutor:
             # Use PATH environment variable to find codex
             return (
                 f"wsl -d {self.wsl_distribution} bash -c "
-                "\"export PATH='{self.nvm_path}:$PATH' && "
-                f"{self.codex_command} exec {flags} < '{wsl_task_file}'\""
+                f"\"export PATH='{self.nvm_path}:$PATH' && "
+                f"/mnt/c/Users/chemi/AppData/Roaming/npm/codex exec {flags} < '{wsl_task_file}'\""
             )
         elif self.execution_mode == "windows":
             # Windows native mode

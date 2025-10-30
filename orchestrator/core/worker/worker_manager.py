@@ -1011,7 +1011,7 @@ class WorkerManager:
             return None
 
     def run_codex_session(
-        self, worker_id: str, timeout: int = 300, model: str = "gpt - 5"
+        self, worker_id: str, timeout: int = 300, model: str = "gpt-5"
     ) -> TaskResult:
         """
         Run Codex worker session using subprocess - based executor.
