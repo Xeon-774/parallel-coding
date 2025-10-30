@@ -1,6 +1,6 @@
 {
   "execution_name": "Phase 1: 8-Parallel Validation",
-  "project_path": "D:\\user\\ai_coding\\AI_Investor\\tools\\parallel-coding\\workspace\\phase1_test_project",
+  "project_path": "workspace/phase1_test_project",
   "execution_mode": "wsl",
   "wsl_distribution": "Ubuntu-24.04",
   "max_parallel_workers": 8,

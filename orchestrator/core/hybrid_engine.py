@@ -6,6 +6,7 @@ Simple cases are handled by fast rules, complex cases go to AI.
 """
 
 import asyncio
+import os
 import sys
 import time
 from dataclasses import dataclass
@@ -418,7 +419,7 @@ class HybridDecisionEngine:
             context = {}
         context.setdefault("worker_id", worker_id)
         context.setdefault("task_name", "unknown")
-        context.setdefault("project_name", "AI_Investor")
+        context.setdefault("project_name", os.getenv("PARALLEL_CODING_PROJECT_NAME", Path.cwd().name))
         context.setdefault("project_goal", "Build AI - powered investment platform MVP")
         return context
 

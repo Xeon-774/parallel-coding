@@ -88,8 +88,12 @@ Keep your reasoning concise and clear.
         if context is None:
             context = {}
 
-        context.setdefault("project_name", "AI_Investor")
-        context.setdefault("project_goal", "Build AI - powered investment platform MVP")
+        # Use project name from config (auto-detected from directory name)
+        from orchestrator.config import OrchestratorConfig
+
+        config = OrchestratorConfig.from_env()
+        context.setdefault("project_name", config.project_name)
+        context.setdefault("project_goal", "Build software with AI assistance")
         context.setdefault("worker_id", "unknown")
         context.setdefault("task_name", "unknown")
 
@@ -334,10 +338,10 @@ if __name__ == "__main__":
     import asyncio  # noqa: F811
 
     async def test() -> None:
-        """Simple test"""
-        orchestrator = CLIOrchestratorAI(
-            workspace=r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\workspace"
-        )
+        """Simple test using auto-detected workspace"""
+        from orchestrator.utils.path_resolver import get_workspace_path
+
+        orchestrator = CLIOrchestratorAI(workspace=str(get_workspace_path(create=True)))
 
         # Test question
         decision = await orchestrator.ask(
