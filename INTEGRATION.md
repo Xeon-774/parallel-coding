@@ -1,12 +1,36 @@
-# Parallel AI Coding - AI_Investor Ecosystem Integration
+# Parallel AI Coding - Project Integration Guide
 
-**Version**: 10.0 (Enterprise-Grade)
-**Status**: ✅ Integrated into AI_Investor Ecosystem
-**Date**: 2025-10-22
+**Version**: 2.0.0-dev (Cross-Platform Compatible)
+**Status**: ✅ 100% Cross-Project Compatible
+**Date**: 2025-10-30
+**Update**: v2.0 - Zero hardcoded paths, full auto-detection
 
 ---
 
-## 🎯 Purpose in AI_Investor Ecosystem
+## 🆕 What's New in v2.0
+
+**Cross-Project Compatibility Achieved!**
+
+- ✅ **Zero Configuration**: Works out-of-the-box in any project
+- ✅ **Auto-Detection**: Automatically finds Codex/Claude CLI (even in WSL!)
+- ✅ **No Hardcoded Paths**: 100% portable across projects
+- ✅ **Cross-Platform**: Windows (WSL), Linux, macOS
+- ✅ **Easy Integration**: Just `git submodule add` and you're ready
+
+**Integration is now as simple as:**
+```bash
+cd your-project
+git submodule add https://github.com/Xeon-774/parallel-coding.git tools/parallel-coding
+cd tools/parallel-coding
+pip install -r requirements.txt
+# Done! No configuration needed.
+```
+
+See [SETUP.md](SETUP.md) for quick start guide.
+
+---
+
+## 🎯 Purpose in Any Project Ecosystem
 
 This parallel AI coding orchestrator enables **multiple Claude AI instances** to work simultaneously on different parts of the AI_Investor project, dramatically accelerating development velocity for this massive financial AI ecosystem.
 
