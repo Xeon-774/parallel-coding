@@ -459,7 +459,14 @@ class WorkerManager:
 
                 # Build WSL command with fallbacks
                 wsl_dist = self.config.wsl_distribution or "Ubuntu-24.04"
-                path_export = f"export PATH='{self.config.nvm_path}:$PATH' && " if self.config.nvm_path else ""
+
+                # Build PATH export with both NVM and common Claude locations
+                path_parts = []
+                if self.config.nvm_path:
+                    path_parts.append(str(self.config.nvm_path))
+                # Add common Claude CLI locations
+                path_parts.extend(["$HOME/.local/bin", "/usr/local/bin", "/usr/bin"])
+                path_export = f"export PATH='{':'.join(path_parts)}:$PATH' && "
 
                 # Use command name only (not full path) - PATH will resolve it
                 claude_cmd = "claude" if self.config.claude_command else "claude"
