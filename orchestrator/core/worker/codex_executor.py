@@ -193,9 +193,8 @@ class CodexExecutor:
 
     # Constants
     DEFAULT_TIMEOUT: Final[int] = 300  # 5 minutes
-    DEFAULT_MODEL: Final[str] = "gpt - 5"
     REQUIRED_FLAGS: Final[str] = (
-        "--json --dangerously - bypass - approvals - and - sandbox --skip - git - repo - check"
+        "--json --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check"
     )
 
     def __init__(
@@ -254,7 +253,7 @@ class CodexExecutor:
         path = re.sub(r"^([A - Za - z]):", lambda m: f"/mnt/{m.group(1).lower()}", path)
         return path
 
-    def _build_command(self, task_file: Path, model: str = DEFAULT_MODEL) -> str:
+    def _build_command(self, task_file: Path, model: str = "gpt-5") -> str:
         """
         Build Codex CLI command string.
 
@@ -351,7 +350,7 @@ class CodexExecutor:
         task_file: Path,
         workspace_dir: Path,
         timeout: int = DEFAULT_TIMEOUT,
-        model: str = DEFAULT_MODEL,
+        model: str = "gpt-5",
     ) -> CodexExecutionResult:
         """
         Execute Codex CLI task and return parsed result.
@@ -582,12 +581,12 @@ def create_codex_executor_from_config(config: Any) -> CodexExecutor:
         >>> executor = create_codex_executor_from_config(config)
     """
     return CodexExecutor(
-        wsl_distribution=config.wsl_distribution,
-        nvm_path=config.nvm_path,
+        wsl_distribution=config.wsl_distribution or "Ubuntu-24.04",
+        nvm_path=str(config.nvm_path) if config.nvm_path else "",
         codex_command=config.codex_command,
         execution_mode=config.execution_mode,
-        windows_codex_path=config.windows_codex_path,
-        git_bash_path=config.git_bash_path,
+        windows_codex_path=config.codex_command,  # Use same command for Windows
+        git_bash_path=str(config.git_bash_path) if config.git_bash_path else None,
     )
 
 
@@ -596,12 +595,12 @@ def create_codex_executor_from_config(config: Any) -> CodexExecutor:
 # ============================================================================
 
 if __name__ == "__main__":
-    # Example: Execute a simple task
-    executor = CodexExecutor(
-        wsl_distribution="Ubuntu - 24.04",
-        nvm_path="/home / chemi/.local / bin:/home / chemi/.nvm / versions / node / v22.21.0 / bin",
-        codex_command="codex",
-    )
+    # Example: Execute a simple task using auto-detected configuration
+    from orchestrator.config import OrchestratorConfig
+
+    # Load configuration with auto-detection
+    config = OrchestratorConfig.from_env()
+    executor = create_codex_executor_from_config(config)
 
     # Create task file
     task_file = Path("task.txt")

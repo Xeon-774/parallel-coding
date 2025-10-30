@@ -196,6 +196,8 @@ class OrchestratorConfig:
 
     def _detect_wsl_config(self) -> None:
         """Auto-detect WSL configuration (Windows only)."""
+        import platform
+
         detector = get_environment_detector()
 
         # WSL distribution
@@ -204,7 +206,11 @@ class OrchestratorConfig:
             if env_wsl_dist:
                 self.wsl_distribution = env_wsl_dist
             else:
-                self.wsl_distribution = detector.detect_wsl_distribution()
+                detected = detector.detect_wsl_distribution()
+                # Use detected value if found, otherwise keep None (will use default in commands)
+                self.wsl_distribution = detected if detected else (
+                    "Ubuntu-24.04" if platform.system() == "Windows" else None
+                )
 
         # NVM path
         if self.nvm_path is None:
@@ -212,6 +218,7 @@ class OrchestratorConfig:
             if env_nvm:
                 self.nvm_path = Path(env_nvm)
             else:
+                # Auto-detect NVM path (can be None if NVM not installed)
                 self.nvm_path = detector.detect_nvm_path()
 
     def _validate_config(self) -> None:

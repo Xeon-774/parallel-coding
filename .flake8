@@ -48,6 +48,9 @@ per-file-ignores =
     orchestrator/config/main.py:E402,F401,E501
     orchestrator/config/validator.py:F541
     orchestrator/utils/binary_discovery.py:E501
+    # Phase 2: Refactored worker modules (E501: long command strings)
+    orchestrator/core/worker/codex_executor.py:E501
+    orchestrator/core/worker/worker_manager.py:E501
 
 # Select specific error codes to check
 select = E,F,W,C

@@ -420,7 +420,7 @@ class WorkerManager:
             # Codex: Full auto mode with workspace - write sandbox
             # IMPORTANT: --json flag is required for proper non - interactive execution
             codex_flags = (
-                "--json --dangerously - bypass - approvals - and - sandbox --model gpt - 5"
+                "--json --dangerously-bypass-approvals-and-sandbox --model gpt-5"
             )
 
             if self.config.execution_mode == "wsl":
@@ -1003,7 +1003,7 @@ class WorkerManager:
             return None
 
     def run_codex_session(
-        self, worker_id: str, timeout: int = 300, model: str = "gpt - 5"
+        self, worker_id: str, timeout: int = 300, model: str = "gpt-5"
     ) -> TaskResult:
         """
         Run Codex worker session using subprocess - based executor.
@@ -1018,7 +1018,7 @@ class WorkerManager:
         Args:
             worker_id: Worker identifier (must be spawned first via spawn_codex_worker)
             timeout: Execution timeout in seconds (default: 300)
-            model: Model to use (default: gpt - 5)
+            model: Model to use (default: gpt-5)
 
         Returns:
             TaskResult with output, file changes, and status
