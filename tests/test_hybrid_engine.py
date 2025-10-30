@@ -20,15 +20,23 @@ from orchestrator.core.hybrid_engine import (
 )
 
 
+@pytest.fixture
+def test_workspace(tmp_path):
+    """Create a temporary workspace for testing"""
+    workspace = tmp_path / "test_workspace"
+    workspace.mkdir(exist_ok=True)
+    return workspace
+
+
 @pytest.mark.asyncio
-async def test_rule_based_approval():
+async def test_rule_based_approval(test_workspace):
     """Test rule - based approval for safe operations"""
     print("\n" + "=" * 70)
     print("TEST 1: Rule - based Approval - Safe File Creation")
     print("=" * 70)
 
     engine = HybridDecisionEngine(
-        workspace_root=Path(r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\workspace"),
+        workspace_root=test_workspace,
         verbose=True,
     )
 
@@ -60,14 +68,14 @@ async def test_rule_based_approval():
 
 
 @pytest.mark.asyncio
-async def test_rule_based_denial():
+async def test_rule_based_denial(test_workspace):
     """Test rule - based denial for dangerous operations"""
     print("\n" + "=" * 70)
     print("TEST 2: Rule - based Denial - Important File Deletion")
     print("=" * 70)
 
     engine = HybridDecisionEngine(
-        workspace_root=Path(r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\workspace"),
+        workspace_root=test_workspace,
         verbose=True,
     )
 
@@ -99,14 +107,14 @@ async def test_rule_based_denial():
 
 
 @pytest.mark.asyncio
-async def test_dangerous_command_denial():
+async def test_dangerous_command_denial(test_workspace):
     """Test rule - based denial for dangerous commands"""
     print("\n" + "=" * 70)
     print("TEST 3: Rule - based Denial - Dangerous Command")
     print("=" * 70)
 
     engine = HybridDecisionEngine(
-        workspace_root=Path(r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\workspace"),
+        workspace_root=test_workspace,
         verbose=True,
     )
 
@@ -137,14 +145,14 @@ async def test_dangerous_command_denial():
 
 
 @pytest.mark.asyncio
-async def test_ai_judgment():
+async def test_ai_judgment(test_workspace):
     """Test AI judgment for complex decisions"""
     print("\n" + "=" * 70)
     print("TEST 4: AI Judgment - Complex Refactoring Decision")
     print("=" * 70)
 
     engine = HybridDecisionEngine(
-        workspace_root=Path(r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\workspace"),
+        workspace_root=test_workspace,
         verbose=True,
     )
 
@@ -180,14 +188,14 @@ async def test_ai_judgment():
 
 
 @pytest.mark.asyncio
-async def test_package_install_from_requirements():
+async def test_package_install_from_requirements(test_workspace):
     """Test package installation from requirements.txt"""
     print("\n" + "=" * 70)
     print("TEST 5: Package Install from requirements.txt")
     print("=" * 70)
 
     engine = HybridDecisionEngine(
-        workspace_root=Path(r"D:\user\ai_coding\AI_Investor\tools\parallel - coding"), verbose=True
+        workspace_root=test_workspace, verbose=True
     )
 
     # This package is in requirements.txt
@@ -218,14 +226,14 @@ async def test_package_install_from_requirements():
 
 
 @pytest.mark.asyncio
-async def test_statistics():
+async def test_statistics(test_workspace):
     """Test statistics tracking"""
     print("\n" + "=" * 70)
     print("TEST 6: Statistics Tracking")
     print("=" * 70)
 
     engine = HybridDecisionEngine(
-        workspace_root=Path(r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\workspace"),
+        workspace_root=test_workspace,
         verbose=False,  # Disable verbose for cleaner output
     )
 
