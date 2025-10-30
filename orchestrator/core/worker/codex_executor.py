@@ -239,18 +239,18 @@ class CodexExecutor:
             windows_path: Windows path (e.g., "D:\\user\\file.txt")
 
         Returns:
-            WSL path (e.g., "/mnt / d / user / file.txt")
+            WSL path (e.g., "/mnt/d/user/file.txt")
 
         Example:
             >>> executor._convert_to_wsl_path("D:\\user\\file.txt")
-            '/mnt / d / user / file.txt'
+            '/mnt/d/user/file.txt'
         """
         import re
 
         # Replace backslashes with forward slashes
         path = windows_path.replace("\\", "/")
-        # Convert drive letter (D:/ -> /mnt / d/)
-        path = re.sub(r"^([A - Za - z]):", lambda m: f"/mnt/{m.group(1).lower()}", path)
+        # Convert drive letter (D:/ -> /mnt/d/)
+        path = re.sub(r"^([A-Za-z]):", lambda m: f"/mnt/{m.group(1).lower()}", path)
         return path
 
     def _build_command(self, task_file: Path, model: str = "gpt-5") -> str:
