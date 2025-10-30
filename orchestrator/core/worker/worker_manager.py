@@ -426,11 +426,12 @@ class WorkerManager:
             if self.config.execution_mode == "wsl":
                 # WSL mode - convert Windows path to WSL path
                 wsl_task_file = self._convert_to_wsl_path(task_file)
-                return (
+                cmd = (
                     f"wsl -d {self.config.wsl_distribution} bash -c "
                     f"\"export PATH='{self.config.nvm_path}:$PATH' && "
                     f"/mnt / c/Users / chemi / AppData / Roaming / npm / codex exec {codex_flags} < '{wsl_task_file}'\""
                 )
+                return cmd
             elif self.config.execution_mode == "windows":
                 # Windows native mode
                 if self.config.git_bash_path:
