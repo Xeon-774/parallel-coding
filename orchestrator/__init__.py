@@ -35,7 +35,7 @@ from orchestrator.ai_task_analyzer import (
 from orchestrator.ai_task_decomposer import AITaskDecomposer, DecomposedTask
 
 # コア設定
-from orchestrator.config import OrchestratorConfig, TaskConfig, find_git_bash
+from orchestrator.config import OrchestratorConfig, TaskConfig
 
 # コアモジュール（新規リファクタリング v10.0）
 from orchestrator.core import (
@@ -122,7 +122,6 @@ __all__ = [
     # 設定
     "OrchestratorConfig",
     "TaskConfig",
-    "find_git_bash",
     # ロギング
     "get_logger",
     "StructuredLogger",

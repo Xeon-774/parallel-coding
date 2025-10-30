@@ -43,6 +43,11 @@ per-file-ignores =
     autonomous_executor.py:C901
     simple_autonomous_executor.py:C901
     web_ui/app.py:C901
+    # Phase 1: New config system (E402: module import order, E501: long lines, F541: f-string format)
+    orchestrator/config/defaults.py:E402
+    orchestrator/config/main.py:E402,F401,E501
+    orchestrator/config/validator.py:F541
+    orchestrator/utils/binary_discovery.py:E501
 
 # Select specific error codes to check
 select = E,F,W,C
