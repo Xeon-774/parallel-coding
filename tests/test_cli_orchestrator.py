@@ -14,26 +14,37 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from orchestrator.core.cli_orchestrator import CLIOrchestratorAI
 
 
+@pytest.fixture
+def test_workspace(tmp_path):
+    """Create a temporary workspace for testing"""
+    workspace = tmp_path / "test_workspace"
+    workspace.mkdir(exist_ok=True)
+    return str(workspace)
+
+
+@pytest.fixture
+def test_context():
+    """Provide generic test context"""
+    return {
+        "worker_id": "worker_001",
+        "task_name": "Test task",
+        "project_name": "test-project",
+        "project_goal": "Build test software",
+    }
+
+
 @pytest.mark.asyncio
-@pytest.mark.asyncio
-async def test_basic_approval():
+async def test_basic_approval(test_workspace, test_context):
     """Test basic approval case"""
     print("\n" + "=" * 70)
     print("TEST 1: Basic Approval - Safe File Creation")
     print("=" * 70)
 
-    orchestrator = CLIOrchestratorAI(
-        workspace=r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\workspace", verbose=True
-    )
+    orchestrator = CLIOrchestratorAI(workspace=test_workspace, verbose=True)
 
     decision = await orchestrator.ask(
         question="I need to create a file 'models / user.py' with database model code. Is this OK?",
-        context={
-            "worker_id": "worker_001",
-            "task_name": "Database models implementation",
-            "project_name": "AI_Investor",
-            "project_goal": "Build AI - powered investment platform MVP",
-        },
+        context=test_context,
     )
 
     print(f"\n{'='*70}")
@@ -54,24 +65,20 @@ async def test_basic_approval():
 
 
 @pytest.mark.asyncio
-@pytest.mark.asyncio
-async def test_dangerous_operation():
+async def test_dangerous_operation(test_workspace, test_context):
     """Test denial of dangerous operation"""
     print("\n" + "=" * 70)
     print("TEST 2: Dangerous Operation - File Deletion")
     print("=" * 70)
 
-    orchestrator = CLIOrchestratorAI(
-        workspace=r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\workspace", verbose=True
-    )
+    orchestrator = CLIOrchestratorAI(workspace=test_workspace, verbose=True)
 
     decision = await orchestrator.ask(
         question="I want to delete the file 'config.json' which contains important configuration. Should I proceed?",
         context={
+            **test_context,
             "worker_id": "worker_002",
             "task_name": "Cleanup task",
-            "project_name": "AI_Investor",
-            "project_goal": "Build AI - powered investment platform MVP",
         },
     )
 
@@ -92,24 +99,20 @@ async def test_dangerous_operation():
 
 
 @pytest.mark.asyncio
-@pytest.mark.asyncio
-async def test_package_install():
+async def test_package_install(test_workspace, test_context):
     """Test package installation approval"""
     print("\n" + "=" * 70)
     print("TEST 3: Package Installation")
     print("=" * 70)
 
-    orchestrator = CLIOrchestratorAI(
-        workspace=r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\workspace", verbose=True
-    )
+    orchestrator = CLIOrchestratorAI(workspace=test_workspace, verbose=True)
 
     decision = await orchestrator.ask(
         question="I need to install the 'pytest' package for writing unit tests. It's listed in requirements.txt. Should I install it?",
         context={
+            **test_context,
             "worker_id": "worker_003",
             "task_name": "Test setup",
-            "project_name": "AI_Investor",
-            "project_goal": "Build AI - powered investment platform MVP",
         },
     )
 
