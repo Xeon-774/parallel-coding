@@ -65,7 +65,7 @@ class FileChange(BaseModel):
     """File change descriptor"""
 
     path: str
-    kind: Literal["add", "modify", "delete"]
+    kind: Literal["add", "modify", "delete", "update"]  # 'update' is alias for 'modify'
 
 
 class FileChangeEvent(BaseModel):
@@ -401,15 +401,16 @@ class CodexExecutor:
 
         cmd = self._build_command(task_file, model=model)
         start_time = time.time()
+        execution_state = None  # Initialize to None for error handling
 
         try:
             process = self._start_subprocess(cmd, workspace_dir)
             execution_state = self._process_output(process, start_time, timeout)
             return self._build_result_from_process(process, execution_state, start_time, timeout)
         except subprocess.TimeoutExpired:
-            return self._create_timeout_result(time.time() - start_time, timeout, execution_state)
+            return self._create_timeout_result(time.time() - start_time, timeout, execution_state or {})
         except Exception as e:
-            return self._create_error_result(e, time.time() - start_time, execution_state)
+            return self._create_error_result(e, time.time() - start_time, execution_state or {})
 
     def _start_subprocess(self, cmd: str, workspace_dir: Path) -> Any:
         """Start Codex subprocess with proper encoding."""
