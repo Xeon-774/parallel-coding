@@ -91,6 +91,9 @@ class EnvironmentDetector:
     def detect_nvm_path(self) -> Optional[Path]:
         """Auto-detect NVM (Node Version Manager) binary path.
 
+        On Windows, checks WSL for NVM installation first (recommended for Codex).
+        On Linux/macOS, checks local filesystem.
+
         Returns:
             Path to NVM's current Node.js bin directory, or None if not found
 
@@ -98,6 +101,7 @@ class EnvironmentDetector:
             >>> detector = EnvironmentDetector()
             >>> nvm_path = detector.detect_nvm_path()
             >>> # On Linux with NVM: Path("/home/user/.nvm/versions/node/v22.21.0/bin")
+            >>> # On Windows with WSL NVM: Path("/home/user/.nvm/versions/node/v22.21.0/bin")
             >>> # Without NVM: None
         """
         if "nvm_path" in self._cache:
@@ -112,7 +116,15 @@ class EnvironmentDetector:
                 self._cache["nvm_path"] = nvm_bin
                 return nvm_bin
 
-        # Check common NVM installation paths
+        # On Windows, check WSL first (Codex official recommendation)
+        if platform.system() == "Windows":
+            wsl_nvm = self._detect_nvm_in_wsl()
+            if wsl_nvm:
+                logger.info(f"Detected NVM path in WSL: {wsl_nvm}")
+                self._cache["nvm_path"] = wsl_nvm
+                return wsl_nvm
+
+        # Check common NVM installation paths (local filesystem)
         home = Path.home()
         common_paths = [
             home / ".nvm" / "current" / "bin",
@@ -136,6 +148,51 @@ class EnvironmentDetector:
 
         logger.debug("NVM installation not detected")
         self._cache["nvm_path"] = None
+        return None
+
+    def _detect_nvm_in_wsl(self) -> Optional[Path]:
+        """Detect NVM installation in WSL (Windows only).
+
+        Returns:
+            Path to NVM bin directory in WSL format, or None if not found
+        """
+        import subprocess
+
+        wsl_dist = self.detect_wsl_distribution() or "Ubuntu-24.04"
+
+        # Common NVM paths in WSL
+        nvm_check_commands = [
+            # Check for latest version in versions directory
+            "ls -1d $HOME/.nvm/versions/node/v*/bin 2>/dev/null | sort -V | tail -1",
+            # Check for current symlink
+            "readlink -f $HOME/.nvm/current/bin 2>/dev/null",
+        ]
+
+        for check_cmd in nvm_check_commands:
+            try:
+                result = subprocess.run(
+                    ["wsl", "-d", wsl_dist, "bash", "-c", check_cmd],
+                    capture_output=True,
+                    text=True,
+                    timeout=5,
+                    check=False,
+                )
+                nvm_path = result.stdout.strip()
+                if nvm_path and "/bin" in nvm_path:
+                    # Verify the path exists in WSL
+                    verify_result = subprocess.run(
+                        ["wsl", "-d", wsl_dist, "bash", "-c", f"test -d '{nvm_path}' && echo found"],
+                        capture_output=True,
+                        text=True,
+                        timeout=5,
+                        check=False,
+                    )
+                    if verify_result.stdout.strip() == "found":
+                        return Path(nvm_path)
+            except (subprocess.TimeoutExpired, FileNotFoundError, OSError) as e:
+                logger.debug(f"WSL NVM check failed: {e}")
+                continue
+
         return None
 
     def detect_git_bash_path(self) -> Optional[Path]:
