@@ -18,6 +18,7 @@
 import argparse
 import asyncio
 import json
+import os
 import subprocess
 import sys
 import time
@@ -26,11 +27,13 @@ from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
 
-# Fix Windows console encoding issues (cp932 → UTF-8)
-if sys.platform == "win32":
-    import codecs
-    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
-    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.detach())
+# Import Codex executor (imports must come before encoding config to avoid conflicts)
+from orchestrator.config.environment import EnvironmentDetector
+from orchestrator.config.main import OrchestratorConfig
+from orchestrator.core.worker.codex_executor import CodexExecutor
+
+# Note: encoding_config.py in orchestrator already handles Windows console encoding
+# No need to duplicate here
 
 
 @dataclass
@@ -72,11 +75,13 @@ class AutonomousExecutor:
         workspace: Path,
         auto_push: bool = False,
         report_interval: int = 300,  # 5分ごと
+        use_codex: bool = True,  # デフォルトでCodex使用
     ):
         self.roadmap_path = Path(roadmap_path)
         self.workspace = workspace
         self.auto_push = auto_push
         self.report_interval = report_interval
+        self.use_codex = use_codex
 
         self.session_id = f"auto_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         self.tasks: List[Task] = []
@@ -87,10 +92,22 @@ class AutonomousExecutor:
         self.report_path = workspace / f"reports/autonomous_{self.session_id}.json"
         self.report_path.parent.mkdir(parents=True, exist_ok=True)
 
+        # Initialize Codex executor if enabled
+        self.codex_executor = None
+        if self.use_codex:
+            config = OrchestratorConfig()
+            self.codex_executor = CodexExecutor(
+                wsl_distribution=config.wsl_distribution or "Ubuntu-24.04",
+                nvm_path=str(config.nvm_path) if config.nvm_path else "",
+                codex_command=config.codex_command,
+                execution_mode=config.execution_mode,
+            )
+
         print("=== Autonomous Executor started ===")
         print(f"   Session ID: {self.session_id}")
         print(f"   Workspace: {workspace}")
         print(f"   Auto-push: {auto_push}")
+        print(f"   AI Engine: {'Codex CLI' if self.use_codex else 'Simulation'}")
         print(f"   Report: {self.report_path}")
         print()
 
@@ -181,33 +198,79 @@ class AutonomousExecutor:
 
     async def _execute_task_impl(self, task: Task) -> bool:
         """
-        タスク実装 (デモ用: 実際にはCodex / Claude APIを呼び出す)
-
-        実装オプション:
-        1. Codex CLI: subprocess.run(["codex", "exec", task.description])
-        2. Claude API: anthropic.Anthropic().messages.create(...)
-        3. parallel - coding Orchestrator: OrchestratorAI.execute(task)
+        タスク実装: Codex CLIまたはシミュレーション
         """
-        print("[PROGRESS] Simulating task execution... (実装: Codex / Claude API呼び出し)")
+        if not self.use_codex or self.codex_executor is None:
+            # シミュレーションモード
+            print("[PROGRESS] Simulating task execution... (デモモード)")
+            await asyncio.sleep(3)
+            return True
 
-        # デモ用: 3秒待機
-        await asyncio.sleep(3)
+        # Codex CLI実行モード
+        print(f"[PROGRESS] Executing task with Codex CLI...")
+        print(f"   Task: {task.title}")
+        print(f"   Description: {task.description}\n")
 
-        # 実際の実装例 (Python 3.13 fix applied):
-        # env = os.environ.copy()
-        # env['PYTHON_BASIC_REPL'] = '1'  # Fix Python 3.13 _pyrepl console handle errors
-        # env['PYTHONUNBUFFERED'] = '1'
-        # result = subprocess.run(
-        #     ["codex", "exec", task.description, "--full - auto"],
-        #     capture_output=True,
-        #     text=True,
-        #     cwd=self.workspace,
-        #     env=env,
-        #     stdin=subprocess.DEVNULL
-        # )
-        # return result.returncode == 0
+        # タスクファイル作成 (.working ディレクトリに)
+        task_dir = self.workspace / ".working"
+        task_dir.mkdir(parents=True, exist_ok=True)
+        task_file = task_dir / f"{self.session_id}_{task.id}.txt"
 
-        return True  # デモ用: 常に成功
+        # タスク内容を書き込み
+        task_content = f"""# Task: {task.title}
+
+## Description
+{task.description}
+
+## Requirements
+- Follow the Excellence AI Standard
+- Write comprehensive tests (coverage ≥90%)
+- Add type hints and docstrings
+- Ensure all quality gates pass
+
+## Working Directory
+{self.workspace.absolute()}
+
+Please implement this task completely and commit your changes with a clear commit message.
+"""
+        task_file.write_text(task_content, encoding="utf-8")
+        print(f"[INFO] Task file created: {task_file}")
+
+        try:
+            # Codex CLIで実行 (非同期でラップ)
+            loop = asyncio.get_event_loop()
+            result = await loop.run_in_executor(
+                None,
+                self.codex_executor.execute,
+                task_file,
+                self.workspace,
+                600,  # 10分タイムアウト
+                "gpt-5",  # モデル
+            )
+
+            # 結果を表示
+            print(f"\n[INFO] Codex execution completed:")
+            print(f"   Success: {result.success}")
+            print(f"   Duration: {result.duration:.1f}s")
+            print(f"   Created files: {len(result.created_files)}")
+            print(f"   Modified files: {len(result.modified_files)}")
+            print(f"   Tokens: {result.usage.input_tokens if result.usage else 0} in / {result.usage.output_tokens if result.usage else 0} out")
+
+            if result.created_files:
+                print(f"   Files created: {', '.join(str(f) for f in result.created_files[:5])}")
+            if result.modified_files:
+                print(f"   Files modified: {', '.join(str(f) for f in result.modified_files[:5])}")
+
+            if not result.success:
+                print(f"[WARN] Codex execution failed: {result.error_message}")
+
+            return result.success
+
+        except Exception as e:
+            print(f"[ERROR] Codex execution error: {e}")
+            import traceback
+            traceback.print_exc()
+            return False
 
     async def _auto_commit(self, task: Task):
         """自動Git commit (NO user confirmation)"""
@@ -327,6 +390,12 @@ def main():
         default=300,
         help="Report interval in seconds (default: 300)",
     )
+    parser.add_argument(
+        "--use-codex",
+        action="store_true",
+        default=False,
+        help="Use Codex CLI for task execution (default: simulation mode)",
+    )
 
     args = parser.parse_args()
 
@@ -335,6 +404,7 @@ def main():
         workspace=Path(args.workspace),
         auto_push=args.auto_push,
         report_interval=args.report_interval,
+        use_codex=args.use_codex,
     )
 
     # Run forever
