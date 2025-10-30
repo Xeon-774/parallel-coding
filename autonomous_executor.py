@@ -92,16 +92,9 @@ class AutonomousExecutor:
         self.report_path = workspace / f"reports/autonomous_{self.session_id}.json"
         self.report_path.parent.mkdir(parents=True, exist_ok=True)
 
-        # Initialize Codex executor if enabled
+        # Lazy initialization of Codex executor (initialized on first use)
         self.codex_executor = None
-        if self.use_codex:
-            config = OrchestratorConfig()
-            self.codex_executor = CodexExecutor(
-                wsl_distribution=config.wsl_distribution or "Ubuntu-24.04",
-                nvm_path=str(config.nvm_path) if config.nvm_path else "",
-                codex_command=config.codex_command,
-                execution_mode=config.execution_mode,
-            )
+        self._codex_config = None
 
         print("=== Autonomous Executor started ===")
         print(f"   Session ID: {self.session_id}")
@@ -110,6 +103,20 @@ class AutonomousExecutor:
         print(f"   AI Engine: {'Codex CLI' if self.use_codex else 'Simulation'}")
         print(f"   Report: {self.report_path}")
         print()
+
+    def _get_codex_executor(self) -> CodexExecutor:
+        """Lazy initialization of Codex executor."""
+        if self.codex_executor is None and self.use_codex:
+            print("[INFO] Initializing Codex executor...")
+            config = OrchestratorConfig()
+            self.codex_executor = CodexExecutor(
+                wsl_distribution=config.wsl_distribution or "Ubuntu-24.04",
+                nvm_path=str(config.nvm_path) if config.nvm_path else "",
+                codex_command=config.codex_command,
+                execution_mode=config.execution_mode,
+            )
+            print("[INFO] Codex executor initialized successfully")
+        return self.codex_executor
 
     def load_roadmap(self) -> List[Task]:
         """ROADMAPからタスク読み込み"""
@@ -200,7 +207,7 @@ class AutonomousExecutor:
         """
         タスク実装: Codex CLIまたはシミュレーション
         """
-        if not self.use_codex or self.codex_executor is None:
+        if not self.use_codex:
             # シミュレーションモード
             print("[PROGRESS] Simulating task execution... (デモモード)")
             await asyncio.sleep(3)
@@ -210,6 +217,12 @@ class AutonomousExecutor:
         print(f"[PROGRESS] Executing task with Codex CLI...")
         print(f"   Task: {task.title}")
         print(f"   Description: {task.description}\n")
+
+        # Lazy initialization of Codex executor
+        executor = self._get_codex_executor()
+        if executor is None:
+            print("[ERROR] Failed to initialize Codex executor")
+            return False
 
         # タスクファイル作成 (.working ディレクトリに)
         task_dir = self.workspace / ".working"
@@ -241,7 +254,7 @@ Please implement this task completely and commit your changes with a clear commi
             loop = asyncio.get_event_loop()
             result = await loop.run_in_executor(
                 None,
-                self.codex_executor.execute,
+                executor.execute,
                 task_file,
                 self.workspace,
                 600,  # 10分タイムアウト
