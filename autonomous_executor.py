@@ -132,7 +132,7 @@ class AutonomousExecutor:
     async def execute_task(self, task: Task) -> bool:
         """タスク実行 (NO user confirmation)"""
         print(f"\n{'='*60}")
-        print(f"🚀 Executing Task: {task.title}")
+        print(f"[RUN] Executing Task: {task.title}")
         print(f"   ID: {task.id}")
         print(f"   Priority: {task.priority}")
         print(f"   Description: {task.description}")
@@ -299,12 +299,12 @@ Co - Authored - By: Claude <noreply@anthropic.com>
         except KeyboardInterrupt:
             print("\n\n[PAUSE]  Execution stopped by user (Ctrl + C)")
             self.save_report()
-            print("\n📊 Final Report:")
+            print("\n[REPORT] Final Report:")
             print(f"   Session ID: {self.session_id}")
             print(f"   Tasks Completed: {self.completed_count}")
             print(f"   Tasks Failed: {self.failed_count}")
             print(f"   Total Commits: {self.commit_count}")
-            print("\n👋 Goodbye!\n")
+            print("\n[BYE] Goodbye!\n")
 
 
 def main():
