@@ -77,6 +77,50 @@ class BinaryDiscovery:
         self._cache[binary_name] = path
         self._cache_timestamps[binary_name] = time.time()
 
+    def _find_claude_in_wsl(self) -> Optional[Path]:
+        """Find Claude CLI in WSL (Windows only).
+
+        Checks common WSL installation locations for Claude CLI.
+
+        Returns:
+            Path indicator for Claude in WSL or None if not found
+        """
+        import subprocess
+
+        # Get WSL distribution from environment detector
+        from orchestrator.config.environment import get_environment_detector
+
+        detector = get_environment_detector()
+        wsl_dist = detector.detect_wsl_distribution() or "Ubuntu-24.04"
+
+        # Common WSL Claude locations to check
+        wsl_paths = [
+            "$HOME/.local/bin/claude",
+            "/usr/local/bin/claude",
+            "/usr/bin/claude",
+        ]
+
+        for wsl_path in wsl_paths:
+            try:
+                # Test if claude exists in WSL
+                result = subprocess.run(
+                    ["wsl", "-d", wsl_dist, "bash", "-c", f"test -f {wsl_path} && echo found"],
+                    capture_output=True,
+                    text=True,
+                    timeout=5,
+                    check=False,
+                )
+                if result.stdout.strip() == "found":
+                    logger.info(f"Found Claude CLI in WSL at {wsl_path}")
+                    # Return a special marker indicating WSL Claude
+                    # We'll use "claude" as command name, not a full path
+                    return Path("claude")  # Will be resolved by PATH in WSL
+            except (subprocess.TimeoutExpired, FileNotFoundError, OSError) as e:
+                logger.debug(f"WSL check failed for {wsl_path}: {e}")
+                continue
+
+        return None
+
     def find_codex(self, required: bool = False) -> Optional[Path]:
         """Find Codex CLI installation.
 
@@ -197,6 +241,14 @@ class BinaryDiscovery:
                 logger.info(f"Found Claude CLI from env var: {claude_path}")
                 self._update_cache("claude", claude_path)
                 return claude_path
+
+        # Check WSL first on Windows (preferred for cross-platform compatibility)
+        if platform.system() == "Windows":
+            wsl_claude = self._find_claude_in_wsl()
+            if wsl_claude:
+                logger.info(f"Found Claude CLI in WSL: {wsl_claude}")
+                self._update_cache("claude", wsl_claude)
+                return wsl_claude
 
         # Check system PATH
         claude_which = shutil.which("claude")
