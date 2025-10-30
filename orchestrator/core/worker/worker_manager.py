@@ -429,7 +429,7 @@ class WorkerManager:
                 return (
                     f"wsl -d {self.config.wsl_distribution} bash -c "
                     "\"export PATH='{self.config.nvm_path}:$PATH' && "
-                    f"{self.config.codex_command} exec {codex_flags} -p \"$(cat '{wsl_task_file}')\"""
+                    f"{self.config.codex_command} exec {codex_flags} < '{wsl_task_file}'\""
                 )
             elif self.config.execution_mode == "windows":
                 # Windows native mode
@@ -437,7 +437,7 @@ class WorkerManager:
                     # Use Git Bash on Windows
                     return (
                         f'"{self.config.git_bash_path}" -c '
-                        "\"{self.config.windows_codex_path} exec {codex_flags} -p \"$(cat '{task_file}')\"""
+                        "\"{self.config.windows_codex_path} exec {codex_flags} < '{task_file}'\""
                     )
                 else:
                     # Direct Windows command
@@ -459,7 +459,7 @@ class WorkerManager:
                 return (
                     f"wsl -d {self.config.wsl_distribution} bash -c "
                     "\"export PATH='{self.config.nvm_path}:$PATH' && "
-                    f"{self.config.claude_command} {flags_str} -p \"$(cat '{wsl_task_file}')\"""
+                    f"{self.config.claude_command} {flags_str} < '{wsl_task_file}'\""
                 )
             elif self.config.execution_mode == "windows":
                 # Windows native mode
@@ -468,7 +468,7 @@ class WorkerManager:
                     return (
                         f'"{self.config.git_bash_path}" -c '
                         "\"export CLAUDE_CODE_GIT_BASH_PATH='{self.config.git_bash_path}' && "
-                        f"{self.config.windows_claude_path} {flags_str} -p \"$(cat '{task_file}')\"""
+                        f"{self.config.windows_claude_path} {flags_str} < '{task_file}'\""
                     )
                 else:
                     # Direct Windows command
