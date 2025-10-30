@@ -188,7 +188,9 @@ class EnvironmentDetector:
                         check=False,
                     )
                     if verify_result.stdout.strip() == "found":
-                        return Path(nvm_path)
+                        # Return as PurePosixPath string to preserve forward slashes
+                        from pathlib import PurePosixPath
+                        return PurePosixPath(nvm_path)
             except (subprocess.TimeoutExpired, FileNotFoundError, OSError) as e:
                 logger.debug(f"WSL NVM check failed: {e}")
                 continue
