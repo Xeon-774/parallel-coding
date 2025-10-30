@@ -19,11 +19,18 @@ import argparse
 import asyncio
 import json
 import subprocess
+import sys
 import time
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
+
+# Fix Windows console encoding issues (cp932 → UTF-8)
+if sys.platform == "win32":
+    import codecs
+    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
+    sys.stderr = codecs.getwriter("utf-8")(sys.stderr.detach())
 
 
 @dataclass
