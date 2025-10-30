@@ -312,10 +312,10 @@ def main():
     parser.add_argument("--roadmap", default="ROADMAP.md", help="Roadmap file path")
     parser.add_argument("--workspace", default=".", help="Workspace directory")
     parser.add_argument(
-        "--auto - push", action="store_true", help="Auto - push to remote after commit"
+        "--auto-push", action="store_true", help="Auto-push to remote after commit"
     )
     parser.add_argument(
-        "--report - interval",
+        "--report-interval",
         type=int,
         default=300,
         help="Report interval in seconds (default: 300)",
