@@ -461,10 +461,13 @@ class WorkerManager:
                 wsl_dist = self.config.wsl_distribution or "Ubuntu-24.04"
                 path_export = f"export PATH='{self.config.nvm_path}:$PATH' && " if self.config.nvm_path else ""
 
+                # Use command name only (not full path) - PATH will resolve it
+                claude_cmd = "claude" if self.config.claude_command else "claude"
+
                 return (
                     f"wsl -d {wsl_dist} bash -c "
                     f"\"{path_export}"
-                    f"{self.config.claude_command} {flags_str} < '{wsl_task_file}'\""
+                    f"{claude_cmd} {flags_str} < '{wsl_task_file}'\""
                 )
             elif self.config.execution_mode == "windows":
                 # Windows native mode
