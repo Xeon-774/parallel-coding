@@ -429,7 +429,7 @@ class WorkerManager:
                 return (
                     f"wsl -d {self.config.wsl_distribution} bash -c "
                     f"\"export PATH='{self.config.nvm_path}:$PATH' && "
-                    f"{self.config.codex_command} exec {codex_flags} < '{wsl_task_file}'\""
+                    f"/mnt/c/Users/chemi/AppData/Roaming/npm/codex.cmd exec {codex_flags} < '{wsl_task_file}'\""
                 )
             elif self.config.execution_mode == "windows":
                 # Windows native mode

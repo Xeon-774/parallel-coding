@@ -161,7 +161,7 @@ Execute this task completely with excellence_ai_standard 100% compliance.
 DO NOT ask for permission repeatedly. Proceed with implementation immediately."""
 
         # Combine Codex prompt + task content
-        prompt = """{codex_prompt}
+        prompt = f"""{codex_prompt}
 
 ---
 
