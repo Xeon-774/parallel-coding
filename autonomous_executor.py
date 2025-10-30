@@ -264,7 +264,7 @@ Please implement this task completely and commit your changes with a clear commi
             # 結果を表示
             print(f"\n[INFO] Codex execution completed:")
             print(f"   Success: {result.success}")
-            print(f"   Duration: {result.duration:.1f}s")
+            print(f"   Duration: {result.duration_seconds:.1f}s")
             print(f"   Created files: {len(result.created_files)}")
             print(f"   Modified files: {len(result.modified_files)}")
             print(f"   Tokens: {result.usage.input_tokens if result.usage else 0} in / {result.usage.output_tokens if result.usage else 0} out")
