@@ -15,7 +15,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from orchestrator.api.main import app
-from orchestrator.core.auth import create_access_token, create_dev_token
+from orchestrator.core.auth import create_dev_token
 from orchestrator.core.database import get_db
 from orchestrator.core.db_models import Job, JobStatus, Worker, WorkerStatus
 
@@ -250,7 +250,7 @@ def test_resources_get_quotas(client: TestClient, auth_headers: dict[str, str]) 
 
 def test_resources_allocate_success(client: TestClient, auth_headers: dict[str, str]) -> None:
     """Test POST /api / resources / allocate endpoint with valid allocation."""
-    worker = _seed_worker("alloc - worker", "ws - 1", WorkerStatus.IDLE)
+    _seed_worker("alloc - worker", "ws - 1", WorkerStatus.IDLE)
     job = _seed_job(
         "alloc - job", "Test allocation task", JobStatus.PENDING, depth=0, worker_count=1
     )
@@ -268,7 +268,7 @@ def test_resources_allocate_success(client: TestClient, auth_headers: dict[str, 
 
 def test_resources_release(client: TestClient, auth_headers: dict[str, str]) -> None:
     """Test POST /api / resources / release endpoint."""
-    worker = _seed_worker("release - worker", "ws - 1", WorkerStatus.RUNNING)
+    _seed_worker("release - worker", "ws - 1", WorkerStatus.RUNNING)
     job = _seed_job(
         "release - job", "Test release task", JobStatus.RUNNING, depth=0, worker_count=1
     )

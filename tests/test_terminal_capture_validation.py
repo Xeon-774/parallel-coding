@@ -8,7 +8,6 @@ This is a critical validation test to confirm Phase 1.3 implementation.
 """
 
 import sys
-import time
 from pathlib import Path
 
 # Add project root to path

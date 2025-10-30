@@ -1,6 +1,5 @@
 """Common validation functions for data visualization platform."""
 
-import os
 from pathlib import Path
 from typing import Any, List, Optional, Union
 

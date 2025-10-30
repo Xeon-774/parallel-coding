@@ -175,7 +175,7 @@ def run_parallel_pow_test(num_workers: int = 5, difficulty: int = 4):
             return
 
         with open(results_json_path, "r", encoding="utf - 8") as f:
-            results_data = json.load(f)
+            json.load(f)
 
         # 各ワーカーの出力ファイルを読み取る
         workspace_path = Path(config.workspace_dir)

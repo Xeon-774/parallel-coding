@@ -20,11 +20,11 @@ def convert_windows_to_wsl_path(windows_path: str) -> str:
         windows_path: Windowsパス（例: C:\\Users\\name\\file.txt）
 
     Returns:
-        WSLパス（例: /mnt / c/Users / name / file.txt）
+        WSLパス（例: /mnt / c / Users / name / file.txt）
 
     Examples:
         >>> convert_windows_to_wsl_path("D:\\user\\test\\file.txt")
-        '/mnt / d/user / test / file.txt'
+        '/mnt / d / user / test / file.txt'
     """
     # ドライブレターとパスを分離
     match = re.match(r"([A - Za - z]):(.*)", windows_path)
@@ -45,13 +45,13 @@ def convert_wsl_to_windows_path(wsl_path: str) -> str:
     WSLパスをWindowsパスに変換
 
     Args:
-        wsl_path: WSLパス（例: /mnt / c/Users / name / file.txt）
+        wsl_path: WSLパス（例: /mnt / c / Users / name / file.txt）
 
     Returns:
         Windowsパス（例: C:\\Users\\name\\file.txt）
 
     Examples:
-        >>> convert_wsl_to_windows_path("/mnt / d/user / test / file.txt")
+        >>> convert_wsl_to_windows_path("/mnt / d / user / test / file.txt")
         'D:\\\\user\\\\test\\\\file.txt'
     """
     # /mnt / X/... パターンをマッチ

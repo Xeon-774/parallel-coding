@@ -20,8 +20,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from orchestrator.config import OrchestratorConfig
-from orchestrator.core.worker.worker_manager import ConfirmationRequest, WorkerManager
-from orchestrator.interfaces import ILogger
+from orchestrator.core.worker.worker_manager import WorkerManager
 
 
 class TestLogger:

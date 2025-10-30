@@ -3,8 +3,6 @@
 Tests recursion depth validation, timeout calculation, and circular reference detection.
 """
 
-import pytest
-
 from orchestrator.recursive.recursion_validator import (
     RecursionValidationResult,
     RecursionValidator,

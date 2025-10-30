@@ -228,7 +228,9 @@ class HierarchicalResourceManager:
             return released
 
     # ----------------------------- Context manager ----------------------------
-    async def resource_scope(self, *, job_id: str, depth: int, requested_workers: int) -> AsyncContextManager[ResourceAllocation]:
+    async def resource_scope(
+        self, *, job_id: str, depth: int, requested_workers: int
+    ) -> AsyncContextManager[ResourceAllocation]:
         """Async context manager allocating and releasing resources.
 
         Usage:
@@ -250,7 +252,12 @@ class HierarchicalResourceManager:
                 self.allocated = alloc.granted
                 return alloc
 
-            async def __aexit__(self, exc_type: Optional[type[BaseException]], exc: Optional[BaseException], tb: Optional[object]) -> None:
+            async def __aexit__(
+                self,
+                exc_type: Optional[type[BaseException]],
+                exc: Optional[BaseException],
+                tb: Optional[object],
+            ) -> None:
                 await self._outer.release_resources(job_id=self._job_id, depth=self._depth)
 
         return _Scope(self)

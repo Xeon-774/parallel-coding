@@ -25,23 +25,18 @@ Version: 1.0.0
 
 import asyncio
 import subprocess
-from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock, Mock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
 from orchestrator.core.ai_providers.codex_cli_provider import (
     DEFAULT_TIMEOUT_SECONDS,
     MAX_PROMPT_LENGTH,
-    MIN_PROMPT_LENGTH,
     CodexCLINotFoundError,
     CodexCLIProvider,
-    CodexError,
-    CodexExecutionError,
     CodexExecutionResult,
     CodexProviderConfig,
     CodexStatus,
-    CodexTimeoutError,
     create_default_provider,
     validate_codex_installation,
 )
@@ -551,7 +546,7 @@ class TestCodexCLIProviderSecurity:
             mock_process.communicate = AsyncMock(return_value=(b"OK", b""))
             mock_exec.return_value = mock_process
 
-            result = await provider.execute_async(malicious_prompt)
+            await provider.execute_async(malicious_prompt)
 
             # Verify command is passed safely (not interpreted as shell)
             call_args = mock_exec.call_args

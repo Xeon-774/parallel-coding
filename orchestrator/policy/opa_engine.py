@@ -1,7 +1,7 @@
 """OPA (Open Policy Agent) Engine for policy evaluation.
 
-This module provides integration with OPA for policy-based decision making.
-It supports deny-by-default enforcement and audit logging.
+This module provides integration with OPA for policy - based decision making.
+It supports deny - by - default enforcement and audit logging.
 """
 
 import json
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 class OPAEngine:
     """OPA Policy Engine for evaluating Rego policies.
 
-    Provides deny-by-default policy enforcement with audit logging.
+    Provides deny - by - default policy enforcement with audit logging.
 
     Attributes:
         opa_url: URL of OPA server (default: http://localhost:8181)
@@ -52,18 +52,14 @@ class OPAEngine:
         self.opa_url = opa_url.rstrip("/")
         self.policy_dir = Path(policy_dir) if policy_dir else Path("policies")
         self.deny_by_default = deny_by_default
-        self.audit_log_path = (
-            Path(audit_log_path) if audit_log_path else Path("policy_audit.log")
-        )
+        self.audit_log_path = Path(audit_log_path) if audit_log_path else Path("policy_audit.log")
         self.client = httpx.Client(timeout=10.0)
 
         logger.info(f"OPA Engine initialized: {self.opa_url}")
         logger.info(f"Policy directory: {self.policy_dir}")
         logger.info(f"Deny by default: {self.deny_by_default}")
 
-    def evaluate_policy(
-        self, request: PolicyRequest
-    ) -> PolicyEvaluationResult:
+    def evaluate_policy(self, request: PolicyRequest) -> PolicyEvaluationResult:
         """Evaluate policy for given request.
 
         Args:
@@ -122,13 +118,13 @@ class OPAEngine:
         Returns:
             PolicyResponse with decision
         """
-        url = f"{self.opa_url}/v1/data/{query.policy_path.replace('/', '/data/')}"
+        url = f"{self.opa_url}/v1 / data/{query.policy_path.replace('/', '/data/')}"
 
         try:
             response = self.client.post(
                 url,
                 json={"input": query.input},
-                headers={"Content-Type": "application/json"},
+                headers={"Content - Type": "application / json"},
             )
             response.raise_for_status()
 
@@ -138,9 +134,7 @@ class OPAEngine:
             # Extract decision
             decision_value = result.get(query.decision, False)
             if isinstance(decision_value, bool):
-                decision = (
-                    PolicyDecision.ALLOW if decision_value else PolicyDecision.DENY
-                )
+                decision = PolicyDecision.ALLOW if decision_value else PolicyDecision.DENY
             else:
                 decision = PolicyDecision.UNKNOWN
 
@@ -195,9 +189,7 @@ class OPAEngine:
             metadata=response.metadata,
         )
 
-    def _audit_log(
-        self, request: PolicyRequest, result: PolicyEvaluationResult
-    ) -> None:
+    def _audit_log(self, request: PolicyRequest, result: PolicyEvaluationResult) -> None:
         """Write audit log entry.
 
         Args:
@@ -255,7 +247,7 @@ class OPAEngine:
         relative_path = policy_file.relative_to(self.policy_dir)
         policy_name = str(relative_path.with_suffix("")).replace("\\", "/")
 
-        url = f"{self.opa_url}/v1/policies/{policy_name}"
+        url = f"{self.opa_url}/v1 / policies/{policy_name}"
 
         with open(policy_file) as f:
             policy_content = f.read()
@@ -263,7 +255,7 @@ class OPAEngine:
         response = self.client.put(
             url,
             content=policy_content,
-            headers={"Content-Type": "text/plain"},
+            headers={"Content - Type": "text / plain"},
         )
         response.raise_for_status()
 

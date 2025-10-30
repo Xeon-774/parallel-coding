@@ -24,7 +24,7 @@ from orchestrator.core.worker.worker_manager import WorkerManager
 
 def load_execution_config(config_path: str) -> dict:
     """Load Phase 1 execution configuration"""
-    with open(config_path, "r", encoding="utf - 8-sig") as f:
+    with open(config_path, "r", encoding="utf - 8 - sig") as f:
         return json.load(f)
 
 
@@ -92,8 +92,8 @@ def test_phase1_parallel_execution():
 
             # Read task file
             task_file_path = Path(exec_config["project_path"]) / worker_config["task_file"]
-            with open(task_file_path, "r", encoding="utf - 8-sig") as f:
-                task_content = f.read()
+            with open(task_file_path, "r", encoding="utf - 8 - sig") as f:
+                f.read()
 
             # Create task
             task = {

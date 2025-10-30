@@ -254,7 +254,7 @@ def count_document_lines(file_path: str) -> int:
         >>> count_document_lines("docs / ROADMAP.md")
         497
     """
-    with open(file_path, "r", encoding="utf - 8-sig") as f:
+    with open(file_path, "r", encoding="utf - 8 - sig") as f:
         return sum(1 for _ in f)
 
 

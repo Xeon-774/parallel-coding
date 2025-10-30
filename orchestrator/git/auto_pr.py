@@ -1,11 +1,11 @@
 """Autonomous Pull Request Creation System.
 
-This module provides end-to-end automation for:
+This module provides end - to - end automation for:
 - Branch creation from task descriptions
-- Auto-commit with quality gates
+- Auto - commit with quality gates
 - PR creation with rich descriptions
 - Reviewer assignment
-- CI/CD integration
+- CI / CD integration
 
 Part of Phase 0 Week 2 - Excellence AI Standard compliance.
 """
@@ -47,25 +47,25 @@ class PRResult:
 class AutoPRCreator:
     """Autonomous Pull Request Creator.
 
-    Handles end-to-end PR creation workflow:
+    Handles end - to - end PR creation workflow:
     1. Create feature branch from task
     2. Commit changes with quality gates
     3. Push to remote
     4. Create PR with description
     5. Request reviewers
-    6. Link to issues/tasks
+    6. Link to issues / tasks
 
     Example:
         >>> creator = AutoPRCreator(
-        ...     workspace_dir="/path/to/workspace",
+        ...     workspace_dir="/path / to / workspace",
         ...     base_branch="main"
         ... )
         >>> task = TaskMetadata(
-        ...     task_id="TASK-123",
+        ...     task_id="TASK - 123",
         ...     title="Add auto PR feature",
         ...     description="Implement autonomous PR creation",
         ...     priority="HIGH",
-        ...     files_changed=["orchestrator/git/auto_pr.py"]
+        ...     files_changed=["orchestrator / git / auto_pr.py"]
         ... )
         >>> result = creator.create_pr(task)
         >>> if result.success:
@@ -98,10 +98,7 @@ class AutoPRCreator:
         if not (self.workspace_dir / ".git").exists():
             raise ValueError(f"Not a git repository: {workspace_dir}")
 
-        logger.info(
-            f"AutoPRCreator initialized: workspace={workspace_dir}, "
-            f"base={base_branch}"
-        )
+        logger.info(f"AutoPRCreator initialized: workspace={workspace_dir}, " f"base={base_branch}")
 
     def create_pr(
         self,
@@ -114,7 +111,7 @@ class AutoPRCreator:
         Args:
             task: Task metadata for PR creation
             reviewers: List of GitHub usernames to request reviews
-            auto_push: Auto-push to remote (default: True)
+            auto_push: Auto - push to remote (default: True)
 
         Returns:
             PRResult with success status and PR details
@@ -140,9 +137,7 @@ class AutoPRCreator:
 
             # Step 5: Create PR
             pr_title, pr_body = self._generate_pr_content(task)
-            pr_number, pr_url = self._create_github_pr(
-                branch_name, pr_title, pr_body
-            )
+            pr_number, pr_url = self._create_github_pr(branch_name, pr_title, pr_body)
             logger.info(f"PR created: #{pr_number} - {pr_url}")
 
             # Step 6: Request reviewers (if specified)
@@ -165,18 +160,18 @@ class AutoPRCreator:
         """Create feature branch from task.
 
         Args:
-            task_id: Task identifier (e.g., "TASK-123")
+            task_id: Task identifier (e.g., "TASK - 123")
             title: Task title for branch name
 
         Returns:
             Branch name
         """
         # Sanitize title for branch name
-        sanitized_title = re.sub(r"[^a-zA-Z0-9\s-]", "", title)
+        sanitized_title = re.sub(r"[^a - zA - Z0 - 9\s-]", "", title)
         sanitized_title = re.sub(r"\s+", "-", sanitized_title).lower()
         sanitized_title = sanitized_title[:50].rstrip("-")  # Limit length and remove trailing dash
 
-        # Format: feature/TASK-123-short-title
+        # Format: feature / TASK - 123 - short - title
         branch_name = f"feature/{task_id.lower()}-{sanitized_title}"
 
         # Create branch
@@ -222,9 +217,9 @@ class AutoPRCreator:
             f"Task: {task.task_id}",
             f"Priority: {task.priority}",
             "",
-            "🤖 Generated with [Claude Code](https://claude.com/claude-code)",
+            "🤖 Generated with [Claude Code](https://claude.com / claude - code)",
             "",
-            "Co-Authored-By: Claude <noreply@anthropic.com>",
+            "Co - Authored - By: Claude <noreply@anthropic.com>",
         ]
 
         return "\n".join(message_lines)
@@ -241,9 +236,7 @@ class AutoPRCreator:
         title_lower = title.lower()
 
         # Check docs first (more specific than "add")
-        if any(
-            keyword in title_lower for keyword in ["doc", "readme", "comment"]
-        ):
+        if any(keyword in title_lower for keyword in ["doc", "readme", "comment"]):
             return "docs"
         elif any(keyword in title_lower for keyword in ["fix", "bug", "resolve"]):
             return "fix"
@@ -253,10 +246,7 @@ class AutoPRCreator:
             return "test"
         elif any(keyword in title_lower for keyword in ["perf", "optim"]):
             return "perf"
-        elif any(
-            keyword in title_lower
-            for keyword in ["add", "implement", "create", "new"]
-        ):
+        elif any(keyword in title_lower for keyword in ["add", "implement", "create", "new"]):
             return "feat"
         else:
             return "chore"
@@ -277,9 +267,7 @@ class AutoPRCreator:
         """
         self._run_git(["push", "-u", self.remote_name, branch_name])
 
-    def _generate_pr_content(
-        self, task: TaskMetadata
-    ) -> tuple[str, str]:
+    def _generate_pr_content(self, task: TaskMetadata) -> tuple[str, str]:
         """Generate PR title and body.
 
         Args:
@@ -301,9 +289,7 @@ class AutoPRCreator:
             task_id=task.task_id,
             description=task.description,
             priority=task.priority,
-            files_changed="\n".join(
-                f"- `{file}`" for file in task.files_changed
-            ),
+            files_changed="\n".join(f"- `{file}`" for file in task.files_changed),
             timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         )
 
@@ -331,7 +317,7 @@ class AutoPRCreator:
 
 ## Test Plan
 
-- [ ] Unit tests added/updated
+- [ ] Unit tests added / updated
 - [ ] Integration tests passing
 - [ ] Manual testing completed
 - [ ] Quality gates passed
@@ -339,18 +325,16 @@ class AutoPRCreator:
 ## Checklist
 
 - [ ] Code follows project style guidelines
-- [ ] Self-review completed
+- [ ] Self - review completed
 - [ ] Documentation updated
 - [ ] No breaking changes (or documented)
 
 ---
 
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
+🤖 Generated with [Claude Code](https://claude.com / claude - code)
 """
 
-    def _create_github_pr(
-        self, branch_name: str, title: str, body: str
-    ) -> tuple[int, str]:
+    def _create_github_pr(self, branch_name: str, title: str, body: str) -> tuple[int, str]:
         """Create PR using GitHub CLI.
 
         Args:
@@ -369,8 +353,7 @@ class AutoPRCreator:
             self._run_command(["gh", "--version"])
         except Exception as err:
             raise RuntimeError(
-                "GitHub CLI (gh) not installed. "
-                "Install: https://cli.github.com/"
+                "GitHub CLI (gh) not installed. " "Install: https://cli.github.com/"
             ) from err
 
         # Create PR using gh CLI
@@ -393,25 +376,20 @@ class AutoPRCreator:
         # Parse PR URL from output
         pr_url = result.strip()
 
-        # Extract PR number from URL (e.g., .../pull/123)
+        # Extract PR number from URL (e.g., .../pull / 123)
         match = re.search(r"/pull/(\d+)", pr_url)
         pr_number = int(match.group(1)) if match else 0
 
         return pr_number, pr_url
 
-    def _request_reviewers(
-        self, pr_number: int, reviewers: list[str]
-    ) -> None:
+    def _request_reviewers(self, pr_number: int, reviewers: list[str]) -> None:
         """Request PR reviewers.
 
         Args:
             pr_number: PR number
             reviewers: List of GitHub usernames
         """
-        self._run_command(
-            ["gh", "pr", "edit", str(pr_number), "--add-reviewer"]
-            + reviewers
-        )
+        self._run_command(["gh", "pr", "edit", str(pr_number), "--add - reviewer"] + reviewers)
 
     def _run_git(self, args: list[str]) -> str:
         """Run git command in workspace.
@@ -451,9 +429,7 @@ class AutoPRCreator:
         except subprocess.CalledProcessError as e:
             logger.error(f"Command failed: {' '.join(cmd)}")
             logger.error(f"Error: {e.stderr}")
-            raise RuntimeError(
-                f"Command failed: {' '.join(cmd)}\n{e.stderr}"
-            ) from e
+            raise RuntimeError(f"Command failed: {' '.join(cmd)}\n{e.stderr}") from e
 
 
 def main() -> None:
@@ -469,11 +445,11 @@ def main() -> None:
 
     # Example task
     task = TaskMetadata(
-        task_id="TASK-AUTO-PR",
+        task_id="TASK - AUTO - PR",
         title="Add autonomous PR creation",
-        description="Implement end-to-end PR automation system",
+        description="Implement end - to - end PR automation system",
         priority="HIGH",
-        files_changed=["orchestrator/git/auto_pr.py"],
+        files_changed=["orchestrator / git / auto_pr.py"],
     )
 
     result = creator.create_pr(task, auto_push=False)

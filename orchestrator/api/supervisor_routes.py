@@ -120,7 +120,7 @@ def get_worker_manager() -> WorkerManager:
     global _worker_manager
     if _worker_manager is None:
         from orchestrator.config import OrchestratorConfig
-        from orchestrator.utils.logger import get_logger  # type: ignore[import-not-found]
+        from orchestrator.utils.logger import get_logger  # type: ignore[import - not - found]
 
         config = OrchestratorConfig()
         logger = get_logger("supervisor_api")

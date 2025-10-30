@@ -6,8 +6,7 @@ Tests all major functionality with mocks to avoid requiring actual Claude CLI.
 
 import sys
 from pathlib import Path
-from typing import List
-from unittest.mock import MagicMock, Mock, call, patch
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -16,7 +15,6 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 from orchestrator.config import OrchestratorConfig
-from orchestrator.core.exceptions import PatternMatchError, WorkerSpawnError, WorkerTimeoutError
 from orchestrator.core.worker.worker_manager import (
     ConfirmationRequest,
     ConfirmationType,

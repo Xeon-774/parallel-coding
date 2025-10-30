@@ -353,7 +353,7 @@ class QualityGateEngine:
             )
 
     def _run_autofix_tools(self, auto_fix: bool) -> bool:
-        """Run auto-fix tools (black, isort)."""
+        """Run auto - fix tools (black, isort)."""
         auto_fixed = False
 
         if auto_fix and "black" in self.config["lint_tools"]:
@@ -367,7 +367,7 @@ class QualityGateEngine:
         return auto_fixed
 
     def _run_black_format(self) -> bool:
-        """Run black auto-format."""
+        """Run black auto - format."""
         logger.info("Running black auto - format...")
         result = subprocess.run(
             ["black", ".", "--line - length", str(self.config["lint_max_line_length"])],
@@ -382,7 +382,7 @@ class QualityGateEngine:
         return False
 
     def _run_isort_fix(self) -> bool:
-        """Run isort auto-fix."""
+        """Run isort auto - fix."""
         logger.info("Running isort auto - fix...")
         result = subprocess.run(
             ["isort", ".", "--profile", "black"],

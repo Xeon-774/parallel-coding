@@ -22,9 +22,8 @@ Created: 2025 - 10 - 27
 Version: 1.0.0
 """
 
-import asyncio
 from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock, Mock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
@@ -34,16 +33,13 @@ from orchestrator.core.ai_providers.codex_cli_provider import (
     CodexStatus,
 )
 from orchestrator.core.manager.claude_codex_manager import (
-    EXCELLENCE_AI_STANDARD_RULES,
     MAX_SUBTASKS,
-    MAX_TASK_DESCRIPTION_LENGTH,
     MIN_TASK_DESCRIPTION_LENGTH,
     ClaudeCodexManager,
     ClaudeCodexManagerConfig,
     CodexTask,
     TaskComplexity,
     TaskResult,
-    ValidationStatus,
     create_default_manager,
 )
 

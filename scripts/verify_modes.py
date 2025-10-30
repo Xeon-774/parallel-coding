@@ -35,8 +35,10 @@ def verify_modes():
     test_input_win = r"D:\user\parallel_ai_test_project\workspace\worker_1\task.txt"
     test_output_win = r"D:\user\parallel_ai_test_project\workspace\worker_1\output.txt"
 
-    test_input_wsl = "/mnt / d/user / parallel_ai_test_project / workspace / worker_1 / task.txt"
-    test_output_wsl = "/mnt / d/user / parallel_ai_test_project / workspace / worker_1 / output.txt"
+    test_input_wsl = "/mnt / d / user / parallel_ai_test_project / workspace / worker_1 / task.txt"
+    test_output_wsl = (
+        "/mnt / d / user / parallel_ai_test_project / workspace / worker_1 / output.txt"
+    )
 
     # WSLモードのテスト
     print("1. WSL MODE")

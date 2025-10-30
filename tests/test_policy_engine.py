@@ -47,9 +47,7 @@ class TestOPAEngine:
         engine = OPAEngine(opa_url="http://localhost:8181/")
         assert engine.opa_url == "http://localhost:8181"
 
-    def test_evaluate_policy_allow(
-        self, opa_engine: OPAEngine, mock_httpx_client: Mock
-    ) -> None:
+    def test_evaluate_policy_allow(self, opa_engine: OPAEngine, mock_httpx_client: Mock) -> None:
         """Test policy evaluation with ALLOW decision."""
         request = PolicyRequest(
             action="execute",
@@ -72,12 +70,10 @@ class TestOPAEngine:
 
         assert result.allowed is True
         assert result.decision == PolicyDecision.ALLOW
-        assert result.policy_path == "ai_investor/sandbox/execute"
+        assert result.policy_path == "ai_investor / sandbox / execute"
         assert "Risk level is LOW" in result.reasons
 
-    def test_evaluate_policy_deny(
-        self, opa_engine: OPAEngine, mock_httpx_client: Mock
-    ) -> None:
+    def test_evaluate_policy_deny(self, opa_engine: OPAEngine, mock_httpx_client: Mock) -> None:
         """Test policy evaluation with DENY decision."""
         request = PolicyRequest(
             action="execute",
@@ -100,7 +96,7 @@ class TestOPAEngine:
 
         assert result.allowed is False
         assert result.decision == PolicyDecision.DENY
-        assert result.policy_path == "ai_investor/sandbox/execute"
+        assert result.policy_path == "ai_investor / sandbox / execute"
         assert len(result.violations) > 0
 
     def test_evaluate_policy_not_found_deny_by_default(
@@ -127,9 +123,7 @@ class TestOPAEngine:
         assert result.decision == PolicyDecision.DENY
         assert "Policy not found" in result.reasons[0]
 
-    def test_evaluate_policy_not_found_allow_by_default(
-        self, mock_httpx_client: Mock
-    ) -> None:
+    def test_evaluate_policy_not_found_allow_by_default(self, mock_httpx_client: Mock) -> None:
         """Test policy evaluation when policy not found (allow by default)."""
         engine = OPAEngine(deny_by_default=False)
         request = PolicyRequest(
@@ -161,9 +155,7 @@ class TestOPAEngine:
             context={"risk_level": "LOW"},
         )
 
-        mock_httpx_client.post.side_effect = httpx.ConnectError(
-            "Connection refused"
-        )
+        mock_httpx_client.post.side_effect = httpx.ConnectError("Connection refused")
 
         with patch.object(opa_engine, "client", mock_httpx_client):
             result = opa_engine.evaluate_policy(request)
@@ -178,11 +170,11 @@ class TestOPAEngine:
             decision=PolicyDecision.ALLOW,
             allowed=True,
             reasons=["Test reason"],
-            policy_path="test/policy",
+            policy_path="test / policy",
             metadata={"test": "data"},
         )
 
-        result = opa_engine._process_response(response, "test/policy")
+        result = opa_engine._process_response(response, "test / policy")
 
         assert result.allowed is True
         assert result.decision == PolicyDecision.ALLOW
@@ -196,18 +188,16 @@ class TestOPAEngine:
             decision=PolicyDecision.DENY,
             allowed=False,
             reasons=["Access denied"],
-            policy_path="test/policy",
+            policy_path="test / policy",
         )
 
-        result = opa_engine._process_response(response, "test/policy")
+        result = opa_engine._process_response(response, "test / policy")
 
         assert result.allowed is False
         assert result.decision == PolicyDecision.DENY
-        assert "policy_violation:test/policy" in result.violations
+        assert "policy_violation:test / policy" in result.violations
 
-    def test_is_healthy_success(
-        self, opa_engine: OPAEngine, mock_httpx_client: Mock
-    ) -> None:
+    def test_is_healthy_success(self, opa_engine: OPAEngine, mock_httpx_client: Mock) -> None:
         """Test health check when OPA is healthy."""
         mock_response = Mock()
         mock_response.status_code = 200
@@ -216,13 +206,9 @@ class TestOPAEngine:
         with patch.object(opa_engine, "client", mock_httpx_client):
             assert opa_engine.is_healthy() is True
 
-    def test_is_healthy_failure(
-        self, opa_engine: OPAEngine, mock_httpx_client: Mock
-    ) -> None:
+    def test_is_healthy_failure(self, opa_engine: OPAEngine, mock_httpx_client: Mock) -> None:
         """Test health check when OPA is unhealthy."""
-        mock_httpx_client.get.side_effect = httpx.ConnectError(
-            "Connection refused"
-        )
+        mock_httpx_client.get.side_effect = httpx.ConnectError("Connection refused")
 
         with patch.object(opa_engine, "client", mock_httpx_client):
             assert opa_engine.is_healthy() is False

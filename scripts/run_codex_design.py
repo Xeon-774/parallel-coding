@@ -5,7 +5,6 @@ Script to run Codex for design document creation.
 Handles TTY requirements and captures output properly.
 """
 
-import os
 import subprocess
 import sys
 from pathlib import Path
@@ -22,7 +21,7 @@ def run_codex_with_pseudo_tty(prompt: str, output_file: Path) -> int:
     """Run codex with pseudo - TTY to avoid 'stdout is not a terminal' error"""
 
     # Codex paths (different for Windows vs WSL)
-    CODEX_PATH_WSL = "/mnt / c/Users / chemi / AppData / Roaming / npm / codex"
+    CODEX_PATH_WSL = "/mnt / c / Users / chemi / AppData / Roaming / npm / codex"
     CODEX_PATH_WINDOWS = "/c / Users / chemi / AppData / Roaming / npm / codex"
 
     # Method 1: Try WSL bash with full codex path

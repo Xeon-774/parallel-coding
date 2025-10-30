@@ -1,12 +1,10 @@
 import sys
-from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
 
 from orchestrator.core.supervisor.claude_code_supervisor import (
     ClaudeCodeSupervisor,
-    SpawnClaudeCodeInput,
 )
 
 

@@ -3,7 +3,6 @@
 Normal API Test Suite for Web UI
 Tests正常な動作を確認
 """
-import json
 
 import requests
 

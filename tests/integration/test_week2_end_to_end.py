@@ -126,7 +126,7 @@ def test_complete_job_workflow(client: TestClient, auth_headers: dict[str, str])
     assert job_status_data["status"] in ["PENDING", "RUNNING"]
 
     # Step 3: Allocate resources (worker to job)
-    worker = _seed_worker("workflow - worker", "ws - workflow", WorkerStatus.IDLE)
+    _seed_worker("workflow - worker", "ws - workflow", WorkerStatus.IDLE)
     allocate_response = client.post(
         "/api / resources / allocate",
         headers=auth_headers,
@@ -231,7 +231,7 @@ def test_resource_allocation_workflow(client: TestClient, auth_headers: dict[str
     assert len(quotas_data_before["quotas"]) > 0
 
     # Step 2: Seed worker and job
-    worker = _seed_worker("alloc - wf - worker", "ws - alloc - w", WorkerStatus.IDLE)
+    _seed_worker("alloc - wf - worker", "ws - alloc - w", WorkerStatus.IDLE)
     job = _seed_job(
         "alloc - wf - job", "Allocation workflow test", JobStatus.PENDING, depth=0, worker_count=1
     )

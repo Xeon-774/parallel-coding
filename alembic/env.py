@@ -17,7 +17,6 @@ from __future__ import annotations
 import os
 import sys
 from logging.config import fileConfig
-from typing import Optional
 
 from sqlalchemy import engine_from_config, pool
 

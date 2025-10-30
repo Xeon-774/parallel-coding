@@ -6,7 +6,6 @@ Tests worker and job state transitions, validation, and error handling.
 from datetime import datetime
 
 import pytest
-from sqlalchemy.exc import SQLAlchemyError
 
 from orchestrator.core.database import SessionLocal, drop_all_tables, init_db
 from orchestrator.core.db_models import (
@@ -18,8 +17,6 @@ from orchestrator.core.db_models import (
     WorkerStatus,
 )
 from orchestrator.core.state_machine import (
-    JOB_TRANSITIONS,
-    WORKER_TRANSITIONS,
     EntityNotFoundError,
     JobStateMachine,
     StateTransitionError,
@@ -35,7 +32,8 @@ def db_session():
         session = SessionLocal()
         # Test if tables exist
         session.execute("SELECT 1 FROM workers LIMIT 1")
-    except:
+    except Exception:
+
         drop_all_tables()
         init_db()
     finally:

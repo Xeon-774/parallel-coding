@@ -115,7 +115,9 @@ async def submit_job(
 
 
 @router.get("/job/{job_id}", response_model=StatusResponse)
-async def get_job(job_id: str, orch: HierarchicalJobOrchestrator = Depends(get_orchestrator)) -> StatusResponse:
+async def get_job(
+    job_id: str, orch: HierarchicalJobOrchestrator = Depends(get_orchestrator)
+) -> StatusResponse:
     try:
         jr = await orch.get_status(job_id)
         tree = await orch.get_tree(job_id)
@@ -125,7 +127,9 @@ async def get_job(job_id: str, orch: HierarchicalJobOrchestrator = Depends(get_o
 
 
 @router.delete("/job/{job_id}", response_model=CancelResponse)
-async def cancel_job(job_id: str, orch: HierarchicalJobOrchestrator = Depends(get_orchestrator)) -> CancelResponse:
+async def cancel_job(
+    job_id: str, orch: HierarchicalJobOrchestrator = Depends(get_orchestrator)
+) -> CancelResponse:
     canceled = await orch.cancel(job_id)
     return CancelResponse(job_id=job_id, canceled=canceled)
 

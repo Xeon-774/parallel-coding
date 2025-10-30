@@ -12,7 +12,6 @@ OrchestratorとWorkerAIの対話が正しく機能するかテストします。
 5. 結果取得
 """
 
-import os
 import sys
 import time
 from pathlib import Path

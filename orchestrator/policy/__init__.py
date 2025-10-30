@@ -1,4 +1,4 @@
-"""Policy Engine module for OPA/Rego integration."""
+"""Policy Engine module for OPA / Rego integration."""
 
 from .opa_engine import OPAEngine, PolicyDecision, PolicyEvaluationResult
 from .policy_schemas import PolicyQuery, PolicyRequest, PolicyResponse

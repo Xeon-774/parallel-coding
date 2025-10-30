@@ -5,8 +5,6 @@ Tests common / models.py, ansi_utils.py, and window_manager.py.
 
 import time
 
-import pytest
-
 from orchestrator.core.common.models import (
     ConfirmationRequest,
     ConfirmationType,
@@ -164,7 +162,6 @@ class TestWindowManager:
 
     def test_create_window_manager_no_screenshots(self):
         """Test creating WindowManager without screenshots."""
-        import os
         import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:

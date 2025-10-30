@@ -14,7 +14,7 @@ Excellence AI Standard: 100% Applied
 """
 
 from pathlib import Path
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import Mock
 
 import pytest
 
@@ -22,7 +22,6 @@ from orchestrator.core.ai_providers.base_review_provider import (
     FeedbackSeverity,
     ReviewPerspective,
     ReviewRequest,
-    ReviewResult,
     ReviewStatus,
     ReviewType,
 )

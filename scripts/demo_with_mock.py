@@ -15,7 +15,6 @@ from orchestrator.config import OrchestratorConfig
 from orchestrator.core.enhanced_interactive_worker_manager import (
     ConfirmationRequest,
     EnhancedInteractiveWorkerManager,
-    WorkerSession,
 )
 
 

@@ -25,9 +25,6 @@ Date: 2025 - 10 - 27
 
 from __future__ import annotations
 
-import json
-import shutil
-import time
 from pathlib import Path
 from typing import Any
 
@@ -130,13 +127,14 @@ def test_codex_executor_initialization(executor: CodexExecutor) -> None:
 def test_codex_executor_wsl_path_conversion(executor: CodexExecutor) -> None:
     """Test Windows to WSL path conversion"""
     # Test drive letter conversion
-    assert executor._convert_to_wsl_path("D:\\user\\file.txt") == "/mnt / d/user / file.txt"
+    assert executor._convert_to_wsl_path("D:\\user\\file.txt") == "/mnt / d / user / file.txt"
     assert (
-        executor._convert_to_wsl_path("C:\\Program Files\\test") == "/mnt / c/Program Files / test"
+        executor._convert_to_wsl_path("C:\\Program Files\\test")
+        == "/mnt / c / Program Files / test"
     )
 
     # Test forward slashes
-    assert executor._convert_to_wsl_path("D:/user / file.txt") == "/mnt / d/user / file.txt"
+    assert executor._convert_to_wsl_path("D:/user / file.txt") == "/mnt / d / user / file.txt"
 
 
 def test_codex_executor_command_building(executor: CodexExecutor, test_workspace: Path) -> None:

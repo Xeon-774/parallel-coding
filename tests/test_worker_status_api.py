@@ -12,18 +12,12 @@ Test Coverage:
 - JSON serialization and response formats
 """
 
-import asyncio
-import json
-from pathlib import Path
-
 import pytest
 from fastapi.testclient import TestClient
-from fastapi.websockets import WebSocket
 
 from orchestrator.api import worker_status_api
 from orchestrator.api.main import app
 from orchestrator.core.worker_status_monitor import (
-    HealthStatus,
     WorkerState,
     get_global_monitor,
 )
@@ -345,10 +339,10 @@ class TestWebSocketEndpoint:
         with client.websocket_connect("/api / v1 / status / ws / worker_001") as websocket:
             # Receive first message
             start_time = time.time()
-            data1 = websocket.receive_json()
+            websocket.receive_json()
 
             # Receive second message
-            data2 = websocket.receive_json()
+            websocket.receive_json()
             elapsed = time.time() - start_time
 
             # Should be approximately 500ms between messages

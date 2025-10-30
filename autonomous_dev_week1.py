@@ -6,7 +6,6 @@ Executes Day 3 - 7 tasks in parallel with full quality assurance
 
 import json
 import logging
-import os
 import sys
 from datetime import datetime
 from pathlib import Path

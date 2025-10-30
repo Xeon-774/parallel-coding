@@ -41,9 +41,7 @@ def validate_config(config: "OrchestratorConfig") -> Tuple[bool, List[str]]:
 def _validate_execution_mode(config: "OrchestratorConfig") -> List[str]:
     """Validate execution mode setting."""
     if config.execution_mode not in ["wsl", "windows"]:
-        return [
-            f"Invalid execution_mode: {config.execution_mode}. Must be 'wsl' or 'windows'"
-        ]
+        return [f"Invalid execution_mode: {config.execution_mode}. Must be 'wsl' or 'windows'"]
     return []
 
 
@@ -83,7 +81,7 @@ def _validate_numeric_params(config: "OrchestratorConfig") -> List[str]:
 
 
 def _validate_mode_specific_config(config: "OrchestratorConfig") -> List[str]:
-    """Validate mode-specific configuration."""
+    """Validate mode - specific configuration."""
     errors = []
 
     if config.execution_mode == "wsl":
@@ -95,7 +93,7 @@ def _validate_mode_specific_config(config: "OrchestratorConfig") -> List[str]:
 
 
 def _validate_wsl_config(config: "OrchestratorConfig") -> List[str]:
-    """Validate WSL-specific configuration."""
+    """Validate WSL - specific configuration."""
     errors = []
     if not config.wsl_distribution:
         errors.append("wsl_distribution is not set for WSL mode")
@@ -107,7 +105,7 @@ def _validate_wsl_config(config: "OrchestratorConfig") -> List[str]:
 
 
 def _validate_windows_config(config: "OrchestratorConfig") -> List[str]:
-    """Validate Windows-specific configuration."""
+    """Validate Windows - specific configuration."""
     if not config.windows_claude_path:
         return ["windows_claude_path is not set for Windows mode"]
     return []

@@ -47,7 +47,7 @@ class TerminalFileMonitor(FileSystemEventHandler):
         self._last_position = 0
         self._new_lines: Optional[asyncio.Queue[str]] = None
         self._lock: Optional[asyncio.Lock] = None
-        self._observer: Optional["Observer"] = None  # type: ignore[valid-type]
+        self._observer: Optional["Observer"] = None  # type: ignore[valid - type]
         self._loop = loop
 
         logger.info(f"TerminalFileMonitor initialized for {workspace}")
@@ -159,8 +159,8 @@ class TerminalFileMonitor(FileSystemEventHandler):
     async def stop(self) -> None:
         """Stop monitoring"""
         if self._observer:
-            self._observer.stop()  # type: ignore[attr-defined]
-            self._observer.join()  # type: ignore[attr-defined]
+            self._observer.stop()  # type: ignore[attr - defined]
+            self._observer.join()  # type: ignore[attr - defined]
 
 
 async def terminal_websocket_endpoint(

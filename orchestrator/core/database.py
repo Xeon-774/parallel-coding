@@ -125,9 +125,7 @@ def create_db_engine(settings: DatabaseSettings) -> Engine:
             "pool_pre_ping": True,  # Verify connections before use
         }
 
-    engine = create_engine(
-        settings.database_url, echo=settings.echo_sql, **engine_kwargs
-    )
+    engine = create_engine(settings.database_url, echo=settings.echo_sql, **engine_kwargs)
 
     # Enable foreign keys for SQLite
     if is_sqlite:

@@ -193,9 +193,9 @@ class CodexExecutor:
 
     # Constants
     DEFAULT_TIMEOUT: Final[int] = 300  # 5 minutes
-    DEFAULT_MODEL: Final[str] = "gpt-5"
+    DEFAULT_MODEL: Final[str] = "gpt - 5"
     REQUIRED_FLAGS: Final[str] = (
-        "--json --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check"
+        "--json --dangerously - bypass - approvals - and - sandbox --skip - git - repo - check"
     )
 
     def __init__(
@@ -240,18 +240,18 @@ class CodexExecutor:
             windows_path: Windows path (e.g., "D:\\user\\file.txt")
 
         Returns:
-            WSL path (e.g., "/mnt / d/user / file.txt")
+            WSL path (e.g., "/mnt / d / user / file.txt")
 
         Example:
             >>> executor._convert_to_wsl_path("D:\\user\\file.txt")
-            '/mnt / d/user / file.txt'
+            '/mnt / d / user / file.txt'
         """
         import re
 
         # Replace backslashes with forward slashes
         path = windows_path.replace("\\", "/")
         # Convert drive letter (D:/ -> /mnt / d/)
-        path = re.sub(r"^([A-Za-z]):", lambda m: f"/mnt/{m.group(1).lower()}", path)
+        path = re.sub(r"^([A - Za - z]):", lambda m: f"/mnt/{m.group(1).lower()}", path)
         return path
 
     def _build_command(self, task_file: Path, model: str = DEFAULT_MODEL) -> str:
@@ -281,7 +281,7 @@ class CodexExecutor:
             return (
                 f"wsl -d {self.wsl_distribution} bash -c "
                 f"\"export PATH='{self.nvm_path}:$PATH' && "
-                f"/mnt/c/Users/chemi/AppData/Roaming/npm/codex exec {flags} < '{wsl_task_file}'\""
+                f"/mnt / c/Users / chemi / AppData / Roaming / npm / codex exec {flags} < '{wsl_task_file}'\""
             )
         elif self.execution_mode == "windows":
             # Windows native mode
@@ -400,13 +400,9 @@ class CodexExecutor:
         try:
             process = self._start_subprocess(cmd, workspace_dir)
             execution_state = self._process_output(process, start_time, timeout)
-            return self._build_result_from_process(
-                process, execution_state, start_time, timeout
-            )
+            return self._build_result_from_process(process, execution_state, start_time, timeout)
         except subprocess.TimeoutExpired:
-            return self._create_timeout_result(
-                time.time() - start_time, timeout, execution_state
-            )
+            return self._create_timeout_result(time.time() - start_time, timeout, execution_state)
         except Exception as e:
             return self._create_error_result(e, time.time() - start_time, execution_state)
 
@@ -424,9 +420,7 @@ class CodexExecutor:
             cwd=str(workspace_dir),
         )
 
-    def _process_output(
-        self, process: Any, start_time: float, timeout: int
-    ) -> dict[str, Any]:
+    def _process_output(self, process: Any, start_time: float, timeout: int) -> dict[str, Any]:
         """Process subprocess output line by line."""
         events: list[CodexEvent] = []
         file_changes: list[FileChange] = []
@@ -461,9 +455,7 @@ class CodexExecutor:
             "timeout": False,
         }
 
-    def _process_event(
-        self, event: CodexEvent, file_changes: list[FileChange]
-    ) -> None:
+    def _process_event(self, event: CodexEvent, file_changes: list[FileChange]) -> None:
         """Process single event and extract file changes."""
         if isinstance(event, FileChangeEvent):
             file_changes.extend(event.changes)

@@ -8,10 +8,10 @@ import json
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, NoReturn, Optional
+from typing import Any, Dict, List
 
 import uvicorn
-from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -169,7 +169,8 @@ async def get_logs(log_file: str, lines: int = 100) -> JSONResponse:
         for line in recent_lines:
             try:
                 logs.append(json.loads(line))
-            except:
+            except Exception:
+
                 logs.append({"raw": line.strip()})
 
         return JSONResponse(
@@ -250,7 +251,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
     try:
         while True:
             # クライアントからのメッセージを待機
-            data = await websocket.receive_text()
+            await websocket.receive_text()
 
             # 状態を取得して送信
             status_response = await get_status()

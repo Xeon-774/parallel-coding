@@ -13,7 +13,6 @@ from typing import Optional
 
 from .config import DashboardConfig
 from .constants import Messages
-from .exceptions import DashboardStartupError, DashboardTimeoutError
 
 
 class DashboardManager:
@@ -96,7 +95,8 @@ class DashboardManager:
                     print(f" [{Messages.PREFIX_OK}]")
                     print(f"      {Messages.DASHBOARD_READY} {self.config.dashboard_url}")
                     return True
-            except:
+            except Exception:
+
                 print(".", end="", flush=True)
 
         # Timeout
@@ -133,9 +133,11 @@ class DashboardManager:
             try:
                 self.process.kill()
                 print(f"   {Messages.DASHBOARD_KILLED}")
-            except:
+            except Exception:
+
                 pass
-        except:
+        except Exception:
+
             pass
 
     def __enter__(self):

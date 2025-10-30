@@ -4,16 +4,12 @@ import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-import pytest
-
 from orchestrator.validation.proof_of_change import (
     ProofOfChange,
     ProofOfChangeGenerator,
 )
 from orchestrator.validation.validator import (
     LintValidator,
-    SecurityValidator,
-    TestValidator,
     TypeCheckValidator,
     ValidationPipeline,
     ValidationResult,
@@ -28,9 +24,9 @@ class TestProofOfChange:
         """Test converting PoC to dictionary."""
         poc = ProofOfChange(
             change_id="test123",
-            timestamp="2025-10-29T00:00:00Z",
+            timestamp="2025 - 10 - 29T00:00:00Z",
             files_changed=["file1.py", "file2.py"],
-            diff="--- a/file1.py\n+++ b/file1.py\n",
+            diff="--- a / file1.py\n+++ b / file1.py\n",
             rationale="Test change",
             tests_added=["test_file1.py"],
             tests_passed=True,
@@ -41,7 +37,7 @@ class TestProofOfChange:
         data = poc.to_dict()
 
         assert data["change_id"] == "test123"
-        assert data["timestamp"] == "2025-10-29T00:00:00Z"
+        assert data["timestamp"] == "2025 - 10 - 29T00:00:00Z"
         assert data["files_changed"] == ["file1.py", "file2.py"]
         assert data["rationale"] == "Test change"
         assert data["tests_passed"] is True
@@ -51,7 +47,7 @@ class TestProofOfChange:
         """Test converting PoC to JSON."""
         poc = ProofOfChange(
             change_id="test123",
-            timestamp="2025-10-29T00:00:00Z",
+            timestamp="2025 - 10 - 29T00:00:00Z",
             files_changed=["file1.py"],
             diff="test diff",
             rationale="Test",
@@ -62,13 +58,13 @@ class TestProofOfChange:
 
         json_str = poc.to_json()
         assert "test123" in json_str
-        assert "2025-10-29" in json_str
+        assert "2025 - 10 - 29" in json_str
 
     def test_from_dict(self) -> None:
         """Test creating PoC from dictionary."""
         data = {
             "change_id": "test123",
-            "timestamp": "2025-10-29T00:00:00Z",
+            "timestamp": "2025 - 10 - 29T00:00:00Z",
             "files_changed": ["file1.py"],
             "diff": "test diff",
             "rationale": "Test",
@@ -81,7 +77,7 @@ class TestProofOfChange:
         poc = ProofOfChange.from_dict(data)
 
         assert poc.change_id == "test123"
-        assert poc.timestamp == "2025-10-29T00:00:00Z"
+        assert poc.timestamp == "2025 - 10 - 29T00:00:00Z"
         assert poc.files_changed == ["file1.py"]
 
     def test_from_json(self) -> None:
@@ -89,7 +85,7 @@ class TestProofOfChange:
         json_str = """
         {
             "change_id": "test123",
-            "timestamp": "2025-10-29T00:00:00Z",
+            "timestamp": "2025 - 10 - 29T00:00:00Z",
             "files_changed": ["file1.py"],
             "diff": "test diff",
             "rationale": "Test",
@@ -112,9 +108,7 @@ class TestProofOfChangeGenerator:
     def test_init(self) -> None:
         """Test generator initialization."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            generator = ProofOfChangeGenerator(
-                repo_path=tmpdir, output_dir=f"{tmpdir}/poc"
-            )
+            generator = ProofOfChangeGenerator(repo_path=tmpdir, output_dir=f"{tmpdir}/poc")
 
             assert generator.repo_path == Path(tmpdir)
             assert generator.output_dir == Path(f"{tmpdir}/poc")
@@ -138,9 +132,9 @@ class TestProofOfChangeGenerator:
         with tempfile.TemporaryDirectory() as tmpdir:
             generator = ProofOfChangeGenerator(tmpdir, f"{tmpdir}/poc")
 
-            change_id1 = generator._generate_change_id("2025-10-29", "diff1")
-            change_id2 = generator._generate_change_id("2025-10-29", "diff1")
-            change_id3 = generator._generate_change_id("2025-10-29", "diff2")
+            change_id1 = generator._generate_change_id("2025 - 10 - 29", "diff1")
+            change_id2 = generator._generate_change_id("2025 - 10 - 29", "diff1")
+            change_id3 = generator._generate_change_id("2025 - 10 - 29", "diff2")
 
             assert change_id1 == change_id2
             assert change_id1 != change_id3
@@ -171,7 +165,7 @@ class TestProofOfChangeGenerator:
             # Create valid PoC
             poc = ProofOfChange(
                 change_id="test123",
-                timestamp="2025-10-29T00:00:00Z",
+                timestamp="2025 - 10 - 29T00:00:00Z",
                 files_changed=["file1.py"],
                 diff="test diff",
                 rationale="Test",
@@ -189,9 +183,7 @@ class TestProofOfChangeGenerator:
                 "tests_added": poc.tests_added,
                 "tests_passed": poc.tests_passed,
             }
-            expected_hash = generator._compute_hash(
-                json.dumps(validation_data, sort_keys=True)
-            )
+            expected_hash = generator._compute_hash(json.dumps(validation_data, sort_keys=True))
 
             # Update PoC with correct hash
             poc.validation_hash = expected_hash
@@ -249,9 +241,9 @@ class TestLintValidator:
 
     def test_init(self) -> None:
         """Test lint validator initialization."""
-        validator = LintValidator("/tmp/project", max_issues=10)
+        validator = LintValidator("/tmp / project", max_issues=10)
 
-        assert validator.project_dir == Path("/tmp/project")
+        assert validator.project_dir == Path("/tmp / project")
         assert validator.max_issues == 10
         assert validator.name == "LintValidator"
 
@@ -263,7 +255,7 @@ class TestLintValidator:
         mock_result.stderr = ""
         mock_run.return_value = mock_result
 
-        validator = LintValidator("/tmp/project", max_issues=10)
+        validator = LintValidator("/tmp / project", max_issues=10)
         result = validator.validate()
 
         assert result.status == ValidationStatus.PASSED
@@ -277,7 +269,7 @@ class TestLintValidator:
         mock_result.stderr = ""
         mock_run.return_value = mock_result
 
-        validator = LintValidator("/tmp/project", max_issues=10)
+        validator = LintValidator("/tmp / project", max_issues=10)
         result = validator.validate()
 
         assert result.status == ValidationStatus.FAILED
@@ -289,9 +281,9 @@ class TestTypeCheckValidator:
 
     def test_init(self) -> None:
         """Test type check validator initialization."""
-        validator = TypeCheckValidator("/tmp/project", strict=True)
+        validator = TypeCheckValidator("/tmp / project", strict=True)
 
-        assert validator.project_dir == Path("/tmp/project")
+        assert validator.project_dir == Path("/tmp / project")
         assert validator.strict is True
 
     @patch("subprocess.run")
@@ -302,7 +294,7 @@ class TestTypeCheckValidator:
         mock_result.stderr = ""
         mock_run.return_value = mock_result
 
-        validator = TypeCheckValidator("/tmp/project")
+        validator = TypeCheckValidator("/tmp / project")
         result = validator.validate()
 
         assert result.status == ValidationStatus.PASSED
@@ -314,15 +306,15 @@ class TestValidationPipeline:
 
     def test_init(self) -> None:
         """Test pipeline initialization."""
-        pipeline = ValidationPipeline("/tmp/project")
+        pipeline = ValidationPipeline("/tmp / project")
 
-        assert pipeline.project_dir == Path("/tmp/project")
+        assert pipeline.project_dir == Path("/tmp / project")
         assert len(pipeline.validators) == 0
 
     def test_add_validator(self) -> None:
         """Test adding validators to pipeline."""
-        pipeline = ValidationPipeline("/tmp/project")
-        validator = LintValidator("/tmp/project")
+        pipeline = ValidationPipeline("/tmp / project")
+        validator = LintValidator("/tmp / project")
 
         pipeline.add_validator(validator)
 
@@ -331,7 +323,7 @@ class TestValidationPipeline:
 
     def test_all_passed_true(self) -> None:
         """Test all_passed with all passing results."""
-        pipeline = ValidationPipeline("/tmp/project")
+        pipeline = ValidationPipeline("/tmp / project")
 
         results = [
             ValidationResult(
@@ -350,7 +342,7 @@ class TestValidationPipeline:
 
     def test_all_passed_false(self) -> None:
         """Test all_passed with some failing results."""
-        pipeline = ValidationPipeline("/tmp/project")
+        pipeline = ValidationPipeline("/tmp / project")
 
         results = [
             ValidationResult(

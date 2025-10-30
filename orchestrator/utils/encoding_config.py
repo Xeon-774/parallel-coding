@@ -2,7 +2,7 @@
 Encoding Configuration for AI_Investor Ecosystem
 
 Project - Wide Encoding Policy:
-- All text files: UTF - 8 with BOM (utf - 8-sig)
+- All text files: UTF - 8 with BOM (utf - 8 - sig)
 - NO Shift - JIS (cp932), JIS, or other low - compatibility encodings
 - Applies to: AI_Investor ecosystem (including parallel AI tools)
 
@@ -17,7 +17,7 @@ import sys
 from typing import Any, TextIO
 
 # Project - wide encoding standard
-PROJECT_ENCODING = "utf - 8-sig"  # UTF - 8 with BOM
+PROJECT_ENCODING = "utf - 8 - sig"  # UTF - 8 with BOM
 FALLBACK_ENCODING = "utf - 8"  # UTF - 8 without BOM for compatibility
 
 
@@ -76,7 +76,7 @@ def open_file_utf8(file_path: str, mode: str = "r", use_bom: bool = True, **kwar
     if "errors" not in kwargs:
         kwargs["errors"] = "replace"
 
-    return open(file_path, mode, encoding=encoding, **kwargs)  # type: ignore[return-value]
+    return open(file_path, mode, encoding=encoding, **kwargs)  # type: ignore[return - value]
 
 
 def safe_write(text: str, file_obj: TextIO | None = None) -> None:
@@ -90,7 +90,7 @@ def safe_write(text: str, file_obj: TextIO | None = None) -> None:
     Example:
         safe_write('✓ Task completed!')
 
-        with open('output.txt', 'w', encoding='utf - 8-sig') as f:
+        with open('output.txt', 'w', encoding='utf - 8 - sig') as f:
             safe_write('✓ Success!', f)
     """
     if file_obj is None:

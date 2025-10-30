@@ -10,8 +10,6 @@ Version: 1.0.0
 Excellence AI Standard: 100% Applied
 """
 
-from pathlib import Path
-
 import pytest
 
 from orchestrator.core.ai_providers.review_time_estimator import (
@@ -133,7 +131,7 @@ class TestCountDocumentLines:
     def test_count_lines_in_existing_file(self, tmp_path):
         """Test counting lines in a file."""
         test_file = tmp_path / "test.txt"
-        test_file.write_text("line1\nline2\nline3\n", encoding="utf - 8-sig")
+        test_file.write_text("line1\nline2\nline3\n", encoding="utf - 8 - sig")
 
         count = count_document_lines(str(test_file))
         assert count == 3
@@ -141,7 +139,7 @@ class TestCountDocumentLines:
     def test_count_lines_empty_file(self, tmp_path):
         """Test counting lines in empty file."""
         test_file = tmp_path / "empty.txt"
-        test_file.write_text("", encoding="utf - 8-sig")
+        test_file.write_text("", encoding="utf - 8 - sig")
 
         count = count_document_lines(str(test_file))
         assert count == 0
@@ -158,7 +156,7 @@ class TestEstimateFromFile:
     def test_estimate_from_existing_file(self, tmp_path):
         """Test estimation directly from file path."""
         test_file = tmp_path / "test.md"
-        test_file.write_text("\n" * 1000, encoding="utf - 8-sig")
+        test_file.write_text("\n" * 1000, encoding="utf - 8 - sig")
 
         result = estimate_from_file(str(test_file), perspective_count=2)
 

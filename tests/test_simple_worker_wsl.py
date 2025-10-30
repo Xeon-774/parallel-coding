@@ -94,7 +94,7 @@ def test_worker():
         if result.output:
             # 出力をファイルに保存 (UTF - 8 with BOM)
             output_file = workspace / "worker_output.txt"
-            with open(output_file, "w", encoding="utf - 8-sig") as f:
+            with open(output_file, "w", encoding="utf - 8 - sig") as f:
                 f.write(result.output)
             safe_print(f"\n出力を保存しました: {output_file}")
             safe_print(f"出力長: {len(result.output)} 文字")

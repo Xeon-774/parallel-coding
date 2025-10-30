@@ -6,7 +6,6 @@ Webダッシュボードが正しく起動し、基本的なAPIが機能する�
 """
 
 import sys
-import time
 from pathlib import Path
 
 import requests

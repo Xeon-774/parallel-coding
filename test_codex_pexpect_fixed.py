@@ -12,7 +12,6 @@ Excellence AI Standard: 100% Applied
 """
 
 import sys
-import time
 from pathlib import Path
 
 # Cross - platform pexpect import
@@ -116,7 +115,8 @@ The function should be named 'hello' and return 'Hello, World!'"""
             if remaining:
                 output_buffer.append(remaining)
                 print(remaining, flush=True)
-        except:
+        except Exception:
+
             pass
 
         # Close process

@@ -7,7 +7,7 @@ Fixes common flake8 issues in the codebase
 import re
 import subprocess
 from pathlib import Path
-from typing import List, Tuple
+from typing import Tuple
 
 
 def fix_f_string_placeholders(file_path: Path) -> int:

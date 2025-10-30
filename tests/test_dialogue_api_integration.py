@@ -11,7 +11,6 @@ Coverage:
 - REST API endpoints
 """
 
-import asyncio
 import json
 import tempfile
 from pathlib import Path
@@ -23,13 +22,13 @@ from fastapi.testclient import TestClient
 # Import with fallback for running from different contexts
 try:
     from orchestrator.api import main as main_module
-    from orchestrator.api.main import WORKSPACE_ROOT, app
+    from orchestrator.api.main import app
 except ImportError:
     import sys
 
     sys.path.insert(0, str(Path(__file__).parent.parent))
     from orchestrator.api import main as main_module
-    from orchestrator.api.main import WORKSPACE_ROOT, app
+    from orchestrator.api.main import app
 
 
 @pytest.fixture

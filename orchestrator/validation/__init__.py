@@ -1,4 +1,4 @@
-"""Validation module for proof-of-change artifacts."""
+"""Validation module for proof - of - change artifacts."""
 
 from .proof_of_change import ProofOfChange, ProofOfChangeGenerator
 from .validator import ValidationResult, Validator

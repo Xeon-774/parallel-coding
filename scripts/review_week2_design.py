@@ -11,7 +11,7 @@ Usage:
 import asyncio
 import sys
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Dict, List
 
 # Add project root to path
 project_root = Path(__file__).parent.parent
@@ -28,7 +28,6 @@ from orchestrator.core.ai_providers.codex_review_provider import (
     CodexReviewProvider,
 )
 from orchestrator.core.ai_providers.review_time_estimator import (
-    ExecutionStrategy,
     estimate_from_file,
 )
 from orchestrator.core.worker.codex_executor import (

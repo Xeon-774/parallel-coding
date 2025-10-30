@@ -6,7 +6,6 @@
 Claude AIインスタンスを実行して、並列実行を視覚的に確認
 """
 
-import os
 import subprocess
 import sys
 import time

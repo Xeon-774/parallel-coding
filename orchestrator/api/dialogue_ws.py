@@ -97,7 +97,7 @@ class DialogueFileMonitor(FileSystemEventHandler):
         self._last_position = 0
         self._new_entries: Optional[asyncio.Queue[str]] = None  # Created in watch()
         self._lock: Optional[asyncio.Lock] = None  # Created in watch()
-        self._observer: Optional["Observer"] = None  # type: ignore[valid-type]
+        self._observer: Optional["Observer"] = None  # type: ignore[valid - type]
         self._loop = loop
 
         # Read existing entries to set initial position
@@ -194,7 +194,7 @@ class DialogueFileMonitor(FileSystemEventHandler):
             entry = self._parse_line_to_entry(line)
             if entry:
                 assert self._new_entries is not None
-                await self._new_entries.put(entry)  # type: ignore[arg-type]
+                await self._new_entries.put(entry)  # type: ignore[arg - type]
                 logger.debug(f"Queued entry: {entry.direction}")
 
     def _parse_line_to_entry(self, line: str) -> Optional[DialogueEntry]:
@@ -273,7 +273,7 @@ class DialogueFileMonitor(FileSystemEventHandler):
         entries: list[Dict[str, Any]] = []
 
         if not self.transcript_file.exists():
-            return entries  # type: ignore[return-value]
+            return entries  # type: ignore[return - value]
 
         try:
             with open(self.transcript_file, "r", encoding="utf - 8") as f:
@@ -295,13 +295,13 @@ class DialogueFileMonitor(FileSystemEventHandler):
                         confirmation_type=data.get("confirmation_type"),
                         confirmation_message=data.get("confirmation_message"),
                     )
-                    entries.append(entry)  # type: ignore[arg-type]
+                    entries.append(entry)  # type: ignore[arg - type]
 
                 except json.JSONDecodeError:
                     continue
 
             # Return most recent entries
-            return entries[-limit:] if len(entries) > limit else entries  # type: ignore[return-value]
+            return entries[-limit:] if len(entries) > limit else entries  # type: ignore[return - value]
 
         except Exception as e:
             logger.error(f"Error reading historical entries: {e}")

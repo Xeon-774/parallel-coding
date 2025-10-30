@@ -7,7 +7,6 @@ Fixes Python 3.13 _pyrepl console handle issues in background processes
 import os
 import subprocess
 import sys
-from pathlib import Path
 
 
 def main():

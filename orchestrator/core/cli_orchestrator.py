@@ -297,7 +297,7 @@ Respond with APPROVED: or DENIED:"""
         """
         Convert Windows path to WSL path
 
-        Example: D:\\user\\file.txt -> /mnt / d/user / file.txt
+        Example: D:\\user\\file.txt -> /mnt / d / user / file.txt
         """
         # Replace backslashes with forward slashes
         path = windows_path.replace("\\", "/")

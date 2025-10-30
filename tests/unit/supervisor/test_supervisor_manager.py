@@ -2,7 +2,6 @@ import asyncio
 
 import pytest
 
-from orchestrator.core.ai_safety_judge import Decision
 from orchestrator.core.supervisor.claude_code_supervisor import (
     ClaudeCodeSupervisor,
     ConfirmationPrompt,

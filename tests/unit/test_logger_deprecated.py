@@ -5,8 +5,6 @@ Tests backward compatibility and deprecation warning.
 
 import warnings
 
-import pytest
-
 
 def test_logger_imports_with_deprecation_warning():
     """Test that importing logger module issues deprecation warning."""
@@ -14,7 +12,6 @@ def test_logger_imports_with_deprecation_warning():
         warnings.simplefilter("always")
 
         # Import the deprecated module
-        import orchestrator.logger as logger
 
         # Verify deprecation warning was issued
         assert len(w) == 1

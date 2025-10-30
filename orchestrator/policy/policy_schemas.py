@@ -1,4 +1,4 @@
-"""Policy schemas for OPA/Rego integration."""
+"""Policy schemas for OPA / Rego integration."""
 
 from dataclasses import dataclass
 from enum import Enum
@@ -18,7 +18,7 @@ class PolicyQuery:
     """Policy query request."""
 
     input: dict[str, Any]
-    policy_path: str  # e.g., "ai_investor/sandbox/execute"
+    policy_path: str  # e.g., "ai_investor / sandbox / execute"
     decision: str = "allow"  # default decision field to check
 
 

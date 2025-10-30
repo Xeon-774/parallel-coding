@@ -11,7 +11,6 @@ from orchestrator.recursive import (
     APIError,
     AuthenticationError,
     ClientValidationError,
-    NetworkError,
     RecursiveOrchestratorClient,
 )
 

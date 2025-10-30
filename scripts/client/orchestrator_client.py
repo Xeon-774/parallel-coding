@@ -23,7 +23,6 @@ Example usage:
 
 import time
 from dataclasses import dataclass
-from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 import requests
@@ -31,8 +30,6 @@ import requests
 
 class OrchestratorError(Exception):
     """Base exception for orchestrator client errors"""
-
-    pass
 
 
 class RateLimitError(OrchestratorError):
@@ -46,13 +43,9 @@ class RateLimitError(OrchestratorError):
 class JobNotFoundError(OrchestratorError):
     """Raised when job is not found"""
 
-    pass
-
 
 class AuthenticationError(OrchestratorError):
     """Raised when authentication fails"""
-
-    pass
 
 
 @dataclass
@@ -364,7 +357,8 @@ class OrchestratorClient:
         try:
             response = self._request("GET", "/api / v1 / health")
             return response.get("status") == "healthy"
-        except:
+        except Exception:
+
             return False
 
 

@@ -13,7 +13,6 @@ Excellence AI Standard: 100% Applied
 """
 
 from pathlib import Path
-from typing import List
 
 import pytest
 

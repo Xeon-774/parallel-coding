@@ -12,7 +12,6 @@ Tests all new world - class features:
 import tempfile
 import time
 from pathlib import Path
-from unittest.mock import Mock, patch
 
 import pytest
 
@@ -37,7 +36,7 @@ from orchestrator.core.resilience import (
 )
 
 # Import v9.0 components
-from orchestrator.core.structured_logging import LogCategory, LogContext, LogLevel, StructuredLogger
+from orchestrator.core.structured_logging import LogContext, LogLevel, StructuredLogger
 from orchestrator.core.validated_config import (
     ConfigurationPreset,
     OrchestratorValidatedConfig,

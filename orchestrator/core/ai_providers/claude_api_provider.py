@@ -489,9 +489,7 @@ class ClaudeAPIProvider:
             except asyncio.TimeoutError:
                 retry_count += 1
                 if retry_count > self.config.max_retries:
-                    return self._create_timeout_result(
-                        file_operations, retry_count, start_time
-                    )
+                    return self._create_timeout_result(file_operations, retry_count, start_time)
                 await asyncio.sleep(2**retry_count)
             except Exception as e:
                 result = self._handle_api_exception(  # type: ignore[assignment]
@@ -530,8 +528,8 @@ class ClaudeAPIProvider:
                 model=self.config.model,
                 max_tokens=self.config.max_tokens,
                 system=system_prompt or "You are a helpful AI coding assistant.",
-                messages=messages,  # type: ignore[arg-type]
-                tools=self.tools,  # type: ignore[arg-type]
+                messages=messages,  # type: ignore[arg - type]
+                tools=self.tools,  # type: ignore[arg - type]
                 temperature=self.config.temperature,
             ),
             timeout=self.config.timeout_seconds,
@@ -571,9 +569,7 @@ class ClaudeAPIProvider:
                 if content_block.type == "text":
                     output_parts.append(content_block.text)
                 elif content_block.type == "tool_use":
-                    tool_result = await self._execute_tool(
-                        content_block.name, content_block.input
-                    )
+                    tool_result = await self._execute_tool(content_block.name, content_block.input)
                     file_operations.append(tool_result)
 
                     messages.append({"role": "assistant", "content": response.content})
@@ -595,8 +591,8 @@ class ClaudeAPIProvider:
                     model=self.config.model,
                     max_tokens=self.config.max_tokens,
                     system=system_prompt or "You are a helpful AI coding assistant.",
-                    messages=messages,  # type: ignore[arg-type]
-                    tools=self.tools,  # type: ignore[arg-type]
+                    messages=messages,  # type: ignore[arg - type]
+                    tools=self.tools,  # type: ignore[arg - type]
                     temperature=self.config.temperature,
                 ),
                 timeout=self.config.timeout_seconds,
@@ -615,7 +611,7 @@ class ClaudeAPIProvider:
         retry_count: int,
         start_time: float,
     ) -> Optional[ClaudeExecutionResult]:
-        """Handle API exceptions and return result if non-retryable."""
+        """Handle API exceptions and return result if non - retryable."""
         error_str = str(error)
 
         if "rate_limit" in error_str.lower():
@@ -709,8 +705,8 @@ class ClaudeAPIProvider:
             model=self.config.model,
             max_tokens=self.config.max_tokens,
             system=system_prompt or "You are a helpful AI coding assistant.",
-            messages=messages,  # type: ignore[arg-type]
-            tools=self.tools,  # type: ignore[arg-type]
+            messages=messages,  # type: ignore[arg - type]
+            tools=self.tools,  # type: ignore[arg - type]
             temperature=self.config.temperature,
         ) as stream:
             async for event in stream:

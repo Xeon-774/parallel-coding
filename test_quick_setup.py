@@ -25,8 +25,8 @@ def test_config():
     print(f"✓ Max Workers: {config.max_workers}")
 
     # Test command generation
-    test_input = "/mnt / d/test / input.txt"
-    test_output = "/mnt / d/test / output.txt"
+    test_input = "/mnt / d / test / input.txt"
+    test_output = "/mnt / d / test / output.txt"
     cmd = config.get_claude_command_wsl(test_input, test_output)
 
     print("\n✓ Generated Command:")

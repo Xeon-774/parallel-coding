@@ -168,7 +168,6 @@ class TestJWTTokenVerification:
         """Test that token without 'sub' claim raises ValueError."""
         # This is hard to test without mocking jwt.encode
         # The current implementation will catch this via JWTError
-        pass
 
     def test_verify_token_extracts_scopes_correctly(self):
         """Test that scopes are extracted correctly."""

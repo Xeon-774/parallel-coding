@@ -150,7 +150,12 @@ class RecursiveOrchestratorClient:
         )
         return self
 
-    async def __aexit__(self, exc_type: Optional[Type[BaseException]], exc_val: Optional[BaseException], exc_tb: Optional[object]) -> None:
+    async def __aexit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[object],
+    ) -> None:
         """Async context manager exit closing the HTTP client."""
         if self.client is not None:
             await self.client.aclose()

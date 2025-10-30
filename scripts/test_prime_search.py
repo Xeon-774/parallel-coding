@@ -6,7 +6,6 @@
 結果を検証・統合するテストスクリプト
 """
 
-import json
 import os
 import sys
 import time

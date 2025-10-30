@@ -6,7 +6,6 @@
 オーケストレーターがその出力をリアルタイムで把握・報告
 """
 
-import os
 import subprocess
 import sys
 import threading

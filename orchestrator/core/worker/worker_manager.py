@@ -395,7 +395,7 @@ class WorkerManager:
         """
         Convert Windows path to WSL path
 
-        Example: D:\\user\\file.txt -> /mnt / d/user / file.txt
+        Example: D:\\user\\file.txt -> /mnt / d / user / file.txt
         """
         import re
 
@@ -429,7 +429,7 @@ class WorkerManager:
                 return (
                     f"wsl -d {self.config.wsl_distribution} bash -c "
                     f"\"export PATH='{self.config.nvm_path}:$PATH' && "
-                    f"/mnt/c/Users/chemi/AppData/Roaming/npm/codex exec {codex_flags} < '{wsl_task_file}'\""
+                    f"/mnt / c/Users / chemi / AppData / Roaming / npm / codex exec {codex_flags} < '{wsl_task_file}'\""
                 )
             elif self.config.execution_mode == "windows":
                 # Windows native mode
@@ -506,9 +506,7 @@ class WorkerManager:
         print(f"  Max iterations: {max_iterations}")
         print("  Monitoring for confirmations...\n")
 
-    def _run_session_loop(
-        self, worker_id: str, session: Any, max_iterations: int
-    ) -> None:
+    def _run_session_loop(self, worker_id: str, session: Any, max_iterations: int) -> None:
         """Run the main interactive session loop."""
         iteration = 0
         while iteration < max_iterations:
@@ -578,13 +576,9 @@ class WorkerManager:
             }
         )
 
-    def _process_confirmation(
-        self, worker_id: str, session: Any, pattern_index: int
-    ) -> None:
+    def _process_confirmation(self, worker_id: str, session: Any, pattern_index: int) -> None:
         """Process confirmation request and send response."""
-        confirmation = self._parse_confirmation(
-            worker_id, pattern_index, session.child_process
-        )
+        confirmation = self._parse_confirmation(worker_id, pattern_index, session.child_process)
 
         if not confirmation:
             return
@@ -608,9 +602,7 @@ class WorkerManager:
             if session.orchestrator_capture:
                 session.orchestrator_capture.log("No response sent", "SKIP")
 
-    def _send_confirmation_response(
-        self, session: Any, confirmation: Any, response: str
-    ) -> None:
+    def _send_confirmation_response(self, session: Any, confirmation: Any, response: str) -> None:
         """Send response to confirmation request."""
         session.child_process.sendline(response)
         if session.orchestrator_capture:
@@ -1011,7 +1003,7 @@ class WorkerManager:
             return None
 
     def run_codex_session(
-        self, worker_id: str, timeout: int = 300, model: str = "gpt-5"
+        self, worker_id: str, timeout: int = 300, model: str = "gpt - 5"
     ) -> TaskResult:
         """
         Run Codex worker session using subprocess - based executor.
@@ -1126,9 +1118,7 @@ class WorkerManager:
             self.logger.error(f"Failed to save Codex logs for {session.worker_id}: {str(e)}")
             print(f"  [ERROR] Failed to save logs: {str(e)}")
 
-    def _save_codex_events(
-        self, session: WorkerSession, exec_result: CodexExecutionResult
-    ) -> Any:
+    def _save_codex_events(self, session: WorkerSession, exec_result: CodexExecutionResult) -> Any:
         """Save Codex events to JSONL file."""
         import json
 
@@ -1140,9 +1130,7 @@ class WorkerManager:
                 f.write(json.dumps(event.model_dump(), ensure_ascii=False) + "\n")
         return events_file
 
-    def _save_codex_summary(
-        self, session: WorkerSession, exec_result: CodexExecutionResult
-    ) -> Any:
+    def _save_codex_summary(self, session: WorkerSession, exec_result: CodexExecutionResult) -> Any:
         """Save Codex execution summary to text file."""
         if session.workspace_dir is None:
             raise ValueError("workspace_dir is None")

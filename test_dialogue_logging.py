@@ -7,9 +7,7 @@ This test will:
 3. Check if logs are persisted to files
 """
 
-import os
 import sys
-import time
 from pathlib import Path
 
 # Add orchestrator to path

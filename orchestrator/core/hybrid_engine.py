@@ -329,7 +329,7 @@ class HybridDecisionEngine:
         start_time = time.time()
         self._log_decision_request(worker_id, request)
 
-        # Step 1: Try rule-based evaluation (fast)
+        # Step 1: Try rule - based evaluation (fast)
         rule_result = self.rules.evaluate(request)
         if rule_result.is_definitive:
             return self._create_rule_decision(rule_result, start_time)
@@ -365,9 +365,13 @@ class HybridDecisionEngine:
         )
 
     async def _handle_ai_decision(
-        self, worker_id: str, request: ConfirmationRequest, context: Optional[Dict[str, Any]], start_time: float
+        self,
+        worker_id: str,
+        request: ConfirmationRequest,
+        context: Optional[Dict[str, Any]],
+        start_time: float,
     ) -> Decision:
-        """Handle AI-based decision when rules are inconclusive."""
+        """Handle AI - based decision when rules are inconclusive."""
         if self.verbose:
             print("  → Rules inconclusive, consulting AI...")
 
@@ -377,7 +381,11 @@ class HybridDecisionEngine:
             return self._handle_ai_failure(worker_id, request, e, start_time)
 
     async def _get_ai_decision(
-        self, worker_id: str, request: ConfirmationRequest, context: Optional[Dict[str, Any]], start_time: float
+        self,
+        worker_id: str,
+        request: ConfirmationRequest,
+        context: Optional[Dict[str, Any]],
+        start_time: float,
     ) -> Decision:
         """Get decision from AI orchestrator."""
         question = self._build_ai_question(request)
@@ -402,7 +410,9 @@ class HybridDecisionEngine:
             decided_by="template" if ai_result.is_fallback else "ai",
         )
 
-    def _prepare_ai_context(self, worker_id: str, context: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+    def _prepare_ai_context(
+        self, worker_id: str, context: Optional[Dict[str, Any]]
+    ) -> Dict[str, Any]:
         """Prepare context for AI orchestrator."""
         if context is None:
             context = {}
@@ -424,7 +434,9 @@ class HybridDecisionEngine:
 
         # Check if this is a complete failure
         if "completely unresponsive" in str(error).lower():
-            raise Exception(f"Orchestrator completely unresponsive. Worker {worker_id} should stop.")
+            raise Exception(
+                f"Orchestrator completely unresponsive. Worker {worker_id} should stop."
+            )
 
         # Use template
         template = self.templates.get_api_error_template(request)

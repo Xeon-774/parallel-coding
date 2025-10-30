@@ -1,6 +1,6 @@
-"""Proof-of-Change (PoC) artifact generation.
+"""Proof - of - Change (PoC) artifact generation.
 
-This module generates immutable proof-of-change artifacts for all code changes,
+This module generates immutable proof - of - change artifacts for all code changes,
 including diffs, rationale, and validation artifacts.
 """
 
@@ -15,7 +15,7 @@ from typing import Any
 
 @dataclass
 class ProofOfChange:
-    """Proof-of-Change artifact.
+    """Proof - of - Change artifact.
 
     Immutable record of a code change with validation artifacts.
 
@@ -25,7 +25,7 @@ class ProofOfChange:
         files_changed: List of files modified
         diff: Git diff output
         rationale: Explanation of why the change was made
-        tests_added: List of test files added/modified
+        tests_added: List of test files added / modified
         tests_passed: Whether all tests passed
         validation_hash: SHA256 hash of validation artifacts
         metadata: Additional metadata
@@ -82,7 +82,7 @@ class ProofOfChange:
 
 
 class ProofOfChangeGenerator:
-    """Generator for Proof-of-Change artifacts.
+    """Generator for Proof - of - Change artifacts.
 
     Creates immutable PoC artifacts with diffs, rationale, and validation.
     """
@@ -104,11 +104,11 @@ class ProofOfChangeGenerator:
         tests_added: list[str] | None = None,
         metadata: dict[str, Any] | None = None,
     ) -> ProofOfChange:
-        """Generate proof-of-change artifact for current changes.
+        """Generate proof - of - change artifact for current changes.
 
         Args:
             rationale: Explanation of why the change was made
-            tests_added: List of test files added/modified
+            tests_added: List of test files added / modified
             metadata: Additional metadata
 
         Returns:
@@ -164,7 +164,7 @@ class ProofOfChangeGenerator:
         """Get list of changed files in git repository."""
         try:
             result = subprocess.run(
-                ["git", "diff", "--name-only", "HEAD"],
+                ["git", "diff", "--name - only", "HEAD"],
                 cwd=self.repo_path,
                 capture_output=True,
                 text=True,

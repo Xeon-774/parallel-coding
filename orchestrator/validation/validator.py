@@ -1,4 +1,4 @@
-"""Deterministic validators for proof-of-change artifacts.
+"""Deterministic validators for proof - of - change artifacts.
 
 Validators run at T=0 (immediate validation) to ensure code quality
 and correctness before changes are committed.
@@ -27,9 +27,9 @@ class ValidationResult:
     """Result of validation.
 
     Attributes:
-        status: Validation status (PASSED/FAILED/SKIPPED)
+        status: Validation status (PASSED / FAILED / SKIPPED)
         validator_name: Name of validator that produced this result
-        message: Human-readable message
+        message: Human - readable message
         details: Additional details
         errors: List of errors (if failed)
     """
@@ -56,7 +56,7 @@ class ValidationResult:
 
 
 class Validator:
-    """Base validator class for proof-of-change artifacts."""
+    """Base validator class for proof - of - change artifacts."""
 
     def __init__(self, project_dir: str | Path) -> None:
         """Initialize validator.
@@ -104,7 +104,7 @@ class LintValidator(Validator):
                     "flake8",
                     "orchestrator",
                     "--count",
-                    "--max-line-length=100",
+                    "--max - line - length=100",
                 ],
                 cwd=self.project_dir,
                 capture_output=True,
@@ -239,7 +239,7 @@ class TestValidator(Validator):
                     "-v",
                     "--tb=short",
                     "--cov=orchestrator",
-                    "--cov-report=term-missing",
+                    "--cov - report=term - missing",
                 ],
                 cwd=self.project_dir,
                 capture_output=True,
@@ -330,7 +330,7 @@ class SecurityValidator(Validator):
                 timeout=60,
             )
 
-            # Bandit returns non-zero if issues found, but that's expected
+            # Bandit returns non - zero if issues found, but that's expected
             output = result.stdout
 
             # Count issues (simplified - just check if output is empty)

@@ -4,7 +4,7 @@ Tests facade pattern delegation and factory pattern creation.
 """
 
 import tempfile
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock
 
 import pytest
 

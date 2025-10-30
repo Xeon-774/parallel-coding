@@ -27,9 +27,7 @@ def temp_git_repo(tmp_path: Path) -> Path:
     repo_dir.mkdir()
 
     # Initialize git repo
-    subprocess.run(
-        ["git", "init"], cwd=repo_dir, check=True, capture_output=True
-    )
+    subprocess.run(["git", "init"], cwd=repo_dir, check=True, capture_output=True)
     subprocess.run(
         ["git", "config", "user.name", "Test User"],
         cwd=repo_dir,
@@ -70,11 +68,11 @@ def sample_task() -> TaskMetadata:
         Sample TaskMetadata instance
     """
     return TaskMetadata(
-        task_id="TASK-123",
+        task_id="TASK - 123",
         title="Add new feature",
         description="Implement awesome feature",
         priority="HIGH",
-        files_changed=["src/feature.py", "tests/test_feature.py"],
+        files_changed=["src / feature.py", "tests / test_feature.py"],
         issue_number="42",
     )
 
@@ -104,24 +102,20 @@ class TestAutoPRCreator:
         assert creator.remote_name == "origin"
 
     def test_init_nonexistent_dir(self) -> None:
-        """Test initialization with non-existent directory."""
+        """Test initialization with non - existent directory."""
         with pytest.raises(ValueError, match="does not exist"):
-            AutoPRCreator(workspace_dir="/nonexistent/path")
+            AutoPRCreator(workspace_dir="/nonexistent / path")
 
     def test_init_not_git_repo(self, tmp_path: Path) -> None:
-        """Test initialization with non-git directory."""
+        """Test initialization with non - git directory."""
         with pytest.raises(ValueError, match="Not a git repository"):
             AutoPRCreator(workspace_dir=tmp_path)
 
-    def test_create_branch(
-        self, auto_pr_creator: AutoPRCreator, sample_task: TaskMetadata
-    ) -> None:
+    def test_create_branch(self, auto_pr_creator: AutoPRCreator, sample_task: TaskMetadata) -> None:
         """Test branch creation from task."""
-        branch_name = auto_pr_creator._create_branch(
-            sample_task.task_id, sample_task.title
-        )
+        branch_name = auto_pr_creator._create_branch(sample_task.task_id, sample_task.title)
 
-        assert branch_name == "feature/task-123-add-new-feature"
+        assert branch_name == "feature / task - 123 - add - new - feature"
 
         # Verify branch exists
         result = subprocess.run(
@@ -133,65 +127,32 @@ class TestAutoPRCreator:
         )
         assert branch_name in result.stdout
 
-    def test_sanitize_branch_name(
-        self, auto_pr_creator: AutoPRCreator
-    ) -> None:
+    def test_sanitize_branch_name(self, auto_pr_creator: AutoPRCreator) -> None:
         """Test branch name sanitization."""
-        branch = auto_pr_creator._create_branch(
-            "TASK-456", "Fix bug: Special chars! @#$%"
-        )
+        branch = auto_pr_creator._create_branch("TASK - 456", "Fix bug: Special chars! @#$%")
 
-        assert branch == "feature/task-456-fix-bug-special-chars"
+        assert branch == "feature / task - 456 - fix - bug - special - chars"
 
-    def test_infer_commit_type_feat(
-        self, auto_pr_creator: AutoPRCreator
-    ) -> None:
+    def test_infer_commit_type_feat(self, auto_pr_creator: AutoPRCreator) -> None:
         """Test commit type inference for features."""
-        assert (
-            auto_pr_creator._infer_commit_type("Add new feature") == "feat"
-        )
-        assert (
-            auto_pr_creator._infer_commit_type("Implement validation")
-            == "feat"
-        )
-        assert (
-            auto_pr_creator._infer_commit_type("Create user model")
-            == "feat"
-        )
+        assert auto_pr_creator._infer_commit_type("Add new feature") == "feat"
+        assert auto_pr_creator._infer_commit_type("Implement validation") == "feat"
+        assert auto_pr_creator._infer_commit_type("Create user model") == "feat"
 
-    def test_infer_commit_type_fix(
-        self, auto_pr_creator: AutoPRCreator
-    ) -> None:
+    def test_infer_commit_type_fix(self, auto_pr_creator: AutoPRCreator) -> None:
         """Test commit type inference for fixes."""
         assert auto_pr_creator._infer_commit_type("Fix login bug") == "fix"
-        assert (
-            auto_pr_creator._infer_commit_type("Resolve crash issue")
-            == "fix"
-        )
+        assert auto_pr_creator._infer_commit_type("Resolve crash issue") == "fix"
 
-    def test_infer_commit_type_docs(
-        self, auto_pr_creator: AutoPRCreator
-    ) -> None:
+    def test_infer_commit_type_docs(self, auto_pr_creator: AutoPRCreator) -> None:
         """Test commit type inference for documentation."""
-        assert (
-            auto_pr_creator._infer_commit_type("Update README") == "docs"
-        )
-        assert (
-            auto_pr_creator._infer_commit_type("Add API documentation")
-            == "docs"
-        )
+        assert auto_pr_creator._infer_commit_type("Update README") == "docs"
+        assert auto_pr_creator._infer_commit_type("Add API documentation") == "docs"
 
-    def test_infer_commit_type_refactor(
-        self, auto_pr_creator: AutoPRCreator
-    ) -> None:
+    def test_infer_commit_type_refactor(self, auto_pr_creator: AutoPRCreator) -> None:
         """Test commit type inference for refactoring."""
-        assert (
-            auto_pr_creator._infer_commit_type("Refactor authentication")
-            == "refactor"
-        )
-        assert (
-            auto_pr_creator._infer_commit_type("Clean up code") == "refactor"
-        )
+        assert auto_pr_creator._infer_commit_type("Refactor authentication") == "refactor"
+        assert auto_pr_creator._infer_commit_type("Clean up code") == "refactor"
 
     def test_generate_commit_message(
         self, auto_pr_creator: AutoPRCreator, sample_task: TaskMetadata
@@ -201,10 +162,10 @@ class TestAutoPRCreator:
 
         assert "feat: Add new feature" in message
         assert "Implement awesome feature" in message
-        assert "Task: TASK-123" in message
+        assert "Task: TASK - 123" in message
         assert "Priority: HIGH" in message
         assert "Claude Code" in message
-        assert "Co-Authored-By: Claude" in message
+        assert "Co - Authored - By: Claude" in message
 
     def test_stage_changes_specific_files(
         self, auto_pr_creator: AutoPRCreator, temp_git_repo: Path
@@ -220,7 +181,7 @@ class TestAutoPRCreator:
 
         # Verify files are staged
         result = subprocess.run(
-            ["git", "diff", "--cached", "--name-only"],
+            ["git", "diff", "--cached", "--name - only"],
             cwd=temp_git_repo,
             capture_output=True,
             text=True,
@@ -229,9 +190,7 @@ class TestAutoPRCreator:
         assert "file1.txt" in result.stdout
         assert "file2.txt" in result.stdout
 
-    def test_stage_changes_all(
-        self, auto_pr_creator: AutoPRCreator, temp_git_repo: Path
-    ) -> None:
+    def test_stage_changes_all(self, auto_pr_creator: AutoPRCreator, temp_git_repo: Path) -> None:
         """Test staging all changes."""
         # Create test file
         test_file = temp_git_repo / "file.txt"
@@ -241,7 +200,7 @@ class TestAutoPRCreator:
 
         # Verify file is staged
         result = subprocess.run(
-            ["git", "diff", "--cached", "--name-only"],
+            ["git", "diff", "--cached", "--name - only"],
             cwd=temp_git_repo,
             capture_output=True,
             text=True,
@@ -256,11 +215,11 @@ class TestAutoPRCreator:
         title, body = auto_pr_creator._generate_pr_content(sample_task)
 
         assert title == "Add new feature"
-        assert "TASK-123" in body
+        assert "TASK - 123" in body
         assert "Implement awesome feature" in body
         assert "HIGH" in body
-        assert "src/feature.py" in body
-        assert "tests/test_feature.py" in body
+        assert "src / feature.py" in body
+        assert "tests / test_feature.py" in body
         assert "Claude Code" in body
 
     def test_generate_pr_content_custom_template(
@@ -280,7 +239,7 @@ class TestAutoPRCreator:
 
         assert title == "Add new feature"
         assert "Custom PR" in body
-        assert "Task: TASK-123" in body
+        assert "Task: TASK - 123" in body
 
     @patch("orchestrator.git.auto_pr.subprocess.run")
     def test_create_github_pr_success(
@@ -294,16 +253,16 @@ class TestAutoPRCreator:
             Mock(returncode=0, stdout="gh version 2.0.0"),  # gh --version
             Mock(
                 returncode=0,
-                stdout="https://github.com/user/repo/pull/123",
+                stdout="https://github.com / user / repo / pull / 123",
             ),  # gh pr create
         ]
 
         pr_number, pr_url = auto_pr_creator._create_github_pr(
-            "feature/test", "Test PR", "Test body"
+            "feature / test", "Test PR", "Test body"
         )
 
         assert pr_number == 123
-        assert pr_url == "https://github.com/user/repo/pull/123"
+        assert pr_url == "https://github.com / user / repo / pull / 123"
 
     @patch("orchestrator.git.auto_pr.subprocess.run")
     def test_create_github_pr_gh_not_installed(
@@ -317,9 +276,7 @@ class TestAutoPRCreator:
         )
 
         with pytest.raises(RuntimeError, match="GitHub CLI.*not installed"):
-            auto_pr_creator._create_github_pr(
-                "feature/test", "Test PR", "Test body"
-            )
+            auto_pr_creator._create_github_pr("feature / test", "Test PR", "Test body")
 
     @patch("orchestrator.git.auto_pr.subprocess.run")
     def test_request_reviewers(
@@ -356,7 +313,7 @@ class TestAutoPRCreator:
         # Setup mocks
         mock_create_pr.return_value = (
             123,
-            "https://github.com/user/repo/pull/123",
+            "https://github.com / user / repo / pull / 123",
         )
 
         # Create test files
@@ -369,22 +326,18 @@ class TestAutoPRCreator:
 
         assert result.success is True
         assert result.pr_number == 123
-        assert result.pr_url == "https://github.com/user/repo/pull/123"
-        assert (
-            result.branch_name == "feature/task-123-add-new-feature"
-        )
+        assert result.pr_url == "https://github.com / user / repo / pull / 123"
+        assert result.branch_name == "feature / task - 123 - add - new - feature"
         assert result.error is None
 
         # Verify push was called
         mock_push.assert_called_once()
 
-    def test_create_pr_error_handling(
-        self, auto_pr_creator: AutoPRCreator
-    ) -> None:
+    def test_create_pr_error_handling(self, auto_pr_creator: AutoPRCreator) -> None:
         """Test PR creation error handling."""
         # Invalid task (no files exist)
         invalid_task = TaskMetadata(
-            task_id="TASK-999",
+            task_id="TASK - 999",
             title="Invalid task",
             description="Test error handling",
             priority="LOW",
@@ -403,21 +356,21 @@ def test_pr_result_dataclass() -> None:
     result = PRResult(
         success=True,
         pr_number=123,
-        pr_url="https://github.com/user/repo/pull/123",
-        branch_name="feature/test",
+        pr_url="https://github.com / user / repo / pull / 123",
+        branch_name="feature / test",
     )
 
     assert result.success is True
     assert result.pr_number == 123
-    assert result.pr_url == "https://github.com/user/repo/pull/123"
-    assert result.branch_name == "feature/test"
+    assert result.pr_url == "https://github.com / user / repo / pull / 123"
+    assert result.branch_name == "feature / test"
     assert result.error is None
 
 
 def test_task_metadata_dataclass() -> None:
     """Test TaskMetadata dataclass."""
     task = TaskMetadata(
-        task_id="TASK-123",
+        task_id="TASK - 123",
         title="Test task",
         description="Test description",
         priority="HIGH",
@@ -425,7 +378,7 @@ def test_task_metadata_dataclass() -> None:
         issue_number="42",
     )
 
-    assert task.task_id == "TASK-123"
+    assert task.task_id == "TASK - 123"
     assert task.title == "Test task"
     assert task.description == "Test description"
     assert task.priority == "HIGH"

@@ -3,10 +3,6 @@
 Tests backward compatibility and deprecation warning for utils module.
 """
 
-import warnings
-
-import pytest
-
 
 def test_utils_package_imports_successfully():
     """Test that utils package (not deprecated utils.py) can be imported."""

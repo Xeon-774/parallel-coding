@@ -3,10 +3,8 @@
 Tests database configuration, engine creation, and utility functions.
 """
 
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
-import pytest
-from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
 from orchestrator.core.database import (
@@ -127,7 +125,7 @@ class TestCreateDbEngine:
         mock_engine = Mock()
         mock_create_engine.return_value = mock_engine
 
-        engine = create_db_engine(settings)
+        create_db_engine(settings)
 
         # Verify create_engine was called with PostgreSQL settings
         mock_create_engine.assert_called_once()

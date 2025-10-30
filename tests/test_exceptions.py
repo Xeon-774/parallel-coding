@@ -4,13 +4,9 @@
 カスタム例外の動作を検証します。
 """
 
-import pytest
-
 from orchestrator.core.exceptions import (
     OrchestratorError,
     RetryableError,
-    ScreenshotError,
-    WindowManagerError,
 )
 
 

@@ -95,7 +95,7 @@ def main():
         print()
 
         if orchestrator.orchestrator.window_manager:
-            wm = orchestrator.orchestrator.window_manager
+            orchestrator.orchestrator.window_manager
             screenshots_dir = Path(config.workspace_root) / "screenshots"
 
             if screenshots_dir.exists():

@@ -6,12 +6,10 @@ Directly executes Week 1 Day 3 - 7 tasks using Claude Code via subprocess
 
 import json
 import logging
-import os
-import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")

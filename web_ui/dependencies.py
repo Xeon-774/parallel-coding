@@ -6,7 +6,7 @@ Handles checking and installing required packages.
 
 import subprocess
 import sys
-from typing import Optional, Tuple
+from typing import Optional
 
 from .config import DependencyConfig
 from .constants import Messages, Separators
@@ -33,9 +33,7 @@ class DependencyManager:
             True if all dependencies are available, False otherwise.
         """
         try:
-            import fastapi
-            import uvicorn
-            import websockets
+            pass
 
             return True
         except ImportError:

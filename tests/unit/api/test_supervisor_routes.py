@@ -5,8 +5,7 @@ Coverage target: ≥90%
 """
 
 import os
-from typing import Optional
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock
 
 import pytest
 from fastapi import HTTPException

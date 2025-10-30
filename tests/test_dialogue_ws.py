@@ -16,9 +16,7 @@ Coverage:
 import asyncio
 import json
 import tempfile
-import time
 from pathlib import Path
-from typing import List
 
 import pytest
 
@@ -264,7 +262,7 @@ async def test_read_new_entries_incremental(temp_workspace):
     # Initialize async resources (normally done by watch())
     monitor._new_entries = asyncio.Queue()
     monitor._lock = asyncio.Lock()
-    initial_position = monitor._last_position
+    monitor._last_position
 
     # Clear any queued entries from initialization
     while not monitor._new_entries.empty():
@@ -345,7 +343,7 @@ async def test_read_new_entries_handles_file_truncation(temp_workspace):
         )
 
     monitor = DialogueFileMonitor(temp_workspace)
-    initial_position = monitor._last_position
+    monitor._last_position
 
     # Initialize async resources (normally done by watch())
     monitor._new_entries = asyncio.Queue()

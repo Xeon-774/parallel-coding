@@ -3,7 +3,6 @@
 Security Test Suite for Web UI
 Tests Path Traversal vulnerability fixes
 """
-import json
 
 import requests
 

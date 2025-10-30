@@ -89,7 +89,7 @@ class ProcessIOHandler:
         def _read() -> str:
             try:
                 # pexpect / wexpect share read_nonblocking
-                data = self._child.read_nonblocking(size=self._config.chunk_size, timeout=0)  # type: ignore[attr-defined]
+                data = self._child.read_nonblocking(size=self._config.chunk_size, timeout=0)  # type: ignore[attr - defined]
                 return (
                     data.decode("utf - 8", errors="replace")
                     if isinstance(data, (bytes, bytearray))

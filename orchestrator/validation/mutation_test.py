@@ -19,9 +19,9 @@ class MutationType(str, Enum):
 
     ARITHMETIC = "arithmetic"  # +/-, */%
     COMPARISON = "comparison"  # </>/<=/>=, ==/!=
-    LOGICAL = "logical"  # and/or
-    RETURN = "return"  # return True/False
-    CONSTANT = "constant"  # 0/1, True/False
+    LOGICAL = "logical"  # and / or
+    RETURN = "return"  # return True / False
+    CONSTANT = "constant"  # 0 / 1, True / False
 
 
 @dataclass
@@ -34,7 +34,7 @@ class Mutation:
         line_number: Line number of mutation
         original: Original code
         mutated: Mutated code
-        description: Human-readable description
+        description: Human - readable description
     """
 
     mutation_type: MutationType
@@ -53,7 +53,7 @@ class MutationTestResult:
         total_mutations: Total number of mutations attempted
         killed_mutations: Number of mutations caught by tests
         survived_mutations: Number of mutations that passed tests
-        score: Mutation score (killed/total * 100)
+        score: Mutation score (killed / total * 100)
         mutations: List of all mutations tested
         survivors: List of mutations that survived
     """
@@ -184,9 +184,7 @@ class MutationTester:
 
         return files[:5]  # Limit to 5 files for performance
 
-    def _generate_mutations(
-        self, files: list[Path], max_mutations: int
-    ) -> list[Mutation]:
+    def _generate_mutations(self, files: list[Path], max_mutations: int) -> list[Mutation]:
         """Generate mutations for given files."""
         mutations: list[Mutation] = []
 
@@ -212,9 +210,7 @@ class MutationTester:
 
         return mutations
 
-    def _create_mutation(
-        self, file_path: str, line_num: int, line: str
-    ) -> Mutation | None:
+    def _create_mutation(self, file_path: str, line_num: int, line: str) -> Mutation | None:
         """Create a mutation for a line of code."""
         line_stripped = line.strip()
 
@@ -263,9 +259,7 @@ class MutationTester:
             )
         return None
 
-    def _try_comparison_mutation(
-        self, file_path: str, line_num: int, line: str
-    ) -> Mutation | None:
+    def _try_comparison_mutation(self, file_path: str, line_num: int, line: str) -> Mutation | None:
         """Try to create comparison mutation."""
         if MutationType.COMPARISON not in self.mutation_types:
             return None
@@ -290,9 +284,7 @@ class MutationTester:
             )
         return None
 
-    def _try_return_mutation(
-        self, file_path: str, line_num: int, line: str
-    ) -> Mutation | None:
+    def _try_return_mutation(self, file_path: str, line_num: int, line: str) -> Mutation | None:
         """Try to create return value mutation."""
         if MutationType.RETURN not in self.mutation_types:
             return None

@@ -247,7 +247,7 @@ async def main():
     print("=" * 60)
 
     # Create test data
-    worker_path = create_test_workspace()
+    create_test_workspace()
 
     # Wait a moment
     await asyncio.sleep(0.5)

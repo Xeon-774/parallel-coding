@@ -6,14 +6,12 @@ and progress calculation.
 """
 
 import time
-from pathlib import Path
 
 import pytest
 
 from orchestrator.core.worker_status_monitor import (
     HealthStatus,
     WorkerState,
-    WorkerStatus,
     WorkerStatusMonitor,
 )
 

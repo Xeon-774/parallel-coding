@@ -28,7 +28,7 @@ import requests
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from orchestrator_client import OrchestratorClient, OrchestratorError
+from orchestrator_client import OrchestratorClient
 
 
 class Colors:

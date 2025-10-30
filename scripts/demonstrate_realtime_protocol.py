@@ -69,7 +69,7 @@ def main():
         config=config, enable_realtime_monitoring=True  # リアルタイム監視有効
     )
 
-    result = orchestrator.execute(task)
+    orchestrator.execute(task)
 
     end_time = time.time()
 
