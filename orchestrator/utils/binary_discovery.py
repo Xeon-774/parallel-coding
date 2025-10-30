@@ -121,14 +121,76 @@ class BinaryDiscovery:
 
         return None
 
+    def _find_codex_in_wsl(self) -> Optional[Path]:
+        """Find Codex CLI in WSL (Windows only).
+
+        Checks common WSL installation locations for Codex CLI, including NVM paths.
+        Codex official documentation recommends using WSL on Windows.
+
+        Returns:
+            Path indicator for Codex in WSL or None if not found
+        """
+        import subprocess
+
+        # Get WSL distribution from environment detector
+        from orchestrator.config.environment import get_environment_detector
+
+        detector = get_environment_detector()
+        wsl_dist = detector.detect_wsl_distribution() or "Ubuntu-24.04"
+
+        # Detect NVM path for comprehensive search
+        nvm_path = detector.detect_nvm_path()
+
+        # Common WSL Codex locations to check (with NVM priority)
+        wsl_paths = [
+            "$HOME/.nvm/versions/node/*/bin/codex",  # NVM installed (with glob)
+            "$HOME/.local/bin/codex",
+            "/usr/local/bin/codex",
+            "/usr/bin/codex",
+        ]
+
+        # Add explicit NVM path if detected
+        if nvm_path:
+            wsl_paths.insert(0, f"{nvm_path}/codex")
+
+        for wsl_path in wsl_paths:
+            try:
+                # Use 'which' or direct test depending on path format
+                if "*" in wsl_path:
+                    # Glob pattern - use shell expansion and which
+                    test_cmd = f"export PATH='{wsl_path.rsplit('/', 1)[0]}:$PATH' && which codex"
+                else:
+                    # Direct path - test existence
+                    test_cmd = f"test -f {wsl_path} && echo found"
+
+                result = subprocess.run(
+                    ["wsl", "-d", wsl_dist, "bash", "-c", test_cmd],
+                    capture_output=True,
+                    text=True,
+                    timeout=5,
+                    check=False,
+                )
+
+                output = result.stdout.strip()
+                if output and ("found" in output or "/codex" in output):
+                    logger.info(f"Found Codex CLI in WSL at {wsl_path}")
+                    # Return a special marker indicating WSL Codex
+                    # We'll use "codex" as command name, will be resolved by PATH in WSL
+                    return Path("codex")  # Will be resolved by NVM PATH in WSL
+            except (subprocess.TimeoutExpired, FileNotFoundError, OSError) as e:
+                logger.debug(f"WSL check failed for {wsl_path}: {e}")
+                continue
+
+        return None
+
     def find_codex(self, required: bool = False) -> Optional[Path]:
         """Find Codex CLI installation.
 
         Searches in order:
         1. PARALLEL_CODING_CODEX_PATH environment variable
-        2. System PATH
-        3. npm global install locations
-        4. WSL-mounted Windows npm (if on Windows)
+        2. WSL installation (Windows only, preferred for Codex official recommendation)
+        3. System PATH
+        4. npm global install locations
 
         Args:
             required: If True, raise error if not found
@@ -142,7 +204,7 @@ class BinaryDiscovery:
         Examples:
             >>> discovery = BinaryDiscovery()
             >>> codex = discovery.find_codex()
-            >>> # Found: Path("/usr/local/bin/codex")
+            >>> # Found: Path("codex") for WSL
             >>> # Not found: None
         """
         if self._is_cache_valid("codex"):
@@ -156,6 +218,14 @@ class BinaryDiscovery:
                 logger.info(f"Found Codex CLI from env var: {codex_path}")
                 self._update_cache("codex", codex_path)
                 return codex_path
+
+        # On Windows, check WSL first (Codex official recommendation)
+        if platform.system() == "Windows":
+            wsl_codex = self._find_codex_in_wsl()
+            if wsl_codex:
+                logger.info(f"Found Codex CLI in WSL: {wsl_codex}")
+                self._update_cache("codex", wsl_codex)
+                return wsl_codex
 
         # Check system PATH
         codex_which = shutil.which("codex")
@@ -175,22 +245,6 @@ class BinaryDiscovery:
                 logger.info(f"Found Codex CLI in npm global: {codex_path}")
                 self._update_cache("codex", codex_path)
                 return codex_path
-
-        # On Windows, check WSL-mounted paths
-        if platform.system() == "Windows":
-            wsl_npm_paths = [
-                Path("/mnt/c/Users")
-                / os.getenv("USERNAME", "user")
-                / "AppData"
-                / "Roaming"
-                / "npm"
-                / "codex",
-                Path("/mnt/c/Program Files/nodejs/codex"),
-            ]
-            for wsl_path in wsl_npm_paths:
-                # Note: Can't directly check WSL paths from Windows
-                # These would be used when building WSL commands
-                pass
 
         if required:
             error_msg = (
