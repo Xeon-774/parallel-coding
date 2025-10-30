@@ -77,13 +77,13 @@ class AutonomousExecutor:
         self.failed_count = 0
         self.commit_count = 0
 
-        self.report_path = workspace / f"reports / autonomous_{self.session_id}.json"
+        self.report_path = workspace / f"reports/autonomous_{self.session_id}.json"
         self.report_path.parent.mkdir(parents=True, exist_ok=True)
 
-        print("🤖 Autonomous Executor started")
+        print("=== Autonomous Executor started ===")
         print(f"   Session ID: {self.session_id}")
         print(f"   Workspace: {workspace}")
-        print(f"   Auto - push: {auto_push}")
+        print(f"   Auto-push: {auto_push}")
         print(f"   Report: {self.report_path}")
         print()
 
@@ -126,7 +126,7 @@ class AutonomousExecutor:
             ),
         ]
 
-        print(f"✅ Loaded {len(tasks)} tasks")
+        print(f"[OK] Loaded {len(tasks)} tasks")
         return tasks
 
     async def execute_task(self, task: Task) -> bool:
@@ -153,7 +153,7 @@ class AutonomousExecutor:
                 # 自動Git commit
                 await self._auto_commit(task)
 
-                print(f"✅ Task completed: {task.title}")
+                print(f"[OK] Task completed: {task.title}")
                 return True
             else:
                 raise Exception("Task execution failed")
@@ -163,11 +163,11 @@ class AutonomousExecutor:
             task.retries += 1
 
             if task.retries < task.max_retries:
-                print(f"⚠️  Task failed, retrying ({task.retries}/{task.max_retries}): {e}")
+                print(f"[WARN]  Task failed, retrying ({task.retries}/{task.max_retries}): {e}")
                 task.status = "pending"  # リトライキューに戻す
                 return False
             else:
-                print(f"❌ Task failed after {task.max_retries} retries: {e}")
+                print(f"[FAIL] Task failed after {task.max_retries} retries: {e}")
                 task.status = "failed"
                 self.failed_count += 1
                 return False
@@ -230,15 +230,15 @@ Co - Authored - By: Claude <noreply@anthropic.com>
             )
 
             self.commit_count += 1
-            print(f"✅ Auto - commit successful (total: {self.commit_count})")
+            print(f"[OK] Auto - commit successful (total: {self.commit_count})")
 
             # Auto - push (オプション)
             if self.auto_push:
                 subprocess.run(["git", "push"], cwd=self.workspace, check=True, capture_output=True)
-                print("✅ Auto - push successful")
+                print("[OK] Auto - push successful")
 
         except subprocess.CalledProcessError as e:
-            print(f"⚠️  Git operation failed: {e}")
+            print(f"[WARN]  Git operation failed: {e}")
             # エラーでも続行
 
     def generate_report(self) -> ExecutionReport:
@@ -293,11 +293,11 @@ Co - Authored - By: Claude <noreply@anthropic.com>
                             last_report_time = time.time()
 
                 # 全タスク完了後、ROADMAPを再読み込み (新規タスク確認)
-                print("\n✅ All tasks completed. Checking for new tasks in 60 seconds...")
+                print("\n[OK] All tasks completed. Checking for new tasks in 60 seconds...")
                 await asyncio.sleep(60)
 
         except KeyboardInterrupt:
-            print("\n\n⏸️  Execution stopped by user (Ctrl + C)")
+            print("\n\n[PAUSE]  Execution stopped by user (Ctrl + C)")
             self.save_report()
             print("\n📊 Final Report:")
             print(f"   Session ID: {self.session_id}")
