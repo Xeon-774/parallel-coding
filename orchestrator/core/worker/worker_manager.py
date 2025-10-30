@@ -456,9 +456,14 @@ class WorkerManager:
             if self.config.execution_mode == "wsl":
                 # WSL mode - convert Windows path to WSL path
                 wsl_task_file = self._convert_to_wsl_path(task_file)
+
+                # Build WSL command with fallbacks
+                wsl_dist = self.config.wsl_distribution or "Ubuntu-24.04"
+                path_export = f"export PATH='{self.config.nvm_path}:$PATH' && " if self.config.nvm_path else ""
+
                 return (
-                    f"wsl -d {self.config.wsl_distribution} bash -c "
-                    f"\"export PATH='{self.config.nvm_path}:$PATH' && "
+                    f"wsl -d {wsl_dist} bash -c "
+                    f"\"{path_export}"
                     f"{self.config.claude_command} {flags_str} < '{wsl_task_file}'\""
                 )
             elif self.config.execution_mode == "windows":
