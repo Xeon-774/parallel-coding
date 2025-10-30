@@ -931,7 +931,7 @@ class WorkerManager:
 
                 for entry in session.dialogue_transcript:
                     timestamp_str = datetime.fromtimestamp(entry["timestamp"]).strftime(
-                        "%H:%M:%S.%"
+                        "%H:%M:%S.%f"
                     )[:-3]
                     direction = entry["direction"]
                     content = entry["content"]
