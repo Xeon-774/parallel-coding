@@ -76,6 +76,114 @@ You are executing within a production-grade AI orchestration platform that manag
 - ✅ Security tests
 - ✅ Mock external dependencies
 
+
+### Cross-Project Compatibility
+**CRITICAL**: All code MUST be portable across different projects and environments.
+
+**ABSOLUTE PROHIBITIONS** (Zero Tolerance):
+- NO hardcoded absolute paths (D:\user\..., /home/username/...)
+- NO project-specific names ("AI_Investor", "my_project")
+- NO user-specific paths (C:\Users\chemi\..., /home/chemi/...)
+- NO environment-specific values (Ubuntu-24.04, node/v22.21.0)
+
+**REQUIRED PATTERNS**:
+```python
+# CORRECT: Use environment variables
+workspace = os.getenv("WORKSPACE_PATH", str(Path.cwd() / "workspace"))
+project_name = os.getenv("PROJECT_NAME", "default-project")
+
+# CORRECT: Use relative paths from project root
+from pathlib import Path
+project_root = Path(__file__).parent.parent
+config_file = project_root / "config" / "settings.yaml"
+
+# CORRECT: Use Path.home() for user directory
+config_dir = Path.home() / ".my-app" / "config"
+
+# CORRECT: Auto-discover binaries
+import shutil
+binary_path = shutil.which("my-binary") or "/usr/local/bin/my-binary"
+
+# CORRECT: Use temporary directories for tests
+import tempfile
+with tempfile.TemporaryDirectory() as tmpdir:
+    test_file = Path(tmpdir) / "test.txt"
+
+# WRONG: Hardcoded absolute path
+workspace = "D:\user\ai_coding\AI_Investor\workspace"
+
+# WRONG: Project-specific name
+logger.info("Running in AI_Investor project")
+
+# WRONG: User-specific path
+config = "/home/chemi/.config/myapp/settings.yaml"
+
+# WRONG: Environment-specific value
+wsl_dist = "Ubuntu-24.04"  # Use auto-detection instead
+```
+
+**RATIONALE**: Hardcoded paths/names make code non-portable. This tool runs in multiple projects across different machines. Any hardcoded value breaks compatibility.
+
+**VALIDATION**: Before committing code, verify:
+1. No absolute paths (except from environment variables)
+2. No project names (use env vars or config)
+3. All paths are relative or use Path.home()
+4. All binaries are auto-discovered or configurable
+
+
+### Cross-Project Compatibility 🌍
+**CRITICAL**: All code MUST be portable across different projects and environments.
+
+**ABSOLUTE PROHIBITIONS** (Zero Tolerance):
+- ❌ **NO hardcoded absolute paths** (`D:\user\...`, `/home/username/...`)
+- ❌ **NO project-specific names** (`"AI_Investor"`, `"my_project"`)
+- ❌ **NO user-specific paths** (`C:\Users\chemi\...`, `/home/chemi/...`)
+- ❌ **NO environment-specific values** (`Ubuntu-24.04`, `node/v22.21.0`)
+
+**REQUIRED PATTERNS**:
+```python
+# ✅ CORRECT: Use environment variables
+workspace = os.getenv("WORKSPACE_PATH", str(Path.cwd() / "workspace"))
+project_name = os.getenv("PROJECT_NAME", "default-project")
+
+# ✅ CORRECT: Use relative paths from project root
+from pathlib import Path
+project_root = Path(__file__).parent.parent
+config_file = project_root / "config" / "settings.yaml"
+
+# ✅ CORRECT: Use Path.home() for user directory
+config_dir = Path.home() / ".my-app" / "config"
+
+# ✅ CORRECT: Auto-discover binaries
+import shutil
+binary_path = shutil.which("my-binary") or "/usr/local/bin/my-binary"
+
+# ✅ CORRECT: Use temporary directories for tests
+import tempfile
+with tempfile.TemporaryDirectory() as tmpdir:
+    test_file = Path(tmpdir) / "test.txt"
+
+# ❌ WRONG: Hardcoded absolute path
+workspace = "D:\\user\\ai_coding\\AI_Investor\\workspace"
+
+# ❌ WRONG: Project-specific name
+logger.info("Running in AI_Investor project")
+
+# ❌ WRONG: User-specific path
+config = "/home/chemi/.config/myapp/settings.yaml"
+
+# ❌ WRONG: Environment-specific value
+wsl_dist = "Ubuntu-24.04"  # Use auto-detection instead
+```
+
+**RATIONALE**: Hardcoded paths/names make code non-portable. This tool runs in multiple projects across different machines. Any hardcoded value breaks compatibility.
+
+**VALIDATION**: Before committing code, verify:
+1. No absolute paths (except from environment variables)
+2. No project names (use env vars or config)
+3. All paths are relative or use Path.home()
+4. All binaries are auto-discovered or configurable
+
 ---
 
 ## 🔧 ORCHESTRATOR INTERACTION
