@@ -1,12 +1,17 @@
-# Claude Orchestrator v10.0 🚀
+# Parallel-Coding v2.0.0-dev 🚀
 
-**Enterprise-Grade AI-to-AI Parallel Coding Service**
+**Cross-Platform AI Parallel Coding Orchestrator**
 
-世界レベルのプロフェッショナルとして、Fortune 500企業やFAANG企業で使用される最高品質のエンタープライズグレードシステムを実現しました。複数のClaude AIインスタンスを並列実行し、大規模プロジェクトを自律的に開発する production-ready オーケストレーションシステムです。
+Enterprise-grade orchestration system for running multiple AI workers (Claude/Codex) in parallel. Now with **100% cross-project compatibility** and automatic configuration detection.
 
-**v10.0 包括的リファクタリング**: 🎯 **完全な品質統一とアーキテクチャ最適化** ✨
+**v2.0 Cross-Project Compatibility** ✨ **NEWEST!**
+- ✅ Zero hardcoded paths - works anywhere
+- ✅ Auto-detection: WSL, Codex CLI, Claude CLI (including WSL)
+- ✅ Cross-platform: Windows (WSL), Linux, macOS
+- ✅ Portable tests with pytest fixtures
+- ✅ Comprehensive documentation (INSTALLATION.md, CONFIGURATION.md)
 
-**Phase 0 Week 2 完了** 🎉 **NEW!**
+**Phase 0 Week 2 完了** 🎉
 - ✅ Hermetic Sandbox MVP (Docker, security isolation)
 - ✅ Quality Gates Engine (Coverage ≥90%, Lint, Type Check, Security)
 - ✅ E2E Tests (85% coverage, 29/29 tests PASSED)
@@ -240,7 +245,60 @@ export ORCHESTRATOR_VISIBLE_WORKERS=true
 export ORCHESTRATOR_AUTO_CLOSE=false
 ```
 
+## 📦 Installation
+
+### Quick Install
+
+```bash
+# 1. Clone repository
+git clone https://github.com/Xeon-774/parallel-coding.git
+cd parallel-coding
+
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. Install AI CLI (choose one)
+npm install -g @openai/codex  # Codex (recommended)
+# or
+pip install anthropic-claude-cli  # Claude
+```
+
+For detailed installation instructions, see [INSTALLATION.md](INSTALLATION.md).
+
+### Configuration
+
+**No configuration needed!** The tool auto-detects everything.
+
+Optional: Create `.env` for custom settings:
+
+```bash
+cp .env.template .env
+# Edit .env with your preferences
+```
+
+For complete configuration reference, see [CONFIGURATION.md](CONFIGURATION.md).
+
+---
+
 ## 🚀 クイックスタート
+
+### 🎯 Simple Task Execution (v2.0 - NEW!)
+
+**Run AI workers with zero configuration:**
+
+```bash
+# Create a task file
+echo "Create a Python script that prints 'Hello, World!'" > task.md
+
+# Execute with Codex
+python scripts/execute_task_files.py --codex task.md
+
+# Or with Claude
+python scripts/execute_task_files.py task.md
+
+# Check results
+ls workspace/worker_1/  # Generated files appear here
+```
 
 ### 🤖 REST API経由で実行（v7.0 推奨 - AI Applications向け）
 
