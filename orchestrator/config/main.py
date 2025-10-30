@@ -250,16 +250,26 @@ class OrchestratorConfig:
 
     @property
     def codex_command(self) -> str:
-        """Get Codex command string for execution."""
+        """Get Codex command string for execution.
+
+        Returns path with forward slashes for cross-platform compatibility
+        (especially important for WSL commands on Windows).
+        """
         if self.codex_command_path:
-            return str(self.codex_command_path)
+            # Use as_posix() to ensure forward slashes (works in WSL and Windows)
+            return self.codex_command_path.as_posix()
         return "codex"  # Fallback to PATH
 
     @property
     def claude_command(self) -> str:
-        """Get Claude command string for execution."""
+        """Get Claude command string for execution.
+
+        Returns path with forward slashes for cross-platform compatibility
+        (especially important for WSL commands on Windows).
+        """
         if self.claude_command_path:
-            return str(self.claude_command_path)
+            # Use as_posix() to ensure forward slashes (works in WSL and Windows)
+            return self.claude_command_path.as_posix()
         return "claude"  # Fallback to PATH
 
     @property
