@@ -276,11 +276,17 @@ class CodexExecutor:
         if self.execution_mode == "wsl":
             # WSL mode - convert Windows path to WSL path
             wsl_task_file = self._convert_to_wsl_path(str(task_file.absolute()))
-            # Use PATH environment variable to find codex
+
+            # Convert codex_command to WSL path if it's a Windows absolute path
+            codex_cmd = self.codex_command
+            if ":" in codex_cmd and not codex_cmd.startswith("/mnt/"):
+                # Windows absolute path (e.g., "C:/Users/.../codex.CMD")
+                codex_cmd = self._convert_to_wsl_path(codex_cmd)
+
             return (
                 f"wsl -d {self.wsl_distribution} bash -c "
                 f"\"export PATH='{self.nvm_path}' && "
-                f"{self.codex_command} exec {flags} < '{wsl_task_file}'\""
+                f"{codex_cmd} exec {flags} < '{wsl_task_file}'\""
             )
         elif self.execution_mode == "windows":
             # Windows native mode
