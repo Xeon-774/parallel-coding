@@ -586,11 +586,19 @@ def create_codex_executor_from_config(config: Any) -> CodexExecutor:
         >>> config = OrchestratorConfig.from_env()
         >>> executor = create_codex_executor_from_config(config)
     """
+    # Auto-detect execution mode based on codex_command format
+    execution_mode = config.execution_mode
+
+    # If codex_command is a Windows .CMD or .BAT file, force windows mode
+    # because WSL cannot execute Windows batch files
+    if config.codex_command.upper().endswith((".CMD", ".BAT")):
+        execution_mode = "windows"
+
     return CodexExecutor(
         wsl_distribution=config.wsl_distribution or "Ubuntu-24.04",
         nvm_path=str(config.nvm_path) if config.nvm_path else "",
         codex_command=config.codex_command,
-        execution_mode=config.execution_mode,
+        execution_mode=execution_mode,
         windows_codex_path=config.codex_command,  # Use same command for Windows
         git_bash_path=str(config.git_bash_path) if config.git_bash_path else None,
     )
