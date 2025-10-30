@@ -465,8 +465,10 @@ class WorkerManager:
                 if self.config.nvm_path:
                     path_parts.append(str(self.config.nvm_path))
                 # Add common Claude CLI locations
-                path_parts.extend(["$HOME/.local/bin", "/usr/local/bin", "/usr/bin"])
-                path_export = f"export PATH='{':'.join(path_parts)}:$PATH' && "
+                path_parts.extend([r"$HOME/.local/bin", "/usr/local/bin", "/usr/bin"])
+                # Build PATH string - use escaped quotes for bash -c context
+                path_value = ":".join(path_parts)
+                path_export = 'export PATH=\\"' + path_value + ':$PATH\\" && '
 
                 # Use command name only (not full path) - PATH will resolve it
                 claude_cmd = "claude" if self.config.claude_command else "claude"
