@@ -428,8 +428,8 @@ class WorkerManager:
                 wsl_task_file = self._convert_to_wsl_path(task_file)
                 cmd = (
                     f"wsl -d {self.config.wsl_distribution} bash -c "
-                    f"\"export PATH='{self.config.nvm_path}:$PATH' && "
-                    f"/mnt / c/Users / chemi / AppData / Roaming / npm / codex exec {codex_flags} < '{wsl_task_file}'\""
+                    f"\"export PATH='{self.config.nvm_path}' && "
+                    f"{self.config.codex_command} exec {codex_flags} < '{wsl_task_file}'\""
                 )
                 return cmd
             elif self.config.execution_mode == "windows":
@@ -467,9 +467,9 @@ class WorkerManager:
                     path_parts.append(str(self.config.nvm_path))
                 # Add common Claude CLI locations
                 path_parts.extend([r"$HOME/.local/bin", "/usr/local/bin", "/usr/bin"])
-                # Build PATH string - use escaped quotes for bash -c context
+                # Build PATH string - WITHOUT $PATH to avoid bracket issues
                 path_value = ":".join(path_parts)
-                path_export = 'export PATH=\\"' + path_value + ':$PATH\\" && '
+                path_export = 'export PATH=\\"' + path_value + '\\" && '
 
                 # Use command name only (not full path) - PATH will resolve it
                 claude_cmd = "claude" if self.config.claude_command else "claude"
