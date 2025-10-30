@@ -26,11 +26,12 @@ def test_dialogue_logging():
     print("=" * 70)
 
     # Setup
-    config = OrchestratorConfig()
-    config.workspace_root = r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\test_workspace"
+    config = OrchestratorConfig.from_env()
+    test_workspace = Path(__file__).parent / "test_workspace"
+    config.workspace_root = str(test_workspace)
 
     # Create workspace
-    workspace = Path(config.workspace_root)
+    workspace = test_workspace
     workspace.mkdir(parents=True, exist_ok=True)
 
     # Setup logger

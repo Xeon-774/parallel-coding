@@ -51,14 +51,9 @@ def test_codex_worker():
     test_workspace.mkdir(exist_ok=True)
 
     # Configure orchestrator for test
-    config = OrchestratorConfig(
-        workspace_root=str(test_workspace),
-        wsl_workspace_root="/mnt / d / user / ai_coding / AI_Investor / tools / parallel - coding / test_codex_integration",
-        execution_mode="wsl",
-        wsl_distribution="Ubuntu - 24.04",
-        nvm_path="/home / chemi/.local / bin:/home / chemi/.nvm / versions / node / v22.21.0 / bin",
-        codex_command="codex",
-    )
+    config = OrchestratorConfig.from_env()
+    config.workspace_root = str(test_workspace)
+    # wsl_workspace_root will be auto-converted from workspace_root
 
     # Create worker manager
     logger = TestLogger()

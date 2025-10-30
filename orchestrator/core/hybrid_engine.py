@@ -507,10 +507,11 @@ if __name__ == "__main__":
 
     async def test() -> None:
         """Test hybrid engine"""
+        from orchestrator.utils.path_resolver import get_workspace_path
 
         # Create engine
         engine = HybridDecisionEngine(
-            workspace_root=Path(r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\workspace"),
+            workspace_root=get_workspace_path(create=True),
             verbose=True,
         )
 

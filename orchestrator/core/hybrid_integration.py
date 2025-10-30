@@ -225,10 +225,11 @@ class AISafetyJudge(HybridEngineAdapter):
 # Example usage
 if __name__ == "__main__":
     import time
+    from orchestrator.utils.path_resolver import get_workspace_path
 
     # Create adapter
     adapter = HybridEngineAdapter(
-        workspace_root=r"D:\user\ai_coding\AI_Investor\tools\parallel - coding\workspace",
+        workspace_root=str(get_workspace_path(create=True)),
         verbose=True,
     )
 
