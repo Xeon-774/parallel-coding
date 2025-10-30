@@ -1,7 +1,7 @@
 """
 Ecosystem Dashboard API
 
-Provides aggregate endpoints for the entire AI_Investor ecosystem.
+Provides aggregate endpoints for the entire development ecosystem.
 
 Features:
 - System - wide health status

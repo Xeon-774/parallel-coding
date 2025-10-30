@@ -120,7 +120,7 @@ class ReviewRequest(BaseModel):
         ...     document_path="docs / ROADMAP.md",
         ...     review_type=ReviewType.ROADMAP,
         ...     perspective=ReviewPerspective.FEASIBILITY,
-        ...     context={"project": "AI_Investor", "phase": "Week 2"}
+        ...     context={"project": "MyProject", "phase": "Week 2"}
         ... )
     """
 
@@ -488,7 +488,7 @@ if __name__ == "__main__":
         document_path="docs / ROADMAP.md",
         review_type=ReviewType.ROADMAP,
         perspective=ReviewPerspective.FEASIBILITY,
-        context={"project": "AI_Investor", "phase": "Week 2"},
+        context={"project": "MyProject", "phase": "Week 2"},
     )
 
     # Example: Creating feedback

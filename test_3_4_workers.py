@@ -48,7 +48,7 @@ def get_task_definitions(num_workers=3):
 ファイル名: sample_data.txt
 内容:
 ---
-Project: AI_Investor
+Project: TestProject
 Status: Active
 Features:
 - Parallel AI Coding

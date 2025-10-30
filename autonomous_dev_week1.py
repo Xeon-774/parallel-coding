@@ -1,6 +1,6 @@
 #!/usr / bin / env python3
 """
-Autonomous Development Script for AI_Investor Developer Studio Week 1
+Autonomous Development Script for Developer Studio Week 1
 Executes Day 3 - 7 tasks in parallel with full quality assurance
 """
 
@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 # Task definition for Developer Studio Week 1 (Day 3 - 7)
 WEEK1_DAY3_7_TASK = """
-AI_Investor Developer Studio Week 1 完成 (Day 3 - 7)
+Developer Studio Week 1 完成 (Day 3 - 7)
 
 ROADMAPに従って以下のタスクを並列実行してください:
 
@@ -176,7 +176,7 @@ def main():
     """Execute autonomous development for Week 1 Day 3 - 7"""
 
     logger.info("=" * 80)
-    logger.info("AI_Investor Developer Studio Week 1 (Day 3 - 7) - Autonomous Development")
+    logger.info("Developer Studio Week 1 (Day 3 - 7) - Autonomous Development")
     logger.info("=" * 80)
 
     # Load configuration

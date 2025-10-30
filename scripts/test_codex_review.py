@@ -170,7 +170,7 @@ async def review_document(
         review_type=review_type,
         perspective=perspective,
         context={
-            "project": "AI_Investor - Parallel Coding System",
+            "project": "Parallel Coding System",
             "standard": "excellence_ai_standard",
         },
     )

@@ -1,10 +1,10 @@
 """
-Encoding Configuration for AI_Investor Ecosystem
+Encoding Configuration for Development Ecosystem
 
 Project - Wide Encoding Policy:
 - All text files: UTF - 8 with BOM (utf - 8 - sig)
 - NO Shift - JIS (cp932), JIS, or other low - compatibility encodings
-- Applies to: AI_Investor ecosystem (including parallel AI tools)
+- Applies to: Development ecosystem (including parallel AI tools)
 
 Rationale:
 - UTF - 8 with BOM ensures proper encoding detection across editors

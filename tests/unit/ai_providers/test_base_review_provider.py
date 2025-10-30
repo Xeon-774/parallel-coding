@@ -107,11 +107,11 @@ def test_review_request_with_context(temp_document: Path) -> None:
         document_path=str(temp_document),
         review_type=ReviewType.ROADMAP,
         perspective=ReviewPerspective.FEASIBILITY,
-        context={"project": "AI_Investor", "phase": "Week 2"},
+        context={"project": "TestProject", "phase": "Week 2"},
         timeout_seconds=600,
     )
 
-    assert request.context["project"] == "AI_Investor"
+    assert request.context["project"] == "TestProject"
     assert request.context["phase"] == "Week 2"
     assert request.timeout_seconds == 600
 

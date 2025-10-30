@@ -506,7 +506,7 @@ Suggestion: Add API examples
         document_path=str(temp_document),
         review_type=ReviewType.DESIGN,
         perspective=ReviewPerspective.SECURITY,
-        context={"project": "AI_Investor"},
+        context={"project": "TestProject"},
     )
 
     result = await provider.review_document(request)
